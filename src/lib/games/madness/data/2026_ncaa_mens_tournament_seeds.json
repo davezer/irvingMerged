@@ -1,0 +1,106 @@
+{
+  "source": {
+    "name": "NCAA March Madness Bracket PDF",
+    "date_accessed": "2026-03-16",
+    "source_note": "Structured from the official NCAA 2026 Division I Men's Basketball Championship bracket PDF."
+  },
+  "tournament": "2026 NCAA Division I Men's Basketball Championship",
+  "regions": {
+    "East": [
+      { "seed": 1, "team": "Duke", "logoUrl": "/logos/madness/Duke.png" },
+      { "seed": 16, "team": "Siena", "logoUrl": "/logos/madness/Siena.png" },
+      { "seed": 8, "team": "Ohio State", "logoUrl": "/logos/madness/OhioState.png" },
+      { "seed": 9, "team": "TCU", "logoUrl": "/logos/madness/TCU.png" },
+      { "seed": 5, "team": "St. John's", "logoUrl": "/logos/madness/StJohns.png" },
+      { "seed": 12, "team": "Northern Iowa", "logoUrl": "/logos/madness/NorthernIowa.png" },
+      { "seed": 4, "team": "Kansas", "logoUrl": "/logos/madness/Kansas.png" },
+      { "seed": 13, "team": "Cal Baptist", "logoUrl": "/logos/madness/CalBaptist.png" },
+      { "seed": 6, "team": "Louisville", "logoUrl": "/logos/madness/Louisville.png" },
+      { "seed": 11, "team": "South Florida", "logoUrl": "/logos/madness/SouthFlorida.png" },
+      { "seed": 3, "team": "Michigan State", "logoUrl": "/logos/madness/MichiganState.png" },
+      { "seed": 14, "team": "North Dakota State", "logoUrl": "/logos/madness/NorthDakotaState.png" },
+      { "seed": 7, "team": "UCLA", "logoUrl": "/logos/madness/UCLA.png" },
+      { "seed": 10, "team": "UCF", "logoUrl": "/logos/madness/UCF.png" },
+      { "seed": 2, "team": "UConn", "logoUrl": "/logos/madness/UConn.png" },
+      { "seed": 15, "team": "Furman", "logoUrl": "/logos/madness/Furman.png" }
+    ],
+    "West": [
+      { "seed": 1, "team": "Arizona", "logoUrl": "/logos/madness/Arizona.png" },
+      { "seed": 16, "team": "Long Island", "logoUrl": "/logos/madness/LongIsland.png" },
+      { "seed": 8, "team": "Villanova", "logoUrl": "/logos/madness/Villanova.png" },
+      { "seed": 9, "team": "Utah State", "logoUrl": "/logos/madness/UtahState.png" },
+      { "seed": 5, "team": "Wisconsin", "logoUrl": "/logos/madness/Wisconsin.png" },
+      { "seed": 12, "team": "High Point", "logoUrl": "/logos/madness/HighPoint.png" },
+      { "seed": 4, "team": "Arkansas", "logoUrl": "/logos/madness/Arkansas.png" },
+      { "seed": 13, "team": "Hawaii", "logoUrl": "/logos/madness/Hawaii.png" },
+      { "seed": 6, "team": "BYU", "logoUrl": "/logos/madness/BYU.png" },
+      {
+        "seed": 11,
+        "play_in": [
+          { "team": "NC State", "logoUrl": "" },
+          { "team": "Texas", "logoUrl": "/logos/madness/Texas.png" }
+        ]
+      },
+      { "seed": 3, "team": "Gonzaga", "logoUrl": "/logos/madness/Gonzaga.png" },
+      { "seed": 14, "team": "Kennesaw State", "logoUrl": "/logos/madness/Kennesaw.png" },
+      { "seed": 7, "team": "Miami (FL)", "logoUrl": "/logos/madness/Miami.png" },
+      { "seed": 10, "team": "Missouri", "logoUrl": "/logos/madness/Missouri.png" },
+      { "seed": 2, "team": "Purdue", "logoUrl": "/logos/madness/Purdue.png" },
+      { "seed": 15, "team": "Queens (NC)", "logoUrl": "/logos/madness/Queens.png" }
+    ],
+    "South": [
+      { "seed": 1, "team": "Florida", "logoUrl": "/logos/madness/Florida.png" },
+      {
+        "seed": 16,
+        "play_in": [
+          { "team": "Lehigh", "logoUrl": "/logos/madness/Lehigh.png" },
+          { "team": "Prairie View A&M", "logoUrl": "/logos/madness/PrairieViewAM.png" }
+        ]
+      },
+      { "seed": 8, "team": "Clemson", "logoUrl": "/logos/madness/Clemson.png" },
+      { "seed": 9, "team": "Iowa", "logoUrl": "/logos/madness/Iowa.png" },
+      { "seed": 5, "team": "Vanderbilt", "logoUrl": "/logos/madness/Vanderbilt.png" },
+      { "seed": 12, "team": "McNeese", "logoUrl": "/logos/madness/McNeese.png" },
+      { "seed": 4, "team": "Nebraska", "logoUrl": "/logos/madness/Nebraska.png" },
+      { "seed": 13, "team": "Troy", "logoUrl": "/logos/madness/Troy.png" },
+      { "seed": 6, "team": "North Carolina", "logoUrl": "/logos/madness/NorthCarolina.png" },
+      { "seed": 11, "team": "VCU", "logoUrl": "/logos/madness/VCU.png" },
+      { "seed": 3, "team": "Illinois", "logoUrl": "/logos/madness/Illinois.png" },
+      { "seed": 14, "team": "Penn", "logoUrl": "/logos/madness/Penn.png" },
+      { "seed": 7, "team": "Saint Mary's", "logoUrl": "/logos/madness/SaintMarys.png" },
+      { "seed": 10, "team": "Texas A&M", "logoUrl": "/logos/madness/TexasAM.png" },
+      { "seed": 2, "team": "Houston", "logoUrl": "/logos/madness/Houston.png" },
+      { "seed": 15, "team": "Idaho", "logoUrl": "/logos/madness/Idaho.png" }
+    ],
+    "Midwest": [
+      { "seed": 1, "team": "Michigan", "logoUrl": "/logos/madness/Michigan.png" },
+      {
+        "seed": 16,
+        "play_in": [
+          { "team": "Howard", "logoUrl": "" },
+          { "team": "UMBC", "logoUrl": "" }
+        ]
+      },
+      { "seed": 8, "team": "Georgia", "logoUrl": "/logos/madness/Georgia.png" },
+      { "seed": 9, "team": "Saint Louis", "logoUrl": "/logos/madness/SaintLouis.png" },
+      { "seed": 5, "team": "Texas Tech", "logoUrl": "/logos/madness/TexasTech.png" },
+      { "seed": 12, "team": "Akron", "logoUrl": "/logos/madness/Akron.png" },
+      { "seed": 4, "team": "Alabama", "logoUrl": "/logos/madness/Alabama.png" },
+      { "seed": 13, "team": "Hofstra", "logoUrl": "/logos/madness/Hofstra.png" },
+      { "seed": 6, "team": "Tennessee", "logoUrl": "/logos/madness/Tennessee.png" },
+      {
+        "seed": 11,
+        "play_in": [
+          { "team": "SMU", "logoUrl": "" },
+          { "team": "Miami (Ohio)", "logoUrl": "" }
+        ]
+      },
+      { "seed": 3, "team": "Virginia", "logoUrl": "/logos/madness/Virginia.png" },
+      { "seed": 14, "team": "Wright State", "logoUrl": "/logos/madness/WrightState.png" },
+      { "seed": 7, "team": "Kentucky", "logoUrl": "/logos/madness/Kentucky.png" },
+      { "seed": 10, "team": "Santa Clara", "logoUrl": "/logos/madness/SantaClara.png" },
+      { "seed": 2, "team": "Iowa State", "logoUrl": "/logos/madness/IowaState.png" },
+      { "seed": 15, "team": "Tennessee State", "logoUrl": "/logos/madness/TennesseeState.png" }
+    ]
+  }
+}

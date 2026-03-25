@@ -1,0 +1,8 @@
+name = "irvingcollective"
+compatibility_date = "2026-01-15"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ic-offseason-db"
+database_id = "9a408eb7-95df-4718-ad18-f21659fb65ef"

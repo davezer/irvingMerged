@@ -1,0 +1,329 @@
+/* src/app.css */
+
+/* ====== Fonts (system-safe fallback; swap later if you want) ====== */
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  --font-serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Garamond, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* ====== Lounge palette ====== */
+  --bg0: #07080a;          /* near-black */
+  --bg1: #0b0d10;          /* surface */
+  --bg2: #0f1216;          /* elevated */
+  --line: rgba(255, 255, 255, 0.08);
+
+  --text0: rgba(255, 255, 255, 0.92);
+  --text1: rgba(255, 255, 255, 0.72);
+  --text2: rgba(255, 255, 255, 0.52);
+
+  --gold0: #f5d58a;        /* champagne */
+  --gold1: #d6b15e;        /* antique gold */
+  --gold2: #b9902f;        /* deep gold */
+
+  --emerald: #2fd07f;
+  --crimson: #e35757;
+
+  /* ====== Effects ====== */
+  --shadow: 0 16px 60px rgba(0, 0, 0, 0.55);
+  --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.35);
+  --blur: blur(10px);
+
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 10px;
+
+  --pad: 16px;
+  --pad-lg: 22px;
+
+  color-scheme: dark;
+}
+
+/* ====== Base ====== */
+html, body {
+  height: 100%;
+  background: radial-gradient(1200px 700px at 20% -10%, rgba(214, 177, 94, 0.13), transparent 55%),
+              radial-gradient(900px 600px at 80% 0%, rgba(47, 208, 127, 0.07), transparent 55%),
+              radial-gradient(1200px 900px at 50% 120%, rgba(214, 177, 94, 0.08), transparent 60%),
+              var(--bg0);
+  color: var(--text0);
+  font-family: var(--font-sans);
+  margin: 0;
+  overflow-x: hidden;
+
+}
+
+/* subtle “cigar smoke” texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 450px at 15% 10%, rgba(255,255,255,0.05), transparent 60%),
+    radial-gradient(650px 400px at 80% 15%, rgba(255,255,255,0.03), transparent 62%),
+    radial-gradient(800px 500px at 50% 80%, rgba(214,177,94,0.04), transparent 65%);
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+}
+
+/* ====== Layout helpers ====== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 22px 18px 42px;
+}
+
+.hr {
+  height: 1px;
+  background: var(--line);
+  border: none;
+  margin: 18px 0;
+}
+
+/* ====== Typography ====== */
+.h1 {
+  font-family: var(--font-serif);
+  letter-spacing: 0.4px;
+  font-size: 42px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.h2 {
+  font-family: var(--font-serif);
+  letter-spacing: 0.3px;
+  font-size: 24px;
+  margin: 0 0 8px 0;
+}
+
+.subtle {
+  color: var(--text1);
+}
+
+.muted {
+  color: var(--text2);
+}
+
+.kicker {
+  color: var(--gold0);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+}
+
+/* ====== Surfaces ====== */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: var(--pad-lg);
+}
+
+.card--tight {
+  padding: var(--pad);
+}
+
+.card--glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.card--glow::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(600px 200px at 10% 0%, rgba(214,177,94,0.24), transparent 60%),
+              radial-gradient(500px 240px at 90% 0%, rgba(47,208,127,0.12), transparent 55%);
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+/* ====== Buttons ====== */
+.btn {
+  appearance: none;
+  border: 1px solid rgba(214, 177, 94, 0.35);
+  background: linear-gradient(180deg, rgba(214,177,94,0.22), rgba(214,177,94,0.10));
+  color: var(--text0);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.2s ease, border 0.2s ease;
+  font-weight: 600;
+}
+
+.btn:hover {
+  border-color: rgba(214, 177, 94, 0.55);
+  background: linear-gradient(180deg, rgba(214,177,94,0.28), rgba(214,177,94,0.12));
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0px);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: rgba(255,255,255,0.14);
+}
+
+.btn--danger {
+  border-color: rgba(227, 87, 87, 0.35);
+  background: linear-gradient(180deg, rgba(227,87,87,0.22), rgba(227,87,87,0.10));
+}
+
+.btn--vip {
+  border-color: rgba(214, 177, 94, 0.55);
+  background: linear-gradient(180deg, rgba(245,213,138,0.30), rgba(214,177,94,0.14));
+  box-shadow: 0 12px 34px rgba(0,0,0,0.35);
+}
+
+.btn--vip:hover {
+  border-color: rgba(245, 213, 138, 0.75);
+  background: linear-gradient(180deg, rgba(245,213,138,0.36), rgba(214,177,94,0.16));
+  box-shadow: 0 16px 46px rgba(0,0,0,0.45), 0 0 0 3px rgba(214,177,94,0.10);
+}
+
+.btn--vip:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+/* ====== Inputs ====== */
+.input {
+  width: 95%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text0);
+  padding: 10px 12px;
+  border-radius: 12px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: rgba(214, 177, 94, 0.55);
+  box-shadow: 0 0 0 3px rgba(214, 177, 94, 0.12);
+}
+
+/* ====== Pills ====== */
+.pill {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.03);
+  color: var(--text1);
+  font-size: 12px;
+}
+
+.pill--gold {
+  border-color: rgba(214,177,94,0.35);
+  color: var(--gold0);
+  background: rgba(214,177,94,0.10);
+}
+
+.pill--green {
+  border-color: rgba(47,208,127,0.35);
+  color: rgba(47,208,127,0.95);
+  background: rgba(47,208,127,0.10);
+}
+
+.pill--red {
+  border-color: rgba(227,87,87,0.35);
+  color: rgba(227,87,87,0.95);
+  background: rgba(227,87,87,0.10);
+}
+
+/* ====== Links ====== */
+a {
+  color: var(--gold0);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ====== Nav ====== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: var(--blur);
+  background: rgba(7, 8, 10, 0.55);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand .title {
+  font-family: var(--font-serif);
+  letter-spacing: 0.5px;
+  font-size: 18px;
+  color: var(--text0);
+}
+
+.brand .tag {
+  font-size: 12px;
+  color: var(--text2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--text1);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.nav a:hover {
+  border-color: rgba(255,255,255,0.12);
+  text-decoration: none;
+  color: var(--text0);
+}
+
+.nav a.active {
+  border-color: rgba(214,177,94,0.35);
+  background: rgba(214,177,94,0.10);
+  color: var(--gold0);
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 720px) {
+  .h1 { font-size: 34px; }
+  .topbar-inner { align-items: flex-start; flex-direction: column; }
+  .nav { width: 100%; }
+}
