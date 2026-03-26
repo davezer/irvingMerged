@@ -9,7 +9,7 @@ export function slugify(value = '') {
     .replace(/^-+|-+$/g, '');
 }
 
-const managerIndex = new Map(managers.map((m, idx) => [m.managerID, { ...m, index: idx, slug: slugify(m.teamName || m.name) }]));
+// const managerIndex = new Map(managers.map((m, idx) => [m.managerID, { ...m, index: idx, slug: slugify(m.teamName || m.name) }]));
 const sleeperIndex = new Map(sleeperManagers.map((m) => [m.user_id, m]));
 const rankLabels = ['Commissioner’s Circle', 'Velvet Rope', 'High Stakes', 'Chasing the Board'];
 
@@ -200,7 +200,7 @@ export function getRecordsBoard() {
   const highestPoints = [...table].sort((a, b) => b.points - a.points)[0];
   const lowestPoints = [...table].sort((a, b) => a.points - b.points)[0];
   const bestWinPct = [...table].sort((a, b) => b.pct - a.pct)[0];
-  const mostGames = [...getManagers()].sort((a, b) => Number(b.fantasyStart || 0) - Number(a.fantasyStart || 0));
+  // const mostGames = [...getManagers()].sort((a, b) => Number(b.fantasyStart || 0) - Number(a.fantasyStart || 0));
   return [
     {
       title: 'Top of the current board',
