@@ -7,7 +7,7 @@
     <div>
       <div class="eyebrow">History</div>
       <h1>Legacy wing</h1>
-      <p>This is where the league stops feeling like software and starts feeling like folklore: records, titles, grudges, archetypes, and the long memory of the room.</p>
+      <p> records, titles, grudges, archetypes, etc.</p>
     </div>
   </section>
 

@@ -11,12 +11,12 @@
 <div class="lounge-home">
   <section class="hero card">
     <div>
-      <div class="eyebrow">Members Only • Cloudflare Lounge</div>
-      <h1>One private clubhouse for league history, games, picks, and prestige.</h1>
-      <p class="lede">This merged build plants Irving League inside Irving Collective’s premium shell — dark, reactive, and designed for people who actually live in this thing.</p>
+      <div class="eyebrow">Gentleman Only • The Irving Gentleman</div>
+      <h1>One private clubhouse for league history, offseason games, and prestige.</h1>
+      <p class="lede">The New Home For Fantasy Football and Offseason Fun</p>
       <div class="actions">
         <a class="btn btn--vip" href="/league">Enter League HQ</a>
-        <a class="btn btn--ghost" href="/games">Open Games Floor</a>
+        <a class="btn btn--ghost" href="/games">Open The Offseason Games Floor</a>
       </div>
     </div>
     <div class="hero-side">
@@ -60,7 +60,7 @@
       <div class="section-head">
         <div>
           <div class="eyebrow">Managers</div>
-          <h2>Dossiers</h2>
+          <!-- <h2>Dossiers</h2> -->
         </div>
         <a href="/league/managers">View all</a>
       </div>

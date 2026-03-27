@@ -9,7 +9,7 @@
     <div>
       <div class="eyebrow">League HQ</div>
       <h1>{stats.leagueName}</h1>
-      <p>The ritual side of the product lives here: standings, managers, rosters, drafts, records, awards, rivalries, and all the league personality that makes the app feel like yours instead of generic fantasy software.</p>
+      <p>some words about the league here</p>
     </div>
     <div class="mini-grid">
       <a class="mini" href="/league/standings"><strong>Standings</strong><span>{standings.length} teams tracked</span></a>
