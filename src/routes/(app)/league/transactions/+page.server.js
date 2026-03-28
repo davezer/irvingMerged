@@ -1,76 +1,97 @@
-import { parseSeasonParam } from '$lib/server/league/season.js';
-import { resolveLeagueStorage } from '$lib/server/league/db.js';
+import { parseSeasonParam, parseWeeksParam } from '$lib/server/league/season.js';
+import { buildRosterIdentityMap } from '$lib/server/league/identity.js';
+import { getSleeperLeagueBundle, resolvePlayersByIds } from '$lib/server/league/sleeperCache.js';
 
-function safeJsonParse(value, fallback) {
-  if (!value) return fallback;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return fallback;
-  }
+function normalizeDraftPick(pick, rosterMap) {
+  const owner = rosterMap.get(Number(pick?.owner_id)) || null;
+  const previousOwner = rosterMap.get(Number(pick?.previous_owner_id)) || null;
+  const original = rosterMap.get(Number(pick?.roster_id)) || null;
+
+  return {
+    season: pick?.season || null,
+    round: pick?.round || null,
+    ownerTeamName: owner?.teamName || `Roster ${pick?.owner_id ?? '—'}`,
+    previousOwnerTeamName: previousOwner?.teamName || `Roster ${pick?.previous_owner_id ?? '—'}`,
+    originalTeamName: original?.teamName || `Roster ${pick?.roster_id ?? '—'}`
+  };
 }
 
 export async function load({ url, platform }) {
   const season = parseSeasonParam(url.searchParams.get('season'));
-  const db = platform?.env?.DB;
-  const leagueId = String(url.searchParams.get('leagueId') || platform?.env?.SLEEPER_LEAGUE_ID || '').trim() || null;
+  const weeks = parseWeeksParam(url.searchParams.get('weeks'), season);
+  const explicitLeagueId = String(url.searchParams.get('leagueId') || '').trim() || null;
 
-  if (!db) {
-    return { season, leagueId, transactions: [], hasData: false };
-  }
+  try {
+    const { leagueId, rosters, users, transactions } = await getSleeperLeagueBundle({
+      env: platform?.env,
+      season,
+      weeks,
+      urlLeagueId: explicitLeagueId
+    });
 
-  const storage = await resolveLeagueStorage(db);
+    const rosterMap = buildRosterIdentityMap({ rosters, users });
+    const addIds = transactions.flatMap((txn) => Object.keys(txn?.adds || {}));
+    const dropIds = transactions.flatMap((txn) => Object.keys(txn?.drops || {}));
+    const playerMap = await resolvePlayersByIds([...addIds, ...dropIds]);
 
-  const res = await db.prepare(`
-    SELECT transaction_id, type, status, roster_ids_json, adds_json, drops_json, draft_picks_json,
-           waiver_budget_json, created_at, round, season, league_id
-    FROM ${storage.transactionsTable}
-    WHERE (?1 IS NULL OR season = ?1)
-      AND (?2 IS NULL OR league_id = ?2)
-    ORDER BY COALESCE(created_at, 0) DESC, COALESCE(round, 0) DESC
-    LIMIT 100
-  `).bind(
-    storage.hasSeasonalTransactions || storage.legacyTransactionsHaveSeason ? season : null,
-    leagueId
-  ).all();
+    const enrichedTransactions = transactions
+      .map((txn) => {
+        const addEntries = Object.entries(txn?.adds || {}).map(([playerId, rosterId]) => ({
+          player: playerMap.get(String(playerId)) || null,
+          rosterId: Number(rosterId),
+          teamName: rosterMap.get(Number(rosterId))?.teamName || `Roster ${rosterId}`
+        }));
 
-  const transactions = (res?.results || []).map((row) => {
-    const adds = safeJsonParse(row.adds_json, {}) || {};
-    const drops = safeJsonParse(row.drops_json, {}) || {};
-    const draftPicks = safeJsonParse(row.draft_picks_json, []) || [];
-    const faab = safeJsonParse(row.waiver_budget_json, {}) || {};
+        const dropEntries = Object.entries(txn?.drops || {}).map(([playerId, rosterId]) => ({
+          player: playerMap.get(String(playerId)) || null,
+          rosterId: Number(rosterId),
+          teamName: rosterMap.get(Number(rosterId))?.teamName || `Roster ${rosterId}`
+        }));
 
-    const addEntries = Object.entries(adds);
-    const dropEntries = Object.entries(drops);
-    const faabMoves = Object.entries(faab);
+        const draftPicks = (txn?.draft_picks || []).map((pick) => normalizeDraftPick(pick, rosterMap));
+        const faabMoves = Object.entries(txn?.waiver_budget || {}).map(([rosterId, amount]) => ({
+          rosterId: Number(rosterId),
+          teamName: rosterMap.get(Number(rosterId))?.teamName || `Roster ${rosterId}`,
+          amount: Number(amount || 0)
+        }));
 
-    const summaryBits = [];
-    if (addEntries.length) summaryBits.push(`${addEntries.length} add${addEntries.length === 1 ? '' : 's'}`);
-    if (dropEntries.length) summaryBits.push(`${dropEntries.length} drop${dropEntries.length === 1 ? '' : 's'}`);
-    if (draftPicks.length) summaryBits.push(`${draftPicks.length} pick move${draftPicks.length === 1 ? '' : 's'}`);
-    if (faabMoves.length) summaryBits.push(`${faabMoves.length} FAAB change${faabMoves.length === 1 ? '' : 's'}`);
+        const summaryBits = [];
+        if (addEntries.length) summaryBits.push(`${addEntries.length} add${addEntries.length === 1 ? '' : 's'}`);
+        if (dropEntries.length) summaryBits.push(`${dropEntries.length} drop${dropEntries.length === 1 ? '' : 's'}`);
+        if (draftPicks.length) summaryBits.push(`${draftPicks.length} pick move${draftPicks.length === 1 ? '' : 's'}`);
+        if (faabMoves.length) summaryBits.push(`${faabMoves.length} FAAB change${faabMoves.length === 1 ? '' : 's'}`);
+
+        return {
+          id: String(txn.transaction_id),
+          type: txn.type || 'move',
+          status: txn.status || 'complete',
+          createdAt: txn.created ? Math.floor(Number(txn.created) / 1000) : null,
+          addEntries,
+          dropEntries,
+          draftPicks,
+          faabMoves,
+          summaryLine: summaryBits.join(' • ') || 'Transaction record'
+        };
+      })
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
     return {
-      id: row.transaction_id,
-      type: row.type || 'move',
-      status: row.status || 'complete',
-      createdAt: row.created_at || null,
-      round: row.round || null,
-      addEntries,
-      dropEntries,
-      draftPicks,
-      faabMoves,
-      summaryLine: summaryBits.join(' • ') || 'Transaction record',
-      season: row.season,
-      leagueId: row.league_id
+      season,
+      leagueId,
+      weeks,
+      transactions: enrichedTransactions,
+      hasData: enrichedTransactions.length > 0,
+      source: 'sleeper-cache'
     };
-  });
-
-  return {
-    season,
-    leagueId,
-    transactions,
-    hasData: transactions.length > 0,
-    storage: storage.transactionsTable
-  };
+  } catch (error) {
+    return {
+      season,
+      leagueId: explicitLeagueId,
+      weeks,
+      transactions: [],
+      hasData: false,
+      error: error?.message || 'Failed to load Sleeper transactions.',
+      source: 'sleeper-cache'
+    };
+  }
 }
