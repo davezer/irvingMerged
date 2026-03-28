@@ -1,3 +1,5 @@
+import { resolveLeagueStorage, tableExists } from '$lib/server/league/db.js';
+
 function safeJsonParse(value, fallback = null) {
   if (!value) return fallback;
   try {
@@ -7,29 +9,41 @@ function safeJsonParse(value, fallback = null) {
   }
 }
 
-async function tableExists(db, name) {
-  const row = await db
-    .prepare(`SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?`)
-    .bind(name)
-    .first()
-    .catch(() => null);
-  return !!row?.name;
-}
-
-export async function getRosterView(db) {
-  if (!db || !(await tableExists(db, 'sleeper_rosters'))) {
+export async function getRosterView(db, options = {}) {
+  if (!db) {
     return {
       updatedAt: null,
       teams: []
     };
   }
 
-  const rosterRows = await db
-    .prepare(`
-      SELECT roster_id, owner_id, starters_json, players_json, settings_json, metadata_json, updated_at
-      FROM sleeper_rosters
-      ORDER BY roster_id ASC
-    `)
+  const storage = await resolveLeagueStorage(db);
+  const season = options.season ?? null;
+  const leagueId = options.leagueId ?? null;
+
+  if (!(await tableExists(db, storage.rostersTable))) {
+    return {
+      updatedAt: null,
+      teams: []
+    };
+  }
+
+  const rosterRows = await (storage.hasSeasonalRosters
+    ? db.prepare(`
+        SELECT roster_id, owner_id, starters_json, players_json, settings_json, metadata_json, updated_at, season, league_id
+        FROM ${storage.rostersTable}
+        WHERE (?1 IS NULL OR season = ?1)
+          AND (?2 IS NULL OR league_id = ?2)
+        ORDER BY roster_id ASC
+      `).bind(season, leagueId)
+    : db.prepare(`
+        SELECT roster_id, owner_id, starters_json, players_json, settings_json, metadata_json, updated_at, season, league_id
+        FROM ${storage.rostersTable}
+        WHERE (?1 IS NULL OR season = ?1)
+          AND (?2 IS NULL OR league_id = ?2)
+        ORDER BY roster_id ASC
+      `).bind(storage.legacyRostersHaveSeason ? season : null, leagueId)
+  )
     .all()
     .catch(() => ({ results: [] }));
 
@@ -50,6 +64,8 @@ export async function getRosterView(db) {
     return {
       rosterId: row.roster_id,
       ownerId: row.owner_id,
+      season: row.season ?? season,
+      leagueId: row.league_id ?? leagueId,
       managerName: manager.display_name || metadata.team_name || `Roster ${row.roster_id}`,
       avatar: manager.avatar || null,
       teamName: metadata.team_name || manager.display_name || `Roster ${row.roster_id}`,
@@ -69,8 +85,19 @@ export async function getRosterView(db) {
   return { updatedAt, teams };
 }
 
-export async function getTransactionsView(db) {
-  if (!db || !(await tableExists(db, 'sleeper_transactions'))) {
+export async function getTransactionsView(db, options = {}) {
+  if (!db) {
+    return {
+      updatedAt: null,
+      items: []
+    };
+  }
+
+  const storage = await resolveLeagueStorage(db);
+  const season = options.season ?? null;
+  const leagueId = options.leagueId ?? null;
+
+  if (!(await tableExists(db, storage.transactionsTable))) {
     return {
       updatedAt: null,
       items: []
@@ -79,11 +106,15 @@ export async function getTransactionsView(db) {
 
   const rows = await db
     .prepare(`
-      SELECT transaction_id, type, status, roster_ids_json, adds_json, drops_json, draft_picks_json, waiver_budget_json, created_at
-      FROM sleeper_transactions
-      ORDER BY created_at DESC
+      SELECT transaction_id, type, status, roster_ids_json, adds_json, drops_json, draft_picks_json,
+             waiver_budget_json, created_at, round, season, league_id
+      FROM ${storage.transactionsTable}
+      WHERE (?1 IS NULL OR season = ?1)
+        AND (?2 IS NULL OR league_id = ?2)
+      ORDER BY COALESCE(created_at, 0) DESC, COALESCE(round, 0) DESC
       LIMIT 75
     `)
+    .bind(storage.hasSeasonalTransactions || storage.legacyTransactionsHaveSeason ? season : null, leagueId)
     .all()
     .catch(() => ({ results: [] }));
 
@@ -96,6 +127,9 @@ export async function getTransactionsView(db) {
 
     return {
       id: row.transaction_id,
+      season: row.season ?? season,
+      leagueId: row.league_id ?? leagueId,
+      round: row.round ?? null,
       type: row.type || 'move',
       status: row.status || 'complete',
       rosters: rosterIds,
