@@ -1,12 +1,5 @@
+import { getLeagueHomeBundle } from '$lib/server/league/homepage.js';
 
-import { getHomepageStats, getManagers, getStandings, getDraftOverview, getHistoryModules } from '$lib/server/league';
-
-export async function load() {
-  return {
-    stats: getHomepageStats(),
-    standings: getStandings().slice(0, 8),
-    managers: getManagers(),
-    draft: getDraftOverview(),
-    modules: getHistoryModules()
-  };
+export async function load({ url, platform }) {
+  return getLeagueHomeBundle({ url, env: platform?.env });
 }

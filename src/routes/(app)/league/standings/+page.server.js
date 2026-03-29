@@ -1,6 +1,5 @@
-import { getStandings, getLeaguePulse } from '$lib/server/league';
+import { getLiveStandingsBundle } from '$lib/server/league/standings.js';
 
-export const load = async () => ({
-  standings: getStandings(),
-  pulse: getLeaguePulse()
-});
+export async function load({ url, platform }) {
+  return getLiveStandingsBundle({ url, env: platform?.env });
+}

@@ -1,73 +1,60 @@
-import { parseSeasonParam } from '$lib/server/league/season.js';
+import { resolveLeagueContext } from '$lib/server/league/context.js';
 import { buildRosterIdentityMap } from '$lib/server/league/identity.js';
-import { getSleeperLeagueBundle, resolvePlayersByIds } from '$lib/server/league/sleeperCache.js';
+import { resolvePlayersByIds } from '$lib/server/league/players.js';
+import { getSleeperRosters, getSleeperUsers } from '$lib/server/league/sleeperClient.js';
+
+function numberValue(value) {
+  return Number(value || 0);
+}
 
 export async function load({ url, platform }) {
-  const season = parseSeasonParam(url.searchParams.get('season'));
-  const explicitLeagueId = String(url.searchParams.get('leagueId') || '').trim() || null;
+  const context = await resolveLeagueContext({ url, env: platform?.env, allWeeksByDefault: false });
+  const [users, rosters] = await Promise.all([
+    getSleeperUsers(context.leagueId),
+    getSleeperRosters(context.leagueId)
+  ]);
 
-  try {
-    const { leagueId, rosters, users } = await getSleeperLeagueBundle({
-      env: platform?.env,
-      season,
-      weeks: [],
-      urlLeagueId: explicitLeagueId
-    });
+  const rosterIdentityMap = buildRosterIdentityMap({ rosters, users });
+  const playerIds = rosters.flatMap((roster) => [...(roster.starters || []), ...(roster.players || [])]);
+  const playersById = await resolvePlayersByIds(playerIds);
 
-    const rosterMap = buildRosterIdentityMap({ rosters, users });
-    const starterIds = rosters.flatMap((roster) => roster?.starters || []);
-    const playerMap = await resolvePlayersByIds(starterIds);
-
-    const enrichedRosters = rosters.map((roster) => {
-      const rosterId = Number(roster.roster_id);
-      const identity = rosterMap.get(rosterId) || {
-        teamName: `Roster ${rosterId}`,
-        teamPhoto: null,
-        managerName: 'Unknown Manager',
-        managerSlug: null,
-        initials: '??'
-      };
-
-      const settings = roster?.settings || {};
-      const starters = (roster?.starters || []).map((playerId) => playerMap.get(String(playerId)) || null).filter(Boolean);
-      const players = roster?.players || [];
-
-      return {
-        rosterId,
-        ownerId: roster?.owner_id ? String(roster.owner_id) : null,
-        teamName: identity.teamName,
-        displayName: identity.teamName,
-        managerName: identity.managerName,
-        avatarUrl: identity.teamPhoto,
-        initials: identity.initials,
-        managerSlug: identity.managerSlug,
-        wins: Number(settings.wins || 0),
-        losses: Number(settings.losses || 0),
-        ties: Number(settings.ties || 0),
-        starterCount: starters.length,
-        playerCount: players.length,
-        waiverBudgetUsed: Number(settings.waiver_budget_used || settings.waiver_budget_spent || 0),
-        starters,
-        season,
-        leagueId
-      };
-    });
+  const rows = rosters.map((roster) => {
+    const identity = rosterIdentityMap.get(Number(roster.roster_id));
+    const starters = (roster.starters || []).map((playerId) => playersById.get(String(playerId))).filter(Boolean);
+    const bench = (roster.players || [])
+      .filter((playerId) => !(roster.starters || []).includes(playerId))
+      .map((playerId) => playersById.get(String(playerId)))
+      .filter(Boolean);
+    const settings = roster.settings || {};
 
     return {
-      season,
-      leagueId,
-      rosters: enrichedRosters,
-      hasData: enrichedRosters.length > 0,
-      source: 'sleeper-cache'
+      rosterId: Number(roster.roster_id),
+      ownerId: roster.owner_id ? String(roster.owner_id) : null,
+      managerName: identity?.managerName || 'Unknown Manager',
+      teamName: identity?.teamName || `Roster ${roster.roster_id}`,
+      teamPhoto: identity?.teamPhoto || null,
+      managerSlug: identity?.managerSlug || null,
+      initials: identity?.initials || '?',
+      wins: numberValue(settings.wins),
+      losses: numberValue(settings.losses),
+      ties: numberValue(settings.ties),
+      pointsFor: Number(`${settings.fpts || 0}.${settings.fpts_decimal || 0}`),
+      pointsAgainst: Number(`${settings.fpts_against || 0}.${settings.fpts_against_decimal || 0}`),
+      waiverBudgetUsed: numberValue(settings.waiver_budget_used || settings.waiver_budget_spent),
+      starterCount: starters.length,
+      playerCount: (roster.players || []).length,
+      starters,
+      benchCount: bench.length,
+      metadata: roster.metadata || {}
     };
-  } catch (error) {
-    return {
-      season,
-      leagueId: explicitLeagueId,
-      rosters: [],
-      hasData: false,
-      error: error?.message || 'Failed to load Sleeper rosters.',
-      source: 'sleeper-cache'
-    };
-  }
+  }).sort((a, b) => (b.wins - a.wins) || (b.pointsFor - a.pointsFor) || a.teamName.localeCompare(b.teamName));
+
+  return {
+    season: context.season,
+    leagueId: context.leagueId,
+    leagueName: context.league?.name || 'League Rosters',
+    rosters: rows,
+    hasData: rows.length > 0,
+    source: 'Sleeper API + runtime cache'
+  };
 }

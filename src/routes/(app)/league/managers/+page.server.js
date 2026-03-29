@@ -1,7 +1,5 @@
-import { getManagers, getStandings, getManagerAwards } from '$lib/server/league';
+import { getManagersIndexBundle } from '$lib/server/league/managerDossiers.js';
 
-export const load = async () => ({
-  managers: getManagers(),
-  standings: getStandings(),
-  awards: getManagerAwards()
-});
+export async function load({ url, platform }) {
+  return getManagersIndexBundle({ url, env: platform?.env });
+}

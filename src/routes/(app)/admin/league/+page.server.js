@@ -1,6 +1,5 @@
 import { fail } from '@sveltejs/kit';
-
-import { parseSeasonParam } from '$lib/server/league/season.js';
+import { listLeagueCacheKeys } from '$lib/server/league/cacheStore.js';
 
 async function postJson(fetch, url, body = {}) {
   const res = await fetch(url, {
@@ -24,90 +23,20 @@ async function postJson(fetch, url, body = {}) {
     });
   }
 
+  return { ok: true, result: payload };
+}
+
+export async function load() {
   return {
-    ok: true,
-    result: payload
+    recentRuns: [],
+    cacheKeys: listLeagueCacheKeys('sleeper:').slice(0, 60)
   };
 }
 
-export async function load({ platform }) {
-  const db = platform?.env?.DB;
-
-  let recentRuns = [];
-  if (db) {
-    try {
-      const rs = await db
-        .prepare(`
-          SELECT id, season, week, status, mode, created_at, summary_json, error_text
-          FROM league_sync_runs
-          ORDER BY created_at DESC
-          LIMIT 10
-        `)
-        .all();
-
-      recentRuns = rs?.results || [];
-    } catch {
-      recentRuns = [];
-    }
-  }
-
-  return { recentRuns };
-}
-
 export const actions = {
-  syncSleeper: async ({ fetch }) => {
-    return await postJson(fetch, '/api/admin/league/sync-sleeper', {});
-  },
-
-  rebuildBadges: async ({ fetch }) => {
-    return await postJson(fetch, '/api/admin/league/rebuild-badges', {});
-  },
-
-  recalcDraftEconomy: async ({ fetch }) => {
-    return await postJson(fetch, '/api/admin/league/recalc-draft-economy', {});
-  },
-
-  backfillSeason: async ({ request, platform, fetch }) => {
-    const db = platform?.env?.DB;
-    if (!db) {
-      return fail(500, { ok: false, error: 'DB binding missing' });
-    }
-
+  flushLeagueCache: async ({ request, fetch }) => {
     const form = await request.formData();
-    const season = parseSeasonParam(form.get('season'));
-    const weeks = String(form.get('weeks') || '');
-    const leagueId = String(form.get('leagueId') || platform?.env?.SLEEPER_LEAGUE_ID || '').trim();
-
-    if (!leagueId) {
-      return fail(400, { ok: false, error: 'Missing league id' });
-    }
-
-    const { backfillSleeperSeason } = await import('$lib/server/league/backfill.js');
-
-    const sleeperFetch = async (path) => {
-      const res = await fetch(`https://api.sleeper.app/v1${path}`);
-      if (!res.ok) throw new Error(`Sleeper request failed: ${res.status}`);
-      return res.json();
-    };
-
-    try {
-      const summary = await backfillSleeperSeason({
-        db,
-        leagueId,
-        season,
-        weeks,
-        sleeperFetch
-      });
-
-      return {
-        ok: true,
-        result: summary
-      };
-    } catch (error) {
-      return fail(500, {
-        ok: false,
-        error: error?.message || 'Backfill failed'
-      });
-    }
+    const prefix = String(form.get('prefix') || 'sleeper:').trim();
+    return postJson(fetch, '/api/admin/league/flush-cache', { prefix });
   }
 };
