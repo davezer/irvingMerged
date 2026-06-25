@@ -1,4 +1,5 @@
 import { leagueID as FALLBACK_LEAGUE_ID } from '$lib/legacy/leagueInfo';
+import { resolveRuntimeEnv } from '$lib/server/env.js';
 import { getDefaultWeeksForSeason, parseSeasonParam, parseWeeksParam } from '$lib/server/league/season.js';
 import { getLeagueHistory, getSleeperLeague, getSleeperNFLState } from '$lib/server/league/sleeperClient.js';
 
@@ -14,12 +15,24 @@ function getCurrentWeekFromState(state) {
   return Math.max(1, displayWeek || week || 1);
 }
 
+function isCompletedHistoricalSeason({ season, currentSeason, league }) {
+  const selected = Number(season);
+  const current = Number(currentSeason);
+  const status = String(league?.status || '').toLowerCase();
+
+  return selected < current
+    || status === 'complete'
+    || status === 'completed'
+    || status === 'closed';
+}
+
 function buildAvailableWeeks({ season, currentSeason, currentWeek, league }) {
   const hardMaxWeek = 18;
   const defaultWeeks = getDefaultWeeksForSeason(season);
-  const maxCompletedWeek = Number(season) === Number(currentSeason)
-    ? Math.min(hardMaxWeek, Math.max(1, currentWeek))
-    : hardMaxWeek;
+  const completedHistoricalSeason = isCompletedHistoricalSeason({ season, currentSeason, league });
+  const maxCompletedWeek = completedHistoricalSeason
+    ? hardMaxWeek
+    : Math.min(hardMaxWeek, Math.max(1, currentWeek));
   const availableWeeks = defaultWeeks.filter((week) => week <= maxCompletedWeek);
   const playoffStartWeek = Math.max(1, Math.min(hardMaxWeek, numberOrNull(league?.settings?.playoff_week_start) || 15));
 
@@ -32,14 +45,23 @@ function buildAvailableWeeks({ season, currentSeason, currentWeek, league }) {
 }
 
 export async function resolveLeagueContext({ url, env, allWeeksByDefault = false } = {}) {
+  const runtimeEnv = resolveRuntimeEnv(env);
   const explicitLeagueId = String(url?.searchParams?.get('leagueId') || '').trim() || null;
-  const rootLeagueId = String(env?.SLEEPER_LEAGUE_ID || FALLBACK_LEAGUE_ID || '').trim() || explicitLeagueId;
+  const rootLeagueId = explicitLeagueId || String(runtimeEnv?.SLEEPER_LEAGUE_ID || FALLBACK_LEAGUE_ID || '').trim();
   if (!rootLeagueId) throw new Error('Missing Sleeper league id.');
 
-  const rootLeague = await getSleeperLeague(rootLeagueId);
-  const fallbackSeason = parseSeasonParam(env?.SLEEPER_DEFAULT_SEASON || rootLeague?.season, new Date().getFullYear());
+  const [rootLeague, nflState] = await Promise.all([
+    getSleeperLeague(rootLeagueId),
+    getSleeperNFLState().catch(() => null)
+  ]);
+
+  const stateSeason = numberOrNull(nflState?.season);
+  const fallbackSeason = parseSeasonParam(
+    runtimeEnv?.SLEEPER_DEFAULT_SEASON || rootLeague?.season || stateSeason,
+    stateSeason || new Date().getFullYear()
+  );
   const season = parseSeasonParam(url?.searchParams?.get('season'), fallbackSeason);
-  const overrideLeagueId = String(env?.[`SLEEPER_LEAGUE_ID_${season}`] || '').trim() || null;
+  const overrideLeagueId = String(runtimeEnv?.[`SLEEPER_LEAGUE_ID_${season}`] || '').trim() || null;
 
   let league = null;
   let leagueId = explicitLeagueId || overrideLeagueId || null;
@@ -52,9 +74,8 @@ export async function resolveLeagueContext({ url, env, allWeeksByDefault = false
     leagueId = String(league?.league_id || rootLeagueId);
   }
 
-  const currentSeason = parseSeasonParam(rootLeague?.season, season);
-  const nflState = Number(season) === Number(currentSeason) ? await getSleeperNFLState().catch(() => null) : null;
-  const currentWeek = getCurrentWeekFromState(nflState);
+  const currentSeason = parseSeasonParam(stateSeason || rootLeague?.season, season);
+  const currentWeek = Number(season) === Number(currentSeason) ? getCurrentWeekFromState(nflState) : 18;
   const weekMeta = buildAvailableWeeks({ season, currentSeason, currentWeek, league });
   const defaultWeek = weekMeta.availableWeeks.at(-1) || 1;
   const weeksValue = url?.searchParams?.get('weeks') || url?.searchParams?.get('week') || null;

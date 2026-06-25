@@ -6,6 +6,7 @@ import { buildRosterIdentityMap } from '$lib/server/league/identity.js';
 import { resolvePlayersByIds } from '$lib/server/league/players.js';
 import { buildSingleWeekLineupSnapshot } from '$lib/server/league/lineupAnalytics.js';
 import { getSleeperLeague, getSleeperMatchupsForWeek, getSleeperRosters, getSleeperUsers } from '$lib/server/league/sleeperClient.js';
+import { getFranchiseCareerBundle } from '$lib/server/league/franchiseCareer.js';
 
 export async function getTeamsIndexBundle({ url, env } = {}) {
   const base = await getManagersIndexBundle({ url, env });
@@ -41,6 +42,14 @@ export async function getTeamDetailBundle({ url, env, slug } = {}) {
   const dossier = await getManagerDossierBundle({ url, env, slug });
   if (!dossier) throw error(404, 'Team not found');
 
+  const allTime = await getFranchiseCareerBundle({
+    rootLeagueId: dossier.rootLeagueId,
+    env,
+    profile,
+    currentSeason: dossier.currentSeason,
+    currentWeek: dossier.currentWeek
+  });
+
   return {
     ...dossier,
     franchise: {
@@ -59,6 +68,7 @@ export async function getTeamDetailBundle({ url, env, slug } = {}) {
       preferredContact: dossier.manager.preferredContact,
       championship: dossier.manager.championship
     },
+    allTime,
     sections: {
       dossier: `/league/managers/${slug}?season=${dossier.season}`,
       moves: `/league/transactions?season=${dossier.season}&team=${slug}`,

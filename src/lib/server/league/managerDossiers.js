@@ -9,6 +9,7 @@ import { resolveLeagueContext } from '$lib/server/league/context.js';
 import { resolvePlayersByIds } from '$lib/server/league/players.js';
 import { buildWeeklyLineupSnapshots, summarizeLineupAnalytics } from '$lib/server/league/lineupAnalytics.js';
 import { summarizeTradeProfile } from '$lib/server/league/tradeAnalytics.js';
+import { getDraftMoneySnapshot } from '$lib/server/league/draftMoney.js';
 import {
   getLeagueHistory,
   getSleeperDraftPicks,
@@ -28,6 +29,25 @@ function choosePrimaryDraft(drafts = []) {
 function moneyValue(pick) {
   const raw = pick?.metadata?.amount ?? pick?.metadata?.bid_amount ?? pick?.auction_amount ?? pick?.amount;
   return Number(raw || 0);
+}
+
+async function safeArray(label, task) {
+  try {
+    const value = await task();
+    return Array.isArray(value) ? value : [];
+  } catch (err) {
+    console.warn(`[managerDossiers] ${label} failed`, err?.message || err);
+    return [];
+  }
+}
+
+async function safeValue(label, task, fallback = null) {
+  try {
+    return await task();
+  } catch (err) {
+    console.warn(`[managerDossiers] ${label} failed`, err?.message || err);
+    return fallback;
+  }
 }
 
 function resolveRosterIdByManager(rosters = [], managerId) {
@@ -73,7 +93,7 @@ function buildRecentMoves(rawWeeks = [], rosterId, playersById, rosterIdentityMa
       });
     }
   }
-  return moves.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0)).slice(0, 10);
+  return moves.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
 }
 
 function buildMoveProfile(rawWeeks = [], rosterId) {
@@ -144,7 +164,7 @@ function buildRecentMatchups(rawMatchups = [], rosterId, rosterIdentityMap) {
       result: !opponent ? 'Bye' : score === oppScore ? 'Tie' : score > oppScore ? 'Win' : 'Loss',
       margin: Number((score - oppScore).toFixed(2))
     };
-  }).filter(Boolean).sort((a, b) => b.week - a.week).slice(0, 6);
+  }).filter(Boolean).sort((a, b) => b.week - a.week);
 }
 
 function buildCurrentSeasonAnalytics(recentMatchups = [], standing) {
@@ -168,9 +188,12 @@ function buildCurrentSeasonAnalytics(recentMatchups = [], standing) {
 }
 
 async function buildSeasonHistory(rootLeagueId, profile) {
-  const history = await getLeagueHistory(rootLeagueId);
+  const history = await safeArray(`league history ${rootLeagueId}`, () => getLeagueHistory(rootLeagueId));
   const seasons = await Promise.all(history.map(async (league) => {
-    const [users, rosters] = await Promise.all([getSleeperUsers(league.league_id), getSleeperRosters(league.league_id)]);
+    const [users, rosters] = await Promise.all([
+      safeArray(`users ${league.league_id}`, () => getSleeperUsers(league.league_id)),
+      safeArray(`rosters ${league.league_id}`, () => getSleeperRosters(league.league_id))
+    ]);
     const standings = buildStandingsRows({ rosters, users });
     const standing = resolveStandingForProfile(standings, profile);
     return standing ? {
@@ -190,14 +213,34 @@ async function buildSeasonHistory(rootLeagueId, profile) {
   return seasons.filter(Boolean).sort((a, b) => b.season - a.season);
 }
 
+function parseLegacyTitleYears(profile = {}) {
+  const raw = profile?.championship?.years;
+  if (!raw) return [];
+  return String(raw)
+    .split(/[,|/]+/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function buildHistoricalTitleSummary(profile = {}) {
+  const years = parseLegacyTitleYears(profile);
+  return {
+    historicalTitles: years.length,
+    historicalTitleYears: years,
+    historicalLeague: profile?.championship?.league || null,
+    historicalTitleLabel: years.length ? `${years.length} title${years.length === 1 ? '' : 's'} · ${years.join(', ')}` : 'No recorded titles'
+  };
+}
+
 function buildCareerSummary(seasonHistory = []) {
-  if (!seasonHistory.length) return { titles: 0, podiums: 0, seasons: 0, averageFinish: null, bestFinish: null, totalPoints: 0 };
-  const titles = seasonHistory.filter((season) => season.rank === 1).length;
+  if (!seasonHistory.length) return { liveTitles: 0, titles: 0, podiums: 0, seasons: 0, averageFinish: null, bestFinish: null, totalPoints: 0 };
+  const liveTitles = seasonHistory.filter((season) => season.rank === 1).length;
   const podiums = seasonHistory.filter((season) => season.rank <= 3).length;
   const totalPoints = seasonHistory.reduce((sum, season) => sum + Number(season.points || 0), 0);
   const averageFinish = seasonHistory.reduce((sum, season) => sum + Number(season.rank || 0), 0) / seasonHistory.length;
   return {
-    titles,
+    liveTitles,
+    titles: liveTitles,
     podiums,
     seasons: seasonHistory.length,
     averageFinish: Number(averageFinish.toFixed(2)),
@@ -217,6 +260,52 @@ function buildWeeklyLinks(lineupWeeks = [], slug, season) {
       benchPoints: week.benchPoints,
       optimalScore: week.optimalScore
     }));
+}
+
+
+function withSeason(path, season) {
+  return season ? `${path}?season=${season}` : path;
+}
+
+function buildManagerNav(profile, season) {
+  const profiles = getLegacyManagerProfiles();
+  const index = profiles.findIndex((manager) => String(manager.managerID) === String(profile.managerID));
+  const prev = index > 0 ? profiles[index - 1] : null;
+  const next = index > -1 && index < profiles.length - 1 ? profiles[index + 1] : null;
+  const card = (manager) => manager ? {
+    name: manager.name,
+    teamName: manager.teamName,
+    photo: manager.photo,
+    href: withSeason(`/league/teams/${manager.slug}`, season)
+  } : null;
+  return {
+    index,
+    total: profiles.length,
+    all: withSeason('/league/managers', season),
+    prev: card(prev),
+    next: card(next)
+  };
+}
+
+function buildRivalProfile(profile, season) {
+  const rival = profile?.rival;
+  if (!rival) return null;
+  const profiles = getLegacyManagerProfiles();
+  const byIndex = Number.isFinite(Number(rival.link)) ? profiles[Number(rival.link)] : null;
+  const byName = profiles.find((manager) => {
+    const wanted = String(rival.name || '').toLowerCase().trim();
+    return wanted && (
+      String(manager.name || '').toLowerCase().includes(wanted)
+      || String(manager.teamName || '').toLowerCase().includes(wanted)
+    );
+  });
+  const target = byIndex || byName || null;
+  return {
+    name: rival.name || target?.name || 'TBD',
+    teamName: target?.teamName || null,
+    image: rival.image || target?.photo || null,
+    href: target ? withSeason(`/league/teams/${target.slug}`, season) : null
+  };
 }
 
 export async function getManagersIndexBundle({ url, env } = {}) {
@@ -242,7 +331,7 @@ export async function getManagersIndexBundle({ url, env } = {}) {
       starterCount: Array.isArray(roster?.starters) ? roster.starters.length : 0,
       playerCount: Array.isArray(roster?.players) ? roster.players.length : 0,
       quickLinks: {
-        dossier: `/league/managers/${manager.slug}?season=${context.season}`,
+        dossier: `/league/teams/${manager.slug}?season=${context.season}`,
         games: `/league/matchups?season=${context.season}&team=${manager.slug}`,
         moves: `/league/transactions?season=${context.season}&team=${manager.slug}`,
         franchise: `/league/teams/${manager.slug}?season=${context.season}`
@@ -253,15 +342,16 @@ export async function getManagersIndexBundle({ url, env } = {}) {
   return { ...context, dossiers, hasData: dossiers.length > 0, source: 'Sleeper API + shared edge/runtime cache' };
 }
 
-export async function getManagerDossierBundle({ url, env, slug } = {}) {
+export async function getManagerDossierBundle({ url, env, slug, fetchFn = globalThis.fetch } = {}) {
   const profile = getLegacyManagerBySlug(slug);
   if (!profile) return null;
 
-  const context = await resolveLeagueContext({ url, env, allWeeksByDefault: false });
+  const context = await resolveLeagueContext({ url, env, allWeeksByDefault: true });
+  const dataWeeks = context.weeks?.length ? context.weeks : context.availableWeeks;
   const [league, users, rosters] = await Promise.all([
-    getSleeperLeague(context.leagueId),
-    getSleeperUsers(context.leagueId),
-    getSleeperRosters(context.leagueId)
+    safeValue(`league ${context.leagueId}`, () => getSleeperLeague(context.leagueId), context.league || {}),
+    safeArray(`users ${context.leagueId}`, () => getSleeperUsers(context.leagueId)),
+    safeArray(`rosters ${context.leagueId}`, () => getSleeperRosters(context.leagueId))
   ]);
   const rosterIdentityMap = buildRosterIdentityMap({ rosters, users });
   const standings = buildStandingsRows({ rosters, users });
@@ -270,14 +360,20 @@ export async function getManagerDossierBundle({ url, env, slug } = {}) {
   const rosterId = resolveRosterIdByManager(rosters, profile.managerID);
 
   const [drafts, transactionWeeks, matchupWeeks, seasonHistory] = await Promise.all([
-    getSleeperLeagueDrafts(context.leagueId),
-    Promise.all(context.availableWeeks.slice(-6).map(async (week) => ({ week, items: await getSleeperTransactionsForWeek(context.leagueId, week) }))),
-    Promise.all(context.availableWeeks.slice(-8).map(async (week) => ({ week, items: await getSleeperMatchupsForWeek(context.leagueId, week) }))),
+    safeArray(`drafts ${context.leagueId}`, () => getSleeperLeagueDrafts(context.leagueId)),
+    Promise.all(dataWeeks.map(async (week) => ({
+      week,
+      items: await safeArray(`transactions ${context.leagueId} week ${week}`, () => getSleeperTransactionsForWeek(context.leagueId, week))
+    }))),
+    Promise.all(dataWeeks.map(async (week) => ({
+      week,
+      items: await safeArray(`matchups ${context.leagueId} week ${week}`, () => getSleeperMatchupsForWeek(context.leagueId, week))
+    }))),
     buildSeasonHistory(context.rootLeagueId, profile)
   ]);
 
   const primaryDraft = choosePrimaryDraft(drafts);
-  const draftPicks = primaryDraft ? await getSleeperDraftPicks(primaryDraft.draft_id) : [];
+  const draftPicks = primaryDraft ? await safeArray(`draft picks ${primaryDraft.draft_id}`, () => getSleeperDraftPicks(primaryDraft.draft_id)) : [];
   const myDraftPicks = draftPicks.filter((pick) => String(pick.picked_by || pick.roster_id || '') === String(profile.managerID) || Number(pick.roster_id || 0) === Number(rosterId || 0));
 
   const playerIds = [
@@ -294,14 +390,26 @@ export async function getManagerDossierBundle({ url, env, slug } = {}) {
   const seasonAnalytics = buildCurrentSeasonAnalytics(recentMatchups, standing);
   const lineupWeeks = rosterId ? buildWeeklyLineupSnapshots(matchupWeeks, rosterId, { roster, league, playersById }) : [];
   const lineupAnalytics = summarizeLineupAnalytics(lineupWeeks);
-  const career = buildCareerSummary(seasonHistory);
+  const historicalTitles = buildHistoricalTitleSummary(profile);
+  const career = { ...buildCareerSummary(seasonHistory), ...historicalTitles, titles: historicalTitles.historicalTitles };
   const moveProfile = buildMoveProfile(transactionWeeks, rosterId);
   const tradeProfile = summarizeTradeProfile(transactionWeeks, rosterId, rosterIdentityMap, playersById);
+  const liveTeamName = standing?.teamName || profile.teamName;
+  const draftMoney = await getDraftMoneySnapshot({
+    env,
+    fetchFn,
+    manager: { ...profile, liveTeamName },
+    year: context.season,
+    type: 'draftMoney'
+  });
+  const managerNav = buildManagerNav(profile, context.season);
+  const rival = buildRivalProfile(profile, context.season);
 
   const dossierStats = [
     { label: 'Current rank', value: standing?.rank ? `#${standing.rank}` : '—' },
     { label: 'Record', value: standing?.recordLabel || '—' },
     { label: 'Points for', value: (standing?.points || fixedFromSleeper(roster?.settings?.fpts, roster?.settings?.fpts_decimal)).toFixed(2) },
+    { label: 'Future draft $', value: draftMoney.value != null ? `$${draftMoney.value}` : '—' },
     { label: 'Career titles', value: String(career.titles || 0) }
   ];
 
@@ -318,13 +426,14 @@ export async function getManagerDossierBundle({ url, env, slug } = {}) {
       ...profile,
       slug,
       photo: standing?.teamPhoto || profile.photo,
-      liveTeamName: standing?.teamName || profile.teamName,
+      liveTeamName,
       recordLabel: standing?.recordLabel || '—',
       currentRank: standing?.rank || null,
       pointsFor: standing?.points || fixedFromSleeper(roster?.settings?.fpts, roster?.settings?.fpts_decimal),
       pointsAgainst: standing?.pointsAgainst || fixedFromSleeper(roster?.settings?.fpts_against, roster?.settings?.fpts_against_decimal),
       currentPointDiff: standing?.pointDiff || 0,
-      waiverBudgetUsed: Number(roster?.settings?.waiver_budget_used || roster?.settings?.waiver_budget_spent || 0)
+      waiverBudgetUsed: Number(roster?.settings?.waiver_budget_used || roster?.settings?.waiver_budget_spent || 0),
+      isCommissioner: String(league?.owner_id || '') === String(profile.managerID || '')
     },
     dossierStats,
     analyticsCards,
@@ -339,6 +448,10 @@ export async function getManagerDossierBundle({ url, env, slug } = {}) {
     tradeProfile,
     seasonHistory,
     career,
+    draftMoney,
+    managerNav,
+    rival,
+    coOwnerLabel: Array.isArray(roster?.co_owners) && roster.co_owners.length ? 'Co-Manager' : 'Manager',
     weeklyLinks: buildWeeklyLinks(lineupWeeks, slug, context.season),
     quickLinks: {
       moves: `/league/transactions?season=${context.season}&team=${slug}`,

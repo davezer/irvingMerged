@@ -1,26 +1,28 @@
-// src/lib/games/masters/options.js
+import { getMastersField } from '$lib/server/providers/masters.js';
 
-// Manual list for now.
-// Later: replace with Masters feed normalization + caching.
 const MANUAL_GOLFERS = [
-  // id should be stable string keys; name is display; optional meta is fine.
-  // Replace these with real Masters player ids once you wire the feed.
-  { id: 'scottie_scheffler', name: 'Scottie Scheffler' },
-  { id: 'rory_mcilroy', name: 'Rory McIlroy' },
-  { id: 'jon_rahm', name: 'Jon Rahm' },
-  { id: 'xander_schauffele', name: 'Xander Schauffele' }
-  // ...
+  { id: '9478', name: 'Scottie Scheffler', country: 'United States' },
+  { id: '3470', name: 'Rory McIlroy', country: 'Northern Ireland' },
+  { id: '9780', name: 'Jon Rahm', country: 'Spain' },
+  { id: '10140', name: 'Xander Schauffele', country: 'United States' },
+  { id: '10577', name: 'Bryson DeChambeau', country: 'United States' },
+  { id: '6798', name: 'Jordan Spieth', country: 'United States' }
 ];
 
 export async function getOptions({ db, event, fetchImpl }) {
-  // keep signature consistent with other games even if unused for now
-  void db; void event; void fetchImpl;
+  const out = await getMastersField({ db, event, fetchImpl });
+
+  if (Array.isArray(out?.options) && out.options.length) {
+    return out;
+  }
 
   return {
-    provider: 'manual',
-    cacheKey: 'masters-golfers:manual:v1',
+    provider: out?.provider || 'masters',
+    cacheKey: out?.cacheKey || 'masters:field:espn-direct:v4',
     options: MANUAL_GOLFERS,
-    mode: 'manual',
-    note: 'Manual golfer list (temporary until Masters feed is wired).'
+    mode: out?.mode === 'error' ? 'manual:fallback' : out?.mode || 'manual',
+    note: out?.note
+      ? `${out.note} Falling back to the emergency manual shortlist.`
+      : 'Emergency manual golfer shortlist (fallback while the live field is unavailable).'
   };
 }

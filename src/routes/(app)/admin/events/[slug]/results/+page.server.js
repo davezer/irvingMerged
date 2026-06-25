@@ -8,6 +8,7 @@ import {
   actionResetEntries,
   actionUnpublish,
   actionResetTournament,
+  actionAdvanceRound,
   actionToggleEliminated,
   actionSetSeed,
   actionSetWinState,
@@ -103,6 +104,16 @@ export const actions = {
     if (!event) return fail(404, { ok: false, error: 'Event not found' });
 
     return actionResetEntries({ db, event, request });
+  },
+
+  advanceRound: async ({ locals, platform, params, request, fetch }) => {
+    if (!locals.user) throw redirect(302, '/login');
+
+    const db = platform.env.DB;
+    const event = await getEventBySlug(db, params.slug);
+    if (!event) return fail(404, { ok: false, error: 'Event not found' });
+
+    return actionAdvanceRound({ db, event, request, fetchImpl: fetch });
   },
 
   resetTournament: async ({ locals, platform, params }) => {

@@ -112,7 +112,7 @@ export async function publish({ db, event, form }) {
 }
 
 // Optional admin helper if you want a stage selector (pre_r1, r1_live, r1_done, etc)
-export async function saveStage({ db, event, form }) {
+export async function setCurrentStage({ db, event, form }) {
   const stage = String(form.get('stage') || '').trim() || 'pre_r1';
   const now = Math.floor(Date.now() / 1000);
 
@@ -128,3 +128,6 @@ export async function saveStage({ db, event, form }) {
 
   return { ok: true };
 }
+
+// Back-compat alias in case any older UI still posts to saveStage.
+export const saveStage = setCurrentStage;

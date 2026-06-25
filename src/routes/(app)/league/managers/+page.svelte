@@ -7,21 +7,20 @@
   <LeagueSubnav season={data.season || new Date().getFullYear()} active="managers" />
   <div>
     <div class="eyebrow">Managers</div>
-    <h1>League dossiers</h1>
-    <p class="lede">Manager cards now ride the live Sleeper spine: current rank, record, points, and roster shape are pulled live while the Irving identity layer still handles the voice and branding.</p>
+    <h1>Manager directory</h1>
     <div class="source">{data.source}</div>
   </div>
 
   <div class="grid">
     {#each data.dossiers as manager}
       <article class="card dossier">
-        <a class="cover" href={manager.quickLinks.dossier}><img src={manager.liveTeamPhoto || manager.photo} alt={manager.teamName} /></a>
+        <a class="cover" href={manager.quickLinks.franchise}><img src={manager.liveTeamPhoto || manager.photo} alt={manager.teamName} /></a>
         <div class="content">
           <div class="topline">
             <div class="team">{manager.liveTeamName}</div>
             {#if manager.currentRank}<span class="rank">#{manager.currentRank}</span>{/if}
           </div>
-          <h3><a href={manager.quickLinks.dossier}>{manager.name}</a></h3>
+          <h3><a href={manager.quickLinks.franchise}>{manager.name}</a></h3>
           <p>{manager.bio}</p>
           <div class="chips">
             <span>{manager.location}</span>
@@ -31,10 +30,9 @@
             <span>{manager.playerCount} players</span>
           </div>
           <div class="link-row">
-            <a href={manager.quickLinks.dossier}>Dossier</a>
+            <a href={manager.quickLinks.franchise}>Franchise profile</a>
             <a href={manager.quickLinks.games}>Games</a>
             <a href={manager.quickLinks.moves}>Moves</a>
-            <a href={manager.quickLinks.franchise}>Franchise</a>
           </div>
         </div>
       </article>

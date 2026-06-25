@@ -18,12 +18,13 @@
 
   $: teams = options?.teams || [];
   $: currentRound = results?.payload?.currentRound || 'group';
+  $: roundsPayload = results?.payload?.rounds || {};
   $: roundLabel = WORLD_CUP_ROUND_LABELS[currentRound] || currentRound;
   $: roundPts = WORLD_CUP_POINTS[currentRound] || 0;
 
   $: picksByRound = entry?.payload?.picksByRound || {};
   $: usedTeams = entry?.payload?.usedTeams || [];
-  $: eliminated = Boolean(entry?.payload?.eliminated);
+  $: storedEliminated = Boolean(entry?.payload?.eliminated);
 
   let teamId = '';
 
@@ -34,6 +35,122 @@
     const t = teams.find((x) => empty(x.id) === empty(id));
     return t?.name || id;
   }
+
+  function sortGroupValue(group) {
+    const g = empty(group).toUpperCase();
+    const idx = 'ABCDEFGHIJKL'.indexOf(g);
+    return idx >= 0 ? idx : 999;
+  }
+
+  function groupLabel(group) {
+    return group ? `Group ${group}` : 'Other Teams';
+  }
+
+  function sortTeamName(a, b) {
+    return empty(a?.name).localeCompare(empty(b?.name), undefined, { sensitivity: 'base' });
+  }
+
+  function previousRoundKey(r) {
+    const idx = WORLD_CUP_ROUNDS.indexOf(empty(r));
+    if (idx <= 0) return null;
+    return WORLD_CUP_ROUNDS[idx - 1];
+  }
+
+
+  function getRunStatus(picks, rounds, round) {
+    const currentIdx = WORLD_CUP_ROUNDS.indexOf(empty(round));
+    if (currentIdx <= 0) {
+      return { eliminated: false, eliminatedRound: null, reason: '' };
+    }
+
+    const used = [];
+
+    for (const r of WORLD_CUP_ROUNDS.slice(0, currentIdx)) {
+      const advancedIds = Array.isArray(rounds?.[r]?.advancedTeamIds)
+        ? rounds[r].advancedTeamIds.map(empty).filter(Boolean)
+        : [];
+
+      // If the previous round has not been published yet, do not call the user eliminated.
+      // The picker will already show the "publish previous results first" empty state.
+      if (!advancedIds.length) {
+        return { eliminated: false, eliminatedRound: null, reason: '' };
+      }
+
+      const pick = empty(picks?.[r]);
+      const label = WORLD_CUP_ROUND_LABELS[r] || r;
+
+      if (!pick) {
+        return {
+          eliminated: true,
+          eliminatedRound: r,
+          reason: `No pick was submitted for ${label}.`
+        };
+      }
+
+      if (used.includes(pick)) {
+        return {
+          eliminated: true,
+          eliminatedRound: r,
+          reason: `${teamName(pick)} was already used before ${label}.`
+        };
+      }
+
+      used.push(pick);
+
+      if (!advancedIds.includes(pick)) {
+        return {
+          eliminated: true,
+          eliminatedRound: r,
+          reason: `${teamName(pick)} did not survive ${label}.`
+        };
+      }
+    }
+
+    return { eliminated: false, eliminatedRound: null, reason: '' };
+  }
+
+  function groupAndSortTeams(list) {
+    const byGroup = new Map();
+
+    for (const team of list || []) {
+      const group = empty(team?.group).toUpperCase();
+      const key = group || '__other';
+      if (!byGroup.has(key)) byGroup.set(key, []);
+      byGroup.get(key).push(team);
+    }
+
+    return Array.from(byGroup.entries())
+      .sort(([a], [b]) => sortGroupValue(a === '__other' ? '' : a) - sortGroupValue(b === '__other' ? '' : b))
+      .map(([key, groupTeams]) => {
+        const group = key === '__other' ? '' : key;
+        return {
+          key,
+          group,
+          label: groupLabel(group),
+          teams: [...groupTeams].sort(sortTeamName)
+        };
+      });
+  }
+
+  $: previousRound = previousRoundKey(currentRound);
+  $: previousRoundLabel = previousRound ? (WORLD_CUP_ROUND_LABELS[previousRound] || previousRound) : '';
+  $: previousRoundPayload = previousRound ? roundsPayload?.[previousRound] : null;
+  $: previousAdvancedIds = previousRound && Array.isArray(previousRoundPayload?.advancedTeamIds)
+    ? previousRoundPayload.advancedTeamIds.map(empty).filter(Boolean)
+    : [];
+  $: aliveTeamIds = previousRound ? new Set(previousAdvancedIds) : null;
+  $: visibleTeams = aliveTeamIds
+    ? teams.filter((t) => aliveTeamIds.has(empty(t?.id)))
+    : teams;
+  $: hiddenEliminatedCount = aliveTeamIds
+    ? Math.max(0, teams.length - visibleTeams.length)
+    : 0;
+  $: selectedTeamVisible = !teamId || visibleTeams.some((t) => empty(t?.id) === empty(teamId));
+  $: groupedTeams = groupAndSortTeams(visibleTeams);
+  $: runStatus = getRunStatus(picksByRound, roundsPayload, currentRound);
+  $: eliminated = storedEliminated || runStatus.eliminated;
+  $: eliminatedReason = runStatus.reason || 'Your run is over for this World Cup.';
+  $: saveDisabled = locked || eliminated || !teamId || !selectedTeamVisible || isUsed(teamId);
 
   function isUsed(id) {
     // allow selecting same as current round pick (edit)
@@ -78,23 +195,47 @@
       </div>
     {:else if eliminated}
       <div class="elim">
-        You’re eliminated. Your run is over for this World Cup.
+        <strong>You’re eliminated.</strong> {eliminatedReason}
       </div>
     {:else}
       <form method="POST" action="?/save" class="form">
         <input type="hidden" name="round" value={currentRound} />
 
         <label class="label">Select a team</label>
-        <select class="select" name="teamId" bind:value={teamId} disabled={locked}>
-          <option value="" disabled>Select a team</option>
-          {#each teams as t (t.id)}
-            <option value={t.id} disabled={isUsed(String(t.id))}>
-              {t.name}{isUsed(String(t.id)) ? ' (used)' : ''}
-            </option>
-          {/each}
-        </select>
+        <div class="hint">
+          {#if previousRound}
+            Showing teams still alive after {previousRoundLabel}. {visibleTeams.length} available{hiddenEliminatedCount ? `, ${hiddenEliminatedCount} eliminated hidden` : ''}.
+          {:else}
+            Grouped by World Cup group, alphabetized inside each group.
+          {/if}
+        </div>
 
-        <button class="btn btn--vip" disabled={locked || !teamId}>
+        {#if teamId && !selectedTeamVisible}
+          <div class="warning">
+            Your saved pick for this round is no longer available based on the latest results. Pick a team that is still alive.
+          </div>
+        {/if}
+
+        {#if previousRound && !visibleTeams.length}
+          <div class="empty-state">
+            No teams are available for {roundLabel} yet. Publish {previousRoundLabel} results first.
+          </div>
+        {:else}
+          <select class="select" name="teamId" bind:value={teamId} disabled={locked}>
+            <option value="" disabled>Select a team</option>
+            {#each groupedTeams as groupBlock (groupBlock.key)}
+              <optgroup label={groupBlock.label}>
+                {#each groupBlock.teams as t (t.id)}
+                  <option value={t.id} disabled={isUsed(String(t.id))}>
+                    {t.name}{isUsed(String(t.id)) ? ' (used)' : ''}
+                  </option>
+                {/each}
+              </optgroup>
+            {/each}
+          </select>
+        {/if}
+
+        <button class="btn btn--vip" disabled={saveDisabled}>
           {locked ? 'Locked' : 'Save Pick'}
         </button>
       </form>
@@ -215,6 +356,28 @@
   .label{
     font-weight: 900;
     opacity: 0.9;
+  }
+
+  .hint{
+    margin-top: -4px;
+    font-size: 0.86rem;
+    opacity: 0.62;
+  }
+
+  .warning,
+  .empty-state{
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(212,175,55,0.20);
+    background: rgba(212,175,55,0.06);
+    font-size: 0.9rem;
+    opacity: 0.88;
+  }
+
+  .empty-state{
+    border-color: rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.035);
+    opacity: 0.72;
   }
 
   .select{

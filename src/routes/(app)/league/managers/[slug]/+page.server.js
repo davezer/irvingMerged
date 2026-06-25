@@ -1,8 +1,5 @@
-import { error } from '@sveltejs/kit';
-import { getManagerDossierBundle } from '$lib/server/league/managerDossiers.js';
+import { redirect } from '@sveltejs/kit';
 
-export async function load({ params, url, platform }) {
-  const snapshot = await getManagerDossierBundle({ slug: params.slug, url, env: platform?.env });
-  if (!snapshot) throw error(404, 'Manager not found');
-  return snapshot;
+export function load({ params, url }) {
+  throw redirect(308, `/league/teams/${params.slug}${url.search || ''}`);
 }

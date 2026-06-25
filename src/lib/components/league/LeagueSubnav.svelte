@@ -2,14 +2,15 @@
   export let season;
   export let active = 'league';
 
+  const seasonParam = season ? `?season=${season}` : '';
+
   const items = [
     { key: 'league', label: 'League', href: '/league' },
-    { key: 'standings', label: 'Standings', href: `/league/standings?season=${season}` },
-    { key: 'managers', label: 'Managers', href: `/league/managers?season=${season}` },
-    { key: 'teams', label: 'Teams', href: `/league/teams?season=${season}` },
-    { key: 'matchups', label: 'Matchups', href: `/league/matchups?season=${season}` },
-    { key: 'transactions', label: 'Transactions', href: `/league/transactions?season=${season}` },
-    { key: 'drafts', label: 'Drafts', href: `/league/drafts?season=${season}` }
+    { key: 'standings', label: 'Standings', href: `/league/standings${seasonParam}` },
+    { key: 'teams', label: 'Teams', href: `/league/teams${seasonParam}` },
+    { key: 'matchups', label: 'Matchups', href: `/league/matchups${seasonParam}` },
+    { key: 'transactions', label: 'Transactions', href: `/league/transactions${seasonParam}` },
+    { key: 'drafts', label: 'Drafts', href: `/league/drafts${seasonParam}` }
   ];
 </script>
 

@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "Jeff_Cohn",
+    "team_name": "Ultimate City Warriors",
+    "username": null,
+    "display_name": "Jeff_Cohn",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/2ad63f01cf1995affea1853b85eb017e",
+    "user_id": "76521957268799488",
+    "is_owner": true
+  },
+  {
+    "id": 2,
+    "name": "daveoliverio",
+    "team_name": "Lehigh Crucible",
+    "username": null,
+    "display_name": "daveoliverio",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/96f851e94a192b8f849d8ffa4173848d",
+    "user_id": "1253772062900621312",
+    "is_owner": true
+  },
+  {
+    "id": 3,
+    "name": "GMJamie",
+    "team_name": "Dagobah Lightsabres",
+    "username": null,
+    "display_name": "GMJamie",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/b8100162a37917438807819b01f06f89",
+    "user_id": "1253515645044133888",
+    "is_owner": null
+  },
+  {
+    "id": 4,
+    "name": "cmcv",
+    "team_name": "Salem Hipsterjacks",
+    "username": null,
+    "display_name": "cmcv",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/51385ba57cd089261f6de9ce483b8716",
+    "user_id": "1254577682394386432",
+    "is_owner": null
+  },
+  {
+    "id": 5,
+    "name": "NakatomiPlazaCC",
+    "team_name": "Nakatomi Plaza CC",
+    "username": null,
+    "display_name": "NakatomiPlazaCC",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/7c53dd5d53f2d1d4bb50009a9f05bc92",
+    "user_id": "1254577895943192576",
+    "is_owner": null
+  },
+  {
+    "id": 6,
+    "name": "HuxMunro",
+    "team_name": "Amherst Union",
+    "username": null,
+    "display_name": "HuxMunro",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/b3893c500e1daded46a11bc359ccfda0",
+    "user_id": "1254578120531390464",
+    "is_owner": null
+  },
+  {
+    "id": 7,
+    "name": "MilfordJayhawks",
+    "team_name": "Milford Jayhawks",
+    "username": null,
+    "display_name": "MilfordJayhawks",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/6229581eb2a986c982504404afc31e53",
+    "user_id": "1254584226238447616",
+    "is_owner": null
+  },
+  {
+    "id": 8,
+    "name": "kcase",
+    "team_name": "Rebel Radio Lone Rangers",
+    "username": null,
+    "display_name": "kcase",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/e7af4deab0289b4f5505646424895246",
+    "user_id": "1005329348477419520",
+    "is_owner": null
+  },
+  {
+    "id": 9,
+    "name": "Romano727",
+    "team_name": "Jacksonville Vincitori",
+    "username": null,
+    "display_name": "Romano727",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/8eb8f8bf999945d523f2c4033f70473e",
+    "user_id": "792114259365597184",
+    "is_owner": null
+  },
+  {
+    "id": 10,
+    "name": "adamlopiano",
+    "team_name": "Saskatchewan Mounties",
+    "username": null,
+    "display_name": "adamlopiano",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/d22e52781a5d7a94bcbf2aa70e748382",
+    "user_id": "1258962574360182785",
+    "is_owner": null
+  },
+  {
+    "id": 11,
+    "name": "BrianJamesPhoto",
+    "team_name": "Kodachromes",
+    "username": null,
+    "display_name": "BrianJamesPhoto",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/b9752e444a9190e1d11990ba77b021eb",
+    "user_id": "1256320322135674880",
+    "is_owner": null
+  },
+  {
+    "id": 12,
+    "name": "BarmoreJ",
+    "team_name": "Dunedin Homers",
+    "username": null,
+    "display_name": "BarmoreJ",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/cafcbb116f239d0a7a84720c81111583",
+    "user_id": "1256695342544453632",
+    "is_owner": null
+  },
+  {
+    "id": 13,
+    "name": "brianmarx86",
+    "team_name": "Tallahassee Tribe",
+    "username": null,
+    "display_name": "brianmarx86",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/b3338675f635c2c1f42b469621d38ec6",
+    "user_id": "857309838424809472",
+    "is_owner": null
+  },
+  {
+    "id": 14,
+    "name": "HenryPussycats",
+    "team_name": null,
+    "username": null,
+    "display_name": "HenryPussycats",
+    "avatar": "https://sleepercdn.com/avatars/thumbs/1d7edb3e267e5ebe3c0507ee45d5252b",
+    "user_id": "1260985941263126528",
+    "is_owner": null
+  }
+]

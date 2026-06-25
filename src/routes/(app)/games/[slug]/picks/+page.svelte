@@ -6,7 +6,7 @@
   import FatePathCard from '$lib/games/madness/picks/FatePathCard.svelte';
   import TeamImpactPanel from '$lib/games/madness/picks/TeamImpactPanel.svelte';
   import { createPicksBoardContext, teamIdOf } from '$lib/games/madness/picksBoard.js';
-	import SectionHeader from '$lib/ui/SectionHeader.svelte';
+  import MastersPicksBoard from '$lib/games/masters/PicksBoard.svelte';
 
   export let data;
 
@@ -131,6 +131,9 @@
     : null;
 </script>
 
+{#if event?.type === 'masters'}
+  <MastersPicksBoard {data} />
+{:else}
 <div class="page-wide">
   <div class="warroom card card--glow">
     <div class="warroom__top">
@@ -489,6 +492,7 @@
     </section>
   {/if}
 </div>
+{/if}
 
 <style>
 .page-wide {

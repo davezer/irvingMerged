@@ -1,5 +1,5 @@
-import { getManagersIndexBundle } from '$lib/server/league/managerDossiers.js';
+import { redirect } from '@sveltejs/kit';
 
-export async function load({ url, platform }) {
-  return getManagersIndexBundle({ url, env: platform?.env });
+export function load({ url }) {
+  throw redirect(308, `/league/teams${url.search || ''}`);
 }

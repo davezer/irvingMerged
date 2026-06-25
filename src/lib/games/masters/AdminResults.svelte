@@ -55,7 +55,7 @@ const STAGES = MASTERS_STAGE_KEYS.map((id) => ({
 
         <form
           method="POST"
-          action="?/saveStage"
+          action="?/setCurrentStage"
           use:enhance={() => async ({ update }) => update({ reset: false })}
         >
           <div class="row">
