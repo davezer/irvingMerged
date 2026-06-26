@@ -9,7 +9,7 @@
 
   const primaryLinks = [
     { href: '/', label: 'Clubhouse' },
-    { href: '/league', label: 'League HQ' },
+    { href: '/league', label: 'Irving Champions League', navClass: 'league-link' },
     { href: '/games', label: 'Games' },
     { href: '/leaderboard', label: 'Leaderboard' },
     { href: '/history', label: 'History' },
@@ -23,8 +23,29 @@
     { href: '/admin/invites', label: 'Invites' }
   ];
 
+  const tickerItems = [
+    { type: 'live', label: 'LIVE' },
+    { type: 'strong', label: 'IRVING STREET PROGRAMMING NETWORK' },
+    { type: 'dot' },
+    { type: 'live', label: 'ISPN' },
+    { type: 'dot' },
+    { type: 'strong', label: 'IRVING CHAMPIONS LEAGUE' },
+    { type: 'live', label: 'LIVE' },
+    { type: 'strong', label: 'IRVING GENTLEMENS COLLECTIVE' },
+    { type: 'dot' },
+    { type: 'strong', label: 'SET YOUR LINEUPS' },
+    { type: 'dot' },
+    { type: 'strong', label: 'TRADE' },
+    { type: 'dot' },
+    { type: 'strong', label: 'BET' },
+    { type: 'dot' }
+  ];
+
+  const tickerRepeats = [0, 1, 2];
+
   $: path = $page.url.pathname;
   $: user = data?.user || {};
+  $: username = user.displayName || user.display_name || 'Member';
 
   const isActive = (href) => path === href || (href !== '/' && path.startsWith(`${href}/`));
   const closeMobile = () => (mobileOpen = false);
@@ -57,23 +78,28 @@
     };
   });
 
-  $: $page.url.pathname, (mobileOpen = false), closeAdmin();
+  $: if (path) {
+    mobileOpen = false;
+    closeAdmin();
+  }
 </script>
 
 <div class="app-shell">
   <header class="topbar">
+    
+
     <div class="topbar-inner">
       <a class="brand" href="/" aria-label="Irving Collective home">
-        <span class="brand-mark">IC</span>
+        <span class="brand-mark">ICN</span>
         <span class="brand-copy">
           <strong>Irving Collective</strong>
-          <em>League Lounge</em>
+          <em>Champions League | Offseason Lounge</em>
         </span>
       </a>
 
       <nav class="primary-nav" aria-label="Primary navigation">
         {#each primaryLinks as link}
-          <a class:active={isActive(link.href)} href={link.href}>{link.label}</a>
+          <a class:active={isActive(link.href)} class:league-link={link.href === '/league'} href={link.href}>{link.label}</a>
         {/each}
       </nav>
 
@@ -92,7 +118,7 @@
 
         <div class="user-chip" title="Signed in">
           <span class="status-dot" aria-hidden="true"></span>
-          <span class="user-name">{user.displayName || user.display_name || 'Member'}</span>
+          <span class="user-name">{username}</span>
           {#if user.role === 'admin'}
             <details class="admin-menu" bind:this={adminDD}>
               <summary on:click|preventDefault={toggleAdmin}>Admin ▾</summary>
@@ -133,23 +159,98 @@
 </div>
 
 <style>
-  .app-shell { min-height: 100vh; }
+  .app-shell {
+    min-height: 100vh;
+  }
 
   .topbar {
     position: sticky;
     top: 0;
     z-index: 80;
-    border-bottom: 1px solid rgba(255,255,255,0.10);
-    background: rgba(5, 6, 8, 0.70);
-    backdrop-filter: blur(18px);
+    border-bottom: 3px solid #070808;
+    background: linear-gradient(180deg, #4e5552, #1c2220 54%, #080909);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.16) inset, 0 14px 30px rgba(0,0,0,0.42);
+  }
+
+  .broadcast-ticker {
+    width: 100%;
+    height: 28px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #252b28 0%, #080909 52%, #151817 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    border-bottom: 2px solid #000;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
+  }
+
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    height: 100%;
+    animation: ticker-scroll 42s linear infinite;
+  }
+
+  .ticker-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+    padding-right: 14px;
+    min-width: max-content;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: #f5f3df;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  .ticker-group strong {
+    color: #ffd84a;
+  }
+
+  .ticker-live {
+    display: inline-grid;
+    place-items: center;
+    height: 20px;
+    min-width: 44px;
+    padding: 0 8px;
+    color: #fff;
+    background: linear-gradient(180deg, #ef3340 0%, #a90418 100%);
+    border: 1px solid #3b0007;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+  }
+
+  .ticker-dot {
+    color: #c8c8bc;
+  }
+
+  .broadcast-ticker:hover .ticker-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-33.333%);
+    }
   }
 
   .topbar-inner {
-    max-width: 1180px;
+    max-width: 1880px;
     margin: 0 auto;
-    padding: 12px 18px;
+    padding: 10px 18px 12px;
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 16px;
   }
@@ -157,55 +258,98 @@
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 11px;
     color: inherit;
     text-decoration: none;
     min-width: 0;
   }
 
-  .brand:hover { text-decoration: none; }
-
-  .brand-mark {
-    width: 44px;
-    height: 44px;
-    border-radius: 16px;
-    display: grid;
-    place-items: center;
-    border: 1px solid rgba(245,213,138,0.30);
-    background:
-      radial-gradient(circle at 30% 0%, rgba(255,255,255,0.18), transparent 45%),
-      linear-gradient(145deg, rgba(245,213,138,0.18), rgba(214,177,94,0.06));
-    color: var(--gold0);
-    font-family: var(--font-serif);
-    font-weight: 950;
-    letter-spacing: -0.04em;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  .brand:hover {
+    text-decoration: none;
   }
 
-  .brand-copy { display: grid; gap: 2px; }
-  .brand-copy strong { font-family: var(--font-serif); font-size: 1.05rem; line-height: 1; }
-  .brand-copy em { color: rgba(255,255,255,0.55); font-size: 0.72rem; font-style: normal; text-transform: uppercase; letter-spacing: 0.18em; }
+  .brand-mark {
+    width: 54px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #050505;
+    border-radius: 5px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.22), transparent 38%),
+      linear-gradient(90deg, var(--bug-red), var(--bug-red-dark));
+    color: white;
+    font-family: var(--font-score);
+    font-size: 0.92rem;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.36),
+      inset 0 -2px 0 rgba(0,0,0,0.42),
+      0 10px 22px rgba(0,0,0,0.34);
+  }
+
+  .brand-copy {
+    display: grid;
+    gap: 1px;
+  }
+
+  .brand-copy strong {
+    font-family: var(--font-score);
+    font-size: 1.02rem;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .brand-copy em {
+    color: var(--bug-yellow);
+    font-size: 0.68rem;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    white-space: nowrap;
+  }
 
   .primary-nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
+    min-width: 0;
   }
 
   .primary-nav a,
   .mobile-menu a,
   .admin-popover a {
-    color: rgba(255,255,255,0.72);
+    color: rgba(247,245,235,0.80);
     text-decoration: none;
-    border: 1px solid transparent;
-    font-weight: 850;
+    border: 1px solid #050606;
+    font-family: var(--font-score);
+    font-weight: 950;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   .primary-nav a {
-    padding: 9px 11px;
-    border-radius: 999px;
-    font-size: 0.92rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #606865, #272d2c 50%, #0f1111);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.58);
+    font-size: 0.78rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .primary-nav a.league-link {
+    min-width: 188px;
+    padding-inline: 13px;
+    letter-spacing: 0.01em;
   }
 
   .primary-nav a:hover,
@@ -215,8 +359,7 @@
   .admin-popover a:hover,
   .admin-popover a.active {
     color: white;
-    border-color: rgba(245,213,138,0.22);
-    background: rgba(245,213,138,0.075);
+    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
     text-decoration: none;
   }
 
@@ -224,28 +367,29 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 9px;
     min-width: 0;
   }
 
   .user-chip {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 8px;
     max-width: 260px;
-    border: 1px solid rgba(255,255,255,0.10);
-    background: rgba(255,255,255,0.04);
-    border-radius: 999px;
-    padding: 8px 11px;
-    box-shadow: 0 12px 34px rgba(0,0,0,0.24);
+    border: 1px solid #050606;
+    background: linear-gradient(180deg, #f4f3ea, #a9ada8 52%, #3f4643);
+    color: #111;
+    border-radius: 5px;
+    padding: 7px 9px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), inset 0 -2px 0 rgba(0,0,0,0.26);
   }
 
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 99px;
-    background: var(--green);
-    box-shadow: 0 0 0 4px rgba(47,208,127,0.13);
+    background: var(--bug-green);
+    box-shadow: 0 0 0 3px rgba(69,161,106,0.20);
     flex: 0 0 auto;
   }
 
@@ -253,82 +397,107 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: rgba(255,255,255,0.86);
-    font-size: 0.92rem;
-    font-weight: 800;
+    color: #111;
+    font-size: 0.84rem;
+    font-family: var(--font-score);
+    font-weight: 950;
+    text-transform: uppercase;
   }
 
-  .logout-button {
+  .logout-button,
+  .menu-button {
     appearance: none;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.035);
-    color: rgba(255,255,255,0.78);
-    border-radius: 999px;
-    padding: 9px 12px;
-    font-weight: 850;
+    border: 1px solid #050606;
+    background: linear-gradient(180deg, #606865, #272d2c 50%, #0f1111);
+    color: white;
+    border-radius: 5px;
+    padding: 8px 11px;
+    font-family: var(--font-score);
+    font-size: 0.78rem;
+    font-weight: 950;
+    text-transform: uppercase;
     cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.58);
   }
 
   .logout-button:hover {
-    color: white;
-    border-color: rgba(245,213,138,0.24);
-    background: rgba(245,213,138,0.07);
+    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
   }
 
-  .admin-menu { position: relative; }
-  .admin-menu > summary { list-style: none; cursor: pointer; color: var(--gold0); font-size: 0.78rem; font-weight: 950; text-transform: uppercase; letter-spacing: 0.12em; }
-  .admin-menu > summary::-webkit-details-marker { display: none; }
+  .admin-menu {
+    position: relative;
+  }
+
+  .admin-menu > summary {
+    list-style: none;
+    cursor: pointer;
+    color: #111;
+    font-family: var(--font-score);
+    font-size: 0.72rem;
+    font-weight: 950;
+    text-transform: uppercase;
+  }
+
+  .admin-menu > summary::-webkit-details-marker {
+    display: none;
+  }
 
   .admin-popover {
     position: absolute;
-    top: calc(100% + 14px);
+    top: calc(100% + 12px);
     right: 0;
     min-width: 190px;
-    padding: 10px;
+    padding: 8px;
     display: grid;
-    gap: 7px;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 18px;
-    background: rgba(5,6,8,0.86);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+    gap: 6px;
+    border: 2px solid #050606;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #4e5552, #1c2220 54%, #080909);
+    box-shadow: 0 24px 70px rgba(0,0,0,0.55);
   }
 
-  .admin-popover a { padding: 10px 11px; border-radius: 12px; }
+  .admin-popover a {
+    padding: 10px;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #606865, #272d2c 50%, #0f1111);
+  }
 
   .menu-button {
     display: none;
     width: 44px;
-    height: 44px;
-    border-radius: 15px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.04);
-    cursor: pointer;
+    height: 38px;
     place-items: center;
     gap: 4px;
-    padding: 11px;
+    padding: 9px;
   }
 
   .menu-button span {
     display: block;
-    width: 19px;
+    width: 20px;
     height: 2px;
     border-radius: 999px;
-    background: rgba(255,255,255,0.86);
+    background: white;
     transition: transform 160ms ease, opacity 160ms ease;
   }
 
-  .menu-button.is-open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-  .menu-button.is-open span:nth-child(2) { opacity: 0; }
-  .menu-button.is-open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .menu-button.is-open span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .menu-button.is-open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-button.is-open span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
 
   .mobile-scrim {
     position: fixed;
     inset: 0;
     z-index: 81;
     border: 0;
-    background: rgba(0,0,0,0.48);
-    backdrop-filter: blur(3px);
+    background: rgba(0,0,0,0.58);
   }
 
   .mobile-menu {
@@ -338,43 +507,130 @@
     z-index: 82;
     transform: translateX(-50%);
     width: min(1180px, calc(100vw - 24px));
-    padding: 12px;
+    padding: 10px;
     display: grid;
-    gap: 9px;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 22px;
-    background: rgba(5,6,8,0.88);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+    gap: 8px;
+    border: 2px solid #050606;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #4e5552, #1c2220 54%, #080909);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.65);
   }
 
   .mobile-menu a {
     padding: 13px;
-    border-radius: 15px;
-    background: rgba(255,255,255,0.035);
+    border-radius: 5px;
+    background: linear-gradient(180deg, #606865, #272d2c 50%, #0f1111);
   }
 
   .mobile-admin-label {
     margin-top: 4px;
-    color: var(--gold0);
+    color: var(--bug-yellow);
     text-transform: uppercase;
     letter-spacing: 0.16em;
+    font-family: var(--font-score);
     font-size: 0.72rem;
     font-weight: 950;
     padding: 8px 4px 0;
   }
 
+  .container {
+    width: 85%;
+    margin: 0 auto;
+    padding: 0 0 56px;
+  }
+
+  @media (max-width: 1180px) {
+    .topbar-inner {
+      gap: 10px;
+    }
+
+    .brand-copy strong {
+      font-size: 0.94rem;
+    }
+
+    .brand-copy em {
+      font-size: 0.62rem;
+    }
+
+    .primary-nav {
+      gap: 5px;
+    }
+
+    .primary-nav a {
+      padding-inline: 8px;
+      font-size: 0.72rem;
+    }
+
+    .primary-nav a.league-link {
+      min-width: 170px;
+      padding-inline: 10px;
+    }
+
+    .right-rail {
+      gap: 7px;
+    }
+  }
+
+  @media (max-width: 1060px) {
+    .primary-nav a.league-link {
+      min-width: auto;
+    }
+  }
+
   @media (max-width: 980px) {
-    .topbar-inner { grid-template-columns: auto 1fr; }
-    .primary-nav { display: none; }
-    .right-rail { justify-content: flex-end; }
-    .menu-button { display: grid; }
+    .topbar-inner {
+      grid-template-columns: auto 1fr;
+    }
+
+    .primary-nav {
+      display: none;
+    }
+
+    .right-rail {
+      justify-content: flex-end;
+    }
+
+    .menu-button {
+      display: grid;
+    }
   }
 
   @media (max-width: 560px) {
-    .topbar-inner { padding: 10px 12px; gap: 10px; }
-    .brand-copy em { display: none; }
-    .user-chip { max-width: 150px; padding: 8px 10px; }
-    .logout-form { display: none; }
+    .broadcast-ticker {
+      display: none;
+    }
+
+    .topbar-inner {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+
+    .brand-copy em {
+      display: none;
+    }
+
+    .brand-mark {
+      width: 48px;
+    }
+
+    .user-chip {
+      max-width: 135px;
+      padding: 7px 8px;
+    }
+
+    .logout-form {
+      display: none;
+    }
+
+    .container {
+      width: min(100% - 20px, 1180px);
+      padding-top: 14px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+    }
   }
 </style>

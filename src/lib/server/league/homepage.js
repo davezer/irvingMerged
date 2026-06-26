@@ -120,7 +120,7 @@ export async function getLeagueHomeBundle({ url, env } = {}) {
 
   return {
     ...context,
-    leagueName: context.league?.name || 'League HQ',
+    leagueName: context.league?.name || 'CHAMPIONS LEAGUE',
     standings,
     topBoard: standings.slice(0, 8),
     pulse,

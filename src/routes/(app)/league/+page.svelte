@@ -7,7 +7,7 @@
   <LeagueSubnav season={data.season || new Date().getFullYear()} active="league" />
   <section class="hero card">
     <div>
-      <div class="eyebrow">League HQ</div>
+      <div class="eyebrow">IRVING CHAMPIONS LEAGUE</div>
       <h1>{data.leagueName}</h1>
       <p>Every overview card on this page now pulls from the same live Sleeper spine: standings, current-week matchups, recent league movement, and Irving identity overlays.</p>
       <div class="source">{data.source}</div>
@@ -22,7 +22,7 @@
 
   <section class="action-grid">
     <a class="mini action" href={`/league/standings?season=${data.season}`}><strong>Standings</strong><span>{data.topBoard.length} teams ranked live for {data.season}</span></a>
-    <a class="mini action" href={`/league/managers?season=${data.season}`}><strong>Managers</strong><span>{data.featuredManagers.length} featured dossiers and live profile analytics</span></a>
+    <a class="mini action" href={`/league/teams?season=${data.season}`}><strong>Teams</strong><span>{data.featuredManagers.length} franchise pages with live profiles and broadcast notes</span></a>
     <a class="mini action" href={`/league/teams?season=${data.season}`}><strong>Franchises</strong><span>Team-first pages, current form, and cross-links into moves, games, and dossiers</span></a>
     <a class="mini action" href={`/league/matchups?season=${data.season}&week=${data.selectedWeek}`}><strong>Week {data.selectedWeek}</strong><span>Scoreboard, rivalry cards, and playoff path</span></a>
     <a class="mini action" href={`/league/transactions?season=${data.season}&weeks=${data.availableWeeks.slice(-4).join(',')}`}><strong>Wire room</strong><span>Last four weeks of league movement</span></a>
@@ -33,7 +33,7 @@
       <div class="section-head"><h2>Top of the board</h2><a href={`/league/standings?season=${data.season}`}>Full standings</a></div>
       <div class="stack">
         {#each data.topBoard as row}
-          <a class="row" href={row.slug ? `/league/managers/${row.slug}?season=${data.season}` : `/league/standings?season=${data.season}`}>
+          <a class="row" href={row.slug ? `/league/teams/${row.slug}?season=${data.season}` : `/league/standings?season=${data.season}`}>
             <span class="rank">#{row.rank}</span>
             <div class="identity">
               <div class="photo">
@@ -113,7 +113,7 @@
   </section>
 
   <section class="card">
-    <div class="section-head"><h2>Featured dossiers</h2><a href={`/league/managers?season=${data.season}`}>All managers</a></div>
+    <div class="section-head"><h2>Featured dossiers</h2><a href={`/league/teams?season=${data.season}`}>All teams</a></div>
     <div class="featured-grid">
       {#each data.featuredManagers as manager}
         <article class="featured-card">
@@ -131,7 +131,7 @@
             <span>{manager.pointDiff.toFixed(2)} diff</span>
           </div>
           <div class="link-row">
-            <a href={manager.dossierHref}>Dossier</a>
+            <a href={manager.dossierHref}>Franchise</a>
             <a href={manager.gamesHref}>Games</a>
             <a href={manager.movesHref}>Moves</a>
           </div>

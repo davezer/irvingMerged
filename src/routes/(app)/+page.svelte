@@ -3,11 +3,9 @@
 
   export let data;
 
-  const fmtUnix = (sec) => {
-    const value = Number(sec);
-    if (!Number.isFinite(value) || !value) return 'Date TBA';
-    return new Date(value * 1000).toLocaleString([], {
-      weekday: 'short',
+  const fmtUnix = (unix) => {
+    if (!unix) return 'TBD';
+    return new Date(Number(unix) * 1000).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
       hour: 'numeric',
@@ -26,30 +24,30 @@
   const number = (value) => new Intl.NumberFormat('en-US').format(Number(value || 0));
   const points = (value) => Number(value || 0).toFixed(2);
 
-  let hypeMode = false;
+  let themeMusic = false;
   let audioEl;
   const LOUNGE_TRACK = '/ICLOF.mp3';
 
   onMount(() => {
     try {
-      hypeMode = window.localStorage.getItem('ic:hype-mode') === '1';
+      themeMusic = window.localStorage.getItem('ic:theme-music') === '1';
     } catch {}
     if (audioEl) {
-      audioEl.volume = 0.2;
+      audioEl.volume = 0.18;
       audioEl.loop = true;
     }
   });
 
-  async function toggleHypeMode() {
-    hypeMode = !hypeMode;
+  async function toggleThemeMusic() {
+    themeMusic = !themeMusic;
     try {
-      window.localStorage.setItem('ic:hype-mode', hypeMode ? '1' : '0');
+      window.localStorage.setItem('ic:theme-music', themeMusic ? '1' : '0');
     } catch {}
     if (!audioEl) return;
-    if (hypeMode) {
+    if (themeMusic) {
       try {
         audioEl.currentTime = 0;
-        audioEl.volume = 0.2;
+        audioEl.volume = 0.18;
         audioEl.loop = true;
         await audioEl.play();
       } catch (err) {
@@ -72,50 +70,74 @@
 </script>
 
 <svelte:head>
-  <title>Irving Collective</title>
+  <title>Irving Collective Broadcast</title>
   <meta
     name="description"
-    content="The Irving Collective clubhouse for fantasy football, offseason games, league history, news, records, and bad decisions."
+    content="The Irving Collective clubhouse: fantasy football, offseason games, standings, news, history, and broadcast-grade nonsense."
   />
 </svelte:head>
 
-<div class="clubhouse {hypeMode ? 'is-hype' : ''}">
-  <section class="hero-shell">
-    <div class="hero-copy">
-      <div class="hero-kicker">Irving Collective • One Clubhouse</div>
-      <h1>Welcome back, {who}. The velvet rope is now attached to a live grenade.</h1>
-      <p>
-        League HQ, offseason games, bankrolls, standings, history, rivalries, manager dossiers, news, and
-        every questionable decision now live under one roof.
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn--vip" href="/league">Enter League HQ</a>
-        <a class="btn btn--ghost" href="/games">Hit the Games Floor</a>
-        <button type="button" class="hype-button" aria-pressed={hypeMode} on:click={toggleHypeMode}>
-          Hype Mode: {hypeMode ? 'On' : 'Off'}
-        </button>
+<div class="clubhouse">
+  <section class="broadcast-hero">
+    <div class="pregame-card">
+      <div class="live-ribbon"><span>ICN</span><strong>LIVE PREGAME</strong><em>ON AIR</em></div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Irving Collective • Sunday desk</div>
+          <h1>Welcome back, {who}. We now join league chaos already in progress.</h1>
+          <p>
+            League HQ, offseason games, bankrolls, standings, history, rivalries, manager dossiers, news, and
+            questionable decisions — packaged like a regional broadcast nobody asked for and everybody deserves.
+          </p>
+          <div class="hero-actions">
+            <a class="bug-button primary" href="/league">Enter League HQ</a>
+            <a class="bug-button" href="/games">Games Floor</a>
+            <button type="button" class="bug-button" aria-pressed={themeMusic} on:click={toggleThemeMusic}>
+              Theme Music: {themeMusic ? 'On' : 'Off'}
+            </button>
+          </div>
+        </div>
+
+        <aside class="scoreboard" aria-label="Clubhouse scoreboard">
+          <div class="scoreboard-top"><span>ICN SCOREBOARD</span><strong>FINAL-ish</strong></div>
+          <div class="score-row">
+            <span class="network">HQ</span>
+            <strong>League HQ</strong>
+            <em>{data.leagueStats?.totalManagers || 14}</em>
+          </div>
+          <div class="score-row away">
+            <span class="network alt">OFF</span>
+            <strong>Offseason Lounge</strong>
+            <em>{number(collective.bankroll)}</em>
+          </div>
+          <div class="game-meta">
+            <span>Top Seed</span>
+            <strong>{topSeed?.teamName || 'Board Loading'}</strong>
+            <em>{topSeed ? `${topSeed.wins}-${topSeed.losses}` : '0-0'}</em>
+          </div>
+        </aside>
       </div>
     </div>
 
-    <aside class="mission-control" aria-label="Clubhouse mission control">
-      <div class="orbital-card primary">
+    <aside class="studio-stack" aria-label="Studio cards">
+      <div class="studio-card bankroll">
         <span>Bankroll</span>
         <strong>{number(collective.bankroll)}</strong>
         <small>{collective.myRank ? `Rank #${collective.myRank} on the offseason board` : 'Offseason points bank'}</small>
       </div>
-      <div class="orbital-grid">
-        <div class="orbital-card">
+      <div class="studio-grid">
+        <div class="studio-card">
           <span>Managers</span>
           <strong>{data.leagueStats?.totalManagers || 14}</strong>
           <small>Certified sickos</small>
         </div>
-        <div class="orbital-card">
+        <div class="studio-card">
           <span>Top Seed</span>
           <strong>{topSeed?.teamName || '—'}</strong>
           <small>{topSeed ? `${topSeed.wins}-${topSeed.losses}` : 'Board loading'}</small>
         </div>
       </div>
-      <div class="orbital-card live-event">
+      <div class="studio-card next-up">
         <span>Next Up</span>
         {#if nextEvent}
           <div class="event-line">
@@ -161,7 +183,7 @@
       </div>
       <div class="standings-list">
         {#each standings as row}
-          <a class="standings-row" href={`/league/managers/${row.slug}`}>
+          <a class="standings-row" href={`/league/teams/${row.slug}`}>
             <span class="rank">#{row.rank}</span>
             <div class="team-ident">
               {#if row.manager?.photo}
@@ -225,14 +247,14 @@
   <section class="panel managers-panel">
     <div class="panel-head">
       <div>
-        <span class="eyebrow">Dossiers</span>
+        <span class="eyebrow">Franchise roll call</span>
         <h2>Faces of the operation</h2>
       </div>
-      <a href="/league/managers">All managers</a>
+      <a href="/league/teams">All teams</a>
     </div>
     <div class="manager-strip">
       {#each managers as manager}
-        <a class="manager-token" href={`/league/managers/${manager.slug}`}>
+        <a class="manager-token" href={`/league/teams/${manager.slug}`}>
           <img src={manager.photo} alt={manager.name} loading="lazy" />
           <strong>{manager.teamName}</strong>
           <span>{manager.persona || 'Operator'}</span>
@@ -266,7 +288,7 @@
       <h2>One app. Two seasons. Maximum nonsense.</h2>
       <p>
         During football season, this is the league command center. During the offseason, it becomes the casino,
-        scoreboard, sportsbook-ish panic room, and trophy-adjacent nonsense generator.
+        scoreboard, panic room, and trophy-adjacent nonsense generator.
       </p>
       <div class="manifesto-grid">
         <a href="/history/badges">Badges</a>
@@ -284,190 +306,265 @@
   .clubhouse {
     display: grid;
     gap: 24px;
-    position: relative;
   }
 
-  .clubhouse::before {
-    content: '';
-    position: fixed;
-    inset: 76px 0 auto;
-    height: 360px;
-    pointer-events: none;
-    background:
-      radial-gradient(circle at 18% 0%, rgba(245, 213, 138, 0.18), transparent 28%),
-      radial-gradient(circle at 74% 12%, rgba(64, 188, 255, 0.12), transparent 30%),
-      linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
-    filter: blur(4px);
-    opacity: 0.85;
-    z-index: -1;
-  }
-
-  .hero-shell {
-    min-height: 520px;
+  .broadcast-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
     gap: 22px;
     align-items: stretch;
   }
 
-  .hero-copy,
-  .mission-control,
+  .pregame-card,
+  .studio-card,
   .panel,
   .command-card {
-    border: 1px solid rgba(255, 255, 255, 0.11);
+    border: 2px solid #070808;
+    background: linear-gradient(180deg, #5d6561, #242a29 52%, #101212);
+    box-shadow: var(--shadow-bug);
+  }
+
+  .pregame-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    min-height: 530px;
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
-      rgba(7, 8, 10, 0.58);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(16px);
+      linear-gradient(90deg, rgba(199,25,47,0.22), transparent 34%),
+      linear-gradient(180deg, #5f6763, #252b2a 48%, #101313);
+  }
+
+  .pregame-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 54px 54px;
+    opacity: 0.26;
+  }
+
+  .pregame-card::after {
+    content: 'ICN';
+    position: absolute;
+    right: -30px;
+    top: 22px;
+    color: rgba(255,255,255,0.055);
+    font-family: var(--font-score);
+    font-size: clamp(9rem, 20vw, 18rem);
+    line-height: 1;
+  }
+
+  .live-ribbon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    border-bottom: 2px solid #070808;
+    background: linear-gradient(180deg, #161918, #070808);
+    font-family: var(--font-score);
+    text-transform: uppercase;
+  }
+
+  .live-ribbon span,
+  .live-ribbon em {
+    padding: 9px 12px;
+    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
+    color: white;
+    font-style: normal;
+  }
+
+  .live-ribbon strong {
+    padding: 9px 12px;
+    color: var(--bug-yellow);
+    letter-spacing: 0.14em;
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-content: space-between;
+    gap: 28px;
+    min-height: 486px;
+    padding: clamp(24px, 4vw, 46px);
   }
 
   .hero-copy {
-    border-radius: 34px;
-    padding: clamp(26px, 5vw, 54px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .hero-copy::after {
-    content: 'IC';
-    position: absolute;
-    right: -1.8rem;
-    top: -3.4rem;
-    font-family: var(--font-serif);
-    font-size: clamp(10rem, 28vw, 22rem);
-    line-height: 0.8;
-    color: rgba(255, 255, 255, 0.035);
-    pointer-events: none;
-  }
-
-  .hero-kicker,
-  .eyebrow,
-  .command-card span,
-  .orbital-card span {
-    color: var(--gold0);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 11px;
-    font-weight: 800;
-  }
-
-  h1,
-  h2,
-  p {
-    position: relative;
+    max-width: 780px;
+    display: grid;
+    gap: 18px;
   }
 
   h1 {
-    max-width: 12ch;
-    margin: 16px 0;
-    font-family: var(--font-serif);
-    font-size: clamp(3rem, 8vw, 6.8rem);
+    max-width: 10ch;
+    margin: 0;
+    font-size: clamp(3.2rem, 8.3vw, 6.8rem);
     line-height: 0.82;
-    letter-spacing: -0.065em;
   }
 
   .hero-copy p {
-    max-width: 58ch;
+    max-width: 62ch;
     margin: 0;
-    color: rgba(255, 255, 255, 0.76);
-    font-size: 1.05rem;
-    line-height: 1.65;
+    color: rgba(247,245,235,0.82);
+    font-weight: 750;
+    line-height: 1.55;
   }
 
-  .hero-actions {
+  .hero-actions,
+  .manifesto-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 26px;
+    gap: 10px;
   }
 
-  .hype-button {
-    appearance: none;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: rgba(255, 255, 255, 0.9);
-    border-radius: 999px;
-    padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    font-weight: 800;
+  .bug-button,
+  .manifesto-grid a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    border: 1px solid #050606;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #f5f4ea, #b9bcb5 52%, #6d7470);
+    color: #101111;
+    padding: 8px 12px;
+    font-family: var(--font-score);
+    font-size: 0.76rem;
+    font-weight: 950;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), inset 0 -2px 0 rgba(0,0,0,0.30);
     cursor: pointer;
   }
 
-  .is-hype .hero-copy,
-  .is-hype .mission-control {
-    box-shadow: 0 24px 90px rgba(214, 177, 94, 0.16), 0 0 0 1px rgba(214, 177, 94, 0.14);
+  .bug-button.primary {
+    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
+    color: white;
   }
 
-  .mission-control {
-    border-radius: 34px;
-    padding: 18px;
+  .scoreboard {
+    width: min(520px, 100%);
+    border: 2px solid #050606;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0b0d0d;
+    box-shadow: var(--shadow-bug);
+  }
+
+  .scoreboard-top,
+  .game-meta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 9px;
+    background: linear-gradient(180deg, #f4f3ea, #b8bbb4 52%, #777e79);
+    color: #111;
+    font-family: var(--font-score);
+    text-transform: uppercase;
+  }
+
+  .score-row {
+    display: grid;
+    grid-template-columns: 54px 1fr 78px;
+    align-items: stretch;
+    min-height: 58px;
+    border-top: 2px solid #050606;
+    font-family: var(--font-score);
+  }
+
+  .network {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
+    color: white;
+  }
+  .network.alt { background: linear-gradient(180deg, var(--bug-blue), #0b315e); }
+
+  .score-row strong {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    color: #f7f5eb;
+    font-size: 1.15rem;
+  }
+
+  .score-row em {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, #f4f3ea, #b8bbb4 52%, #777e79);
+    color: #111;
+    font-size: 1.55rem;
+    font-style: normal;
+  }
+
+  .game-meta {
+    grid-template-columns: auto 1fr auto;
+    border-top: 2px solid #050606;
+    font-size: 0.72rem;
+  }
+
+  .studio-stack {
     display: grid;
     gap: 14px;
   }
 
-  .orbital-grid {
+  .studio-card,
+  .panel,
+  .command-card {
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  .studio-card {
+    display: grid;
+    gap: 10px;
+    min-height: 150px;
+  }
+
+  .studio-card > span,
+  .command-card span {
+    color: var(--bug-yellow);
+    font-family: var(--font-score);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.7rem;
+  }
+
+  .studio-card strong {
+    font-family: var(--font-score);
+    font-size: clamp(1.8rem, 4vw, 3.1rem);
+    line-height: 1;
+  }
+
+  .studio-grid,
+  .split-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
   }
 
-  .orbital-card {
-    min-height: 124px;
-    border-radius: 24px;
-    padding: 18px;
-    display: grid;
-    align-content: space-between;
-    gap: 10px;
-    background: rgba(0, 0, 0, 0.24);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-  }
-
-  .orbital-card.primary {
-    min-height: 160px;
-    background:
-      radial-gradient(circle at top right, rgba(245, 213, 138, 0.22), transparent 45%),
-      rgba(0, 0, 0, 0.28);
-  }
-
-  .orbital-card strong {
-    font-size: clamp(1.5rem, 4vw, 2.4rem);
-    line-height: 1;
-  }
-
-  .orbital-card small,
-  .event-line small,
-  .record-block small,
-  .team-ident small,
-  .manager-token span {
-    color: rgba(255, 255, 255, 0.62);
-  }
-
-  .event-line {
-    display: grid;
-    grid-template-columns: 58px 1fr;
-    gap: 12px;
+  .event-line,
+  .team-ident,
+  .event-chip {
+    display: flex;
     align-items: center;
+    gap: 12px;
   }
 
   .event-line img,
-  .logo-fallback {
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
+  .event-chip img {
+    width: 54px;
+    height: 54px;
     object-fit: cover;
-    background: rgba(255, 255, 255, 0.06);
-    display: grid;
-    place-items: center;
-    font-weight: 900;
+    border-radius: 8px;
+    border: 1px solid #070808;
   }
 
-  .live-event a {
-    color: var(--gold0);
-    font-weight: 900;
-  }
+  .studio-card a { color: var(--bug-yellow); font-weight: 900; }
 
   .command-grid {
     display: grid;
@@ -476,73 +573,27 @@
   }
 
   .command-card {
-    min-height: 230px;
-    border-radius: 28px;
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    gap: 12px;
     color: inherit;
-    text-decoration: none;
-    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
-  }
-
-  .command-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(245, 213, 138, 0.34);
     text-decoration: none;
   }
 
   .command-card strong {
-    margin-top: 12px;
-    font-size: 1.5rem;
-    line-height: 1.05;
-  }
-
-  .command-card p {
-    color: rgba(255, 255, 255, 0.68);
-    line-height: 1.55;
-  }
-
-  .command-card em {
-    margin-top: auto;
-    color: var(--gold0);
-    font-style: normal;
-    font-weight: 900;
-  }
-
-  .split-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
-    gap: 24px;
-  }
-
-  .panel {
-    border-radius: 28px;
-    padding: 24px;
-    overflow: hidden;
+    font-family: var(--font-score);
+    font-size: 1.45rem;
+    text-transform: uppercase;
   }
 
   .panel-head {
     display: flex;
     justify-content: space-between;
     gap: 16px;
-    align-items: flex-start;
-    margin-bottom: 18px;
+    align-items: start;
+    margin-bottom: 14px;
   }
 
-  .panel-head h2,
-  .manifesto-panel h2 {
-    margin: 6px 0 0;
-    font-size: clamp(1.55rem, 3vw, 2.4rem);
-    line-height: 1;
-    font-family: var(--font-serif);
-  }
-
-  .panel-head a,
-  .manifesto-grid a {
-    color: var(--gold0);
-    font-weight: 900;
-  }
+  .panel-head h2 { margin: 4px 0 0; font-size: 1.5rem; }
 
   .standings-list,
   .leader-list,
@@ -552,228 +603,104 @@
     gap: 10px;
   }
 
-  .standings-row {
-    display: grid;
-    grid-template-columns: 54px 1fr auto;
-    align-items: center;
-    gap: 12px;
+  .standings-row,
+  .leader-row,
+  .event-chip,
+  .story-card {
+    border-radius: 8px;
     padding: 12px;
-    border-radius: 18px;
     color: inherit;
     text-decoration: none;
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.07);
   }
 
-  .standings-row:hover,
-  .story-card:hover,
-  .event-chip:hover,
-  .manager-token:hover {
-    border-color: rgba(245, 213, 138, 0.22);
-    background: rgba(245, 213, 138, 0.06);
-    text-decoration: none;
-  }
-
-  .rank {
-    color: var(--gold0);
-    font-weight: 950;
-    font-size: 1.1rem;
-  }
-
-  .team-ident {
-    display: flex;
-    align-items: center;
+  .standings-row {
+    display: grid;
+    grid-template-columns: 52px 1fr auto;
     gap: 12px;
-    min-width: 0;
+    align-items: center;
   }
 
   .team-ident img,
-  .team-ident > span {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
+  .team-ident > span,
+  .manager-token img {
+    width: 46px;
+    height: 46px;
+    border-radius: 7px;
     object-fit: cover;
-    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid #070808;
+    background: var(--bug-silver);
+  }
+
+  .team-ident > span {
     display: grid;
     place-items: center;
-    font-weight: 900;
+    font-family: var(--font-score);
+    color: #111;
   }
 
-  .team-ident strong,
-  .team-ident small,
-  .event-chip strong,
-  .event-chip span {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .record-block {
-    text-align: right;
-  }
+  .record-block { text-align: right; }
+  .record-block strong { display: block; font-family: var(--font-score); color: var(--bug-yellow); }
 
   .leader-row {
     display: grid;
     grid-template-columns: 54px 1fr auto;
-    align-items: center;
     gap: 12px;
-    padding: 13px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  .leader-row span,
-  .leader-row em {
-    color: var(--gold0);
-    font-style: normal;
-    font-weight: 900;
-  }
-
-  .empty-state {
-    padding: 18px;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.035);
-    color: rgba(255, 255, 255, 0.72);
-  }
-
-  .event-stack {
-    margin-top: 14px;
-  }
-
-  .event-chip {
-    display: grid;
-    grid-template-columns: auto 1fr;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 16px;
-    color: inherit;
-    text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    background: rgba(0, 0, 0, 0.18);
   }
+  .leader-row em { color: var(--bug-yellow); font-family: var(--font-score); font-style: normal; }
 
-  .event-chip img {
-    width: 42px;
-    height: 42px;
-    object-fit: cover;
-    border-radius: 12px;
-  }
+  .empty-state { padding: 14px; border: 1px solid #070808; border-radius: 8px; background: rgba(0,0,0,0.22); }
 
+  .managers-panel { overflow: hidden; }
   .manager-strip {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(150px, 1fr);
     gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 5px;
   }
 
   .manager-token {
-    min-width: 0;
     display: grid;
     gap: 8px;
     justify-items: center;
     text-align: center;
     color: inherit;
     text-decoration: none;
+    border: 1px solid #070808;
+    border-radius: 9px;
     padding: 12px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    background: linear-gradient(180deg, #303735, #111313);
   }
 
-  .manager-token img {
-    width: 72px;
-    height: 72px;
-    border-radius: 22px;
-    object-fit: cover;
-  }
-
-  .manager-token strong {
-    font-size: 0.84rem;
-    line-height: 1.1;
-  }
+  .manager-token img { width: 68px; height: 68px; }
+  .manager-token strong { font-size: 0.88rem; }
+  .manager-token span { color: var(--muted); font-size: 0.78rem; }
 
   .story-card {
-    color: inherit;
-    text-decoration: none;
-    border-radius: 20px;
-    padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.035);
-  }
-
-  .story-card span {
-    display: inline-flex;
-    width: fit-content;
-    padding: 5px 9px;
-    border-radius: 999px;
-    background: rgba(214, 177, 94, 0.12);
-    color: var(--gold0);
-    font-size: 0.78rem;
-    margin-bottom: 10px;
-  }
-
-  .story-card strong {
-    display: block;
-    font-size: 1.1rem;
-  }
-
-  .story-card p,
-  .manifesto-panel p {
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.6;
-  }
-
-  .manifesto-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 8px;
   }
 
-  .manifesto-grid a {
-    padding: 14px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+  .manifesto-panel p { line-height: 1.55; }
+
+  @media (max-width: 1000px) {
+    .broadcast-hero,
+    .split-layout,
+    .command-grid { grid-template-columns: 1fr; }
+    h1 { max-width: 11ch; }
   }
 
-  @media (max-width: 1120px) {
-    .hero-shell,
-    .split-layout {
-      grid-template-columns: 1fr;
-    }
-
-    .manager-strip {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 860px) {
-    .hero-shell {
-      min-height: auto;
-    }
-
-    h1 {
-      max-width: 100%;
-      letter-spacing: -0.045em;
-    }
-
-    .command-grid,
-    .orbital-grid,
-    .manager-strip,
-    .manifesto-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .standings-row,
-    .leader-row {
-      grid-template-columns: 1fr;
-      align-items: start;
-    }
-
-    .record-block {
-      text-align: left;
-    }
+  @media (max-width: 620px) {
+    .pregame-card { min-height: auto; }
+    .hero-grid { min-height: auto; padding: 22px; }
+    h1 { font-size: clamp(3rem, 16vw, 4.6rem); }
+    .score-row { grid-template-columns: 46px 1fr 66px; }
+    .studio-grid { grid-template-columns: 1fr; }
+    .standings-row { grid-template-columns: 44px 1fr; }
+    .record-block { grid-column: 2; text-align: left; }
+    .live-ribbon { grid-template-columns: auto 1fr; }
+    .live-ribbon em { display: none; }
   }
 </style>

@@ -75,7 +75,7 @@
           <div><strong>{data.opponent.teamName}</strong><small>{data.opponent.managerName}</small></div>
           <span>{data.opponent.score.toFixed(2)}</span>
         </div>
-        <div class="link-row"><a href={data.sections.games}>Open matchup board</a>{#if data.opponent.managerSlug}<a href={`/league/managers/${data.opponent.managerSlug}?season=${data.season}`}>Opponent dossier</a>{/if}</div>
+        <div class="link-row"><a href={data.sections.games}>Open matchup board</a>{#if data.opponent.managerSlug}<a href={`/league/teams/${data.opponent.managerSlug}?season=${data.season}`}>Opponent franchise</a>{/if}</div>
       {:else}
         <div class="empty">Bye week or missing opponent data.</div>
       {/if}

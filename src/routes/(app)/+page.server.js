@@ -133,7 +133,7 @@ export async function load({ platform, locals }) {
     collective,
     commandCards: [
       {
-        eyebrow: 'League HQ',
+        eyebrow: 'IRVING CHAMPIONS LEAGUE',
         title: 'Fantasy Football War Room',
         body: 'Standings, rosters, matchups, drafts, transactions, manager dossiers, and the dumb prestigious history that makes this league this league.',
         href: '/league',

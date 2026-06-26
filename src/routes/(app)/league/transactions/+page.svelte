@@ -32,7 +32,7 @@
         <div><strong>{data.filterTeam.teamName}</strong><small>{data.filterTeam.managerName}</small></div>
       </div>
       <div class="link-row">
-        <a href={`/league/managers/${data.filterTeam.managerSlug}?season=${data.season}`}>Open dossier</a>
+        <a href={`/league/teams/${data.filterTeam.managerSlug}?season=${data.season}`}>Open franchise</a>
         <a href={`/league/matchups?season=${data.season}&team=${data.filterTeam.managerSlug}`}>Recent games</a>
         <a href={`?season=${data.season}&weeks=${data.availableWeeks.join(',')}`}>Clear filter</a>
       </div>
@@ -60,7 +60,7 @@
                   <h3>{txn.summaryLine}</h3>
                   <div class="meta-row">
                     {#each txn.rosterCards as team (team.rosterId)}
-                      <a class="team-pill" href={team.managerSlug ? `/league/managers/${team.managerSlug}?season=${data.season}` : `/league/transactions?season=${data.season}&rosterId=${team.rosterId}`}>
+                      <a class="team-pill" href={team.managerSlug ? `/league/teams/${team.managerSlug}?season=${data.season}` : `/league/transactions?season=${data.season}&rosterId=${team.rosterId}`}>
                         <div class="team-photo">{#if team.teamPhoto}<img src={team.teamPhoto} alt={team.teamName} />{:else}<span>{team.initials}</span>{/if}</div>
                         <span>{team.teamName}</span>
                       </a>
