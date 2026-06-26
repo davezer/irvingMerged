@@ -3,6 +3,7 @@
   import { eventDisplay } from '$lib/events/displayNames';
   import Pill from '$lib/ui/Pill.svelte';
   export let data;
+  import { page } from '$app/stores';
 
   let expanded = new Set(); // user_id set
 
@@ -108,9 +109,29 @@ $: top3 = (data?.totals || []).slice(0, 3);
     });
   })();
 
+ const gamesNav = [
+    { href: '/games', label: 'Games Floor', meta: 'Events' },
+    { href: '/leaderboard', label: 'Leaderboard', meta: 'Offseason board' }
+  ];
 
+  $: currentPath = $page.url.pathname;
+
+  function gamesNavActive(href) {
+    if (href === '/games') return currentPath === '/games' || currentPath.startsWith('/games/');
+    return currentPath === href || currentPath.startsWith(`${href}/`);
+  }
 
 </script>
+<nav class="games-subnav" aria-label="Games navigation">
+  <span class="games-bug">ICN</span>
+
+  {#each gamesNav as item}
+    <a class:active={gamesNavActive(item.href)} href={item.href}>
+      <strong>{item.label}</strong>
+      <small>{item.meta}</small>
+    </a>
+  {/each}
+</nav>
 
 <div class="card">
   <div class="section-head">
@@ -778,6 +799,74 @@ tbody td {
   color: rgba(255,255,255,0.95);
 }
 
+.games-subnav {
+  display: flex;
+  align-items: stretch;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+  padding: 7px;
+  border: 2px solid #070808;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #6a716e, #2d3331 46%, #0d0f0f);
+  box-shadow: var(--shadow-bug);
+}
 
+.games-bug,
+.games-subnav a {
+  min-height: 42px;
+  border: 1px solid #050606;
+  border-radius: 5px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.24),
+    inset 0 -2px 0 rgba(0,0,0,0.45);
+}
+
+.games-bug {
+  display: inline-grid;
+  place-items: center;
+  padding: 0 13px;
+  color: #fff;
+  background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
+  font-family: var(--font-score);
+  font-weight: 950;
+}
+
+.games-subnav a {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  min-width: 170px;
+  padding: 7px 12px;
+  color: rgba(247,245,235,0.86);
+  background: linear-gradient(180deg, #4f5754, #202625 55%, #0b0d0d);
+  text-decoration: none;
+}
+
+.games-subnav a strong {
+  font-family: var(--font-score);
+  font-size: 0.78rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.games-subnav a small {
+  color: rgba(247,245,235,0.58);
+  font-size: 0.68rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.games-subnav a:hover,
+.games-subnav a.active {
+  color: #111;
+  background: linear-gradient(180deg, #fffdf3, #cfd1c9 52%, #8a918c);
+}
+
+.games-subnav a:hover small,
+.games-subnav a.active small {
+  color: rgba(0,0,0,0.7);
+}
 
 </style>

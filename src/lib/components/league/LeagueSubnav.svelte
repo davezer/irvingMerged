@@ -8,6 +8,7 @@
     { key: 'league', label: 'League', href: '/league' },
     { key: 'standings', label: 'Standings', href: `/league/standings${seasonParam}` },
     { key: 'teams', label: 'Teams', href: `/league/teams${seasonParam}` },
+    { key: 'rosters', label: 'Rosters', href: `/league/rosters${seasonParam}` },
     { key: 'matchups', label: 'Matchups', href: `/league/matchups${seasonParam}` },
     { key: 'transactions', label: 'Transactions', href: `/league/transactions${seasonParam}` },
     { key: 'drafts', label: 'Drafts', href: `/league/drafts${seasonParam}` }
@@ -85,7 +86,7 @@
     background: linear-gradient(180deg, var(--bug-yellow), #d99a21);
   }
 
-  @media (max-width: 680px) {
+  @media (max-width: 760px) {
     .season-chip { margin-left: 0; }
   }
 </style>

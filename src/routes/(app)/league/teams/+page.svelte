@@ -24,24 +24,55 @@
 
   function draftDollarClass(value) {
     const amount = moneyNumber(value);
-    if (amount == null) return 'draft-money-neutral';
-    if (amount < 100) return 'draft-money-low';
-    if (amount > 200) return 'draft-money-high';
-    return 'draft-money-mid';
+    if (amount == null) return 'money-neutral';
+    if (amount < 100) return 'money-low';
+    if (amount > 199) return 'money-high';
+    return 'money-mid';
   }
 
   $: cards = data.cards || [];
   $: season = data.season || new Date().getFullYear();
+
+  const FALLBACK_SEASONS = [2026, 2025];
+
+$: availableSeasons = (Array.isArray(data.seasons) && data.seasons.length
+  ? data.seasons
+  : FALLBACK_SEASONS
+)
+  .map(Number)
+  .filter(Number.isFinite)
+  .sort((a, b) => b - a);
+
+function seasonHref(option) {
+  return `?season=${option}`;
+}
 </script>
 
 <div class="page-stack">
   <LeagueSubnav season={season} active="teams" />
 
   <section class="directory-hero">
+  <div class="hero-copy">
     <div class="bug-label">Franchises</div>
     <h1>The Teams</h1>
     <p>Find out more about who runs each franchise.</p>
-  </section>
+  </div>
+
+  <div class="season-box" aria-label="Season selector">
+    <span>Season feed</span>
+
+    <div class="season-pills">
+      {#each availableSeasons as option}
+        <a
+          class:active={Number(option) === Number(season)}
+          href={seasonHref(option)}
+        >
+          {option}
+        </a>
+      {/each}
+    </div>
+  </div>
+</section>
 
   <div class="grid">
     {#each cards as card}
@@ -62,8 +93,8 @@
           <div class="bug-stats" aria-label="Current season snapshot">
             <span>{fmt(card.currentPoints)} PF</span>
             <span>{fmt(card.currentPointDiff)} DIFF</span>
-            <span class:draft-money-pill={true} class={draftDollarClass(card.futureDraftDollars)}>
-             Draft {moneyLabel(card.futureDraftDollars)}
+            <span class={`draft-money-pill ${draftDollarClass(card.futureDraftDollars)}`}>
+              Draft {moneyLabel(card.futureDraftDollars)}
             </span>
           </div>
 
@@ -79,31 +110,98 @@
 </div>
 
 <style>
-  .page-stack { display: grid; gap: 20px; }
+  .page-stack {
+    display: grid;
+    gap: 20px;
+  }
 
   .directory-hero {
-    border: 2px solid #070808;
-    border-radius: 14px;
-    padding: 22px;
-    background:
-      linear-gradient(90deg, rgba(199,25,47,0.22), transparent 34%),
-      linear-gradient(180deg, #5f6763, #252b2a 48%, #101313);
-    box-shadow: var(--shadow-bug);
-  }
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+  border: 2px solid #070808;
+  border-radius: 14px;
+  padding: 22px;
+  background:
+    linear-gradient(90deg, rgba(199,25,47,0.22), transparent 34%),
+    linear-gradient(180deg, #5f6763, #252b2a 48%, #101313);
+  box-shadow: var(--shadow-bug);
+}
 
-  .directory-hero h1 {
-    margin: 10px 0 6px;
-    font-size: clamp(2.4rem, 5vw, 4.8rem);
-    line-height: 0.9;
-  }
+.hero-copy {
+  min-width: 0;
+}
 
-  .directory-hero p {
-    max-width: 62ch;
-    margin: 0;
-    color: rgba(247,245,235,0.78);
-    font-weight: 750;
-  }
+.directory-hero h1 {
+  margin: 10px 0 6px;
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+  line-height: 0.9;
+}
 
+.directory-hero p {
+  max-width: 62ch;
+  margin: 0;
+  color: rgba(247,245,235,0.78);
+  font-weight: 750;
+}
+
+.season-box {
+  display: grid;
+  gap: 10px;
+  min-width: 196px;
+  padding: 12px;
+  border: 2px solid #111;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #d9d9cf, #777d78 48%, #222826);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    inset 0 -2px 0 rgba(0,0,0,0.55),
+    0 8px 20px rgba(0,0,0,0.35);
+}
+
+.season-box > span {
+  color: #111;
+  font-family: var(--font-score);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.42);
+}
+
+.season-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.season-pills a {
+  min-width: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 2px solid #070808;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #f4f2e6, #a8aaa4 48%, #454b49);
+  color: #101111;
+  font-family: var(--font-score);
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-decoration: none;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.65),
+    inset 0 -2px 0 rgba(0,0,0,0.34);
+}
+
+.season-pills a:hover,
+.season-pills a.active {
+  color: #fff;
+  background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
+  text-shadow: 0 2px 0 #000;
+}
   .grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -174,9 +272,20 @@
     font-style: normal;
   }
 
-  h3 { margin: 0; }
-  h3 a { color: white; text-decoration: none; }
-  p { margin: 0; color: rgba(247,245,235,0.72); line-height: 1.45; }
+  h3 {
+    margin: 0;
+  }
+
+  h3 a {
+    color: white;
+    text-decoration: none;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(247,245,235,0.72);
+    line-height: 1.45;
+  }
 
   .bug-stats,
   .link-row {
@@ -195,53 +304,97 @@
     font-size: 0.68rem;
     font-weight: 950;
     text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.65),
+      inset 0 -2px 0 rgba(0,0,0,0.28),
+      0 2px 0 rgba(0,0,0,0.42);
   }
 
-.money-low,
-.money-mid,
-.money-high,
-.money-neutral {
-  color: #070808 !important;
-  background:
-    linear-gradient(180deg, #fffef2 0%, #d8dbd2 46%, #8d948f 100%) !important;
-  border: 2px solid #050606 !important;
-  border-left-width: 8px !important;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.75),
-    inset 0 -2px 0 rgba(0,0,0,0.28),
-    0 2px 0 rgba(0,0,0,0.45);
-  font-weight: 950;
+  .bug-stats span.draft-money-pill {
+    color: #111 !important;
+    background: linear-gradient(180deg, #f5f4ea, #b9bcb5 52%, #6d7470) !important;
+    border: 1px solid #070808 !important;
+    min-width: 88px;
+    text-align: center;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.45) !important;
+  }
+
+  .bug-stats span.draft-money-pill.money-low {
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.65),
+      inset 0 -2px 0 rgba(0,0,0,0.28),
+      0 2px 0 rgba(0,0,0,0.42),
+      0 0 0 1px rgba(200,16,46,0.62),
+      0 0 12px rgba(200,16,46,0.78) !important;
+  }
+
+  .bug-stats span.draft-money-pill.money-mid {
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.65),
+      inset 0 -2px 0 rgba(0,0,0,0.28),
+      0 2px 0 rgba(0,0,0,0.42),
+      0 0 0 1px rgba(247,201,72,0.72),
+      0 0 12px rgba(247,201,72,0.78) !important;
+  }
+
+  .bug-stats span.draft-money-pill.money-high {
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.65),
+      inset 0 -2px 0 rgba(0,0,0,0.28),
+      0 2px 0 rgba(0,0,0,0.42),
+      0 0 0 1px rgba(47,157,89,0.70),
+      0 0 12px rgba(47,157,89,0.82) !important;
+  }
+
+  .bug-stats span.draft-money-pill.money-neutral {
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.65),
+      inset 0 -2px 0 rgba(0,0,0,0.28),
+      0 2px 0 rgba(0,0,0,0.42),
+      0 0 8px rgba(180,185,178,0.38) !important;
+  }
+
+  .draft-money-pill {
+  margin-left: 2px;
 }
 
-/* .money-low {
-  border-left-color: #c8102e !important;
-}
-
-.money-mid {
-  border-left-color: #f7c948 !important;
-}
-
-.money-high {
-  border-left-color: #2f9d59 !important;
-}
-
-.money-neutral {
-  border-left-color: #8b918d !important;
-} */
   .link-row a {
     color: var(--bug-yellow);
     font-size: 0.9rem;
     font-weight: 900;
     text-decoration: none;
   }
-  .link-row a:hover { text-decoration: underline; }
+
+  .link-row a:hover {
+    text-decoration: underline;
+  }
 
   @media(max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
+    .grid {
+      grid-template-columns: 1fr;
+    }
   }
+
+  @media(max-width: 700px) {
+  .directory-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .season-box {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
   @media(max-width: 560px) {
-    .team-card { grid-template-columns: 1fr; }
-    .cover img { width: 108px; height: 108px; }
+    .team-card {
+      grid-template-columns: 1fr;
+    }
+
+    .cover img {
+      width: 108px;
+      height: 108px;
+    }
   }
 </style>

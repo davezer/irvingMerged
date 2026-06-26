@@ -11,7 +11,6 @@
     { href: '/', label: 'Clubhouse' },
     { href: '/league', label: 'Irving Champions League', navClass: 'league-link' },
     { href: '/games', label: 'Games' },
-    { href: '/leaderboard', label: 'Leaderboard' },
     { href: '/history', label: 'History' },
     { href: '/news', label: 'News' }
   ];
@@ -47,7 +46,10 @@
   $: user = data?.user || {};
   $: username = user.displayName || user.display_name || 'Member';
 
-  const isActive = (href) => path === href || (href !== '/' && path.startsWith(`${href}/`));
+  const isActive = (href) =>
+    path === href ||
+    (href !== '/' && path.startsWith(`${href}/`)) ||
+    (href === '/games' && path.startsWith('/leaderboard'));
   const closeMobile = () => (mobileOpen = false);
   const closeAdmin = () => adminDD?.removeAttribute('open');
 
