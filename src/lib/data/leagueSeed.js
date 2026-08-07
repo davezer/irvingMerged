@@ -273,7 +273,7 @@ export const sleeperManagers = [
   {
     "id": 11,
     "name": "BrianJamesPhoto",
-    "team_name": "Kansas City Kodachromes",
+    "team_name": "Kansas City Kansas City Kodachromes",
     "username": null,
     "display_name": "BrianJamesPhoto",
     "avatar": "https://sleepercdn.com/avatars/thumbs/b9752e444a9190e1d11990ba77b021eb",
@@ -893,7 +893,7 @@ export const draftPicks = [
     "pos": "RB",
     "season": "2025",
     "player_name": "Kenneth Walker",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -1124,7 +1124,7 @@ export const draftPicks = [
     "pos": "QB",
     "season": "2025",
     "player_name": "Jalen Hurts",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -1157,7 +1157,7 @@ export const draftPicks = [
     "pos": "TE",
     "season": "2025",
     "player_name": "Trey McBride",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -1223,7 +1223,7 @@ export const draftPicks = [
     "pos": "DEF",
     "season": "2025",
     "player_name": "Philadelphia Eagles",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -1256,7 +1256,7 @@ export const draftPicks = [
     "pos": "WR",
     "season": "2025",
     "player_name": "Drake London",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -2180,7 +2180,7 @@ export const draftPicks = [
     "pos": "WR",
     "season": "2025",
     "player_name": "George Pickens",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -2378,7 +2378,7 @@ export const draftPicks = [
     "pos": "WR",
     "season": "2025",
     "player_name": "Travis Hunter",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -3368,7 +3368,7 @@ export const draftPicks = [
     "pos": "WR",
     "season": "2025",
     "player_name": "DeVonta Smith",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -3764,7 +3764,7 @@ export const draftPicks = [
     "pos": "RB",
     "season": "2025",
     "player_name": "Cam Skattebo",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -4028,7 +4028,7 @@ export const draftPicks = [
     "pos": "K",
     "season": "2025",
     "player_name": "Evan McPherson",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -5414,7 +5414,7 @@ export const draftPicks = [
     "pos": "WR",
     "season": "2025",
     "player_name": "Dont'e Thornton",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -5711,7 +5711,7 @@ export const draftPicks = [
     "pos": "K",
     "season": "2025",
     "player_name": "Daniel Carlson",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -6239,7 +6239,7 @@ export const draftPicks = [
     "pos": "TE",
     "season": "2025",
     "player_name": "Harold Fannin",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -6866,7 +6866,7 @@ export const draftPicks = [
     "pos": "RB",
     "season": "2025",
     "player_name": "Kareem Hunt",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
@@ -7163,7 +7163,7 @@ export const draftPicks = [
     "pos": "RB",
     "season": "2025",
     "player_name": "Blake Corum",
-    "team_name": "Kodachromes"
+    "team_name": "Kansas City Kodachromes"
   },
   {
     "draft_id": "1253040503830614016",
