@@ -23,15 +23,34 @@
   $: selectedPlayer = candidates.find((player) => String(player.id) === String(selectedPlayerId)) || null;
   $: visibleTeams = teamFilter ? teams.filter((team) => team.managerSlug === teamFilter) : teams;
 
-  function choosePlayer(player) {
-    selectedPlayerId = String(player.id);
-    query = player.name;
-  }
+function choosePlayer(player) {
+	selectedPlayerId = String(player.id);
+	query = player.name;
+}
 
-  function clearSearch() {
-    query = '';
-    selectedPlayerId = '';
-  }
+function handleSearchInput(event) {
+	const nextQuery = event.currentTarget.value;
+
+	query = nextQuery;
+
+	// If the user starts typing again after selecting a player,
+	// release the old selection so autocomplete results can reopen.
+	const currentPlayer = candidates.find(
+		(player) => String(player.id) === String(selectedPlayerId)
+	);
+
+	if (
+		currentPlayer &&
+		nextQuery.trim().toLowerCase() !== currentPlayer.name.trim().toLowerCase()
+	) {
+		selectedPlayerId = '';
+	}
+}
+
+function clearSearch() {
+	query = '';
+	selectedPlayerId = '';
+}
 
   function seasonHref(season) {
     return `/league/keepers?season=${season}`;
@@ -121,12 +140,13 @@
       <label for="keeper-player-search">Player search</label>
       <div class="search-control">
         <input
-          id="keeper-player-search"
-          type="search"
-          bind:value={query}
-          placeholder="Start typing a player name…"
-          autocomplete="off"
-        />
+	id="keeper-player-search"
+	type="search"
+	value={query}
+	on:input={handleSearchInput}
+	placeholder="Start typing a player name…"
+	autocomplete="off"
+/>
         {#if query}
           <button type="button" on:click={clearSearch}>Clear</button>
         {/if}
