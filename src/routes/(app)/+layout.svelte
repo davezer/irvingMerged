@@ -12,7 +12,7 @@
     { href: '/league', label: 'Irving Champions League', navClass: 'league-link' },
     { href: '/games', label: 'Games' },
     { href: '/history', label: 'History' },
-    { href: '/news', label: 'News' }
+    { href: '/league/parlay', label: 'Parlay' }
   ];
 
   const adminLinks = [
