@@ -3,25 +3,49 @@
 
   export let data;
 
-  const standings = data.standings || [];
+  const FALLBACK_SEASONS = [2026, 2025];
 
-  const fmt = (value, digits = 2) => Number(value || 0).toFixed(digits);
-  const pct = (value) => `${(Number(value || 0) * 100).toFixed(1)}%`;
-
+  $: standings = data.standings || [];
   $: season = data.season || new Date().getFullYear();
   $: topSeed = data.pulse?.topSeed || standings[0] || null;
   $: averagePoints = data.pulse?.averagePoints || 0;
   $: hottest = data.pulse?.hottest || null;
   $: teamCount = standings.length;
 
+  const fmt = (value, digits = 2) =>
+    Number(value || 0).toFixed(digits);
+
+  const pct = (value) =>
+    `${(Number(value || 0) * 100).toFixed(1)}%`;
+
+  $: availableSeasons = (
+    Array.isArray(data.seasons) && data.seasons.length
+      ? data.seasons
+      : FALLBACK_SEASONS
+  )
+    .map(Number)
+    .filter(Number.isFinite)
+    .sort((a, b) => b - a);
+
+  function buildHref({ nextSeason = season } = {}) {
+    const params = new URLSearchParams();
+    params.set('season', String(nextSeason));
+
+    return `/league/standings?${params.toString()}`;
+  }
+
   function teamHref(row) {
-    return row.slug ? `/league/teams/${row.slug}?season=${season}` : `/league/teams?season=${season}`;
+    return row.slug
+      ? `/league/teams/${row.slug}?season=${season}`
+      : `/league/teams?season=${season}`;
   }
 
   function trendClass(row) {
     const diff = Number(row.pointDiff || 0);
+
     if (diff > 0) return 'good';
     if (diff < 0) return 'bad';
+
     return 'even';
   }
 </script>
@@ -36,22 +60,26 @@
     </div>
 
     <div class="header-copy">
-      <div class="eyebrow">Live League Table</div>
       <h1>Standings Desk</h1>
       
     </div>
 
-    <div class="score-meta">
-      <span>Season</span>
-      <strong>{season}</strong>
-    </div>
-  </section>
+<div class="standings-season-box" aria-label="Season selector">
+	<span class="standings-season-label">Season Feed</span>
 
-  <div class="season-pills" aria-label="Season selector">
-    {#each data.seasons || [] as option}
-      <a class:selected={option === season} href={`?season=${option}`}>{option}</a>
-    {/each}
-  </div>
+	<div class="standings-season-pills">
+		{#each availableSeasons as option}
+			<a
+				class:active={Number(option) === Number(season)}
+				href={`/league/standings?season=${option}`}
+			>
+				{option}
+			</a>
+		{/each}
+	</div>
+</div>
+</section>
+
 
   {#if !data.hasData}
     <section class="studio-card empty-state">
@@ -94,8 +122,8 @@
               <th>PA</th>
               <th>Diff</th>
               <th>Win %</th>
-              <th>Back</th>
-              <th>Tier</th>
+              <!-- <th>Back</th> -->
+              <!-- <th>Tier</th> -->
             </tr>
           </thead>
           <tbody>
@@ -113,7 +141,7 @@
                     </span>
                     <span class="team-copy">
                       <strong>{row.teamName}</strong>
-                      <small>{row.branded ? 'Franchise feed' : 'Sleeper feed'}</small>
+                      <!-- <small>{row.branded ? 'Franchise feed' : 'Sleeper feed'}</small> -->
                     </span>
                   </a>
                 </td>
@@ -123,8 +151,8 @@
                 <td class="num">{fmt(row.pointsAgainst)}</td>
                 <td class={`num diff ${trendClass(row)}`}>{fmt(row.pointDiff)}</td>
                 <td class="num">{pct(row.pct)}</td>
-                <td class="num">{fmt(row.pointsBehind)}</td>
-                <td><span class="tier-chip">{row.tier}</span></td>
+                <!-- <td class="num">{fmt(row.pointsBehind)}</td> -->
+                <!-- <td><span class="tier-chip">{row.tier}</span></td> -->
               </tr>
             {/each}
           </tbody>
@@ -213,7 +241,7 @@
   }
 
   .header-copy {
-    padding: 28px 0 30px;
+    padding: 7px 0 19px;
   }
 
   .eyebrow {
@@ -278,6 +306,24 @@
     flex-wrap: wrap;
     gap: 8px;
   }
+
+    .control-stack {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .control-box {
+    display: grid;
+    gap: 9px;
+    padding: 12px;
+    border: 2px solid #111;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #d9d9cf, #777d78 48%, #222826);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 0 rgba(0,0,0,0.55);
+  }
+
+  .control-box > span,
 
   .season-pills a {
     border: 2px solid #070808;
@@ -392,7 +438,7 @@
 
   th,
   td {
-    padding: 11px 12px;
+    padding: 1px 50px ;
     border-bottom: 1px solid rgba(247, 245, 235, 0.12);
     text-align: left;
     vertical-align: middle;
@@ -507,6 +553,106 @@
     text-align: right;
     white-space: nowrap;
   }
+
+  .standings-season-box {
+	position: relative;
+	z-index: 2;
+
+	align-self: center;
+	justify-self: end;
+
+	display: grid;
+	gap: 9px;
+
+	margin-right: 14px;
+	padding: 10px 12px 12px;
+
+	border: 2px solid #070808;
+	border-radius: 8px;
+
+	background:
+		linear-gradient(
+			180deg,
+			#eeeeea 0%,
+			#c7cbc7 16%,
+			#8b918d 52%,
+			#3d4340 100%
+		);
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,.85),
+		inset 0 -2px 0 rgba(0,0,0,.45),
+		0 4px 10px rgba(0,0,0,.35);
+}
+
+.standings-season-label {
+	color: #090a0a;
+
+	font-family: var(--font-score);
+	font-size: .68rem;
+	font-weight: 950;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+
+	text-shadow: 0 1px 0 rgba(255,255,255,.65);
+}
+
+.standings-season-pills {
+	display: flex;
+	gap: 8px;
+}
+
+.standings-season-pills a {
+	display: grid;
+	place-items: center;
+
+	min-width: 60px;
+	min-height: 36px;
+	padding: 6px 12px;
+
+	border: 2px solid #070808;
+	border-radius: 8px;
+
+	background:
+		linear-gradient(
+			180deg,
+			#777e7a,
+			#343938 48%,
+			#151717
+		);
+
+	color: var(--bug-white);
+
+	font-family: var(--font-score);
+	font-size: .75rem;
+	font-weight: 950;
+	text-decoration: none;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,.25),
+		inset 0 -2px 0 rgba(0,0,0,.55);
+
+	text-shadow: 0 2px 0 #000;
+}
+
+.standings-season-pills a.active {
+	background:
+		linear-gradient(
+			180deg,
+			var(--bug-red),
+			var(--bug-red-dark)
+		);
+
+	color: white;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,.28),
+		inset 0 -2px 0 rgba(0,0,0,.55);
+}
+
+.standings-season-pills a:hover {
+	filter: brightness(1.12);
+}
 
   .diff.good { color: var(--success); }
   .diff.bad { color: #ff6464; }
