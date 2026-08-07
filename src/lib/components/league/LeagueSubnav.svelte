@@ -11,7 +11,8 @@
     { key: 'rosters', label: 'Rosters', href: `/league/rosters${seasonParam}` },
     { key: 'matchups', label: 'Matchups', href: `/league/matchups${seasonParam}` },
     { key: 'transactions', label: 'Transactions', href: `/league/transactions${seasonParam}` },
-    { key: 'drafts', label: 'Drafts', href: `/league/drafts${seasonParam}` }
+    { key: 'drafts', label: 'Drafts', href: `/league/drafts${seasonParam}` },
+    { key: 'keepers', label: 'Keeper Calculator', href: `/league/keepers${seasonParam}` },
   ];
 </script>
 
