@@ -51,59 +51,27 @@ export async function GET({
 	try {
 		const playerCard =
 	await getPlayerCard({
-		playerId:
-			params.playerId,
-
+		playerId: params.playerId,
 		season,
-
-		fetchFn:
-			fetch
+		fetchFn: fetch
 	});
 
+const league = {
+	available: false,
 
-const league =
-	await getPlayerLeagueHistory({
-		playerId:
-			params.playerId,
+	currentRoster: {
+		rostered: false,
+		teamName: null,
+		managerName: null,
+		rosterId: null,
+		season: null
+	},
 
-		url,
+	history: [],
+	historySeasons: []
+};
+		
 
-		env:
-			platform?.env
-	}).catch(
-		(error) => {
-			console.error(
-				'Player league history failed:',
-				error
-			);
-
-			return {
-				available:
-					false,
-
-				currentRoster: {
-					rostered:
-						false,
-
-					teamName:
-						null,
-
-					managerName:
-						null,
-
-					rosterId:
-						null,
-
-					season:
-						null
-				},
-
-				history: [],
-
-				historySeasons: []
-			};
-		}
-	);
 
 
 		return json(
