@@ -1,0 +1,366 @@
+{
+  "generatedAt": "2026-08-10T22:33:03.627Z",
+  "playerId": "12476",
+  "profile": {
+    "id": "12476",
+    "name": "Devin Neal",
+    "firstName": "Devin",
+    "lastName": "Neal",
+    "position": "RB",
+    "team": "NO",
+    "number": 24,
+    "age": 22,
+    "height": "71",
+    "weight": 213,
+    "yearsExp": 1,
+    "college": "Kansas",
+    "status": "Active",
+    "injuryStatus": "Questionable",
+    "practiceParticipation": null,
+    "depthChartOrder": 4,
+    "fantasyPositions": [
+      "RB"
+    ],
+    "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yqv7u0yb5toyhx1pnvku"
+  },
+  "availableSeasons": [
+    2026,
+    2025,
+    2024,
+    2023
+  ],
+  "seasons": {
+    "2023": {
+      "season": 2023,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": null,
+        "gsisId": "00-0040202"
+      }
+    },
+    "2024": {
+      "season": 2024,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": null,
+        "gsisId": "00-0040202"
+      }
+    },
+    "2025": {
+      "season": 2025,
+      "summary": {
+        "games": 9,
+        "fantasyPoints": 51.5,
+        "fantasyPointsPerGame": 5.72,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 206,
+        "rushingTds": 2,
+        "receptions": 17,
+        "receivingYards": 104,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "ARI",
+          "fantasyPoints": 0.9,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 9,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "CHI",
+          "fantasyPoints": 0.1,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 1,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "TB",
+          "fantasyPoints": 2.6,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 3,
+            "receptions": 3,
+            "yards": 11,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "LA",
+          "fantasyPoints": 1.7,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 11,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 1,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "CAR",
+          "fantasyPoints": 4.6,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 22,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 3,
+            "receptions": 3,
+            "yards": 9,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "ATL",
+          "fantasyPoints": 8.6,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 18,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 7,
+            "receptions": 5,
+            "yards": 43,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "MIA",
+          "fantasyPoints": 8.4,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 14,
+            "yards": 47,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 3,
+            "receptions": 3,
+            "yards": 22,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "TB",
+          "fantasyPoints": 14.9,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 19,
+            "yards": 70,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 14,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "CAR",
+          "fantasyPoints": 9.7,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 28,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 4,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0040202"
+      }
+    },
+    "2026": {
+      "season": 2026,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": null,
+        "gsisId": "00-0040202"
+      }
+    }
+  },
+  "sources": {
+    "profile": "Sleeper",
+    "stats": "nflverse / nflfastR weekly player stats",
+    "fantasyScoring": "Half-PPR"
+  }
+}

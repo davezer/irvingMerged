@@ -1,0 +1,1408 @@
+{
+  "generatedAt": "2026-08-10T22:32:55.975Z",
+  "playerId": "4984",
+  "profile": {
+    "id": "4984",
+    "name": "Josh Allen",
+    "firstName": "Josh",
+    "lastName": "Allen",
+    "position": "QB",
+    "team": "BUF",
+    "number": 17,
+    "age": 30,
+    "height": "77",
+    "weight": 237,
+    "yearsExp": 8,
+    "college": "Wyoming",
+    "status": "Active",
+    "injuryStatus": null,
+    "practiceParticipation": null,
+    "depthChartOrder": 1,
+    "fantasyPositions": [
+      "QB"
+    ],
+    "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/mjwbioajzldkq1vzoz2d"
+  },
+  "availableSeasons": [
+    2026,
+    2025,
+    2024,
+    2023
+  ],
+  "seasons": {
+    "2023": {
+      "season": 2023,
+      "summary": {
+        "games": 17,
+        "fantasyPoints": 392.64,
+        "fantasyPointsPerGame": 23.1,
+        "passingYards": 4306,
+        "passingTds": 29,
+        "interceptions": 0,
+        "rushingYards": 524,
+        "rushingTds": 15,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 4
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NYJ",
+          "fantasyPoints": 9.04,
+          "passing": {
+            "completions": 29,
+            "attempts": 41,
+            "yards": 236,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 36,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "LV",
+          "fantasyPoints": 23.66,
+          "passing": {
+            "completions": 31,
+            "attempts": 37,
+            "yards": 274,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 7,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "WAS",
+          "fantasyPoints": 21.32,
+          "passing": {
+            "completions": 20,
+            "attempts": 32,
+            "yards": 218,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 46,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "MIA",
+          "fantasyPoints": 36.5,
+          "passing": {
+            "completions": 21,
+            "attempts": 25,
+            "yards": 320,
+            "tds": 4,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 17,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "JAX",
+          "fantasyPoints": 27.76,
+          "passing": {
+            "completions": 27,
+            "attempts": 40,
+            "yards": 359,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 14,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NYG",
+          "fantasyPoints": 13.86,
+          "passing": {
+            "completions": 19,
+            "attempts": 30,
+            "yards": 169,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 11,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NE",
+          "fantasyPoints": 24.3,
+          "passing": {
+            "completions": 27,
+            "attempts": 41,
+            "yards": 265,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 17,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "TB",
+          "fantasyPoints": 29.06,
+          "passing": {
+            "completions": 31,
+            "attempts": 40,
+            "yards": 324,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 41,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "CIN",
+          "fantasyPoints": 24.72,
+          "passing": {
+            "completions": 26,
+            "attempts": 38,
+            "yards": 258,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 44,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "DEN",
+          "fantasyPoints": 14.38,
+          "passing": {
+            "completions": 15,
+            "attempts": 26,
+            "yards": 177,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 13,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NYJ",
+          "fantasyPoints": 22.5,
+          "passing": {
+            "completions": 20,
+            "attempts": 32,
+            "yards": 275,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 15,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "PHI",
+          "fantasyPoints": 39.66,
+          "passing": {
+            "completions": 29,
+            "attempts": 51,
+            "yards": 339,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 81,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "KC",
+          "fantasyPoints": 20.52,
+          "passing": {
+            "completions": 23,
+            "attempts": 42,
+            "yards": 233,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
+            "yards": 32,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "DAL",
+          "fantasyPoints": 16.16,
+          "passing": {
+            "completions": 7,
+            "attempts": 15,
+            "yards": 94,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 24,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "LAC",
+          "fantasyPoints": 24.98,
+          "passing": {
+            "completions": 15,
+            "attempts": 21,
+            "yards": 237,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 15,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NE",
+          "fantasyPoints": 21.16,
+          "passing": {
+            "completions": 15,
+            "attempts": 30,
+            "yards": 169,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 11,
+            "yards": 44,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 18,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "MIA",
+          "fantasyPoints": 23.06,
+          "passing": {
+            "completions": 30,
+            "attempts": 38,
+            "yards": 359,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 15,
+            "yards": 67,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0034857"
+      }
+    },
+    "2024": {
+      "season": 2024,
+      "summary": {
+        "games": 16,
+        "fantasyPoints": 379.04,
+        "fantasyPointsPerGame": 23.69,
+        "passingYards": 3731,
+        "passingTds": 28,
+        "interceptions": 0,
+        "rushingYards": 531,
+        "rushingTds": 12,
+        "receptions": 0,
+        "receivingYards": 7,
+        "receivingTds": 1,
+        "fumblesLost": 2
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "ARI",
+          "fantasyPoints": 31.18,
+          "passing": {
+            "completions": 18,
+            "attempts": 23,
+            "yards": 232,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 39,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "MIA",
+          "fantasyPoints": 9.76,
+          "passing": {
+            "completions": 13,
+            "attempts": 19,
+            "yards": 139,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 2,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "JAX",
+          "fantasyPoints": 30.92,
+          "passing": {
+            "completions": 23,
+            "attempts": 30,
+            "yards": 263,
+            "tds": 4,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 44,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "BAL",
+          "fantasyPoints": 7.3,
+          "passing": {
+            "completions": 16,
+            "attempts": 29,
+            "yards": 180,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 21,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "HOU",
+          "fantasyPoints": 14.64,
+          "passing": {
+            "completions": 9,
+            "attempts": 30,
+            "yards": 131,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 54,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NYJ",
+          "fantasyPoints": 24.4,
+          "passing": {
+            "completions": 19,
+            "attempts": 25,
+            "yards": 215,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 18,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "TEN",
+          "fantasyPoints": 21.02,
+          "passing": {
+            "completions": 21,
+            "attempts": 33,
+            "yards": 323,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 1,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "SEA",
+          "fantasyPoints": 19.82,
+          "passing": {
+            "completions": 24,
+            "attempts": 34,
+            "yards": 283,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 25,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "MIA",
+          "fantasyPoints": 22.1,
+          "passing": {
+            "completions": 25,
+            "attempts": 39,
+            "yards": 235,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 7,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "IND",
+          "fantasyPoints": 18.2,
+          "passing": {
+            "completions": 22,
+            "attempts": 37,
+            "yards": 280,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 50,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "KC",
+          "fantasyPoints": 23.98,
+          "passing": {
+            "completions": 27,
+            "attempts": 40,
+            "yards": 262,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 12,
+            "yards": 55,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "SF",
+          "fantasyPoints": 28.42,
+          "passing": {
+            "completions": 13,
+            "attempts": 17,
+            "yards": 148,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 18,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 7,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "LA",
+          "fantasyPoints": 51.88,
+          "passing": {
+            "completions": 22,
+            "attempts": 37,
+            "yards": 342,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
+            "yards": 82,
+            "tds": 3
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "DET",
+          "fantasyPoints": 41.28,
+          "passing": {
+            "completions": 23,
+            "attempts": 34,
+            "yards": 362,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 11,
+            "yards": 68,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NE",
+          "fantasyPoints": 11.16,
+          "passing": {
+            "completions": 16,
+            "attempts": 29,
+            "yards": 154,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 30,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NYJ",
+          "fantasyPoints": 22.98,
+          "passing": {
+            "completions": 16,
+            "attempts": 27,
+            "yards": 182,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 17,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0034857"
+      }
+    },
+    "2025": {
+      "season": 2025,
+      "summary": {
+        "games": 16,
+        "fantasyPoints": 364.62,
+        "fantasyPointsPerGame": 22.79,
+        "passingYards": 3668,
+        "passingTds": 25,
+        "interceptions": 0,
+        "rushingYards": 579,
+        "rushingTds": 14,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 3
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "BAL",
+          "fantasyPoints": 38.76,
+          "passing": {
+            "completions": 33,
+            "attempts": 46,
+            "yards": 394,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 14,
+            "yards": 30,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NYJ",
+          "fantasyPoints": 11.82,
+          "passing": {
+            "completions": 14,
+            "attempts": 25,
+            "yards": 148,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 59,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "MIA",
+          "fantasyPoints": 23.02,
+          "passing": {
+            "completions": 22,
+            "attempts": 28,
+            "yards": 213,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 25,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NO",
+          "fantasyPoints": 24.86,
+          "passing": {
+            "completions": 16,
+            "attempts": 22,
+            "yards": 209,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 45,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NE",
+          "fantasyPoints": 19.42,
+          "passing": {
+            "completions": 22,
+            "attempts": 31,
+            "yards": 253,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 53,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "ATL",
+          "fantasyPoints": 15.4,
+          "passing": {
+            "completions": 15,
+            "attempts": 26,
+            "yards": 180,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 42,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "CAR",
+          "fantasyPoints": 23.22,
+          "passing": {
+            "completions": 12,
+            "attempts": 19,
+            "yards": 163,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 7,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "KC",
+          "fantasyPoints": 28.82,
+          "passing": {
+            "completions": 23,
+            "attempts": 26,
+            "yards": 273,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 19,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "MIA",
+          "fantasyPoints": 19.34,
+          "passing": {
+            "completions": 28,
+            "attempts": 40,
+            "yards": 306,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 31,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "TB",
+          "fantasyPoints": 42.68,
+          "passing": {
+            "completions": 19,
+            "attempts": 30,
+            "yards": 317,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 40,
+            "tds": 3
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "HOU",
+          "fantasyPoints": 8.12,
+          "passing": {
+            "completions": 24,
+            "attempts": 34,
+            "yards": 253,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 20,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "PIT",
+          "fantasyPoints": 16.72,
+          "passing": {
+            "completions": 15,
+            "attempts": 23,
+            "yards": 123,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 38,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "CIN",
+          "fantasyPoints": 37.84,
+          "passing": {
+            "completions": 22,
+            "attempts": 28,
+            "yards": 251,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 78,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "NE",
+          "fantasyPoints": 24.52,
+          "passing": {
+            "completions": 19,
+            "attempts": 28,
+            "yards": 193,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 11,
+            "yards": 48,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "CLE",
+          "fantasyPoints": 6.9,
+          "passing": {
+            "completions": 12,
+            "attempts": 19,
+            "yards": 130,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 17,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "PHI",
+          "fantasyPoints": 23.18,
+          "passing": {
+            "completions": 23,
+            "attempts": 35,
+            "yards": 262,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 27,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0034857"
+      }
+    },
+    "2026": {
+      "season": 2026,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": null,
+        "gsisId": "00-0034857"
+      }
+    }
+  },
+  "sources": {
+    "profile": "Sleeper",
+    "stats": "nflverse / nflfastR weekly player stats",
+    "fantasyScoring": "Half-PPR"
+  }
+}

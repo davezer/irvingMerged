@@ -1,0 +1,496 @@
+{
+  "generatedAt": "2026-08-10T22:33:02.816Z",
+  "playerId": "12508",
+  "profile": {
+    "id": "12508",
+    "name": "Jaxson Dart",
+    "firstName": "Jaxson",
+    "lastName": "Dart",
+    "position": "QB",
+    "team": "NYG",
+    "number": 6,
+    "age": 23,
+    "height": "74",
+    "weight": 223,
+    "yearsExp": 1,
+    "college": "Ole Miss",
+    "status": "Active",
+    "injuryStatus": null,
+    "practiceParticipation": null,
+    "depthChartOrder": 1,
+    "fantasyPositions": [
+      "QB"
+    ],
+    "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/n6uymxssgiicjmxkzxoc"
+  },
+  "availableSeasons": [
+    2026,
+    2025,
+    2024,
+    2023
+  ],
+  "seasons": {
+    "2023": {
+      "season": 2023,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": null,
+        "gsisId": "00-0040691"
+      }
+    },
+    "2024": {
+      "season": 2024,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": null,
+        "gsisId": "00-0040691"
+      }
+    },
+    "2025": {
+      "season": 2025,
+      "summary": {
+        "games": 14,
+        "fantasyPoints": 241.58,
+        "fantasyPointsPerGame": 17.26,
+        "passingYards": 2272,
+        "passingTds": 15,
+        "interceptions": 0,
+        "rushingYards": 487,
+        "rushingTds": 9,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 2
+      },
+      "games": [
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "DAL",
+          "fantasyPoints": -0.3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": -3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "KC",
+          "fantasyPoints": 0.3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "LAC",
+          "fantasyPoints": 19.84,
+          "passing": {
+            "completions": 13,
+            "attempts": 20,
+            "yards": 111,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
+            "yards": 54,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "NO",
+          "fantasyPoints": 15.58,
+          "passing": {
+            "completions": 26,
+            "attempts": 40,
+            "yards": 202,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 55,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "PHI",
+          "fantasyPoints": 23.6,
+          "passing": {
+            "completions": 17,
+            "attempts": 25,
+            "yards": 195,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 13,
+            "yards": 58,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "DEN",
+          "fantasyPoints": 28.42,
+          "passing": {
+            "completions": 15,
+            "attempts": 33,
+            "yards": 283,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 11,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "PHI",
+          "fantasyPoints": 19.42,
+          "passing": {
+            "completions": 14,
+            "attempts": 24,
+            "yards": 193,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 17,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "SF",
+          "fantasyPoints": 27.24,
+          "passing": {
+            "completions": 24,
+            "attempts": 33,
+            "yards": 191,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 56,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "CHI",
+          "fantasyPoints": 26.28,
+          "passing": {
+            "completions": 19,
+            "attempts": 29,
+            "yards": 242,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 66,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "NE",
+          "fantasyPoints": 13.56,
+          "passing": {
+            "completions": 17,
+            "attempts": 24,
+            "yards": 139,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 20,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "WAS",
+          "fantasyPoints": 22.14,
+          "passing": {
+            "completions": 20,
+            "attempts": 36,
+            "yards": 246,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 63,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "MIN",
+          "fantasyPoints": 0.02,
+          "passing": {
+            "completions": 7,
+            "attempts": 13,
+            "yards": 33,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 7,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "LV",
+          "fantasyPoints": 25.08,
+          "passing": {
+            "completions": 22,
+            "attempts": 30,
+            "yards": 207,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 48,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 18,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "DAL",
+          "fantasyPoints": 20.4,
+          "passing": {
+            "completions": 22,
+            "attempts": 32,
+            "yards": 230,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 32,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0040691"
+      }
+    },
+    "2026": {
+      "season": 2026,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": null,
+        "gsisId": "00-0040691"
+      }
+    }
+  },
+  "sources": {
+    "profile": "Sleeper",
+    "stats": "nflverse / nflfastR weekly player stats",
+    "fantasyScoring": "Half-PPR"
+  }
+}

@@ -1,239 +1,856 @@
 <script>
 	import { browser } from '$app/environment';
-
 	import { onDestroy } from 'svelte';
 
-	import { playerModal, closePlayerModal } from '$lib/stores/playerModal.js';
+	import {
+		playerModal,
+		closePlayerModal
+	} from '$lib/stores/playerModal.js';
+
 
 	let card = null;
+
+	/*
+	 * Raw static Player File containing
+	 * every generated season.
+	 */
+	let staticPlayerFile = null;
+
+
 	let loading = false;
+
 	let error = '';
 
 	let selectedSeason = null;
 
 	let requestKey = '';
+
 	let requestToken = 0;
-	
-	$: modal = $playerModal;
+
+
+	$: modal =
+		$playerModal;
+
+
 	$: currentIrvingRoster =
-	card?.league?.currentRoster ||
-	null;
+		card?.league?.currentRoster ||
+		null;
 
-$: irvingHistory =
-	card?.league?.history ||
-	[];
 
-$: irvingLeagueAvailable =
-	card?.league?.available !==
-	false;
+	$: irvingHistory =
+		card?.league?.history ||
+		[];
 
-	$: modalKey = modal.open && modal.playerId ? `${modal.playerId}:${modal.season ?? ''}` : '';
 
-	$: if (modalKey && modalKey !== requestKey) {
-		requestKey = modalKey;
+	$: irvingLeagueAvailable =
+		card?.league?.available !==
+		false;
 
-		selectedSeason = Number(modal.season) || new Date().getFullYear();
 
-		loadPlayer(modal.playerId, selectedSeason);
+	$: modalKey =
+		modal.open &&
+		modal.playerId
+			? `${modal.playerId}:${modal.season ?? ''}`
+			: '';
+
+
+	$: if (
+		modalKey &&
+		modalKey !== requestKey
+	) {
+		requestKey =
+			modalKey;
+
+
+		selectedSeason =
+			Number(
+				modal.season
+			) ||
+			new Date()
+				.getFullYear();
+
+
+		loadPlayer(
+			modal.playerId,
+			selectedSeason
+		);
 	}
 
-	$: if (!modalKey && requestKey) {
+
+	$: if (
+		!modalKey &&
+		requestKey
+	) {
 		requestKey = '';
 
 		card = null;
+
+		staticPlayerFile =
+			null;
+
 		error = '';
-		loading = false;
+
+		loading =
+			false;
 	}
+
 
 	$: if (browser) {
-		document.body.style.overflow = modal.open ? 'hidden' : '';
+		document.body.style.overflow =
+			modal.open
+				? 'hidden'
+				: '';
 	}
 
-	onDestroy(() => {
-		if (browser) {
-			document.body.style.overflow = '';
+
+	onDestroy(
+		() => {
+			if (browser) {
+				document.body.style.overflow =
+					'';
+			}
 		}
-	});
+	);
 
-	async function loadPlayer(playerId, season) {
-		const token = ++requestToken;
 
-		loading = true;
-		error = '';
+	function unavailableLeague() {
+		return {
+			available:
+				false,
 
-		try {
-			const response = await fetch(
-				`/api/player-card/${encodeURIComponent(playerId)}?season=${encodeURIComponent(season)}`
+			currentRoster: {
+				rostered:
+					false,
+
+				teamName:
+					null,
+
+				managerName:
+					null,
+
+				rosterId:
+					null,
+
+				season:
+					null
+			},
+
+			history: [],
+
+			historySeasons: []
+		};
+	}
+
+
+	function emptySummary() {
+		return {
+			games: 0,
+
+			fantasyPoints: 0,
+
+			fantasyPointsPerGame:
+				0,
+
+			passingYards: 0,
+
+			passingTds: 0,
+
+			interceptions: 0,
+
+			rushingYards: 0,
+
+			rushingTds: 0,
+
+			receptions: 0,
+
+			receivingYards: 0,
+
+			receivingTds: 0,
+
+			fumblesLost: 0
+		};
+	}
+
+
+	function availableSeasons(
+		payload
+	) {
+		const explicit =
+			Array.isArray(
+				payload?.availableSeasons
+			)
+				? payload.availableSeasons
+				: [];
+
+
+		const fromData =
+			Object.keys(
+				payload?.seasons ||
+					{}
+			)
+				.map(Number)
+				.filter(
+					Number.isFinite
+				);
+
+
+		return [
+			...new Set([
+				...explicit.map(
+					Number
+				),
+
+				...fromData
+			])
+		]
+			.filter(
+				Number.isFinite
+			)
+			.sort(
+				(a, b) =>
+					b - a
+			);
+	}
+
+
+	function resolveSeason(
+		payload,
+		requestedSeason
+	) {
+		const seasons =
+			availableSeasons(
+				payload
 			);
 
-			const payload = await response.json();
+
+		const requested =
+			Number(
+				requestedSeason
+			);
+
+
+		if (
+			Number.isFinite(
+				requested
+			) &&
+			payload?.seasons?.[
+				String(
+					requested
+				)
+			]
+		) {
+			return requested;
+		}
+
+
+		return (
+			seasons[0] ||
+			requested ||
+			new Date()
+				.getFullYear()
+		);
+	}
+
+
+	function buildSeasonCard(
+		payload,
+		season,
+		league =
+			unavailableLeague()
+	) {
+		const cleanSeason =
+			resolveSeason(
+				payload,
+				season
+			);
+
+
+		const seasonData =
+			payload?.seasons?.[
+				String(
+					cleanSeason
+				)
+			] ||
+			{};
+
+
+		return {
+			profile:
+				payload?.profile ||
+				null,
+
+			season:
+				cleanSeason,
+
+			availableSeasons:
+				availableSeasons(
+					payload
+				),
+
+			summary:
+				seasonData?.summary ||
+				emptySummary(),
+
+			games:
+				Array.isArray(
+					seasonData?.games
+				)
+					? seasonData.games
+					: [],
+
+			dataMatch:
+				seasonData?.dataMatch ||
+				null,
+
+			sources:
+				payload?.sources ||
+				{},
+
+			generatedAt:
+				payload?.generatedAt ||
+				null,
+
+			league:
+				league ||
+				unavailableLeague()
+		};
+	}
+
+
+	async function loadPlayer(
+		playerId,
+		season
+	) {
+		const token =
+			++requestToken;
+
+
+		loading = true;
+
+		error = '';
+
+		card = null;
+
+		staticPlayerFile =
+			null;
+
+
+		try {
+			/*
+			 * ==================================================
+			 * STEP ONE
+			 *
+			 * Load the pre-generated NFL Player File.
+			 *
+			 * This is a STATIC asset.
+			 * No SvelteKit server endpoint.
+			 * No Worker.
+			 * No giant CSV parsing.
+			 * ==================================================
+			 */
+
+			const response =
+				await fetch(
+					`/player-data/${encodeURIComponent(
+						playerId
+					)}.json`
+				);
+
 
 			if (!response.ok) {
-				throw new Error(payload?.error || 'Unable to load player data.');
+				if (
+					response.status ===
+					404
+				) {
+					throw new Error(
+						'This player has not been added to the Player File snapshot yet.'
+					);
+				}
+
+
+				throw new Error(
+					`Unable to load Player File (${response.status}).`
+				);
 			}
 
-			if (token !== requestToken) {
+
+			const payload =
+				await response.json();
+
+
+			if (
+				token !==
+				requestToken
+			) {
 				return;
 			}
 
-			card = payload;
 
-			selectedSeason = Number(payload.season || season);
+			staticPlayerFile =
+				payload;
+
+
+			selectedSeason =
+				resolveSeason(
+					payload,
+					season
+				);
+
+
+			/*
+			 * Render immediately.
+			 *
+			 * League history deliberately starts
+			 * unavailable so we never accidentally
+			 * label somebody as a free agent while
+			 * the secondary feed is still loading.
+			 */
+			card =
+				buildSeasonCard(
+					payload,
+					selectedSeason,
+					unavailableLeague()
+				);
+
+
+			/*
+			 * NFL data is DONE.
+			 *
+			 * Drop the full-screen loading state now.
+			 * League history loads independently below.
+			 */
+			loading =
+				false;
+
+
+			/*
+			 * ==================================================
+			 * STEP TWO
+			 *
+			 * Load Irving ownership/history separately.
+			 *
+			 * Failure here NEVER kills the Player File.
+			 * ==================================================
+			 */
+
+			loadLeagueHistory(
+				playerId,
+				token
+			);
+
 		} catch (loadError) {
-			if (token !== requestToken) {
+			if (
+				token !==
+				requestToken
+			) {
 				return;
 			}
+
 
 			card = null;
 
-			error = loadError?.message || 'Unable to load player data.';
-		} finally {
-			if (token === requestToken) {
-				loading = false;
-			}
+			staticPlayerFile =
+				null;
+
+
+			error =
+				loadError?.message ||
+				'Unable to load player data.';
+
+
+			loading =
+				false;
 		}
 	}
 
-	function changeSeason(season) {
-		const nextSeason = Number(season);
 
-		if (!modal.playerId || nextSeason === selectedSeason) {
+	async function loadLeagueHistory(
+		playerId,
+		token
+	) {
+		try {
+			const response =
+				await fetch(
+					`/api/player-history/${encodeURIComponent(
+						playerId
+					)}`
+				);
+
+
+			if (!response.ok) {
+				throw new Error(
+					`League history request failed (${response.status}).`
+				);
+			}
+
+
+			const league =
+				await response.json();
+
+
+			if (
+				token !==
+					requestToken ||
+				!staticPlayerFile
+			) {
+				return;
+			}
+
+
+			/*
+			 * Preserve the currently selected NFL season
+			 * while attaching the newly loaded ICL data.
+			 */
+			card =
+				buildSeasonCard(
+					staticPlayerFile,
+					selectedSeason,
+					league
+				);
+
+		} catch (leagueError) {
+			/*
+			 * This is intentionally non-fatal.
+			 *
+			 * Stats/game logs remain completely usable.
+			 */
+			console.error(
+				'Player league history failed:',
+				leagueError
+			);
+
+
+			if (
+				token !==
+					requestToken ||
+				!staticPlayerFile
+			) {
+				return;
+			}
+
+
+			card =
+				buildSeasonCard(
+					staticPlayerFile,
+					selectedSeason,
+					unavailableLeague()
+				);
+		}
+	}
+
+
+	function changeSeason(
+		season
+	) {
+		const nextSeason =
+			Number(
+				season
+			);
+
+
+		if (
+			!staticPlayerFile ||
+			!Number.isFinite(
+				nextSeason
+			) ||
+			nextSeason ===
+				selectedSeason
+		) {
 			return;
 		}
 
-		selectedSeason = nextSeason;
 
-		loadPlayer(modal.playerId, nextSeason);
+		selectedSeason =
+			nextSeason;
+
+
+		/*
+		 * This is now instant.
+		 *
+		 * No fetch.
+		 * No Worker.
+		 * No nflverse request.
+		 */
+		card =
+			buildSeasonCard(
+				staticPlayerFile,
+				nextSeason,
+				card?.league ||
+					unavailableLeague()
+			);
 	}
 
-	function handleKeydown(event) {
-		if (modal.open && event.key === 'Escape') {
+
+	function handleKeydown(
+		event
+	) {
+		if (
+			modal.open &&
+			event.key ===
+				'Escape'
+		) {
 			closePlayerModal();
 		}
 	}
 
-    function heightLabel(value) {
-	if (!value) return '—';
 
-	const text = String(value).trim();
-
-	// Already formatted like 5'11"
-	if (text.includes("'")) return text;
-
-	const inches = Number(text);
-
-	if (!Number.isFinite(inches)) return text;
-
-	const feet = Math.floor(inches / 12);
-	const remaining = inches % 12;
-
-	return `${feet}'${remaining}"`;
-}
-
-	function fmt(value, digits = 1) {
-		const number = Number(value);
-
-		return Number.isFinite(number) ? number.toFixed(digits) : '—';
-	}
-
-	function whole(value) {
-		const number = Number(value);
-
-		return Number.isFinite(number) ? number.toFixed(0) : '—';
-	}
-
-	function money(value) {
-		if (value == null) {
+	function heightLabel(
+		value
+	) {
+		if (!value) {
 			return '—';
 		}
 
-		const number = Number(value);
 
-		return `$${number.toFixed(number % 1 ? 2 : 0)}`;
+		const text =
+			String(
+				value
+			).trim();
+
+
+		/*
+		 * Already formatted like:
+		 * 5'11"
+		 */
+		if (
+			text.includes(
+				"'"
+			)
+		) {
+			return text;
+		}
+
+
+		const inches =
+			Number(
+				text
+			);
+
+
+		if (
+			!Number.isFinite(
+				inches
+			)
+		) {
+			return text;
+		}
+
+
+		const feet =
+			Math.floor(
+				inches /
+					12
+			);
+
+
+		const remaining =
+			inches %
+			12;
+
+
+		return `${feet}'${remaining}"`;
 	}
 
-	function historyDate(value) {
-	const timestamp =
-		Number(value);
 
-	if (
-		!Number.isFinite(
-			timestamp
-		) ||
-		!timestamp
+	function fmt(
+		value,
+		digits = 1
 	) {
-		return '';
-	}
+		const number =
+			Number(
+				value
+			);
 
-	return new Date(
-		timestamp
-	)
-		.toLocaleDateString(
-			'en-US',
-			{
-				month:
-					'short',
 
-				day:
-					'2-digit',
-
-				year:
-					'numeric'
-			}
+		return Number.isFinite(
+			number
 		)
-		.replace(
-			',',
-			''
-		);
-}
-
-
-function historyIcon(type) {
-	if (type === 'trade') {
-		return '⇄';
+			? number.toFixed(
+					digits
+				)
+			: '—';
 	}
 
-	if (type === 'draft') {
-		return '★';
+
+	function whole(
+		value
+	) {
+		const number =
+			Number(
+				value
+			);
+
+
+		return Number.isFinite(
+			number
+		)
+			? number.toFixed(
+					0
+				)
+			: '—';
 	}
 
-	if (type === 'keeper') {
-		return '◆';
+
+	function money(
+		value
+	) {
+		if (
+			value == null
+		) {
+			return '—';
+		}
+
+
+		const number =
+			Number(
+				value
+			);
+
+
+		return `$${number.toFixed(
+			number % 1
+				? 2
+				: 0
+		)}`;
 	}
 
-	if (type === 'waiver') {
-		return '$';
+
+	function historyDate(
+		value
+	) {
+		const timestamp =
+			Number(
+				value
+			);
+
+
+		if (
+			!Number.isFinite(
+				timestamp
+			) ||
+			!timestamp
+		) {
+			return '';
+		}
+
+
+		return new Date(
+			timestamp
+		)
+			.toLocaleDateString(
+				'en-US',
+				{
+					month:
+						'short',
+
+					day:
+						'2-digit',
+
+					year:
+						'numeric'
+				}
+			)
+			.replace(
+				',',
+				''
+			);
 	}
 
-	if (type === 'drop') {
-		return '−';
+
+	function historyIcon(
+		type
+	) {
+		if (
+			type ===
+			'trade'
+		) {
+			return '⇄';
+		}
+
+
+		if (
+			type ===
+			'draft'
+		) {
+			return '★';
+		}
+
+
+		if (
+			type ===
+			'keeper'
+		) {
+			return '◆';
+		}
+
+
+		if (
+			type ===
+			'waiver'
+		) {
+			return '$';
+		}
+
+
+		if (
+			type ===
+			'drop'
+		) {
+			return '−';
+		}
+
+
+		return '+';
 	}
 
-	return '+';
-}
+
+	function historyClass(
+		type
+	) {
+		return String(
+			type ||
+				'other'
+		)
+			.replace(
+				/_/g,
+				'-'
+			);
+	}
 
 
-function historyClass(type) {
-	return String(
-		type ||
-			'other'
-	)
-		.replace(
-			/_/g,
-			'-'
-	);
-}
-
-	function statusText(profile) {
+	function statusText(
+		profile
+	) {
 		return (
-			[profile?.status, profile?.injuryStatus].filter(Boolean).join(' · ') || 'Active roster status'
+			[
+				profile?.status,
+				profile?.injuryStatus
+			]
+				.filter(
+					Boolean
+				)
+				.join(
+					' · '
+				) ||
+			'Active roster status'
 		);
 	}
 
-	function playerSubline(profile) {
-		const team = profile?.team || 'FA';
 
-		const number = profile?.number != null ? ` #${profile.number}` : '';
+	function playerSubline(
+		profile
+	) {
+		const team =
+			profile?.team ||
+			'FA';
+
+
+		const number =
+			profile?.number !=
+			null
+				? ` #${profile.number}`
+				: '';
+
 
 		return `${profile?.position || '—'} · ${team}${number}`;
 	}
@@ -507,12 +1124,7 @@ function historyClass(type) {
 				</div>
 
 				<div class="game-log-shell">
-					{#if loading}
-						<div class="table-loading">
-							Updating
-							{selectedSeason}…
-						</div>
-					{/if}
+					
 
 					{#if card.games.length}
 						<div class="game-log-scroll">

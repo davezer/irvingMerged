@@ -1,0 +1,131 @@
+{
+  "generatedAt": "2026-08-10T22:33:05.370Z",
+  "playerId": "JAX",
+  "profile": {
+    "id": "JAX",
+    "name": "Jacksonville Jaguars",
+    "firstName": "Jacksonville",
+    "lastName": "Jaguars",
+    "position": "DEF",
+    "team": "JAX",
+    "number": null,
+    "age": null,
+    "height": null,
+    "weight": null,
+    "yearsExp": null,
+    "college": null,
+    "status": null,
+    "injuryStatus": null,
+    "practiceParticipation": null,
+    "depthChartOrder": null,
+    "fantasyPositions": [
+      "DEF"
+    ],
+    "headshotUrl": "https://sleepercdn.com/content/nfl/players/thumb/JAX.jpg"
+  },
+  "availableSeasons": [
+    2026,
+    2025,
+    2024,
+    2023
+  ],
+  "seasons": {
+    "2023": {
+      "season": 2023,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    },
+    "2024": {
+      "season": 2024,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    },
+    "2025": {
+      "season": 2025,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    },
+    "2026": {
+      "season": 2026,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    }
+  },
+  "sources": {
+    "profile": "Sleeper",
+    "stats": "nflverse / nflfastR weekly player stats",
+    "fantasyScoring": "Half-PPR"
+  }
+}

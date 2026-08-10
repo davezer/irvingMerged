@@ -1,0 +1,1330 @@
+{
+  "generatedAt": "2026-08-10T22:33:05.061Z",
+  "playerId": "9228",
+  "profile": {
+    "id": "9228",
+    "name": "Bryce Young",
+    "firstName": "Bryce",
+    "lastName": "Young",
+    "position": "QB",
+    "team": "CAR",
+    "number": 9,
+    "age": 25,
+    "height": "70",
+    "weight": 204,
+    "yearsExp": 3,
+    "college": "Alabama",
+    "status": "Active",
+    "injuryStatus": null,
+    "practiceParticipation": null,
+    "depthChartOrder": 1,
+    "fantasyPositions": [
+      "QB"
+    ],
+    "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vcvhmxvxw2a3armle0af"
+  },
+  "availableSeasons": [
+    2026,
+    2025,
+    2024,
+    2023
+  ],
+  "seasons": {
+    "2023": {
+      "season": 2023,
+      "summary": {
+        "games": 16,
+        "fantasyPoints": 156.38,
+        "fantasyPointsPerGame": 9.77,
+        "passingYards": 2877,
+        "passingTds": 11,
+        "interceptions": 0,
+        "rushingYards": 253,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 6
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ATL",
+          "fantasyPoints": 7.54,
+          "passing": {
+            "completions": 20,
+            "attempts": 38,
+            "yards": 146,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 17,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NO",
+          "fantasyPoints": 13.52,
+          "passing": {
+            "completions": 22,
+            "attempts": 33,
+            "yards": 153,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 34,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "MIN",
+          "fantasyPoints": 7.16,
+          "passing": {
+            "completions": 25,
+            "attempts": 32,
+            "yards": 204,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 10,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "DET",
+          "fantasyPoints": 18.28,
+          "passing": {
+            "completions": 25,
+            "attempts": 41,
+            "yards": 247,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 4,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "MIA",
+          "fantasyPoints": 12.68,
+          "passing": {
+            "completions": 23,
+            "attempts": 38,
+            "yards": 217,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "HOU",
+          "fantasyPoints": 14.5,
+          "passing": {
+            "completions": 22,
+            "attempts": 31,
+            "yards": 235,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 11,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "IND",
+          "fantasyPoints": 9.02,
+          "passing": {
+            "completions": 24,
+            "attempts": 39,
+            "yards": 173,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 41,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "CHI",
+          "fantasyPoints": 9.2,
+          "passing": {
+            "completions": 21,
+            "attempts": 38,
+            "yards": 185,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 18,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "DAL",
+          "fantasyPoints": 5.22,
+          "passing": {
+            "completions": 16,
+            "attempts": 29,
+            "yards": 123,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "TEN",
+          "fantasyPoints": 8.06,
+          "passing": {
+            "completions": 18,
+            "attempts": 31,
+            "yards": 194,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 23,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "TB",
+          "fantasyPoints": 7.12,
+          "passing": {
+            "completions": 15,
+            "attempts": 31,
+            "yards": 178,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NO",
+          "fantasyPoints": 7.48,
+          "passing": {
+            "completions": 13,
+            "attempts": 36,
+            "yards": 137,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 40,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ATL",
+          "fantasyPoints": 7.58,
+          "passing": {
+            "completions": 18,
+            "attempts": 24,
+            "yards": 167,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 9,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "GB",
+          "fantasyPoints": 22.18,
+          "passing": {
+            "completions": 23,
+            "attempts": 36,
+            "yards": 312,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 17,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "JAX",
+          "fantasyPoints": 2.68,
+          "passing": {
+            "completions": 19,
+            "attempts": 32,
+            "yards": 112,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 2,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 18,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "TB",
+          "fantasyPoints": 4.16,
+          "passing": {
+            "completions": 11,
+            "attempts": 18,
+            "yards": 94,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 24,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0039150"
+      }
+    },
+    "2024": {
+      "season": 2024,
+      "summary": {
+        "games": 14,
+        "fantasyPoints": 195.02,
+        "fantasyPointsPerGame": 13.93,
+        "passingYards": 2403,
+        "passingTds": 15,
+        "interceptions": 0,
+        "rushingYards": 249,
+        "rushingTds": 6,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 2
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NO",
+          "fantasyPoints": 9.64,
+          "passing": {
+            "completions": 13,
+            "attempts": 30,
+            "yards": 161,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 12,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "LAC",
+          "fantasyPoints": 1.96,
+          "passing": {
+            "completions": 18,
+            "attempts": 26,
+            "yards": 84,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 6,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "CHI",
+          "fantasyPoints": 3.12,
+          "passing": {
+            "completions": 4,
+            "attempts": 7,
+            "yards": 58,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 8,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "WAS",
+          "fantasyPoints": -0.16,
+          "passing": {
+            "completions": 2,
+            "attempts": 2,
+            "yards": -4,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "DEN",
+          "fantasyPoints": 13.56,
+          "passing": {
+            "completions": 24,
+            "attempts": 37,
+            "yards": 224,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 6,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NO",
+          "fantasyPoints": 9.74,
+          "passing": {
+            "completions": 16,
+            "attempts": 26,
+            "yards": 171,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 9,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NYG",
+          "fantasyPoints": 12.04,
+          "passing": {
+            "completions": 15,
+            "attempts": 25,
+            "yards": 126,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 30,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "KC",
+          "fantasyPoints": 16.52,
+          "passing": {
+            "completions": 21,
+            "attempts": 35,
+            "yards": 263,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 20,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "TB",
+          "fantasyPoints": 23.62,
+          "passing": {
+            "completions": 26,
+            "attempts": 46,
+            "yards": 298,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 17,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "PHI",
+          "fantasyPoints": 12.54,
+          "passing": {
+            "completions": 19,
+            "attempts": 34,
+            "yards": 191,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 29,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "DAL",
+          "fantasyPoints": 11.96,
+          "passing": {
+            "completions": 19,
+            "attempts": 28,
+            "yards": 219,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 12,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 2
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ARI",
+          "fantasyPoints": 27.12,
+          "passing": {
+            "completions": 17,
+            "attempts": 26,
+            "yards": 158,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 68,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "TB",
+          "fantasyPoints": 16.92,
+          "passing": {
+            "completions": 15,
+            "attempts": 28,
+            "yards": 203,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 8,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 18,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ATL",
+          "fantasyPoints": 36.44,
+          "passing": {
+            "completions": 25,
+            "attempts": 34,
+            "yards": 251,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 24,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0039150"
+      }
+    },
+    "2025": {
+      "season": 2025,
+      "summary": {
+        "games": 16,
+        "fantasyPoints": 218.04,
+        "fantasyPointsPerGame": 13.63,
+        "passingYards": 3011,
+        "passingTds": 23,
+        "interceptions": 0,
+        "rushingYards": 216,
+        "rushingTds": 2,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 4
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "JAX",
+          "fantasyPoints": 8.16,
+          "passing": {
+            "completions": 18,
+            "attempts": 35,
+            "yards": 154,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 40,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ARI",
+          "fantasyPoints": 21.32,
+          "passing": {
+            "completions": 35,
+            "attempts": 55,
+            "yards": 328,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 2,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ATL",
+          "fantasyPoints": 11.64,
+          "passing": {
+            "completions": 16,
+            "attempts": 24,
+            "yards": 121,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 8,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NE",
+          "fantasyPoints": 10.3,
+          "passing": {
+            "completions": 18,
+            "attempts": 30,
+            "yards": 150,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "MIA",
+          "fantasyPoints": 12.02,
+          "passing": {
+            "completions": 19,
+            "attempts": 30,
+            "yards": 198,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 1,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "DAL",
+          "fantasyPoints": 18.46,
+          "passing": {
+            "completions": 17,
+            "attempts": 25,
+            "yards": 199,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 5,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NYJ",
+          "fantasyPoints": 10.52,
+          "passing": {
+            "completions": 15,
+            "attempts": 25,
+            "yards": 138,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 10,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "GB",
+          "fantasyPoints": 2.98,
+          "passing": {
+            "completions": 11,
+            "attempts": 20,
+            "yards": 102,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 9,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NO",
+          "fantasyPoints": 1.56,
+          "passing": {
+            "completions": 17,
+            "attempts": 25,
+            "yards": 124,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 6,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ATL",
+          "fantasyPoints": 31.82,
+          "passing": {
+            "completions": 31,
+            "attempts": 45,
+            "yards": 448,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": -1,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "SF",
+          "fantasyPoints": 8.26,
+          "passing": {
+            "completions": 18,
+            "attempts": 29,
+            "yards": 169,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 15,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "LA",
+          "fantasyPoints": 22.54,
+          "passing": {
+            "completions": 15,
+            "attempts": 20,
+            "yards": 206,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 23,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "NO",
+          "fantasyPoints": 15.42,
+          "passing": {
+            "completions": 15,
+            "attempts": 24,
+            "yards": 163,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 49,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "TB",
+          "fantasyPoints": 17.64,
+          "passing": {
+            "completions": 21,
+            "attempts": 32,
+            "yards": 191,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 20,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "SEA",
+          "fantasyPoints": 8.86,
+          "passing": {
+            "completions": 14,
+            "attempts": 24,
+            "yards": 54,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 27,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 18,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "TB",
+          "fantasyPoints": 16.54,
+          "passing": {
+            "completions": 24,
+            "attempts": 35,
+            "yards": 266,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": -1,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0039150"
+      }
+    },
+    "2026": {
+      "season": 2026,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "name_position",
+        "statMatch": null,
+        "gsisId": "00-0039150"
+      }
+    }
+  },
+  "sources": {
+    "profile": "Sleeper",
+    "stats": "nflverse / nflfastR weekly player stats",
+    "fantasyScoring": "Half-PPR"
+  }
+}

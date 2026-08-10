@@ -1,0 +1,1330 @@
+{
+  "generatedAt": "2026-08-10T22:33:04.760Z",
+  "playerId": "4046",
+  "profile": {
+    "id": "4046",
+    "name": "Patrick Mahomes",
+    "firstName": "Patrick",
+    "lastName": "Mahomes",
+    "position": "QB",
+    "team": "KC",
+    "number": 15,
+    "age": 30,
+    "height": "74",
+    "weight": 225,
+    "yearsExp": 9,
+    "college": "Texas Tech",
+    "status": "Active",
+    "injuryStatus": "Questionable",
+    "practiceParticipation": null,
+    "depthChartOrder": 1,
+    "fantasyPositions": [
+      "QB"
+    ],
+    "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/wdckwtob1lybvkmxnf7p"
+  },
+  "availableSeasons": [
+    2026,
+    2025,
+    2024,
+    2023
+  ],
+  "seasons": {
+    "2023": {
+      "season": 2023,
+      "summary": {
+        "games": 16,
+        "fantasyPoints": 280.22,
+        "fantasyPointsPerGame": 17.51,
+        "passingYards": 4183,
+        "passingTds": 27,
+        "interceptions": 0,
+        "rushingYards": 389,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 3
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DET",
+          "fantasyPoints": 19.54,
+          "passing": {
+            "completions": 21,
+            "attempts": 39,
+            "yards": 226,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 45,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "JAX",
+          "fantasyPoints": 21.2,
+          "passing": {
+            "completions": 29,
+            "attempts": 41,
+            "yards": 305,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 30,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "CHI",
+          "fantasyPoints": 25.68,
+          "passing": {
+            "completions": 24,
+            "attempts": 33,
+            "yards": 272,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 28,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "NYJ",
+          "fantasyPoints": 13.22,
+          "passing": {
+            "completions": 18,
+            "attempts": 30,
+            "yards": 203,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 51,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "MIN",
+          "fantasyPoints": 19.24,
+          "passing": {
+            "completions": 31,
+            "attempts": 41,
+            "yards": 281,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DEN",
+          "fantasyPoints": 17.34,
+          "passing": {
+            "completions": 30,
+            "attempts": 40,
+            "yards": 306,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 31,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LAC",
+          "fantasyPoints": 33.86,
+          "passing": {
+            "completions": 32,
+            "attempts": 42,
+            "yards": 424,
+            "tds": 4,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 29,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DEN",
+          "fantasyPoints": 5.6,
+          "passing": {
+            "completions": 24,
+            "attempts": 38,
+            "yards": 240,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 20,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "MIA",
+          "fantasyPoints": 15.8,
+          "passing": {
+            "completions": 20,
+            "attempts": 30,
+            "yards": 185,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 24,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "PHI",
+          "fantasyPoints": 16.88,
+          "passing": {
+            "completions": 24,
+            "attempts": 43,
+            "yards": 177,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 38,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LV",
+          "fantasyPoints": 20.82,
+          "passing": {
+            "completions": 27,
+            "attempts": 34,
+            "yards": 298,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 9,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "GB",
+          "fantasyPoints": 13,
+          "passing": {
+            "completions": 21,
+            "attempts": 33,
+            "yards": 210,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 26,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "BUF",
+          "fantasyPoints": 13.64,
+          "passing": {
+            "completions": 25,
+            "attempts": 43,
+            "yards": 271,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 8,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "NE",
+          "fantasyPoints": 15.7,
+          "passing": {
+            "completions": 27,
+            "attempts": 37,
+            "yards": 305,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": -5,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LV",
+          "fantasyPoints": 16.7,
+          "passing": {
+            "completions": 27,
+            "attempts": 44,
+            "yards": 235,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
+            "yards": 53,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "CIN",
+          "fantasyPoints": 12,
+          "passing": {
+            "completions": 21,
+            "attempts": 29,
+            "yards": 245,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 2,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 1
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0033873"
+      }
+    },
+    "2024": {
+      "season": 2024,
+      "summary": {
+        "games": 16,
+        "fantasyPoints": 282.52,
+        "fantasyPointsPerGame": 17.66,
+        "passingYards": 3928,
+        "passingTds": 26,
+        "interceptions": 0,
+        "rushingYards": 307,
+        "rushingTds": 2,
+        "receptions": 1,
+        "receivingYards": 2,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "BAL",
+          "fantasyPoints": 14.64,
+          "passing": {
+            "completions": 20,
+            "attempts": 28,
+            "yards": 291,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 2,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "CIN",
+          "fantasyPoints": 12.94,
+          "passing": {
+            "completions": 18,
+            "attempts": 25,
+            "yards": 151,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 29,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "ATL",
+          "fantasyPoints": 16.38,
+          "passing": {
+            "completions": 26,
+            "attempts": 39,
+            "yards": 217,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 17,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LAC",
+          "fantasyPoints": 13,
+          "passing": {
+            "completions": 19,
+            "attempts": 29,
+            "yards": 245,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 12,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "NO",
+          "fantasyPoints": 13.44,
+          "passing": {
+            "completions": 28,
+            "attempts": 39,
+            "yards": 331,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 22,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "SF",
+          "fantasyPoints": 12.06,
+          "passing": {
+            "completions": 16,
+            "attempts": 27,
+            "yards": 154,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 39,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LV",
+          "fantasyPoints": 18.18,
+          "passing": {
+            "completions": 27,
+            "attempts": 38,
+            "yards": 262,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 17,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "TB",
+          "fantasyPoints": 24.54,
+          "passing": {
+            "completions": 34,
+            "attempts": 44,
+            "yards": 291,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 9,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 10,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DEN",
+          "fantasyPoints": 16.54,
+          "passing": {
+            "completions": 28,
+            "attempts": 42,
+            "yards": 266,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 19,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "BUF",
+          "fantasyPoints": 15.84,
+          "passing": {
+            "completions": 23,
+            "attempts": 33,
+            "yards": 196,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "CAR",
+          "fantasyPoints": 28.76,
+          "passing": {
+            "completions": 27,
+            "attempts": 37,
+            "yards": 269,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 60,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LV",
+          "fantasyPoints": 16.64,
+          "passing": {
+            "completions": 26,
+            "attempts": 46,
+            "yards": 306,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 4,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LAC",
+          "fantasyPoints": 14.1,
+          "passing": {
+            "completions": 24,
+            "attempts": 37,
+            "yards": 210,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 17,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "CLE",
+          "fantasyPoints": 15.76,
+          "passing": {
+            "completions": 19,
+            "attempts": 38,
+            "yards": 159,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 14,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 16,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "HOU",
+          "fantasyPoints": 23.7,
+          "passing": {
+            "completions": 28,
+            "attempts": 41,
+            "yards": 260,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 33,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 17,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "PIT",
+          "fantasyPoints": 26,
+          "passing": {
+            "completions": 29,
+            "attempts": 38,
+            "yards": 320,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 12,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0033873"
+      }
+    },
+    "2025": {
+      "season": 2025,
+      "summary": {
+        "games": 14,
+        "fantasyPoints": 285.18,
+        "fantasyPointsPerGame": 20.37,
+        "passingYards": 3587,
+        "passingTds": 22,
+        "interceptions": 0,
+        "rushingYards": 422,
+        "rushingTds": 5,
+        "receptions": 1,
+        "receivingYards": -10,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LAC",
+          "fantasyPoints": 26.02,
+          "passing": {
+            "completions": 24,
+            "attempts": 39,
+            "yards": 258,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 57,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "PHI",
+          "fantasyPoints": 22.08,
+          "passing": {
+            "completions": 16,
+            "attempts": 29,
+            "yards": 187,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 66,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 3,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "NYG",
+          "fantasyPoints": 13.16,
+          "passing": {
+            "completions": 22,
+            "attempts": 37,
+            "yards": 224,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 2,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 4,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "BAL",
+          "fantasyPoints": 27.3,
+          "passing": {
+            "completions": 25,
+            "attempts": 37,
+            "yards": 270,
+            "tds": 4,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 5,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 5,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "JAX",
+          "fantasyPoints": 26.72,
+          "passing": {
+            "completions": 29,
+            "attempts": 41,
+            "yards": 318,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 60,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 6,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DET",
+          "fantasyPoints": 31.48,
+          "passing": {
+            "completions": 22,
+            "attempts": 30,
+            "yards": 257,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
+            "yards": 32,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 7,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LV",
+          "fantasyPoints": 26.24,
+          "passing": {
+            "completions": 26,
+            "attempts": 35,
+            "yards": 286,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 28,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 8,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "WAS",
+          "fantasyPoints": 22.96,
+          "passing": {
+            "completions": 25,
+            "attempts": 34,
+            "yards": 299,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 30,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 9,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "BUF",
+          "fantasyPoints": 10.5,
+          "passing": {
+            "completions": 15,
+            "attempts": 34,
+            "yards": 250,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 5,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 11,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DEN",
+          "fantasyPoints": 13.34,
+          "passing": {
+            "completions": 29,
+            "attempts": 45,
+            "yards": 276,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 12,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "IND",
+          "fantasyPoints": 17.08,
+          "passing": {
+            "completions": 29,
+            "attempts": 46,
+            "yards": 352,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 30,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 13,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DAL",
+          "fantasyPoints": 29.44,
+          "passing": {
+            "completions": 23,
+            "attempts": 34,
+            "yards": 261,
+            "tds": 4,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 30,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 14,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "HOU",
+          "fantasyPoints": 5.8,
+          "passing": {
+            "completions": 14,
+            "attempts": 33,
+            "yards": 160,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 59,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": -10,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 15,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "LAC",
+          "fantasyPoints": 13.06,
+          "passing": {
+            "completions": 16,
+            "attempts": 28,
+            "yards": 189,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 15,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": "gsis_id",
+        "gsisId": "00-0033873"
+      }
+    },
+    "2026": {
+      "season": 2026,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": "espn_id",
+        "statMatch": null,
+        "gsisId": "00-0033873"
+      }
+    }
+  },
+  "sources": {
+    "profile": "Sleeper",
+    "stats": "nflverse / nflfastR weekly player stats",
+    "fantasyScoring": "Half-PPR"
+  }
+}
