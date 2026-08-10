@@ -49,71 +49,61 @@ export async function GET({
 
 
 	try {
-		const [
-			playerCard,
-			league
-		] = await Promise.all([
+		const playerCard =
+	await getPlayerCard({
+		playerId:
+			params.playerId,
 
-			getPlayerCard({
-				playerId:
-					params.playerId,
+		season,
 
-				season,
-
-				fetchFn:
-					fetch
-			}),
+		fetchFn:
+			fetch
+	});
 
 
-			getPlayerLeagueHistory({
-				playerId:
-					params.playerId,
+const league =
+	await getPlayerLeagueHistory({
+		playerId:
+			params.playerId,
 
-				url,
+		url,
 
-				env:
-					platform?.env
-			}).catch(
-				(error) => {
-					/*
-					 * League history failing
-					 * should NOT kill the
-					 * game-log modal.
-					 */
-					console.error(
-						'Player league history failed:',
-						error
-					);
+		env:
+			platform?.env
+	}).catch(
+		(error) => {
+			console.error(
+				'Player league history failed:',
+				error
+			);
 
+			return {
+				available:
+					false,
 
-					return {
-						available:
-							false,
+				currentRoster: {
+					rostered:
+						false,
 
-						currentRoster: {
-							rostered:
-								false,
+					teamName:
+						null,
 
-							teamName:
-								null,
+					managerName:
+						null,
 
-							managerName:
-								null,
+					rosterId:
+						null,
 
-							rosterId:
-								null,
+					season:
+						null
+				},
 
-							season:
-								null
-						},
+				history: [],
 
-						history: [],
-
-						historySeasons: []
-					};
-				}
-			)
-		]);
+				historySeasons: []
+			};
+		}
+	);
 
 
 		return json(

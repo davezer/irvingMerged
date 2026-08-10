@@ -11,17 +11,22 @@ import {
 	getSleeperUsers
 } from '$lib/server/league/sleeperClient.js';
 
+const MAX_PLAYER_HISTORY_SEASONS = 2;
 
-const TRANSACTION_WEEKS = Array.from(
-	{ length: 19 },
-	(_, index) => index
-);
+const FULL_TRANSACTION_WEEKS =
+	Array.from(
+		{ length: 18 },
+		(_, index) =>
+			index + 1
+	);
+const TRANSACTION_BATCH_SIZE = 3;
 
 const LEDGER_CACHE_MS =
 	10 * 60 * 1000;
 
 const leagueLedgerCache =
 	new Map();
+
 
 
 function numberValue(
@@ -232,9 +237,83 @@ function uniqueLeagues(
 	return output;
 }
 
+async function loadTransactionWeeks(
+	leagueId,
+	weeks = []
+) {
+	const output = [];
+
+	const uniqueWeeks =
+		[
+			...new Set(
+				weeks
+					.map(Number)
+					.filter(
+						(week) =>
+							Number.isInteger(
+								week
+							) &&
+							week >= 1 &&
+							week <= 18
+					)
+			)
+		].sort(
+			(a, b) =>
+				a - b
+		);
+
+	for (
+		let index = 0;
+		index < uniqueWeeks.length;
+		index += TRANSACTION_BATCH_SIZE
+	) {
+		const batchWeeks =
+			uniqueWeeks.slice(
+				index,
+				index +
+					TRANSACTION_BATCH_SIZE
+			);
+
+		const batch =
+			await Promise.all(
+				batchWeeks.map(
+					async (week) => {
+						const rows =
+							await getSleeperTransactionsForWeek(
+								leagueId,
+								week
+							).catch(
+								() => []
+							);
+
+						return (
+							rows || []
+						).map(
+							(txn) => ({
+								...txn,
+
+								__leagueWeek:
+									week
+							})
+						);
+					}
+				)
+			);
+
+		output.push(
+			...batch.flat()
+		);
+	}
+
+	return output;
+}
 
 async function loadLeagueSeason(
-	league
+	league,
+	{
+		transactionWeeks =
+			FULL_TRANSACTION_WEEKS
+	} = {}
 ) {
 	const leagueId =
 		String(
@@ -252,11 +331,18 @@ async function loadLeagueSeason(
 		return null;
 	}
 
+
+	/*
+	 * First get the relatively cheap
+	 * season-level resources.
+	 *
+	 * Transaction requests are deliberately
+	 * handled separately and throttled.
+	 */
 	const [
 		users,
 		rosters,
-		drafts,
-		transactionBuckets
+		drafts
 	] = await Promise.all([
 		getSleeperUsers(
 			leagueId
@@ -274,30 +360,6 @@ async function loadLeagueSeason(
 			leagueId
 		).catch(
 			() => []
-		),
-
-		Promise.all(
-			TRANSACTION_WEEKS.map(
-				async (week) => {
-					const rows =
-						await getSleeperTransactionsForWeek(
-							leagueId,
-							week
-						).catch(
-							() => []
-						);
-
-					return (
-						rows || []
-					).map(
-						(txn) => ({
-							...txn,
-							__leagueWeek:
-								week
-						})
-					);
-				}
-			)
 		)
 	]);
 
@@ -315,6 +377,13 @@ async function loadLeagueSeason(
 		);
 
 
+	/*
+	 * Draft picks + transaction batches are
+	 * sequential here intentionally.
+	 *
+	 * We're optimizing for Worker reliability,
+	 * not shaving 100ms off a modal.
+	 */
 	const picks =
 		draft?.draft_id
 			? await getSleeperDraftPicks(
@@ -323,6 +392,13 @@ async function loadLeagueSeason(
 					() => []
 				)
 			: [];
+
+
+	const transactions =
+		await loadTransactionWeeks(
+			leagueId,
+			transactionWeeks
+		);
 
 
 	return {
@@ -347,8 +423,7 @@ async function loadLeagueSeason(
 				? picks
 				: [],
 
-		transactions:
-			transactionBuckets.flat()
+		transactions
 	};
 }
 
@@ -1234,13 +1309,11 @@ async function buildLeagueLedger({
 	env
 }) {
 	/*
-	 * The stats season selector in
-	 * PlayerModal should NOT change
-	 * the definition of "current
-	 * Irving roster".
+	 * Player stats can change season in the modal.
 	 *
-	 * Remove those page filters and
-	 * resolve the actual live league.
+	 * Irving ownership should always resolve
+	 * against the actual current league, so strip
+	 * page-level filters first.
 	 */
 	const contextUrl =
 		new URL(url);
@@ -1307,36 +1380,127 @@ async function buildLeagueLedger({
 		);
 
 
-	const leagues =
+	/*
+	 * Sort newest first.
+	 *
+	 * Player File only needs the current and
+	 * previous ICL seasons. This keeps a cold
+	 * Cloudflare invocation safely below the
+	 * external subrequest ceiling.
+	 */
+	const allLeagues =
 		uniqueLeagues([
 			...(history || []),
 			currentContext.league
-		]);
-
-
-	const seasons =
-		(
-			await Promise.all(
-				leagues.map(
-					(league) =>
-						loadLeagueSeason(
-							league
-						)
-				)
-			)
-		)
-			.filter(Boolean)
+		])
 			.sort(
 				(a, b) =>
 					Number(
-						a.season ||
+						b?.season ||
 							0
 					) -
 					Number(
-						b.season ||
+						a?.season ||
 							0
 					)
 			);
+
+
+	const ledgerLeagues =
+		allLeagues.slice(
+			0,
+			MAX_PLAYER_HISTORY_SEASONS
+		);
+
+
+	/*
+	 * Current season only needs transaction
+	 * weeks that could actually have happened.
+	 *
+	 * Historical season gets the full Week
+	 * 1–18 ledger.
+	 */
+	const currentWeek =
+		Math.max(
+			1,
+			Math.min(
+				18,
+				Number(
+					currentContext.selectedWeek ||
+						1
+				)
+			)
+		);
+
+
+	const currentTransactionWeeks =
+		Array.from(
+			{
+				length:
+					currentWeek
+			},
+			(_, index) =>
+				index + 1
+		);
+
+
+	const seasons = [];
+
+
+	/*
+	 * IMPORTANT:
+	 *
+	 * Do this SEQUENTIALLY.
+	 *
+	 * The old code Promise.all()'d every season,
+	 * which meant each season could launch its
+	 * own transaction requests simultaneously.
+	 */
+	for (
+		const league
+		of ledgerLeagues
+	) {
+		const isCurrentLeague =
+			String(
+				league?.league_id ||
+					''
+			) ===
+			String(
+				currentContext.leagueId
+			);
+
+
+		const seasonData =
+			await loadLeagueSeason(
+				league,
+				{
+					transactionWeeks:
+						isCurrentLeague
+							? currentTransactionWeeks
+							: FULL_TRANSACTION_WEEKS
+				}
+			);
+
+
+		if (seasonData) {
+			seasons.push(
+				seasonData
+			);
+		}
+	}
+
+
+	seasons.sort(
+		(a, b) =>
+			Number(
+				a.season ||
+					0
+			) -
+			Number(
+				b.season ||
+					0
+			)
+	);
 
 
 	let currentSeasonData =
@@ -1357,10 +1521,19 @@ async function buildLeagueLedger({
 		);
 
 
+	/*
+	 * This should almost always exist because
+	 * currentContext.league was added above,
+	 * but keep the fallback defensive.
+	 */
 	if (!currentSeasonData) {
 		currentSeasonData =
 			await loadLeagueSeason(
-				currentContext.league
+				currentContext.league,
+				{
+					transactionWeeks:
+						currentTransactionWeeks
+				}
 			);
 
 
@@ -1377,7 +1550,22 @@ async function buildLeagueLedger({
 
 		currentSeasonData,
 
-		seasons
+		seasons,
+
+		historyLimited:
+			allLeagues.length >
+			ledgerLeagues.length,
+
+		availableLeagueSeasons:
+			allLeagues
+				.map(
+					(league) =>
+						Number(
+							league?.season ||
+								0
+						)
+				)
+				.filter(Boolean)
 	};
 
 
@@ -1445,37 +1633,40 @@ export async function getPlayerLeagueHistory({
 
 
 	return {
-		available: true,
+	available: true,
 
-		currentRoster:
-			buildCurrentRoster(
-				cleanPlayerId,
-				ledger.currentSeasonData
-			),
+	historyLimited:
+		Boolean(
+			ledger.historyLimited
+		),
 
-		history:
-			buildHistoryEvents(
-				cleanPlayerId,
-				ledger.seasons,
-				playersById
-			),
+	currentRoster:
+		buildCurrentRoster(
+			cleanPlayerId,
+			ledger.currentSeasonData
+		),
 
-		historySeasons: [
-			...new Set(
-				ledger.seasons
-					.map(
-						(row) =>
-							Number(
-								row.season
-							)
-					)
-					.filter(
-						Boolean
-					)
-			)
-		].sort(
-			(a, b) =>
-				b - a
+	history:
+		buildHistoryEvents(
+			cleanPlayerId,
+			ledger.seasons,
+			playersById
+		),
+
+	historySeasons: [
+		...new Set(
+			ledger.seasons
+				.map(
+					(row) =>
+						Number(
+							row.season
+						)
+				)
+				.filter(Boolean)
 		)
-	};
+	].sort(
+		(a, b) =>
+			b - a
+	)
+};
 }
