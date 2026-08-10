@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
+  import PlayerModal from '$lib/components/league/PlayerModal.svelte';
+  import { openPlayerModal } from '$lib/stores/playerModal.js';
 
   export let data;
 
@@ -58,27 +60,145 @@
     adminDD.toggleAttribute('open');
   }
 
+  function getPlayerTrigger(target) {
+	if (!target || typeof target.closest !== 'function') {
+		return null;
+	}
+
+	return target.closest('[data-player-id]');
+}
+
+function openPlayerFromTrigger(trigger, event) {
+	const playerId =
+	String(
+		trigger?.getAttribute('data-player-id') ||
+			''
+	).trim();
+
+if (
+	!playerId ||
+	playerId === '0'
+) {
+	return;
+}
+
+	const rawSeason = Number(
+		trigger.getAttribute('data-player-season')
+	);
+
+	const season = Number.isFinite(rawSeason) && rawSeason > 0
+		? rawSeason
+		: new Date().getFullYear();
+
+	event?.preventDefault();
+
+	openPlayerModal(playerId, {
+		season
+	});
+}
+
   onMount(() => {
-    function onDocPointerDown(event) {
-      if (!adminDD?.hasAttribute('open')) return;
-      const target = event.target;
-      if (!(target instanceof Node && adminDD.contains(target))) closeAdmin();
-    }
+	function onDocPointerDown(event) {
+		if (!adminDD?.hasAttribute('open')) return;
 
-    function onKeyDown(event) {
-      if (event.key === 'Escape') {
-        closeAdmin();
-        closeMobile();
-      }
-    }
+		const target = event.target;
 
-    document.addEventListener('pointerdown', onDocPointerDown, true);
-    document.addEventListener('keydown', onKeyDown, true);
-    return () => {
-      document.removeEventListener('pointerdown', onDocPointerDown, true);
-      document.removeEventListener('keydown', onKeyDown, true);
-    };
-  });
+		if (
+			!(
+				target instanceof Node &&
+				adminDD.contains(target)
+			)
+		) {
+			closeAdmin();
+		}
+	}
+
+	function onPlayerClick(event) {
+		/*
+		 * Preserve browser behavior for:
+		 * ctrl-click, cmd-click, shift-click, etc.
+		 */
+		if (
+			event.metaKey ||
+			event.ctrlKey ||
+			event.shiftKey ||
+			event.altKey
+		) {
+			return;
+		}
+
+		const trigger =
+			getPlayerTrigger(event.target);
+
+		if (!trigger) return;
+
+		openPlayerFromTrigger(
+			trigger,
+			event
+		);
+	}
+
+	function onKeyDown(event) {
+		if (event.key === 'Escape') {
+			closeAdmin();
+			closeMobile();
+			return;
+		}
+
+		if (
+			event.key === 'Enter' ||
+			event.key === ' '
+		) {
+			const trigger =
+				getPlayerTrigger(
+					event.target
+				);
+
+			if (!trigger) return;
+
+			openPlayerFromTrigger(
+				trigger,
+				event
+			);
+		}
+	}
+
+	document.addEventListener(
+		'pointerdown',
+		onDocPointerDown,
+		true
+	);
+
+	document.addEventListener(
+		'click',
+		onPlayerClick
+	);
+
+	document.addEventListener(
+		'keydown',
+		onKeyDown,
+		true
+	);
+
+	return () => {
+		document.removeEventListener(
+			'pointerdown',
+			onDocPointerDown,
+			true
+		);
+
+		document.removeEventListener(
+			'click',
+			onPlayerClick
+		);
+
+		document.removeEventListener(
+			'keydown',
+			onKeyDown,
+			true
+		);
+	};
+});
 
   $: if (path) {
     mobileOpen = false;
@@ -92,11 +212,16 @@
 
     <div class="topbar-inner">
       <a class="brand" href="/" aria-label="Irving Collective home">
-        <span class="brand-mark">ICN</span>
-        <span class="brand-copy">
-          <strong>Irving Collective</strong>
-          <em>Champions League | Offseason Lounge</em>
-        </span>
+        <span class="brand-mark">
+	<img
+		src="/badge.png"
+		alt="Irving Champions League"
+	/>
+</span>
+       <span class="brand-copy">
+	<strong>Irving Champions League</strong>
+	<em>The Gentleman's Legacy</em>
+</span>
       </a>
 
       <nav class="primary-nav" aria-label="Primary navigation">
@@ -159,33 +284,57 @@
     <slot />
   </main>
 </div>
+<PlayerModal />
 
 <style>
   .app-shell {
     min-height: 100vh;
   }
 
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 80;
-    border-bottom: 3px solid #070808;
-    background: linear-gradient(180deg, #4e5552, #1c2220 54%, #080909);
-    box-shadow: 0 2px 0 rgba(255,255,255,0.16) inset, 0 14px 30px rgba(0,0,0,0.42);
-  }
+.topbar {
+	position: sticky;
+	top: 0;
 
-  .broadcast-ticker {
-    width: 100%;
-    height: 28px;
-    overflow: hidden;
-    background: linear-gradient(180deg, #252b28 0%, #080909 52%, #151817 100%);
-    border-top: 1px solid rgba(255, 255, 255, 0.28);
-    border-bottom: 2px solid #000;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.25),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.9);
-    white-space: nowrap;
-  }
+	z-index: 80;
+
+	border-bottom:
+		3px solid
+		var(--icl-blue-dark);
+
+	background:
+		#0b0e12;
+
+	box-shadow:
+		0 1px 0
+			rgba(255,255,255,.08)
+			inset,
+		0 12px 32px
+			rgba(0,0,0,.48);
+}
+
+.broadcast-ticker {
+	width: 100%;
+	height: 28px;
+	overflow: hidden;
+
+	background:
+		#050709;
+
+	border-top:
+		1px solid
+		rgba(255,255,255,.08);
+
+	border-bottom:
+		1px solid
+		#000;
+
+	box-shadow:
+		inset 0 -1px 0
+		rgba(17,133,200,.18);
+
+	white-space:
+		nowrap;
+}
 
   .ticker-track {
     display: flex;
@@ -271,47 +420,79 @@
   }
 
   .brand-mark {
-    width: 54px;
-    height: 36px;
-    display: grid;
-    place-items: center;
-    border: 2px solid #050505;
-    border-radius: 5px;
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.22), transparent 38%),
-      linear-gradient(90deg, var(--bug-red), var(--bug-red-dark));
-    color: white;
-    font-family: var(--font-score);
-    font-size: 0.92rem;
-    font-weight: 950;
-    letter-spacing: -0.04em;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.36),
-      inset 0 -2px 0 rgba(0,0,0,0.42),
-      0 10px 22px rgba(0,0,0,0.34);
-  }
+	width: 58px;
+	height: 58px;
+
+	display: grid;
+	place-items: center;
+
+	flex: 0 0 auto;
+
+	border: 0;
+	border-radius: 0;
+
+	background: transparent;
+
+	box-shadow: none;
+}
+
+.brand-mark img {
+	display: block;
+
+	width: 100%;
+	height: 100%;
+
+	object-fit: contain;
+
+	filter:
+		drop-shadow(
+			0 4px 5px
+			rgba(0,0,0,.55)
+		);
+}
 
   .brand-copy {
-    display: grid;
-    gap: 1px;
-  }
+	display: grid;
+	gap: 2px;
+}
+ .brand-copy strong {
+	color: #fff;
 
-  .brand-copy strong {
-    font-family: var(--font-score);
-    font-size: 1.02rem;
-    line-height: 1;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
+	font-family:
+		var(--font-score);
 
-  .brand-copy em {
-    color: var(--bug-yellow);
-    font-size: 0.68rem;
-    font-style: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    white-space: nowrap;
-  }
+	font-size: 1rem;
+
+	line-height: 1;
+
+	text-transform: uppercase;
+
+	white-space: nowrap;
+}
+
+
+.brand-copy em {
+	color:
+		var(--icl-blue);
+
+	font-size:
+		0.66rem;
+
+	font-style:
+		normal;
+
+	font-weight:
+		900;
+
+	text-transform:
+		uppercase;
+
+	letter-spacing:
+		0.13em;
+
+	white-space:
+		nowrap;
+}
 
   .primary-nav {
     display: flex;
@@ -354,16 +535,29 @@
     letter-spacing: 0.01em;
   }
 
-  .primary-nav a:hover,
-  .primary-nav a.active,
-  .mobile-menu a:hover,
-  .mobile-menu a.active,
-  .admin-popover a:hover,
-  .admin-popover a.active {
-    color: white;
-    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-    text-decoration: none;
-  }
+ .primary-nav a:hover,
+.primary-nav a.active,
+.mobile-menu a:hover,
+.mobile-menu a.active,
+.admin-popover a:hover,
+.admin-popover a.active {
+	color: white;
+
+	background:
+		linear-gradient(
+			180deg,
+			var(--icl-blue),
+			var(--icl-blue-dark)
+		);
+
+	text-decoration:
+		none;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,.28),
+		inset 0 -2px 0 rgba(0,0,0,.52),
+		0 0 0 1px rgba(17,133,200,.18);
+}
 
   .right-rail {
     display: flex;
@@ -372,6 +566,15 @@
     gap: 9px;
     min-width: 0;
   }
+
+  :global([data-player-id]) {
+	cursor: pointer;
+}
+
+:global([data-player-id]:focus-visible) {
+	outline: 2px solid var(--bug-yellow, #ffd34d);
+	outline-offset: -2px;
+}
 
   .user-chip {
     display: inline-flex;
@@ -613,6 +816,7 @@
 
     .brand-mark {
       width: 48px;
+      height: 48px;
     }
 
     .user-chip {

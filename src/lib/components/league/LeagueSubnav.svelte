@@ -17,7 +17,7 @@
 </script>
 
 <nav class="subnav" aria-label="League navigation">
-  <span class="network-bug">ICN</span>
+  <span class="network-bug">ICL</span>
   {#each items as item}
     <a class:active={active === item.key} href={item.href}>{item.label}</a>
   {/each}

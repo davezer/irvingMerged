@@ -53,18 +53,15 @@
 <div class="page-stack">
   <LeagueSubnav season={season} active="standings" />
 
-  <section class="studio-header">
-    <div class="header-bug">
-      <span class="network">ICN</span>
-      <span>Studio Standings</span>
-    </div>
+  <section class="studio-header icl-hero-shell pad-md" aria-label="Standings header">
+  
 
     <div class="header-copy">
       <h1>Standings Desk</h1>
       
     </div>
 
-<div class="standings-season-box" aria-label="Season selector">
+<div class="standings-season-box icl-hero-shell pad-md" aria-label="Season selector">
 	<span class="standings-season-label">Season Feed</span>
 
 	<div class="standings-season-pills">
@@ -83,7 +80,7 @@
 
   {#if !data.hasData}
     <section class="studio-card empty-state">
-      <div class="bug-row"><span>ICN</span><strong>No Signal</strong></div>
+      <div class="bug-row"><span>ICL</span><strong>No Signal</strong></div>
       <h2>No standings data yet</h2>
       <p>We could not pull Sleeper standings for this season.</p>
     </section>
@@ -104,9 +101,9 @@
       </article>
     </section> -->
 
-    <section class="standings-board" aria-label="Full league standings">
+    <section class="standings-board icl-hero-shell pad-md" aria-label="Full league standings">
       <div class="board-topper">
-        <div class="bug-row"><span>ICN</span><strong>FantasyCast Standings</strong></div>
+        <div class="bug-row"><span>ICL</span><strong>FantasyCast Standings</strong></div>
         <!-- <div class="board-note">Sleeper API + runtime cache</div> -->
       </div>
 
@@ -167,10 +164,7 @@
     display: grid;
     gap: 18px;
   }
-
-  .studio-header,
-  .studio-card,
-  .standings-board,
+ .studio-card,
   .studio-strip article {
     border: 2px solid #070808;
     background:
@@ -194,9 +188,6 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-      linear-gradient(90deg, rgba(199, 25, 47, 0.26), transparent 26%),
-      repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px);
     opacity: .82;
   }
 

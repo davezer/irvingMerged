@@ -223,7 +223,7 @@
 
   <section class="franchise-broadcast">
     <div class="broadcast-header">
-      <span class="network-label">ICN FantasyCast</span>
+      <span class="network-label">ICL FantasyCast</span>
       <strong>{teamName}</strong>
 
       <nav class="season-switcher" aria-label="Season selector">
@@ -238,7 +238,7 @@
       </nav>
     </div>
 
-    <div class="main-bug">
+    <div class="main-bug icl-hero-shell pad-md">
       <div class="logo-bay">
         <img class="team-logo" src={teamLogo} alt={teamName} />
       </div>
@@ -612,9 +612,6 @@
     grid-template-columns: 220px minmax(0, 1fr);
     gap: 22px;
     padding: 22px;
-    background:
-      radial-gradient(circle at 14% 12%, rgba(247,201,72,0.13), transparent 22rem),
-      linear-gradient(90deg, rgba(0,0,0,0.16), transparent 38%);
   }
 
   .logo-bay {

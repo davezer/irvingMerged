@@ -1,131 +1,284 @@
 /* -------------------------------------------------------
-   Irving Broadcast Network Theme
-   Vintage 80s/90s football scorebug package
+Irving Champions League Theme
+Classic ICL branding + vintage football scorebug UI
 ------------------------------------------------------- */
 
 :root {
-  color-scheme: dark;
+	color-scheme: dark;
 
-  --field: #2f5d3b;
-  --field-dark: #203f2a;
-  --field-line: rgba(238, 238, 218, 0.09);
+	/* ---------------------------------------------------
+	   ICL BRAND
+	--------------------------------------------------- */
 
-  --broadcast-black: #070808;
-  --bug-black: #0b0d0d;
-  --bug-charcoal: #1f2524;
-  --bug-charcoal-2: #2f3634;
-  --bug-gray: #59605d;
-  --bug-gray-2: #747a76;
-  --bug-silver: #d8d8cf;
-  --bug-white: #f7f5eb;
-  --bug-cream: #eee8d7;
-  --bug-red: #c7192f;
-  --bug-red-dark: #8e1020;
-  --bug-yellow: #f7c948;
-  --bug-green: #45a16a;
-  --bug-blue: #175aa6;
+	--icl-black: #07090d;
+	--icl-navy: #0b1018;
+	--icl-navy-2: #111925;
 
-  --text: var(--bug-white);
-  --text-strong: #ffffff;
-  --muted: rgba(247, 245, 235, 0.72);
-  --muted-2: rgba(247, 245, 235, 0.52);
+	--icl-blue: #1185c8;
+	--icl-blue-dark: #07578c;
+	--icl-blue-soft: rgba(17, 133, 200, 0.18);
 
-  --panel: rgba(18, 22, 21, 0.95);
-  --panel-strong: rgba(32, 37, 36, 0.98);
-  --panel-soft: rgba(67, 76, 72, 0.68);
-  --border: rgba(216, 216, 207, 0.22);
-  --border-strong: rgba(247, 201, 72, 0.48);
+	--broadcast-black: #070808;
 
-  --accent: var(--bug-red);
-  --accent-2: var(--bug-yellow);
-  --accent-3: var(--bug-blue);
-  --gold0: var(--bug-yellow);
-  --green: var(--bug-green);
-  --danger: #e32136;
-  --success: #47b26d;
-  --warning: var(--bug-yellow);
+	--bug-black: #0b0d0d;
+	--bug-charcoal: #1f2524;
+	--bug-charcoal-2: #2f3634;
 
-  --font-body: Arial, Helvetica, sans-serif;
-  --font-display: "Arial Black", "Arial Narrow", Impact, Arial, sans-serif;
-  --font-serif: Georgia, "Times New Roman", serif;
-  --font-score: "Arial Black", Impact, Arial, sans-serif;
+	--bug-gray: #59605d;
+	--bug-gray-2: #747a76;
 
-  --shadow-bug:
-    0 2px 0 rgba(255, 255, 255, 0.18) inset,
-    0 -3px 0 rgba(0, 0, 0, 0.62) inset,
-    0 16px 42px rgba(0, 0, 0, 0.48);
+	--bug-silver: #d8d8cf;
+	--bug-white: #f7f5eb;
+	--bug-cream: #eee8d7;
 
-  --shadow-panel:
-    0 1px 0 rgba(255, 255, 255, 0.18) inset,
-    0 -2px 0 rgba(0, 0, 0, 0.5) inset,
-    0 22px 60px rgba(0, 0, 0, 0.44);
+	--bug-red: #c7192f;
+	--bug-red-dark: #8e1020;
 
-  --radius-lg: 18px;
-  --radius-md: 12px;
-  --radius-sm: 7px;
+	--bug-yellow: #f7c948;
+	--bug-green: #45a16a;
+
+	/*
+	 * Keep old variable name alive so
+	 * existing route CSS doesn't break.
+	 */
+	--bug-blue: var(--icl-blue);
+
+	--text: var(--bug-white);
+	--text-strong: #ffffff;
+
+	--muted: rgba(247, 245, 235, 0.72);
+	--muted-2: rgba(247, 245, 235, 0.52);
+
+	--panel: rgba(18, 22, 24, 0.97);
+	--panel-strong: rgba(32, 37, 38, 0.99);
+	--panel-soft: rgba(67, 76, 75, 0.72);
+
+	--border: rgba(216, 216, 207, 0.22);
+	--border-strong: rgba(17, 133, 200, 0.55);
+
+	/*
+	 * Blue is now the main ICL accent.
+	 * Red remains our secondary/action color.
+	 */
+	--accent: var(--icl-blue);
+	--accent-2: var(--bug-yellow);
+	--accent-3: var(--bug-red);
+
+	--gold0: var(--bug-yellow);
+	--green: var(--bug-green);
+
+	--danger: #e32136;
+	--success: #47b26d;
+	--warning: var(--bug-yellow);
+
+	--font-body:
+		Arial,
+		Helvetica,
+		sans-serif;
+
+	--font-display:
+		"Arial Black",
+		"Arial Narrow",
+		Impact,
+		Arial,
+		sans-serif;
+
+	--font-serif:
+		Georgia,
+		"Times New Roman",
+		serif;
+
+	--font-score:
+		"Arial Black",
+		Impact,
+		Arial,
+		sans-serif;
+
+	--shadow-bug:
+		0 2px 0 rgba(255, 255, 255, 0.18) inset,
+		0 -3px 0 rgba(0, 0, 0, 0.62) inset,
+		0 16px 42px rgba(0, 0, 0, 0.48);
+
+	--shadow-panel:
+		0 1px 0 rgba(255, 255, 255, 0.18) inset,
+		0 -2px 0 rgba(0, 0, 0, 0.5) inset,
+		0 22px 60px rgba(0, 0, 0, 0.44);
+
+	--radius-lg: 18px;
+	--radius-md: 12px;
+	--radius-sm: 7px;
 }
 
-* { box-sizing: border-box; }
+
+* {
+	box-sizing: border-box;
+}
+
 
 html {
-  min-height: 100%;
-  background: var(--broadcast-black);
+	min-height: 100%;
+
+	background:
+		var(--icl-black);
 }
+
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
-  font-family: var(--font-body);
-  background:
-    linear-gradient(90deg, transparent 0 49.5%, rgba(255, 255, 255, 0.14) 49.5% 50.5%, transparent 50.5% 100%),
-    repeating-linear-gradient(90deg, transparent 0 78px, var(--field-line) 78px 80px),
-    radial-gradient(circle at 18% 10%, rgba(247, 201, 72, 0.10), transparent 26rem),
-    radial-gradient(circle at 82% 0%, rgba(199, 25, 47, 0.15), transparent 30rem),
-    linear-gradient(180deg, var(--field-dark), #122418 45%, #080909 100%);
-  background-attachment: fixed;
-  text-rendering: optimizeLegibility;
+	margin: 0;
+
+	min-height: 100vh;
+
+	color:
+		var(--text);
+
+	font-family:
+		var(--font-body);
+
+	/*
+	 * THIS IS THE BIG CHANGE.
+	 *
+	 * No field.
+	 * No yard lines.
+	 * No giant vignette.
+	 * No football wallpaper.
+	 *
+	 * Just ICL.
+	 */
+	background:
+		var(--icl-navy);
+
+	background-attachment:
+		fixed;
+
+	text-rendering:
+		optimizeLegibility;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 4px),
-    radial-gradient(circle at center, transparent 0 48%, rgba(0,0,0,0.42) 100%);
-  mix-blend-mode: soft-light;
-  opacity: 0.68;
-}
 
+/*
+ * Kill the old field texture layers.
+ */
+body::before,
 body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.52));
+	display: none;
 }
+
 
 button,
 input,
 select,
-textarea { font: inherit; }
-
-a { color: var(--bug-yellow); }
-a:hover { color: var(--bug-white); }
-img { max-width: 100%; }
-
-::selection {
-  color: #111;
-  background: var(--bug-yellow);
+textarea {
+	font: inherit;
 }
 
-/* Shared broadcast surfaces. The !important rules are intentional: many route
-   files still have old scoped gold/neon styles, and this package pulls the
-   whole app into the same scorebug skin without rewriting every tiny page. */
+
+a {
+	color:
+		var(--icl-blue);
+}
+
+
+a:hover {
+	color:
+		var(--bug-white);
+}
+
+
+img {
+	max-width: 100%;
+}
+
+
+::selection {
+	color: white;
+
+	background:
+		var(--icl-blue);
+}
+
+/* =======================================================
+   ICL UNIFIED HERO SHELL
+   Use this on all top-of-page hero/header blocks
+======================================================= */
+
+.icl-hero-shell {
+	position: relative;
+	overflow: hidden;
+
+	border: 2px solid #050708;
+	border-radius: 16px;
+
+	background:
+		linear-gradient(
+			90deg,
+			rgba(17, 133, 200, 0.16),
+			transparent 46%
+		),
+		#111619;
+
+	box-shadow: var(--shadow-panel);
+}
+
+.icl-hero-shell::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+
+	background:
+		linear-gradient(
+			90deg,
+			rgba(199, 25, 47, 0.16),
+			transparent 26%
+		);
+}
+
+.icl-hero-shell::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+
+	background:
+		linear-gradient(
+			180deg,
+			rgba(255,255,255,0.05),
+			transparent 30%
+		);
+
+	opacity: 0.55;
+}
+
+.icl-hero-shell > * {
+	position: relative;
+	z-index: 1;
+}
+
+.icl-hero-shell.compact {
+	min-height: 0;
+}
+
+.icl-hero-shell.pad-lg {
+	padding: 28px 34px;
+}
+
+.icl-hero-shell.pad-md {
+	padding: 22px 28px;
+}
+
+.icl-hero-shell.pad-sm {
+	padding: 18px 22px;
+}
+
+/* -------------------------------------------------------
+SHARED SCOREBUG SURFACES
+
+The scorebug look stays.
+
+The important difference is that these now sit on a
+clean ICL background instead of becoming the background.
+------------------------------------------------------- */
+
 .card,
 .panel,
 .hero-card,
@@ -139,30 +292,72 @@ img { max-width: 100%; }
 .story-card,
 .podium-card,
 .event-card {
-  border: 2px solid #090a0a !important;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 18%, rgba(0,0,0,0.10)),
-    linear-gradient(180deg, var(--bug-gray), var(--bug-charcoal) 48%, var(--bug-black)) !important;
-  box-shadow: var(--shadow-panel) !important;
-  color: var(--bug-white) !important;
+	border:
+		2px solid
+		#090a0a !important;
+
+	background:
+		linear-gradient(
+			180deg,
+			rgba(255,255,255,0.11),
+			rgba(255,255,255,0.02) 18%,
+			rgba(0,0,0,0.10)
+		),
+		linear-gradient(
+			180deg,
+			var(--bug-gray),
+			var(--bug-charcoal) 48%,
+			var(--bug-black)
+		) !important;
+
+	box-shadow:
+		var(--shadow-panel) !important;
+
+	color:
+		var(--bug-white) !important;
 }
+
 
 .hero-card,
 .hero,
 .hero-shell {
-  border-color: #060707 !important;
-  background:
-    linear-gradient(90deg, rgba(199,25,47,0.25), transparent 22%),
-    linear-gradient(180deg, #5f6763, #252b2a 48%, #101313) !important;
-  box-shadow: var(--shadow-bug) !important;
+	border-color:
+		#060707 !important;
+
+	/*
+	 * Replace the red wash with a subtle
+	 * ICL-blue identity wash.
+	 */
+	background:
+		linear-gradient(
+			90deg,
+			rgba(17, 133, 200, 0.22),
+			transparent 24%
+		),
+		linear-gradient(
+			180deg,
+			#5f6763,
+			#252b2a 48%,
+			#101313
+		) !important;
+
+	box-shadow:
+		var(--shadow-bug) !important;
 }
+
 
 .card::before,
 .hero-card::before,
 .panel::before,
 .team-card::before {
-  border-radius: inherit;
+	border-radius:
+		inherit;
 }
+
+
+/* -------------------------------------------------------
+TYPOGRAPHY / LABELS
+------------------------------------------------------- */
 
 .eyebrow,
 .kicker,
@@ -174,27 +369,51 @@ img { max-width: 100%; }
 .history-head,
 .tag,
 .card-label {
-  color: var(--bug-yellow) !important;
-  font-family: var(--font-score);
-  font-size: 0.68rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  text-shadow: 0 2px 0 rgba(0,0,0,0.75);
+	color:
+		var(--bug-yellow) !important;
+
+	font-family:
+		var(--font-score);
+
+	font-size:
+		0.68rem;
+
+	font-weight:
+		950;
+
+	text-transform:
+		uppercase;
+
+	letter-spacing:
+		0.16em;
+
+	text-shadow:
+		0 2px 0
+		rgba(0,0,0,0.75);
 }
+
 
 h1,
 h2,
 h3,
 h4 {
-  color: var(--bug-white);
-  text-shadow: 0 2px 0 rgba(0,0,0,0.72);
+	color:
+		var(--bug-white);
+
+	text-shadow:
+		0 2px 0
+		rgba(0,0,0,0.72);
 }
 
+
 h1 {
-  font-family: var(--font-display);
-  letter-spacing: -0.055em;
+	font-family:
+		var(--font-display);
+
+	letter-spacing:
+		-0.055em;
 }
+
 
 small,
 .muted,
@@ -202,50 +421,114 @@ small,
 .lede,
 .card p,
 .panel p {
-  color: var(--muted) !important;
+	color:
+		var(--muted) !important;
 }
 
-/* Scorebug primitives */
+
+/* -------------------------------------------------------
+SCOREBUG PRIMITIVES
+------------------------------------------------------- */
+
 .broadcast-bug,
 .scorebug,
 .score-strip,
 .bug-panel {
-  border: 2px solid #070808;
-  background: linear-gradient(180deg, #6b726f, #252a29 45%, #101212);
-  box-shadow: var(--shadow-bug);
+	border:
+		2px solid
+		#070808;
+
+	background:
+		linear-gradient(
+			180deg,
+			#6b726f,
+			#252a29 45%,
+			#101212
+		);
+
+	box-shadow:
+		var(--shadow-bug);
 }
 
+
+/*
+ * The small "network bug" now uses ICL blue.
+ *
+ * Red still exists elsewhere for alerts,
+ * selections, danger states, etc.
+ */
 .bug-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-height: 24px;
-  padding: 4px 9px;
-  border: 1px solid #030303;
-  background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-  color: white;
-  font-family: var(--font-score);
-  font-size: 0.72rem;
-  font-weight: 950;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -2px 0 rgba(0,0,0,0.45);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	min-height: 24px;
+	padding: 4px 9px;
+
+	border: 1px solid #030303;
+
+	background:
+		linear-gradient(
+			180deg,
+			var(--bug-red),
+			var(--bug-red-dark)
+		);
+
+	color: white;
+
+	font-family: var(--font-score);
+	font-size: 0.72rem;
+	font-weight: 950;
+	line-height: 1;
+
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,0.35),
+		inset 0 -2px 0 rgba(0,0,0,0.45);
 }
+
 
 .bug-chip,
 .chips span,
 .pill,
 .rank {
-  border: 1px solid #080909 !important;
-  background: linear-gradient(180deg, #f5f4ea, #c9cac1 50%, #818782) !important;
-  color: #111 !important;
-  font-family: var(--font-score);
-  font-size: 0.72rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), inset 0 -2px 0 rgba(0,0,0,0.30);
+	border:
+		1px solid
+		#080909 !important;
+
+	background:
+		linear-gradient(
+			180deg,
+			#f5f4ea,
+			#c9cac1 50%,
+			#818782
+		) !important;
+
+	color:
+		#111 !important;
+
+	font-family:
+		var(--font-score);
+
+	font-size:
+		0.72rem;
+
+	font-weight:
+		950;
+
+	text-transform:
+		uppercase;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,0.65),
+		inset 0 -2px 0 rgba(0,0,0,0.30);
 }
+
+
+/* -------------------------------------------------------
+LINKS
+------------------------------------------------------- */
 
 .quick-links a,
 .link-row a,
@@ -253,14 +536,35 @@ small,
 .panel-head a,
 .story-card span,
 .command-card em {
-  color: var(--bug-yellow) !important;
-  font-weight: 900;
-  text-decoration: none !important;
+	color:
+		var(--icl-blue) !important;
+
+	font-weight:
+		900;
+
+	text-decoration:
+		none !important;
 }
+
+
 .quick-links a:hover,
 .link-row a:hover,
 .section-head a:hover,
-.panel-head a:hover { text-decoration: underline !important; text-underline-offset: 3px; }
+.panel-head a:hover {
+	color:
+		var(--bug-white) !important;
+
+	text-decoration:
+		underline !important;
+
+	text-underline-offset:
+		3px;
+}
+
+
+/* -------------------------------------------------------
+ROWS
+------------------------------------------------------- */
 
 .line-item,
 .history-row,
@@ -274,12 +578,27 @@ small,
 .event-chip,
 .story,
 .row {
-  border: 1px solid #080909 !important;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
-    linear-gradient(180deg, #2f3634, #151817) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.13), inset 0 -1px 0 rgba(0,0,0,0.5);
+	border:
+		1px solid
+		#080909 !important;
+
+	background:
+		linear-gradient(
+			180deg,
+			rgba(255,255,255,0.08),
+			rgba(255,255,255,0.02)
+		),
+		linear-gradient(
+			180deg,
+			#2f3634,
+			#151817
+		) !important;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,0.13),
+		inset 0 -1px 0 rgba(0,0,0,0.5);
 }
+
 
 .line-item span,
 .card-head strong,
@@ -287,28 +606,100 @@ small,
 .points-num,
 .record-block strong,
 .score-value {
-  color: var(--bug-yellow) !important;
-  font-family: var(--font-score);
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 2px 0 rgba(0,0,0,0.75);
+	color:
+		var(--bug-yellow) !important;
+
+	font-family:
+		var(--font-score);
+
+	font-variant-numeric:
+		tabular-nums;
+
+	text-shadow:
+		0 2px 0
+		rgba(0,0,0,0.75);
 }
 
-.draft-money-low { color: #ff3f3f !important; }
-.draft-money-mid { color: var(--bug-yellow) !important; }
-.draft-money-high { color: #59d37e !important; }
-.draft-money-neutral { color: var(--muted) !important; }
 
-/* Scrollbars */
-*::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-track { background: rgba(0,0,0,0.28); }
+/* -------------------------------------------------------
+DRAFT MONEY
+------------------------------------------------------- */
+
+.draft-money-low {
+	color:
+		#ff3f3f !important;
+}
+
+
+.draft-money-mid {
+	color:
+		var(--bug-yellow) !important;
+}
+
+
+.draft-money-high {
+	color:
+		#59d37e !important;
+}
+
+
+.draft-money-neutral {
+	color:
+		var(--muted) !important;
+}
+
+
+/* -------------------------------------------------------
+SCROLLBARS
+------------------------------------------------------- */
+
+*::-webkit-scrollbar {
+	width:
+		10px;
+
+	height:
+		10px;
+}
+
+
+*::-webkit-scrollbar-track {
+	background:
+		var(--icl-black);
+}
+
+
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--bug-silver), var(--bug-gray));
-  border: 2px solid rgba(0,0,0,0.45);
-  border-radius: 999px;
+	background:
+		linear-gradient(
+			180deg,
+			var(--bug-silver),
+			var(--bug-gray)
+		);
+
+	border:
+		2px solid
+		#090b10;
+
+	border-radius:
+		999px;
 }
 
-@media (max-width: 760px) {
-  body {
-    background-size: auto, 62px 100%, auto, auto, auto;
-  }
+
+/* -------------------------------------------------------
+PLAYER LINKS
+------------------------------------------------------- */
+
+[data-player-id] {
+	cursor:
+		pointer;
+}
+
+
+[data-player-id]:focus-visible {
+	outline:
+		2px solid
+		var(--icl-blue);
+
+	outline-offset:
+		-2px;
 }

@@ -66,27 +66,14 @@
 <div class="page-stack parlay-page">
   <!-- <LeagueSubnav season={data.requestedSeason} active="parlay" /> -->
 
-  <section class="parlay-hero">
-    <div class="hero-bug">
-      <span class="network">ICN</span>
-      <strong>Parlay Desk</strong>
-    </div>
-
-    <div class="hero-copy">
+  <section class="parlay-hero icl-hero-shell pad-md">
+      <div class="hero-copy">
       <div class="eyebrow">Group Action Archive</div>
       <h1>Parlay Detail</h1>
       <!-- <p>Every pick. Every sweat. Every receipt.</p> -->
     </div>
 
-    <div class="season-box" aria-label="Parlay season selector">
-      <span>Season feed</span>
-      <div class="season-pills">
-        <a class:active={!data.requestedSeason} href={seasonHref(null)}>All</a>
-        {#each data.availableSeasons as season}
-          <a class:active={Number(season) === Number(data.requestedSeason)} href={seasonHref(season)}>{season}</a>
-        {/each}
-      </div>
-    </div>
+
   </section>
 
   <section class="stat-strip" aria-label="Parlay summary">
@@ -118,10 +105,7 @@
         <div class="eyebrow">Historical ledger</div>
         <h2>{data.requestedSeason || 'All-Time'} Parlay Board</h2>
       </div>
-      <div class="feed-note">
-        <span>Live source</span>
-        <strong>{data.source}</strong>
-      </div>
+      
     </div>
 
     {#if data.error}
@@ -253,8 +237,7 @@
     padding-bottom: 48px;
   }
 
-  .parlay-hero,
-  .desk-card,
+   .desk-card,
   .stat-strip article {
     border: 2px solid #070808;
     box-shadow: var(--shadow-panel, 0 12px 30px rgba(0,0,0,.35));
@@ -268,10 +251,6 @@
     align-items: stretch;
     overflow: hidden;
     border-radius: 18px;
-    background:
-      linear-gradient(90deg, rgba(199,25,47,.28), transparent 34%),
-      repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px),
-      linear-gradient(180deg, #626965, #292e2c 45%, #101312);
   }
 
   .hero-bug {

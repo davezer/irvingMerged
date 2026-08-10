@@ -87,14 +87,26 @@
       .join('')
       .toUpperCase();
   }
+
+  function isRealPlayer(player) {
+	if (!player) return false;
+
+	const id = String(player.id ?? '').trim();
+
+	return (
+		id &&
+		id !== '0' &&
+		player.name !== 'Player 0'
+	);
+}
 </script>
 
 <div class="page-stack">
   <LeagueSubnav season={season} active="rosters" />
 
-  <section class="roster-hero">
+  <section class="roster-hero icl-hero-shell pad-md">
     <div class="hero-copy">
-      <div class="hero-bug"><span>ICN</span><strong>Roster Desk</strong></div>
+      
       <h1>League rosters</h1>
       <p>Week-by-week roster snapshots, every franchise on one old-school broadcast board.</p>
 
@@ -149,7 +161,7 @@
 
   {#if !data.hasData}
     <section class="empty-card">
-      <div class="bug-row"><span>ICN</span><strong>No roster signal</strong></div>
+      <div class="bug-row"><span>ICL</span><strong>No roster signal</strong></div>
       <h2>No roster data available</h2>
       <p>We could not pull a roster board for this season, week, or franchise selection.</p>
     </section>
@@ -198,8 +210,15 @@
             {#each rosters as roster (roster.rosterId + '-' + slotIndex)}
               {@const starter = roster.starters?.[slotIndex]}
               {@const player = starter?.player}
-              {#if player}
-                <div class={`player-cell ${positionClass(player, slot)}`} title={`${player.name} — ${playerMeta(player)}`}>
+              {#if isRealPlayer(player)}
+                <div
+	class={`player-cell ${positionClass(player, slot)}`}
+	data-player-id={player.id}
+	data-player-season={season}
+	role="button"
+	tabindex="0"
+	aria-label={`Open ${player.name} player card`}
+>
                   {#if player.photoUrl}
                     <img src={player.photoUrl} alt={player.name} />
                   {:else}
@@ -220,8 +239,15 @@
               <div class="slot-label bench-label">BN</div>
               {#each rosters as roster (roster.rosterId + '-bench-' + rowIndex)}
                 {@const player = roster.bench?.[rowIndex]}
-                {#if player}
-                  <div class={`player-cell bench-cell ${positionClass(player, 'BN')}`} title={`${player.name} — ${playerMeta(player)}`}>
+                {#if isRealPlayer(player)}
+                  <div
+	class={`player-cell bench-cell ${positionClass(player, 'BN')}`}
+	data-player-id={player.id}
+	data-player-season={season}
+	role="button"
+	tabindex="0"
+	aria-label={`Open ${player.name} player card`}
+>
                     {#if player.photoUrl}
                       <img src={player.photoUrl} alt={player.name} />
                     {:else}
@@ -243,8 +269,15 @@
               <div class="slot-label bench-label">IR</div>
               {#each rosters as roster (roster.rosterId + '-reserve-' + rowIndex)}
                 {@const player = roster.reserve?.[rowIndex]}
-                {#if player}
-                  <div class={`player-cell reserve-cell ${positionClass(player, 'IR')}`} title={`${player.name} — ${playerMeta(player)}`}>
+                {#if isRealPlayer(player)}
+                  <div
+	class={`player-cell reserve-cell ${positionClass(player, 'IR')}`}
+	data-player-id={player.id}
+	data-player-season={season}
+	role="button"
+	tabindex="0"
+	aria-label={`Open ${player.name} player card`}
+>
                     {#if player.photoUrl}
                       <img src={player.photoUrl} alt={player.name} />
                     {:else}
@@ -274,7 +307,6 @@
     padding-bottom: 44px;
   }
 
-  .roster-hero,
   .week-panel,
   .roster-board-card,
   .empty-card {
@@ -292,9 +324,6 @@
     align-items: start;
     border-radius: 18px;
     padding: 22px;
-    background:
-      linear-gradient(90deg, rgba(199,25,47,0.24), transparent 34%),
-      linear-gradient(180deg, #636b67, #252b2a 48%, #101313);
   }
 
   .hero-copy {

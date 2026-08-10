@@ -151,7 +151,7 @@
 <div class="page-stack">
   <LeagueSubnav season={season} active="transactions" />
 
-  <section class="page-head card">
+  <section class="page-head  icl-hero-shell pad-md" aria-label="Transaction feed controls">
     <div class="head-copy">
       <div class="eyebrow">Transactions</div>
       <h1>Wire room and movement log</h1>
@@ -346,13 +346,28 @@
                         </div>
                         <div class="player-grid">
                           {#each group.players as player (player.id)}
-                            <div class="player-chip">
-                              <img src={player.photoUrl} alt={player.name} />
-                              <div>
-                                <strong>{player.name}</strong>
-                                <small>{player.position || '—'} · {player.teamLabel || player.team || 'FA'}</small>
-                              </div>
-                            </div>
+                            <div
+	class="player-chip"
+	data-player-id={player.id}
+	data-player-season={data.season}
+	role="button"
+	tabindex="0"
+	aria-label={`Open ${player.name} player card`}
+>
+	<img
+		src={player.photoUrl}
+		alt={player.name}
+	/>
+
+	<div>
+		<strong>{player.name}</strong>
+
+		<small>
+			{player.position || '—'} ·
+			{player.teamLabel || player.team || 'FA'}
+		</small>
+	</div>
+</div>
                           {/each}
                         </div>
                       </div>
@@ -381,13 +396,29 @@
                         </div>
                         <div class="player-grid">
                           {#each group.players as player (player.id)}
-                            <div class="player-chip">
-                              <img src={player.photoUrl} alt={player.name} />
-                              <div>
-                                <strong>{player.name}</strong>
-                                <small>{player.position || '—'} · {player.teamLabel || player.team || 'FA'}</small>
-                              </div>
-                            </div>
+                            <div
+	class="player-chip"
+	data-player-id={player.id}
+	data-player-season={data.season}
+	role="button"
+	tabindex="0"
+	aria-label={`Open ${player.name} player card`}
+>
+	<img
+		src={player.photoUrl}
+		alt={player.name}
+	/>
+
+	<div>
+		<strong>{player.name}</strong>
+
+		<small>
+			{player.position || '—'} ·
+			{player.teamLabel || player.team || 'FA'}
+		</small>
+	</div>
+</div>
+        
                           {/each}
                         </div>
                       </div>

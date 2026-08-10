@@ -51,7 +51,7 @@ function seasonHref(option) {
 <div class="page-stack">
   <LeagueSubnav season={season} active="teams" />
 
-  <section class="directory-hero">
+  <section class="directory-hero icl-hero-shell pad-md">
   <div class="hero-copy">
     <div class="bug-label">Franchises</div>
     <h1>The Teams</h1>
@@ -123,10 +123,6 @@ function seasonHref(option) {
   border: 2px solid #070808;
   border-radius: 14px;
   padding: 22px;
-  background:
-    linear-gradient(90deg, rgba(199,25,47,0.22), transparent 34%),
-    linear-gradient(180deg, #5f6763, #252b2a 48%, #101313);
-  box-shadow: var(--shadow-bug);
 }
 
 .hero-copy {

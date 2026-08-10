@@ -123,7 +123,7 @@ $: top3 = (data?.totals || []).slice(0, 3);
 
 </script>
 <nav class="games-subnav" aria-label="Games navigation">
-  <span class="games-bug">ICN</span>
+  <span class="games-bug">ICL</span>
 
   {#each gamesNav as item}
     <a class:active={gamesNavActive(item.href)} href={item.href}>

@@ -1,5 +1,6 @@
 <script>
   import LeagueSubnav from '$lib/components/league/LeagueSubnav.svelte';
+  import { openPlayerModal } from '$lib/stores/playerModal.js';
 
   export let data;
 
@@ -73,6 +74,40 @@ function clearSearch() {
   function yearLabel(player) {
     return `${ordinal(player.keeperSelectionNumber)} keeper selection`;
   }
+
+  function openPlayerProfile(player) {
+	openPlayerModal(
+		player.id,
+		{
+			/*
+			 * For 2026 keeper decisions we want
+			 * the latest completed 2025 season
+			 * to open first.
+			 */
+			season:
+				data.sourceSeason,
+
+			context: {
+				teamName:
+					player.teamName,
+
+				managerName:
+					player.managerName,
+
+				keeperEligible:
+					player.keeperEligible,
+
+				keeperCost:
+					player.keeperCost,
+
+				note:
+					player.keeperEligible === false
+						? player.keeperIneligibleReason
+						: player.priceOriginLabel
+			}
+		}
+	);
+}
 </script>
 
 <svelte:head>
@@ -82,11 +117,8 @@ function clearSearch() {
 <div class="page-stack keeper-page">
   <LeagueSubnav season={data.season} active="keepers" />
 
-  <section class="keeper-hero">
-    <div class="hero-bug">
-      <span class="network">ICN</span>
-      <strong>Keeper Desk</strong>
-    </div>
+  <section class="keeper-hero icl-hero-shell pad-md">
+   
 
     <div class="hero-copy">
       <div class="eyebrow">{data.targetSeason} Front Office</div>
@@ -153,22 +185,33 @@ function clearSearch() {
       </div>
 
       {#if normalizedQuery && !selectedPlayer}
-        <div class="search-results">
-          {#each searchResults as player}
-            <button type="button" class="search-result" on:click={() => choosePlayer(player)}>
-              <img src={player.photoUrl} alt="" />
-              <span>
-                <strong>{player.name}</strong>
-                <small>{player.position} · {player.nflTeamLabel} · {player.teamName}</small>
-              </span>
-              <b>{money(player.keeperCost)}</b>
-            </button>
-          {/each}
-          {#if !searchResults.length}
-            <div class="no-results">No keeper candidate matches that search.</div>
-          {/if}
-        </div>
-      {/if}
+	<div class="search-results">
+		{#each searchResults as player}
+			<button
+				type="button"
+				class="search-result"
+				on:click={() => choosePlayer(player)}
+			>
+				<img src={player.photoUrl} alt="" />
+
+				<span>
+					<strong>{player.name}</strong>
+					<small>
+						{player.position} · {player.nflTeamLabel} · {player.teamName}
+					</small>
+				</span>
+
+				<b>{money(player.keeperCost)}</b>
+			</button>
+		{/each}
+
+		{#if !searchResults.length}
+			<div class="no-results">
+				No keeper candidate matches that search.
+			</div>
+		{/if}
+	</div>
+{/if}
     </div>
 
     {#if selectedPlayer}
@@ -268,7 +311,7 @@ function clearSearch() {
 
   {#if !data.hasData}
     <section class="empty-card">
-      <div class="bug-row"><span>ICN</span><strong>No keeper signal</strong></div>
+      <div class="bug-row"><span>ICL</span><strong>No keeper signal</strong></div>
       <h2>No keeper candidates were found.</h2>
       <p>The desk needs a prior-season roster plus Sleeper draft/transaction history.</p>
     </section>
@@ -316,7 +359,13 @@ function clearSearch() {
 
             <div class="player-list">
               {#each team.players as player}
-                <button type="button" class="player-row" on:click={() => choosePlayer(player)}>
+	<button
+		type="button"
+		class="player-row"
+		data-player-id={player.id}
+		data-player-season={data.sourceSeason || data.season}
+		aria-label={`Open ${player.name} player file`}
+	>
                   <img src={player.photoUrl} alt="" />
                   <span class="player-copy">
                     <strong>{player.name}</strong>
@@ -371,7 +420,6 @@ function clearSearch() {
     padding-bottom: 48px;
   }
 
-  .keeper-hero,
   .calculator-card,
   .desk-card,
   .method-card,
@@ -385,19 +433,15 @@ function clearSearch() {
     box-shadow: var(--shadow-panel, 0 12px 30px rgba(0,0,0,.35));
   }
 
-  .keeper-hero {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 22px;
-    align-items: stretch;
-    overflow: hidden;
-    border-radius: 18px;
-    background:
-      linear-gradient(90deg, rgba(199,25,47,.28), transparent 34%),
-      repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px),
-      linear-gradient(180deg, #626965, #292e2c 45%, #101312);
-  }
+.keeper-hero {
+	position: relative;
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	gap: 22px;
+	align-items: stretch;
+	overflow: hidden;
+	border-radius: 18px;
+}
 
   .hero-bug {
     align-self: start;

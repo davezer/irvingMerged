@@ -1,4 +1,4 @@
-<svg width="640" height="220" viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ICN broadcast bug">
+<svg width="640" height="220" viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ICL broadcast bug">
   <defs>
     <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
       <stop stop-color="#f7f5eb" offset="0"/>
@@ -17,7 +17,7 @@
   <rect x="28" y="38" width="584" height="144" rx="13" fill="url(#silver)"/>
   <rect x="42" y="54" width="556" height="112" rx="8" fill="#111313"/>
   <path d="M42 54h180l-28 112H42z" fill="url(#red)"/>
-  <text x="68" y="133" font-family="Arial Black, Impact, sans-serif" font-size="78" fill="#fff" stroke="#111" stroke-width="3">ICN</text>
+  <text x="68" y="133" font-family="Arial Black, Impact, sans-serif" font-size="78" fill="#fff" stroke="#111" stroke-width="3">ICL</text>
   <text x="248" y="104" font-family="Arial Black, Impact, sans-serif" font-size="38" fill="#f7c948">IRVING</text>
   <text x="248" y="146" font-family="Arial Black, Impact, sans-serif" font-size="38" fill="#f7f5eb">BROADCAST</text>
   <rect x="468" y="72" width="104" height="66" rx="5" fill="#c7192f" stroke="#050505" stroke-width="4"/>

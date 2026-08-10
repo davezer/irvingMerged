@@ -65,7 +65,7 @@
 <div class="login-shell">
   <section class="login-hero">
     <div class="hero-bug">
-      <span>ICN</span>
+      <span>ICL</span>
       <strong>Member Access</strong>
     </div>
 

@@ -1,706 +1,1264 @@
 <script>
-  import { onMount } from 'svelte';
+	export let data;
 
-  export let data;
+	const initials = (value = '') =>
+		String(value)
+			.split(/\s+/)
+			.filter(Boolean)
+			.slice(0, 2)
+			.map((part) => part[0]?.toUpperCase())
+			.join('') || 'ICL';
 
-  const fmtUnix = (unix) => {
-    if (!unix) return 'TBD';
-    return new Date(Number(unix) * 1000).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
-    });
-  };
+	const points = (value) => Number(value || 0).toFixed(2);
 
-  const initials = (value = '') =>
-    String(value)
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase())
-      .join('') || 'IC';
+	const fmtUnix = (unix) => {
+		if (!unix) return 'TBD';
 
-  const number = (value) => new Intl.NumberFormat('en-US').format(Number(value || 0));
-  const points = (value) => Number(value || 0).toFixed(2);
+		return new Date(Number(unix) * 1000).toLocaleString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit'
+		});
+	};
 
-  let themeMusic = false;
-  let audioEl;
-  const LOUNGE_TRACK = '/ICLOF.mp3';
+	$: who = data?.user?.displayName || 'Member';
 
-  onMount(() => {
-    try {
-      themeMusic = window.localStorage.getItem('ic:theme-music') === '1';
-    } catch {}
-    if (audioEl) {
-      audioEl.volume = 0.18;
-      audioEl.loop = true;
-    }
-  });
+	$: topStandings = (data?.topBoard || []).slice(0, 5);
 
-  async function toggleThemeMusic() {
-    themeMusic = !themeMusic;
-    try {
-      window.localStorage.setItem('ic:theme-music', themeMusic ? '1' : '0');
-    } catch {}
-    if (!audioEl) return;
-    if (themeMusic) {
-      try {
-        audioEl.currentTime = 0;
-        audioEl.volume = 0.18;
-        audioEl.loop = true;
-        await audioEl.play();
-      } catch (err) {
-        console.warn('Audio play blocked', err);
-      }
-    } else {
-      audioEl.pause();
-      audioEl.currentTime = 0;
-    }
-  }
+	$: managers = data?.managers || [];
 
-  $: who = data?.user?.displayName || 'Member';
-  $: collective = data?.collective || {};
-  $: nextEvent = collective.nextEvent;
-  $: standings = data?.standings || [];
-  $: managers = data?.managers || [];
-  $: posts = data?.posts || [];
-  $: cards = data?.commandCards || [];
-  $: topSeed = data?.leagueStats?.topSeed;
+	$: posts = data?.posts || [];
+
+	$: collective = data?.collective || {};
+
+	$: nextEvent = collective?.nextEvent || null;
+
+
+	$: latestPosts = posts.slice(0, 3);
 </script>
 
 <svelte:head>
-  <title>Irving Collective Broadcast</title>
-  <meta
-    name="description"
-    content="The Irving Collective clubhouse: fantasy football, offseason games, standings, news, history, and broadcast-grade nonsense."
-  />
+	<title>Irving Champions League</title>
+
+	<meta name="description" content="The home of the Irving Champions League." />
 </svelte:head>
 
-<div class="clubhouse">
-  <section class="broadcast-hero">
-    <div class="pregame-card">
-      <div class="live-ribbon"><span>ICN</span><strong>LIVE PREGAME</strong><em>ON AIR</em></div>
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow">Irving Collective • Sunday desk</div>
-          <h1>Welcome back, {who}. We now join league chaos already in progress.</h1>
-          <p>
-            League HQ, offseason games, bankrolls, standings, history, rivalries, manager dossiers, news, and
-            questionable decisions — packaged like a regional broadcast nobody asked for and everybody deserves.
-          </p>
-          <div class="hero-actions">
-            <a class="bug-button primary" href="/league">Enter League HQ</a>
-            <a class="bug-button" href="/games">Games Floor</a>
-            <button type="button" class="bug-button" aria-pressed={themeMusic} on:click={toggleThemeMusic}>
-              Theme Music: {themeMusic ? 'On' : 'Off'}
-            </button>
-          </div>
-        </div>
+<div class="home-page">
+	<!-- =================================================
+	     HERO
+	================================================== -->
 
-        <aside class="scoreboard" aria-label="Clubhouse scoreboard">
-          <div class="scoreboard-top"><span>ICN SCOREBOARD</span><strong>FINAL-ish</strong></div>
-          <div class="score-row">
-            <span class="network">HQ</span>
-            <strong>League HQ</strong>
-            <em>{data.leagueStats?.totalManagers || 14}</em>
-          </div>
-          <div class="score-row away">
-            <span class="network alt">OFF</span>
-            <strong>Offseason Lounge</strong>
-            <em>{number(collective.bankroll)}</em>
-          </div>
-          <div class="game-meta">
-            <span>Top Seed</span>
-            <strong>{topSeed?.teamName || 'Board Loading'}</strong>
-            <em>{topSeed ? `${topSeed.wins}-${topSeed.losses}` : '0-0'}</em>
-          </div>
-        </aside>
-      </div>
-    </div>
+	<section class="home-hero">
+		<div class="hero-watermark">
+			<img src="/badge.png" alt="" aria-hidden="true" />
+		</div>
 
-    <aside class="studio-stack" aria-label="Studio cards">
-      <div class="studio-card bankroll">
-        <span>Bankroll</span>
-        <strong>{number(collective.bankroll)}</strong>
-        <small>{collective.myRank ? `Rank #${collective.myRank} on the offseason board` : 'Offseason points bank'}</small>
-      </div>
-      <div class="studio-grid">
-        <div class="studio-card">
-          <span>Managers</span>
-          <strong>{data.leagueStats?.totalManagers || 14}</strong>
-          <small>Certified sickos</small>
-        </div>
-        <div class="studio-card">
-          <span>Top Seed</span>
-          <strong>{topSeed?.teamName || '—'}</strong>
-          <small>{topSeed ? `${topSeed.wins}-${topSeed.losses}` : 'Board loading'}</small>
-        </div>
-      </div>
-      <div class="studio-card next-up">
-        <span>Next Up</span>
-        {#if nextEvent}
-          <div class="event-line">
-            {#if nextEvent.logo}
-              <img src={nextEvent.logo} alt="" loading="lazy" />
-            {:else}
-              <div class="logo-fallback">IC</div>
-            {/if}
-            <div>
-              <strong>{nextEvent.title}</strong>
-              <small>{nextEvent.subtitle} • {fmtUnix(nextEvent.start_at || nextEvent.lock_at)}</small>
-            </div>
-          </div>
-          <a href={`/games/${nextEvent.slug}`}>Make your pick →</a>
-        {:else}
-          <strong>No event queued</strong>
-          <small>The lounge is quiet. Suspiciously quiet.</small>
-          <a href="/games">View games →</a>
-        {/if}
-      </div>
-    </aside>
-  </section>
+		<div class="hero-content">
+			<div class="hero-season">
+				<span>ICL</span>
+				<strong>2026 CLUBHOUSE</strong>
+			</div>
 
-  <section class="command-grid" aria-label="Main command cards">
-    {#each cards as card}
-      <a class="command-card" href={card.href}>
-        <span>{card.eyebrow}</span>
-        <strong>{card.title}</strong>
-        <p>{card.body}</p>
-        <em>{card.cta} →</em>
-      </a>
-    {/each}
-  </section>
+			<div class="eyebrow">Irving Champions League</div>
 
-  <section class="split-layout">
-    <article class="panel board-panel">
-      <div class="panel-head">
-        <div>
-          <span class="eyebrow">League Table</span>
-          <h2>Current war board</h2>
-        </div>
-        <a href="/league/standings">Full standings</a>
-      </div>
-      <div class="standings-list">
-        {#each standings as row}
-          <a class="standings-row" href={`/league/teams/${row.slug}`}>
-            <span class="rank">#{row.rank}</span>
-            <div class="team-ident">
-              {#if row.manager?.photo}
-                <img src={row.manager.photo} alt={row.teamName} loading="lazy" />
-              {:else}
-                <span>{initials(row.teamName)}</span>
-              {/if}
-              <div>
-                <strong>{row.teamName}</strong>
-                <small>{row.displayName}</small>
-              </div>
-            </div>
-            <div class="record-block">
-              <strong>{row.wins}-{row.losses}</strong>
-              <small>{points(row.points)} PF</small>
-            </div>
-          </a>
-        {/each}
-      </div>
-    </article>
+			<h1>
+				Welcome back,
+				{who}.
+			</h1>
 
-    <article class="panel lounge-panel">
-      <div class="panel-head">
-        <div>
-          <span class="eyebrow">Offseason Board</span>
-          <h2>Cash, chaos, clout</h2>
-        </div>
-        <a href="/leaderboard">Leaderboard</a>
-      </div>
-      {#if collective.top?.length}
-        <div class="leader-list">
-          {#each collective.top as row}
-            <div class="leader-row">
-              <span>#{row.rank}</span>
-              <strong>{row.displayName}</strong>
-              <em>{number(row.total)}</em>
-            </div>
-          {/each}
-        </div>
-      {:else}
-        <div class="empty-state">
-          <strong>The offseason board is waiting.</strong>
-          <p>Once D1 has scores, this becomes a live leaderboard preview. Until then: menace energy, safely contained.</p>
-        </div>
-      {/if}
+			<p class="hero-lede">
+				Fourteen franchises. One increasingly questionable fantasy football league.
+			</p>
 
-      <div class="event-stack">
-        {#each collective.eventsUpcoming || [] as event}
-          <a href={`/games/${event.slug}`} class="event-chip">
-            {#if event.logo}<img src={event.logo} alt="" loading="lazy" />{/if}
-            <div>
-              <strong>{event.title}</strong>
-              <span>{fmtUnix(event.start_at || event.lock_at)}</span>
-            </div>
-          </a>
-        {/each}
-      </div>
-    </article>
-  </section>
+			<div class="hero-actions">
+				<a class="home-button primary" href="/league"> Enter League </a>
 
-  <section class="panel managers-panel">
-    <div class="panel-head">
-      <div>
-        <span class="eyebrow">Franchise roll call</span>
-        <h2>Faces of the operation</h2>
-      </div>
-      <a href="/league/teams">All teams</a>
-    </div>
-    <div class="manager-strip">
-      {#each managers as manager}
-        <a class="manager-token" href={`/league/teams/${manager.slug}`}>
-          <img src={manager.photo} alt={manager.name} loading="lazy" />
-          <strong>{manager.teamName}</strong>
-          <span>{manager.persona || 'Operator'}</span>
-        </a>
-      {/each}
-    </div>
-  </section>
+				<a class="home-button" href="/league/keepers"> Keeper Calculator </a>
+			</div>
+		</div>
+	</section>
 
-  <section class="split-layout bottom-zone">
-    <article class="panel news-panel">
-      <div class="panel-head">
-        <div>
-          <span class="eyebrow">News Desk</span>
-          <h2>Fresh from the lounge</h2>
-        </div>
-        <a href="/news">Archive</a>
-      </div>
-      <div class="story-stack">
-        {#each posts as post}
-          <a class="story-card" href={`/news/${post.slug}`}>
-            <span>{post.tag}</span>
-            <strong>{post.title}</strong>
-            <p>{post.excerpt}</p>
-          </a>
-        {/each}
-      </div>
-    </article>
+	<!-- =================================================
+	     QUICK ACCESS
+	================================================== -->
 
-    <article class="panel manifesto-panel">
-      <span class="eyebrow">Build Philosophy</span>
-      <h2>One app. Two seasons. Maximum nonsense.</h2>
-      <p>
-        During football season, this is the league command center. During the offseason, it becomes the casino,
-        scoreboard, panic room, and trophy-adjacent nonsense generator.
-      </p>
-      <div class="manifesto-grid">
-        <a href="/history/badges">Badges</a>
-        <a href="/history/rivalry">Rivalry</a>
-        <a href="/constitution">Constitution</a>
-        <a href="/resources">Resources</a>
-      </div>
-    </article>
-  </section>
+	<section class="quick-section">
+		<div class="section-heading">
+			<div>
+				<span class="eyebrow"> League HQ </span>
 
-  <audio bind:this={audioEl} src={LOUNGE_TRACK} preload="auto"></audio>
+				<h2>Quick access</h2>
+			</div>
+
+			<p>Get where you're going. No pregame show required.</p>
+		</div>
+
+		<div class="quick-grid">
+			<a class="quick-card" href="/league/standings">
+				<span>01</span>
+
+				<strong> Standings </strong>
+
+				<small> Records, points and current league order. </small>
+
+				<em> Open standings → </em>
+			</a>
+
+			<a class="quick-card" href="/league/rosters">
+				<span>02</span>
+
+				<strong> Rosters </strong>
+
+				<small> Every franchise. Every player. </small>
+
+				<em> View rosters → </em>
+			</a>
+
+			<a class="quick-card" href="/league/draft">
+				<span>03</span>
+
+				<strong> Drafts </strong>
+
+				<small> Auction results, prices and history. </small>
+
+				<em> Open draft room → </em>
+			</a>
+
+			<a class="quick-card" href="/league/keepers">
+				<span>04</span>
+
+				<strong> Keeper Desk </strong>
+
+				<small> Prices, tenure and eligibility. </small>
+
+				<em> Run the numbers → </em>
+			</a>
+		</div>
+	</section>
+
+	<!-- =================================================
+	     LEAGUE PULSE
+	================================================== -->
+
+	<section class="pulse-grid">
+		<!-- STANDINGS -->
+
+		<article class="home-panel standings-panel">
+	<header class="panel-head">
+		<div>
+			<span class="eyebrow">
+				League table
+			</span>
+
+			<h2>
+				Top of the board
+			</h2>
+		</div>
+
+		<a href={`/league/standings?season=${data.season}`}>
+			Full standings →
+		</a>
+	</header>
+
+	{#if topStandings.length}
+
+		<div class="standings-list">
+
+			{#each topStandings as row}
+
+				<a
+					class="standing-row"
+					href={
+						row.slug
+							? `/league/teams/${row.slug}?season=${data.season}`
+							: `/league/standings?season=${data.season}`
+					}
+				>
+
+					<div class="standing-rank">
+						#{row.rank}
+					</div>
+
+
+					<div class="standing-team">
+
+						{#if row.teamPhoto}
+
+							<img
+								src={row.teamPhoto}
+								alt={row.teamName}
+								loading="lazy"
+							/>
+
+						{:else}
+
+							<div class="team-fallback">
+								{row.initials || initials(row.teamName)}
+							</div>
+
+						{/if}
+
+
+						<div>
+							<strong>
+								{row.teamName}
+							</strong>
+
+							<small>
+								{row.managerName}
+							</small>
+						</div>
+
+					</div>
+
+
+					<div class="standing-record">
+
+						<strong>
+							{row.recordLabel || `${row.wins}-${row.losses}`}
+						</strong>
+
+						<small>
+							{points(row.points)} PF
+						</small>
+
+					</div>
+
+				</a>
+
+			{/each}
+
+		</div>
+
+	{:else}
+
+		<div class="empty-state">
+			Standings will appear once league data is available.
+		</div>
+
+	{/if}
+</article>
+
+		<!-- NEXT EVENT -->
+
+		<article class="home-panel next-panel">
+			<header class="panel-head">
+				<div>
+					<span class="eyebrow"> Next up </span>
+
+					<h2>Offseason action</h2>
+				</div>
+			</header>
+
+			{#if nextEvent}
+				<div class="next-event">
+					<div class="next-event-art">
+						{#if nextEvent.logo}
+							<img src={nextEvent.logo} alt="" loading="lazy" />
+						{:else}
+							<img src="/badge.png" alt="" />
+						{/if}
+					</div>
+
+					<div class="next-event-copy">
+						<span> Upcoming </span>
+
+						<strong>
+							{nextEvent.title}
+						</strong>
+
+						<p>
+							{nextEvent.subtitle}
+						</p>
+
+						<small>
+							{fmtUnix(nextEvent.start_at || nextEvent.lock_at)}
+						</small>
+
+						<a class="home-button primary small" href={`/games/${nextEvent.slug}`}>
+							Make Your Pick
+						</a>
+					</div>
+				</div>
+			{:else}
+				<div class="quiet-state">
+					<img src="/badge.png" alt="" />
+
+					<strong> No event queued. </strong>
+
+					<p>The offseason lounge is quiet. Suspiciously quiet.</p>
+
+					<a href="/games"> Visit the games floor → </a>
+				</div>
+			{/if}
+		</article>
+	</section>
+
+	<!-- =================================================
+	     BLOG
+	================================================== -->
+
+	{#if latestPosts.length}
+		<section class="blog-section">
+			<div class="section-heading">
+				<div>
+					<span class="eyebrow"> From the league blog </span>
+
+					<h2>Latest from Irving</h2>
+				</div>
+
+				<a href="/news"> View archive → </a>
+			</div>
+
+			<div class="blog-grid">
+				{#each latestPosts as post}
+					<a class="blog-card" href={`/news/${post.slug}`}>
+						<span>
+							{post.tag || 'League'}
+						</span>
+
+						<strong>
+							{post.title}
+						</strong>
+
+						<p>
+							{post.excerpt}
+						</p>
+
+						<em> Read more → </em>
+					</a>
+				{/each}
+			</div>
+		</section>
+	{/if}
+
+	<!-- =================================================
+	     FRANCHISE STRIP
+	================================================== -->
+
+	{#if managers.length}
+		<section class="franchise-section">
+			<div class="section-heading compact">
+				<div>
+					<span class="eyebrow"> The league </span>
+
+					<h2>14 franchises</h2>
+				</div>
+
+				<a href="/league/teams"> View all teams → </a>
+			</div>
+
+			<div class="franchise-strip">
+				{#each managers as manager}
+					<a
+						class="franchise-token"
+						href={`/league/teams/${manager.slug}`}
+						title={manager.teamName}
+					>
+						<img src={manager.photo} alt={manager.teamName} loading="lazy" />
+
+						<span>
+							{manager.teamName}
+						</span>
+					</a>
+				{/each}
+			</div>
+		</section>
+	{/if}
 </div>
 
 <style>
-  .clubhouse {
-    display: grid;
-    gap: 24px;
-  }
+	/* ==================================================
+	   PAGE
+	================================================== */
 
-  .broadcast-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
-    gap: 22px;
-    align-items: stretch;
-  }
+	.home-page {
+		display: grid;
 
-  .pregame-card,
-  .studio-card,
-  .panel,
-  .command-card {
-    border: 2px solid #070808;
-    background: linear-gradient(180deg, #5d6561, #242a29 52%, #101212);
-    box-shadow: var(--shadow-bug);
-  }
+		gap: 34px;
 
-  .pregame-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 18px;
-    min-height: 530px;
-    background:
-      linear-gradient(90deg, rgba(199,25,47,0.22), transparent 34%),
-      linear-gradient(180deg, #5f6763, #252b2a 48%, #101313);
-  }
+		padding-top: 6px;
+		padding-bottom: 64px;
+	}
 
-  .pregame-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px),
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 54px 54px;
-    opacity: 0.26;
-  }
+	/* ==================================================
+	   HERO
+	================================================== */
 
-  .pregame-card::after {
-    content: 'ICN';
-    position: absolute;
-    right: -30px;
-    top: 22px;
-    color: rgba(255,255,255,0.055);
-    font-family: var(--font-score);
-    font-size: clamp(9rem, 20vw, 18rem);
-    line-height: 1;
-  }
+	.home-hero {
+		position: relative;
 
-  .live-ribbon {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    border-bottom: 2px solid #070808;
-    background: linear-gradient(180deg, #161918, #070808);
-    font-family: var(--font-score);
-    text-transform: uppercase;
-  }
+		min-height: 370px;
 
-  .live-ribbon span,
-  .live-ribbon em {
-    padding: 9px 12px;
-    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-    color: white;
-    font-style: normal;
-  }
+		display: flex;
+		align-items: center;
 
-  .live-ribbon strong {
-    padding: 9px 12px;
-    color: var(--bug-yellow);
-    letter-spacing: 0.14em;
-  }
+		overflow: hidden;
 
-  .hero-grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    align-content: space-between;
-    gap: 28px;
-    min-height: 486px;
-    padding: clamp(24px, 4vw, 46px);
-  }
+		border: 2px solid #050708;
 
-  .hero-copy {
-    max-width: 780px;
-    display: grid;
-    gap: 18px;
-  }
+		border-radius: 16px;
 
-  h1 {
-    max-width: 10ch;
-    margin: 0;
-    font-size: clamp(3.2rem, 8.3vw, 6.8rem);
-    line-height: 0.82;
-  }
+		background: linear-gradient(90deg, rgba(17, 133, 200, 0.14), transparent 44%), #111619;
 
-  .hero-copy p {
-    max-width: 62ch;
-    margin: 0;
-    color: rgba(247,245,235,0.82);
-    font-weight: 750;
-    line-height: 1.55;
-  }
+		box-shadow: var(--shadow-panel);
+	}
 
-  .hero-actions,
-  .manifesto-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+	.home-hero::before {
+		content: '';
 
-  .bug-button,
-  .manifesto-grid a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 36px;
-    border: 1px solid #050606;
-    border-radius: 5px;
-    background: linear-gradient(180deg, #f5f4ea, #b9bcb5 52%, #6d7470);
-    color: #101111;
-    padding: 8px 12px;
-    font-family: var(--font-score);
-    font-size: 0.76rem;
-    font-weight: 950;
-    text-transform: uppercase;
-    text-decoration: none;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), inset 0 -2px 0 rgba(0,0,0,0.30);
-    cursor: pointer;
-  }
+		position: absolute;
+		inset: 0;
 
-  .bug-button.primary {
-    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-    color: white;
-  }
+		pointer-events: none;
 
-  .scoreboard {
-    width: min(520px, 100%);
-    border: 2px solid #050606;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #0b0d0d;
-    box-shadow: var(--shadow-bug);
-  }
+		background: linear-gradient(90deg, rgba(199, 25, 47, 0.13), transparent 24%);
+	}
 
-  .scoreboard-top,
-  .game-meta {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    align-items: center;
-    padding: 7px 9px;
-    background: linear-gradient(180deg, #f4f3ea, #b8bbb4 52%, #777e79);
-    color: #111;
-    font-family: var(--font-score);
-    text-transform: uppercase;
-  }
+	.hero-content {
+		position: relative;
 
-  .score-row {
-    display: grid;
-    grid-template-columns: 54px 1fr 78px;
-    align-items: stretch;
-    min-height: 58px;
-    border-top: 2px solid #050606;
-    font-family: var(--font-score);
-  }
+		z-index: 2;
 
-  .network {
-    display: grid;
-    place-items: center;
-    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-    color: white;
-  }
-  .network.alt { background: linear-gradient(180deg, var(--bug-blue), #0b315e); }
+		width: min(760px, 72%);
 
-  .score-row strong {
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
-    color: #f7f5eb;
-    font-size: 1.15rem;
-  }
+		padding: clamp(32px, 5vw, 64px);
+	}
 
-  .score-row em {
-    display: grid;
-    place-items: center;
-    background: linear-gradient(180deg, #f4f3ea, #b8bbb4 52%, #777e79);
-    color: #111;
-    font-size: 1.55rem;
-    font-style: normal;
-  }
+	.hero-season {
+		display: inline-flex;
 
-  .game-meta {
-    grid-template-columns: auto 1fr auto;
-    border-top: 2px solid #050606;
-    font-size: 0.72rem;
-  }
+		align-items: stretch;
 
-  .studio-stack {
-    display: grid;
-    gap: 14px;
-  }
+		margin-bottom: 18px;
 
-  .studio-card,
-  .panel,
-  .command-card {
-    border-radius: 16px;
-    padding: 18px;
-  }
+		border: 1px solid #040505;
 
-  .studio-card {
-    display: grid;
-    gap: 10px;
-    min-height: 150px;
-  }
+		border-radius: 5px;
 
-  .studio-card > span,
-  .command-card span {
-    color: var(--bug-yellow);
-    font-family: var(--font-score);
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 0.7rem;
-  }
+		overflow: hidden;
 
-  .studio-card strong {
-    font-family: var(--font-score);
-    font-size: clamp(1.8rem, 4vw, 3.1rem);
-    line-height: 1;
-  }
+		font-family: var(--font-score);
 
-  .studio-grid,
-  .split-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
+		font-size: 0.7rem;
 
-  .event-line,
-  .team-ident,
-  .event-chip {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+		text-transform: uppercase;
 
-  .event-line img,
-  .event-chip img {
-    width: 54px;
-    height: 54px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #070808;
-  }
+		letter-spacing: 0.1em;
+	}
 
-  .studio-card a { color: var(--bug-yellow); font-weight: 900; }
+	.hero-season span {
+		padding: 7px 9px;
 
-  .command-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-  }
+		background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
 
-  .command-card {
-    display: grid;
-    gap: 12px;
-    color: inherit;
-    text-decoration: none;
-  }
+		color: white;
+	}
 
-  .command-card strong {
-    font-family: var(--font-score);
-    font-size: 1.45rem;
-    text-transform: uppercase;
-  }
+	.hero-season strong {
+		padding: 7px 11px;
 
-  .panel-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: start;
-    margin-bottom: 14px;
-  }
+		background: #080a0c;
 
-  .panel-head h2 { margin: 4px 0 0; font-size: 1.5rem; }
+		color: var(--bug-yellow);
+	}
 
-  .standings-list,
-  .leader-list,
-  .event-stack,
-  .story-stack {
-    display: grid;
-    gap: 10px;
-  }
+	.hero-content h1 {
+		max-width: 12ch;
 
-  .standings-row,
-  .leader-row,
-  .event-chip,
-  .story-card {
-    border-radius: 8px;
-    padding: 12px;
-    color: inherit;
-    text-decoration: none;
-  }
+		margin: 5px 0 12px;
 
-  .standings-row {
-    display: grid;
-    grid-template-columns: 52px 1fr auto;
-    gap: 12px;
-    align-items: center;
-  }
+		font-family: var(--font-display);
 
-  .team-ident img,
-  .team-ident > span,
-  .manager-token img {
-    width: 46px;
-    height: 46px;
-    border-radius: 7px;
-    object-fit: cover;
-    border: 1px solid #070808;
-    background: var(--bug-silver);
-  }
+		font-size: clamp(3.1rem, 6.4vw, 6rem);
 
-  .team-ident > span {
-    display: grid;
-    place-items: center;
-    font-family: var(--font-score);
-    color: #111;
-  }
+		line-height: 0.89;
 
-  .record-block { text-align: right; }
-  .record-block strong { display: block; font-family: var(--font-score); color: var(--bug-yellow); }
+		letter-spacing: -0.055em;
+	}
 
-  .leader-row {
-    display: grid;
-    grid-template-columns: 54px 1fr auto;
-    gap: 12px;
-    align-items: center;
-  }
-  .leader-row em { color: var(--bug-yellow); font-family: var(--font-score); font-style: normal; }
+	.hero-lede {
+		max-width: 48ch;
 
-  .empty-state { padding: 14px; border: 1px solid #070808; border-radius: 8px; background: rgba(0,0,0,0.22); }
+		margin: 0;
 
-  .managers-panel { overflow: hidden; }
-  .manager-strip {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(150px, 1fr);
-    gap: 12px;
-    overflow-x: auto;
-    padding-bottom: 5px;
-  }
+		color: rgba(255, 255, 255, 0.75);
 
-  .manager-token {
-    display: grid;
-    gap: 8px;
-    justify-items: center;
-    text-align: center;
-    color: inherit;
-    text-decoration: none;
-    border: 1px solid #070808;
-    border-radius: 9px;
-    padding: 12px;
-    background: linear-gradient(180deg, #303735, #111313);
-  }
+		font-size: 1rem;
 
-  .manager-token img { width: 68px; height: 68px; }
-  .manager-token strong { font-size: 0.88rem; }
-  .manager-token span { color: var(--muted); font-size: 0.78rem; }
+		font-weight: 700;
 
-  .story-card {
-    display: grid;
-    gap: 8px;
-  }
+		line-height: 1.55;
+	}
 
-  .manifesto-panel p { line-height: 1.55; }
+	.hero-actions {
+		display: flex;
 
-  @media (max-width: 1000px) {
-    .broadcast-hero,
-    .split-layout,
-    .command-grid { grid-template-columns: 1fr; }
-    h1 { max-width: 11ch; }
-  }
+		flex-wrap: wrap;
 
-  @media (max-width: 620px) {
-    .pregame-card { min-height: auto; }
-    .hero-grid { min-height: auto; padding: 22px; }
-    h1 { font-size: clamp(3rem, 16vw, 4.6rem); }
-    .score-row { grid-template-columns: 46px 1fr 66px; }
-    .studio-grid { grid-template-columns: 1fr; }
-    .standings-row { grid-template-columns: 44px 1fr; }
-    .record-block { grid-column: 2; text-align: left; }
-    .live-ribbon { grid-template-columns: auto 1fr; }
-    .live-ribbon em { display: none; }
-  }
+		gap: 10px;
+
+		margin-top: 26px;
+	}
+
+	.hero-watermark {
+		position: absolute;
+
+		right: 4%;
+		top: 50%;
+
+		width: min(330px, 29vw);
+
+		transform: translateY(-50%);
+
+		opacity: 0.1;
+
+		filter: grayscale(0.15);
+
+		pointer-events: none;
+	}
+
+	.hero-watermark img {
+		width: 100%;
+		display: block;
+	}
+
+	/* ==================================================
+	   BUTTONS
+	================================================== */
+
+	.home-button {
+		display: inline-flex;
+
+		align-items: center;
+		justify-content: center;
+
+		min-height: 40px;
+
+		padding: 9px 14px;
+
+		border: 1px solid #050606;
+
+		border-radius: 5px;
+
+		background: linear-gradient(180deg, #f5f4ea, #b9bcb5 52%, #6d7470);
+
+		color: #101111;
+
+		font-family: var(--font-score);
+
+		font-size: 0.76rem;
+
+		font-weight: 950;
+
+		text-transform: uppercase;
+
+		text-decoration: none;
+
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.75),
+			inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+	}
+
+	.home-button:hover {
+		color: #111;
+	}
+
+	.home-button.primary {
+		background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
+
+		color: white;
+	}
+
+	.home-button.primary:hover {
+		color: white;
+
+		filter: brightness(1.08);
+	}
+
+	.home-button.small {
+		width: fit-content;
+
+		margin-top: 12px;
+	}
+
+	/* ==================================================
+	   SECTION HEADINGS
+	================================================== */
+
+	.section-heading,
+	.panel-head {
+		display: flex;
+
+		align-items: flex-end;
+		justify-content: space-between;
+
+		gap: 18px;
+	}
+
+	.section-heading {
+		margin-bottom: 16px;
+	}
+
+	.section-heading h2,
+	.panel-head h2 {
+		margin: 4px 0 0;
+
+		font-size: clamp(1.45rem, 2.3vw, 2rem);
+	}
+
+	.section-heading > p {
+		max-width: 34ch;
+
+		margin: 0;
+
+		color: var(--muted);
+
+		text-align: right;
+
+		line-height: 1.45;
+	}
+
+	.section-heading > a,
+	.panel-head > a {
+		color: var(--icl-blue);
+
+		font-size: 0.8rem;
+
+		font-weight: 900;
+
+		text-decoration: none;
+	}
+
+	.section-heading > a:hover,
+	.panel-head > a:hover {
+		color: white;
+	}
+
+	/* ==================================================
+	   QUICK ACCESS
+	================================================== */
+
+	.quick-grid {
+		display: grid;
+
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+
+		gap: 12px;
+	}
+
+	.quick-card {
+		min-height: 165px;
+
+		display: grid;
+
+		grid-template-rows: auto auto 1fr auto;
+
+		gap: 7px;
+
+		padding: 17px;
+
+		border: 1px solid #050708;
+
+		border-radius: 10px;
+
+		background: #151a1d;
+
+		color: inherit;
+
+		text-decoration: none;
+
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+		transition:
+			transform 140ms ease,
+			border-color 140ms ease,
+			background 140ms ease;
+	}
+
+	.quick-card:hover {
+		transform: translateY(-2px);
+
+		border-color: var(--icl-blue);
+
+		background: #192127;
+	}
+
+	.quick-card > span {
+		color: var(--bug-yellow);
+
+		font-family: var(--font-score);
+
+		font-size: 0.66rem;
+	}
+
+	.quick-card > strong {
+		font-family: var(--font-score);
+
+		font-size: 1.2rem;
+
+		text-transform: uppercase;
+	}
+
+	.quick-card > small {
+		color: var(--muted);
+
+		line-height: 1.4;
+	}
+
+	.quick-card > em {
+		color: var(--icl-blue);
+
+		font-size: 0.72rem;
+
+		font-style: normal;
+
+		font-weight: 900;
+
+		text-transform: uppercase;
+	}
+
+	/* ==================================================
+	   LEAGUE PULSE
+	================================================== */
+
+	.pulse-grid {
+		display: grid;
+
+		grid-template-columns:
+			minmax(0, 1.35fr)
+			minmax(300px, 0.65fr);
+
+		gap: 16px;
+	}
+
+	.home-panel {
+		border: 2px solid #050708;
+
+		border-radius: 13px;
+
+		background: #111617;
+
+		box-shadow: var(--shadow-panel);
+
+		overflow: hidden;
+	}
+
+	.home-panel .panel-head {
+		padding: 17px 18px;
+
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+		background: #181e1e;
+	}
+
+	/* ==================================================
+	   STANDINGS
+	================================================== */
+
+	.standings-list {
+		display: grid;
+	}
+
+	.standing-row {
+		display: grid;
+
+		grid-template-columns:
+			56px
+			minmax(0, 1fr)
+			auto;
+
+		align-items: center;
+
+		gap: 12px;
+
+		min-height: 70px;
+
+		padding: 8px 15px;
+
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+		color: inherit;
+
+		text-decoration: none;
+
+		transition: background 120ms ease;
+	}
+
+	.standing-row:last-child {
+		border-bottom: 0;
+	}
+
+	.standing-row:hover {
+		background: rgba(17, 133, 200, 0.08);
+	}
+
+	.standing-rank {
+		display: grid;
+
+		place-items: center;
+
+		width: 42px;
+		height: 34px;
+
+		border: 1px solid #050606;
+
+		border-radius: 5px;
+
+		background: linear-gradient(180deg, #f5f4ea, #aeb2ac);
+
+		color: #111;
+
+		font-family: var(--font-score);
+
+		font-size: 0.74rem;
+	}
+
+	.standing-team {
+		min-width: 0;
+
+		display: flex;
+
+		align-items: center;
+
+		gap: 11px;
+	}
+
+	.standing-team img,
+	.team-fallback {
+		width: 46px;
+		height: 46px;
+
+		flex: 0 0 auto;
+
+		border-radius: 8px;
+
+		object-fit: cover;
+
+		border: 1px solid #050606;
+	}
+
+	.team-fallback {
+		display: grid;
+
+		place-items: center;
+
+		background: var(--bug-silver);
+
+		color: #111;
+
+		font-family: var(--font-score);
+	}
+
+	.standing-team > div:last-child {
+		min-width: 0;
+
+		display: grid;
+
+		gap: 2px;
+	}
+
+	.standing-team strong {
+		overflow: hidden;
+
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+	}
+
+	.standing-team small {
+		color: var(--muted);
+	}
+
+	.standing-record {
+		text-align: right;
+	}
+
+	.standing-record strong {
+		display: block;
+
+		color: var(--bug-yellow);
+
+		font-family: var(--font-score);
+
+		font-size: 1rem;
+	}
+
+	.standing-record small {
+		color: var(--muted);
+	}
+
+	/* ==================================================
+	   NEXT EVENT
+	================================================== */
+
+	.next-panel {
+		min-height: 100%;
+	}
+
+	.next-event {
+		display: grid;
+
+		grid-template-columns:
+			130px
+			1fr;
+
+		align-items: center;
+
+		gap: 18px;
+
+		padding: 22px;
+	}
+
+	.next-event-art {
+		display: grid;
+
+		place-items: center;
+
+		aspect-ratio: 1;
+
+		padding: 14px;
+
+		border: 1px solid rgba(255, 255, 255, 0.08);
+
+		border-radius: 12px;
+
+		background: #090d10;
+	}
+
+	.next-event-art img {
+		width: 100%;
+		height: 100%;
+
+		object-fit: contain;
+	}
+
+	.next-event-copy {
+		display: grid;
+
+		gap: 5px;
+	}
+
+	.next-event-copy > span {
+		color: var(--bug-yellow);
+
+		font-family: var(--font-score);
+
+		font-size: 0.62rem;
+
+		text-transform: uppercase;
+
+		letter-spacing: 0.12em;
+	}
+
+	.next-event-copy > strong {
+		font-family: var(--font-score);
+
+		font-size: 1.25rem;
+	}
+
+	.next-event-copy p {
+		margin: 0;
+
+		color: var(--muted);
+
+		line-height: 1.4;
+	}
+
+	.next-event-copy small {
+		color: var(--icl-blue);
+
+		font-weight: 900;
+	}
+
+	.quiet-state {
+		min-height: 270px;
+
+		display: grid;
+
+		place-items: center;
+
+		align-content: center;
+
+		gap: 7px;
+
+		padding: 28px;
+
+		text-align: center;
+	}
+
+	.quiet-state img {
+		width: 78px;
+
+		margin-bottom: 7px;
+
+		opacity: 0.7;
+	}
+
+	.quiet-state p {
+		max-width: 28ch;
+
+		margin: 0;
+
+		color: var(--muted);
+	}
+
+	.quiet-state a {
+		margin-top: 7px;
+
+		font-weight: 900;
+
+		text-decoration: none;
+	}
+
+	/* ==================================================
+	   BLOG
+	================================================== */
+
+	.blog-grid {
+		display: grid;
+
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+
+		gap: 12px;
+	}
+
+	.blog-card {
+		min-height: 190px;
+
+		display: grid;
+
+		grid-template-rows: auto auto 1fr auto;
+
+		gap: 9px;
+
+		padding: 18px;
+
+		border: 1px solid #050708;
+
+		border-radius: 10px;
+
+		background: #13181b;
+
+		color: inherit;
+
+		text-decoration: none;
+
+		transition:
+			border-color 140ms ease,
+			transform 140ms ease;
+	}
+
+	.blog-card:hover {
+		transform: translateY(-2px);
+
+		border-color: var(--icl-blue);
+	}
+
+	.blog-card > span {
+		color: var(--bug-yellow);
+
+		font-family: var(--font-score);
+
+		font-size: 0.62rem;
+
+		text-transform: uppercase;
+
+		letter-spacing: 0.11em;
+	}
+
+	.blog-card > strong {
+		font-size: 1.05rem;
+	}
+
+	.blog-card p {
+		margin: 0;
+
+		color: var(--muted);
+
+		line-height: 1.45;
+	}
+
+	.blog-card em {
+		color: var(--icl-blue);
+
+		font-size: 0.72rem;
+
+		font-style: normal;
+
+		font-weight: 900;
+
+		text-transform: uppercase;
+	}
+
+	/* ==================================================
+	   FRANCHISE STRIP
+	================================================== */
+
+	.franchise-section {
+		padding-top: 4px;
+	}
+
+	.section-heading.compact {
+		margin-bottom: 12px;
+	}
+
+	.franchise-strip {
+		display: grid;
+
+		grid-template-columns: repeat(14, minmax(58px, 1fr));
+
+		gap: 7px;
+
+		overflow-x: auto;
+
+		padding-bottom: 6px;
+	}
+
+	.franchise-token {
+		min-width: 66px;
+
+		display: grid;
+
+		justify-items: center;
+
+		gap: 6px;
+
+		padding: 8px 4px;
+
+		border: 1px solid transparent;
+
+		border-radius: 8px;
+
+		color: inherit;
+
+		text-align: center;
+
+		text-decoration: none;
+	}
+
+	.franchise-token:hover {
+		border-color: rgba(17, 133, 200, 0.45);
+
+		background: rgba(17, 133, 200, 0.06);
+	}
+
+	.franchise-token img {
+		width: 48px;
+		height: 48px;
+
+		object-fit: cover;
+
+		border: 1px solid #050606;
+
+		border-radius: 50%;
+	}
+
+	.franchise-token span {
+		max-width: 88px;
+
+		overflow: hidden;
+
+		color: var(--muted);
+
+		font-size: 0.61rem;
+
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+	}
+
+	/* ==================================================
+	   EMPTY
+	================================================== */
+
+	.empty-state {
+		padding: 28px;
+
+		color: var(--muted);
+	}
+
+	/* ==================================================
+	   RESPONSIVE
+	================================================== */
+
+	@media (max-width: 1050px) {
+		.quick-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.pulse-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.blog-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	@media (max-width: 700px) {
+		.home-page {
+			gap: 26px;
+		}
+
+		.home-hero {
+			min-height: 390px;
+		}
+
+		.hero-content {
+			width: 100%;
+
+			padding: 28px 22px;
+		}
+
+		.hero-watermark {
+			right: -40px;
+
+			width: 260px;
+
+			opacity: 0.055;
+		}
+
+		.hero-content h1 {
+			font-size: clamp(3rem, 15vw, 4.8rem);
+		}
+
+		.section-heading {
+			align-items: flex-start;
+
+			flex-direction: column;
+		}
+
+		.section-heading > p {
+			text-align: left;
+		}
+
+		.quick-grid,
+		.blog-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.quick-card {
+			min-height: 140px;
+		}
+
+		.next-event {
+			grid-template-columns: 95px 1fr;
+
+			padding: 16px;
+		}
+
+		.standing-row {
+			grid-template-columns:
+				48px
+				minmax(0, 1fr);
+		}
+
+		.standing-record {
+			grid-column: 2;
+
+			text-align: left;
+		}
+	}
 </style>
