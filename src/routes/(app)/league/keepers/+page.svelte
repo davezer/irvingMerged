@@ -194,31 +194,53 @@ function clearSearch() {
             <strong>{money(selectedPlayer.floorBase)}</strong>
             <small>{selectedPlayer.floorApplied ? '$10 minimum applied' : 'No floor adjustment'}</small>
           </div>
-          <div>
-            <span>{yearLabel(selectedPlayer)}</span>
-            <strong>{taxLabel(selectedPlayer)}</strong>
-            <small>{selectedPlayer.keeperStreak} prior keeper selection{selectedPlayer.keeperStreak === 1 ? '' : 's'} across all franchises</small>
-          </div>
-          <div>
-            <span>Tax</span>
-            <strong>{money(selectedPlayer.taxAmount)}</strong>
-            <small>{money(selectedPlayer.floorBase)} × {selectedPlayer.taxPct}%</small>
-          </div>
+          {#if selectedPlayer.keeperEligible === false}
+            <div class="receipt-ineligible">
+              <span>Keeper status</span>
+              <strong>NOT KEEPER ELIGIBLE</strong>
+              <small>{selectedPlayer.keeperIneligibleReason}</small>
+            </div>
+          {:else}
+            <div>
+              <span>{yearLabel(selectedPlayer)}</span>
+              <strong>{taxLabel(selectedPlayer)}</strong>
+              <small>
+                {selectedPlayer.keeperStreak} prior keeper selection{selectedPlayer.keeperStreak === 1 ? '' : 's'} across all franchises
+              </small>
+            </div>
+
+            <div>
+              <span>Tax</span>
+              <strong>{money(selectedPlayer.taxAmount)}</strong>
+              <small>{money(selectedPlayer.floorBase)} × {selectedPlayer.taxPct}%</small>
+            </div>
+          {/if}
         </div>
 
-        <div class="keeper-price">
-          <span>{data.targetSeason} keeper price</span>
-          <strong>{money(selectedPlayer.keeperCost)}</strong>
-          <small>
-            {#if selectedPlayer.movedByTrade}
-              Price and keeper tenure both follow the player through trades.
-            {:else if selectedPlayer.firstKeeperSelection}
-              First keeper selection in the current keeper cycle.
-            {:else}
-              Returning keeper with compounded tax.
-            {/if}
-          </small>
-        </div>
+        <div
+	class="keeper-price"
+	class:ineligible={selectedPlayer.keeperEligible === false}
+>
+	{#if selectedPlayer.keeperEligible === false}
+		<span>{data.targetSeason} keeper status</span>
+		<strong>NOT ELIGIBLE</strong>
+		<small>
+			{selectedPlayer.keeperIneligibleReason}
+		</small>
+	{:else}
+		<span>{data.targetSeason} keeper price</span>
+		<strong>{money(selectedPlayer.keeperCost)}</strong>
+		<small>
+			{#if selectedPlayer.movedByTrade}
+				Price and keeper tenure both follow the player through trades.
+			{:else if selectedPlayer.firstKeeperSelection}
+				First keeper selection in the current keeper cycle.
+			{:else}
+				Returning keeper with compounded tax.
+			{/if}
+		</small>
+	{/if}
+</div>
 
         {#if selectedPlayer.keeperHistory.length}
           <div class="history-rail">
@@ -227,7 +249,11 @@ function clearSearch() {
               {#each [...selectedPlayer.keeperHistory].reverse() as item}
                 <b>{item.season} · {money(item.amount)}</b>
               {/each}
-              <b class="current">{data.targetSeason} · {money(selectedPlayer.keeperCost)}</b>
+              {#if selectedPlayer.keeperEligible === false}
+	<b class="current">{data.targetSeason} · NOT ELIGIBLE</b>
+{:else}
+	<b class="current">{data.targetSeason} · {money(selectedPlayer.keeperCost)}</b>
+{/if}
             </div>
           </div>
         {/if}
@@ -299,8 +325,18 @@ function clearSearch() {
                       {#if player.movedByTrade} · TRADE{/if}
                     </small>
                   </span>
-                  <span class="tax-chip">+{player.taxPct}%</span>
-                  <b>{money(player.keeperCost)}</b>
+                  {#if player.keeperEligible === false}
+                    <span class="keeper-ineligible-chip">
+                      NOT KEEPER ELIGIBLE
+                    </span>
+                  {:else}
+                    <span class="tax-chip">+{player.taxPct}%</span>
+                    {#if player.keeperEligible === false}
+	<b class="ineligible-search">NOT ELIGIBLE</b>
+{:else}
+	<b>{money(player.keeperCost)}</b>
+{/if}
+                  {/if}
                 </button>
               {/each}
             </div>
@@ -704,6 +740,48 @@ function clearSearch() {
   .player-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .player-copy small { margin-top: 2px; color: rgba(255,255,255,.58); font-size: .7rem; }
   .tax-chip { padding: 4px 6px; border: 1px solid rgba(255,216,77,.25); border-radius: 6px; background: rgba(255,216,77,.08); color: var(--bug-yellow, #ffd34d); font-family: var(--font-score); font-size: .62rem; font-weight: 950; }
+  .keeper-ineligible-chip {
+	grid-column: 3 / 5;
+	justify-self: end;
+	padding: 5px 8px;
+	border: 1px solid rgba(255, 95, 95, .45);
+	border-radius: 6px;
+	background: rgba(150, 20, 20, .22);
+	color: #ff7777;
+	font-family: var(--font-score);
+	font-size: .61rem;
+	font-weight: 950;
+	letter-spacing: .05em;
+	white-space: nowrap;
+}
+
+.ineligible-search {
+	color: #ff7777 !important;
+	font-family: var(--font-score);
+	font-size: .7rem;
+	white-space: nowrap;
+}
+
+.receipt-ineligible {
+	grid-column: span 2;
+	background: rgba(130, 15, 15, .12);
+}
+
+.receipt-ineligible strong {
+	color: #ff7777;
+}
+
+.keeper-price.ineligible {
+	background:
+		linear-gradient(180deg, rgba(180, 25, 25, .12), rgba(0,0,0,.08)),
+		rgba(0,0,0,.2);
+}
+
+.keeper-price.ineligible strong {
+	color: #ff7777;
+	font-size: 1.55rem;
+	line-height: 1.05;
+}
   .player-row > b { justify-self: end; color: var(--bug-yellow, #ffd34d); font-family: var(--font-score); }
 
   .method-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-top: 12px; }
@@ -737,6 +815,13 @@ function clearSearch() {
     .hero-bug { justify-self: start; }
     .hero-copy { padding: 4px 16px 10px; }
     .season-box { grid-column: auto; }
+    .receipt-ineligible {
+	grid-column: span 1;
+}
+
+.keeper-ineligible-chip {
+	grid-column: 3;
+}
     .rule-strip,
     .team-grid,
     .method-grid,

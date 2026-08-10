@@ -273,7 +273,7 @@ export const sleeperManagers = [
   {
     "id": 11,
     "name": "BrianJamesPhoto",
-    "team_name": "Kansas City Kansas City Kodachromes",
+    "team_name": "Kansas City Kodachromes",
     "username": null,
     "display_name": "BrianJamesPhoto",
     "avatar": "https://sleepercdn.com/avatars/thumbs/b9752e444a9190e1d11990ba77b021eb",
