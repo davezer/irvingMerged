@@ -1,74 +1,183 @@
-import { getTeamsIndexBundle } from '$lib/server/league/franchisePages.js';
-import { getDraftMoneySnapshot } from '$lib/server/league/draftMoney.js';
+import {
+  getTeamsIndexBundle
+} from '$lib/server/league/franchisePages.js';
 
-function cardManagerShape(card = {}, dossier = {}) {
-  return {
-    ...dossier,
-    slug: card.slug || dossier.slug,
-    name: card.managerName || dossier.name,
-    teamName: card.teamName || dossier.teamName,
-    liveTeamName: card.teamName || dossier.liveTeamName,
-    managerID: dossier.managerID,
-    managerId: dossier.managerId,
-    id: dossier.id
-  };
-}
+import {
+  getDraftCapitalBalances
+} from '$lib/server/league/draftCapitalRepository.js';
 
-async function draftMoneyForCard({ card, dossier, env, fetchFn, season }) {
-  try {
-    const snapshot = await getDraftMoneySnapshot({
-      env,
-      fetchFn,
-      manager: cardManagerShape(card, dossier),
-      year: season,
-      type: 'draftMoney'
+
+export async function load({
+  url,
+  platform
+}) {
+  const env =
+    platform?.env;
+
+
+  /*
+   * Load the normal Sleeper/team directory data.
+   */
+  const bundle =
+    await getTeamsIndexBundle({
+      url,
+      env
     });
 
-    return {
-      value: snapshot?.value ?? null,
-      source: snapshot?.source || null,
-      error: snapshot?.error || null
-    };
-  } catch (error) {
-    console.warn(`[teams] Draft money lookup failed for ${card?.teamName || card?.managerName || 'unknown team'}:`, error);
-    return {
-      value: null,
-      source: 'unavailable',
-      error: 'Draft money lookup failed.'
-    };
+
+  const season =
+    Number(
+      url.searchParams.get(
+        'season'
+      ) ||
+      bundle.season
+    );
+
+
+  /*
+   * ============================================================
+   * DRAFT CAPITAL
+   *
+   * ONE D1 query for the entire league.
+   *
+   * No Google Sheets.
+   * No Apps Script.
+   * No 14 sequential fetches.
+   * ============================================================
+   */
+
+  let balances = [];
+
+
+  if (env?.DB) {
+    try {
+      balances =
+        await getDraftCapitalBalances(
+          env.DB,
+          {
+            year:
+              season
+          }
+        );
+    } catch (error) {
+      console.warn(
+        '[teams] D1 draft capital lookup failed:',
+        error
+      );
+    }
   }
-}
 
-export async function load({ url, platform, fetch }) {
-  const env = platform?.env;
-  const bundle = await getTeamsIndexBundle({ url, env });
-  const season = url.searchParams.get('season') || bundle.season;
 
-  const dossiersBySlug = new Map((bundle.dossiers || []).map((row) => [row.slug, row]));
-  const cards = [];
+  const balanceByManager =
+    new Map(
+      balances.map(
+        (row) => [
+          String(
+            row.managerId
+          ),
+          row
+        ]
+      )
+    );
 
-  // Sequential on purpose: getDraftMoneySnapshot caches the pivot payload after the
-  // first fetch, so this avoids hammering the Google Apps Script 14 times at once.
-  for (const card of bundle.cards || []) {
-    const dossier = dossiersBySlug.get(card.slug) || {};
-    const draftMoney = await draftMoneyForCard({
-      card,
-      dossier,
-      env,
-      fetchFn: fetch,
-      season
-    });
 
-    cards.push({
-      ...card,
-      futureDraftDollars: draftMoney.value,
-      draftMoney
-    });
-  }
+  /*
+   * The team cards themselves don't carry managerID,
+   * but bundle.dossiers does.
+   */
+  const dossiersBySlug =
+    new Map(
+      (
+        bundle.dossiers ||
+        []
+      ).map(
+        (row) => [
+          row.slug,
+          row
+        ]
+      )
+    );
+
+
+  const cards =
+    (
+      bundle.cards ||
+      []
+    ).map(
+      (card) => {
+        const dossier =
+          dossiersBySlug.get(
+            card.slug
+          ) || {};
+
+
+        const managerId =
+          dossier.managerID ??
+          dossier.managerId ??
+          dossier.id ??
+          null;
+
+
+        const capital =
+          managerId != null
+            ? balanceByManager.get(
+                String(
+                  managerId
+                )
+              )
+            : null;
+
+
+        const value =
+          capital?.balance ??
+          null;
+
+
+        return {
+          ...card,
+
+          futureDraftDollars:
+            value,
+
+          /*
+           * Preserve this shape in case anything else
+           * on the page expects draftMoney.
+           */
+          draftMoney: {
+            value,
+
+            balance:
+              value,
+
+            balanceCents:
+              capital?.balanceCents ??
+              null,
+
+            year:
+              season,
+
+            managerId:
+              managerId != null
+                ? String(
+                    managerId
+                  )
+                : null,
+
+            source:
+              capital
+                ? 'D1 draft capital ledger'
+                : 'D1 draft capital unavailable'
+          }
+        };
+      }
+    );
+
 
   return {
     ...bundle,
+
     season,
+
     cards
   };
 }

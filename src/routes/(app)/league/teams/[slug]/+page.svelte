@@ -138,6 +138,44 @@
   $: careerTitleYears = allTime.titleYears || [];
   $: careerTitleCount = allTime.totalTitles ?? career.titles ?? 0;
   $: legacyTitleYears = allTime.legacyTitleYears || career.historicalTitleYears || [];
+  $: badgeCase =
+  data.badgeCase || {
+    totalAwards: 0,
+    uniqueBadges: 0,
+    badges: []
+  };
+
+/*
+ * Persona, Service, and Legacy already live
+ * in the identity shelf directly above this.
+ *
+ * The Trophy Case is for actual weekly/luck/stain
+ * awards so we don't display the same thing twice.
+ */
+$: managerBadges =
+  (badgeCase.badges || []).filter(
+    (badge) =>
+      [
+        'weekly',
+        'luck',
+        'stains'
+      ].includes(
+        badge.category
+      )
+  );
+
+$: visibleAwardCount =
+  managerBadges.reduce(
+    (total, badge) =>
+      total +
+      Number(badge.count || 0),
+    0
+  );
+
+$: visibleUniqueBadgeCount =
+  managerBadges.length;
+
+let selectedBadge = null;
 
   $: identityCards = [
     {
@@ -216,7 +254,175 @@
   $: extraRecentMatchups = recentMatchups.slice(PREVIEW_LIMIT);
   $: visibleRecentMoves = recentMoves.slice(0, PREVIEW_LIMIT);
   $: extraRecentMoves = recentMoves.slice(PREVIEW_LIMIT);
+
+  function badgeCategoryLabel(
+  category
+) {
+  const labels = {
+    personas:
+      'Persona',
+
+    weekly:
+      'Weekly Honor',
+
+    luck:
+      'Luck',
+
+    stains:
+      'Stain',
+
+    yearly:
+      'Service',
+
+    legacy:
+      'Legacy'
+  };
+
+  return (
+    labels[category] ||
+    'Badge'
+  );
+}
+
+
+function badgeAwardWhen(
+  award
+) {
+  if (!award) {
+    return '';
+  }
+
+  if (
+    award.season ===
+    'career'
+  ) {
+    return 'Career';
+  }
+
+  const parts = [];
+
+  if (award.season) {
+    parts.push(
+      String(
+        award.season
+      )
+    );
+  }
+
+  if (
+    award.week != null
+  ) {
+    parts.push(
+      `Week ${award.week}`
+    );
+  }
+
+  return parts.join(
+    ' · '
+  );
+}
+
+
+function badgeAwardDetail(
+  award
+) {
+  if (!award) {
+    return '';
+  }
+
+  if (award.reason) {
+    return award.reason;
+  }
+
+  if (
+    award.metadata?.awardYear
+  ) {
+    return `Champion · ${award.metadata.awardYear}`;
+  }
+
+  return badgeAwardWhen(
+    award
+  );
+}
+
+function openBadge(
+  badge
+) {
+  selectedBadge =
+    badge;
+}
+
+
+function closeBadge() {
+  selectedBadge =
+    null;
+}
+
+
+function handleBadgeKeydown(
+  event
+) {
+  if (
+    event.key === 'Escape' &&
+    selectedBadge
+  ) {
+    closeBadge();
+  }
+}
+
+
+function badgeSeasonLabel(
+  award
+) {
+  if (!award) {
+    return '';
+  }
+
+  if (
+    award.season ===
+    'career'
+  ) {
+    return 'Career';
+  }
+
+  const season =
+    award.season
+      ? String(
+          award.season
+        )
+      : '';
+
+  const week =
+    award.week != null
+      ? `Week ${award.week}`
+      : '';
+
+  return [
+    season,
+    week
+  ]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+
+function badgeScoreLabel(
+  award
+) {
+  if (
+    award?.score == null
+  ) {
+    return null;
+  }
+
+  return `${Number(
+    award.score
+  ).toFixed(2)} pts`;
+}
 </script>
+<svelte:window
+  on:keydown={handleBadgeKeydown}
+/>
 
 <div class="page-stack">
   <LeagueSubnav season={season} active="teams" />
@@ -333,6 +539,145 @@
       {/if}
     {/each}
   </section>
+
+  <section
+  class="card badge-case-card"
+  aria-labelledby="badge-case-title"
+>
+  <div class="card-head badge-case-head">
+    <div>
+      <div class="eyebrow">
+        Trophy case & rap sheet
+      </div>
+
+      <h3 id="badge-case-title">
+        Badges
+      </h3>
+    </div>
+
+    <div class="badge-case-summary">
+      <strong>
+        {visibleAwardCount}
+      </strong>
+
+      <span>
+        awards ·
+        {visibleUniqueBadgeCount}
+        unique
+      </span>
+    </div>
+  </div>
+
+
+  {#if managerBadges.length}
+
+    <div class="manager-badge-grid">
+
+      {#each managerBadges as badge}
+
+        <button
+          type="button"
+          class={`manager-badge manager-badge-${badge.category}`}
+          on:click={() =>
+            openBadge(badge)
+          }
+          aria-label={`View ${badge.title} award history`}
+        >
+
+          <div class="manager-badge-top">
+
+            <div class="manager-badge-icon-wrap">
+
+              <img
+                class="manager-badge-icon"
+                src={badge.icon}
+                alt=""
+              />
+
+              {#if badge.count > 1}
+                <span
+                  class="manager-badge-count"
+                >
+                  ×{badge.count}
+                </span>
+              {/if}
+
+            </div>
+
+
+            <div class="manager-badge-title">
+
+              <span>
+                {badgeCategoryLabel(
+                  badge.category
+                )}
+              </span>
+
+              <strong>
+                {badge.title}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          {#if badge.description}
+            <p class="manager-badge-description">
+              {badge.description}
+            </p>
+          {/if}
+
+
+          {#if badge.awards?.length}
+            <div class="manager-badge-latest">
+
+              <span>
+                Latest award
+              </span>
+
+              <strong>
+                {badgeAwardWhen(
+                  badge.awards[0]
+                )}
+              </strong>
+
+              {#if badge.awards[0].reason}
+                <small>
+                  {badge.awards[0].reason}
+                </small>
+              {/if}
+
+            </div>
+          {/if}
+
+
+          <div class="manager-badge-click">
+            View award history →
+          </div>
+
+        </button>
+
+      {/each}
+
+    </div>
+
+
+    <div class="badge-case-footer">
+      <a href="/history/badges">
+        View league badge cabinet
+      </a>
+    </div>
+
+  {:else}
+
+    <div class="empty">
+      No weekly honors, luck awards,
+      or stains yet.
+    </div>
+
+  {/if}
+</section>
 
   <section class="card all-time-card">
     <div class="card-head">
@@ -499,6 +844,304 @@
     </article>
   </section>
 </div>
+
+{#if selectedBadge}
+
+  <div
+    class="badge-modal-backdrop"
+    role="presentation"
+    on:click={closeBadge}
+  >
+
+    <section
+      class="badge-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="badge-modal-title"
+      on:click|stopPropagation
+    >
+
+      <button
+        type="button"
+        class="badge-modal-close"
+        on:click={closeBadge}
+        aria-label="Close badge details"
+      >
+        ×
+      </button>
+
+
+      <header class="badge-modal-header">
+
+        <div class="badge-modal-icon-wrap">
+
+          <img
+            src={selectedBadge.icon}
+            alt=""
+          />
+
+          {#if selectedBadge.count > 1}
+            <span>
+              ×{selectedBadge.count}
+            </span>
+          {/if}
+
+        </div>
+
+
+        <div>
+
+          <div class="eyebrow">
+            {badgeCategoryLabel(
+              selectedBadge.category
+            )}
+          </div>
+
+          <h2 id="badge-modal-title">
+            {selectedBadge.title}
+          </h2>
+
+          <p>
+            {selectedBadge.description}
+          </p>
+
+        </div>
+
+      </header>
+
+
+      <div class="badge-modal-divider">
+        <span>
+          Award history
+        </span>
+
+        <strong>
+          {selectedBadge.awards?.length || 0}
+          total
+        </strong>
+      </div>
+
+
+      <div class="badge-modal-history">
+
+        {#each selectedBadge.awards || [] as award, index}
+
+          <article class="badge-modal-award">
+
+            <div class="badge-modal-award-number">
+              #{selectedBadge.awards.length - index}
+            </div>
+
+
+            <div class="badge-modal-award-body">
+
+              <div class="badge-modal-award-head">
+
+                <strong>
+                  {badgeSeasonLabel(
+                    award
+                  )}
+                </strong>
+
+                {#if badgeScoreLabel(award)}
+                  <span>
+                    {badgeScoreLabel(
+                      award
+                    )}
+                  </span>
+                {/if}
+
+              </div>
+
+
+              {#if award.reason}
+
+                <p class="badge-modal-reason">
+                  {award.reason}
+                </p>
+
+              {:else}
+
+                <p class="badge-modal-reason badge-modal-muted">
+                  No additional explanation
+                  was recorded for this award.
+                </p>
+
+              {/if}
+
+
+              {#if
+                award.opponentTeamName ||
+                award.opponentName
+              }
+
+                <div class="badge-modal-detail">
+
+                  <span>
+                    Opponent
+                  </span>
+
+                  <strong>
+                    {award.opponentTeamName ||
+                      award.opponentName}
+                  </strong>
+
+                  {#if award.opponentScore != null}
+                    <small>
+                      {Number(
+                        award.opponentScore
+                      ).toFixed(2)}
+                      pts
+                    </small>
+                  {/if}
+
+                </div>
+
+              {/if}
+
+
+              {#if
+                award.nominatedByTeamName ||
+                award.nominatedByName
+              }
+
+                <div class="badge-modal-detail">
+
+                  <span>
+                    Nominated by
+                  </span>
+
+                  <strong>
+                    {award.nominatedByTeamName ||
+                      award.nominatedByName}
+                  </strong>
+
+                </div>
+
+              {/if}
+
+
+              {#if award.metadata?.zeroStarters?.length}
+
+                <div class="badge-modal-detail">
+
+                  <span>
+                    Zero Hour victim
+                  </span>
+
+                  <strong>
+                    {award.metadata.zeroStarters
+                      .map(
+                        (player) =>
+                          player.name
+                      )
+                      .join(', ')}
+                  </strong>
+
+                </div>
+
+              {/if}
+
+
+              {#if award.metadata?.byeStarters?.length}
+
+                <div class="badge-modal-detail">
+
+                  <span>
+                    Bye-week starter
+                  </span>
+
+                  <strong>
+                    {award.metadata.byeStarters
+                      .map(
+                        (player) =>
+                          player.name
+                      )
+                      .join(', ')}
+                  </strong>
+
+                </div>
+
+              {/if}
+
+
+              {#if
+                award.metadata?.hindsightBenchPlayerName
+              }
+
+                <div class="badge-modal-swap">
+
+                  <div>
+                    <span>
+                      Should've started
+                    </span>
+
+                    <strong>
+                      {award.metadata
+                        .hindsightBenchPlayerName}
+                    </strong>
+
+                    {#if
+                      award.metadata
+                        .hindsightBenchScore != null
+                    }
+                      <small>
+                        {Number(
+                          award.metadata
+                            .hindsightBenchScore
+                        ).toFixed(2)}
+                        pts
+                      </small>
+                    {/if}
+                  </div>
+
+
+                  <div class="badge-modal-arrow">
+                    →
+                  </div>
+
+
+                  <div>
+                    <span>
+                      Instead of
+                    </span>
+
+                    <strong>
+                      {award.metadata
+                        .hindsightReplacedPlayerName}
+                    </strong>
+
+                    {#if
+                      award.metadata
+                        .hindsightReplacedPlayerScore != null
+                    }
+                      <small>
+                        {Number(
+                          award.metadata
+                            .hindsightReplacedPlayerScore
+                        ).toFixed(2)}
+                        pts
+                      </small>
+                    {/if}
+                  </div>
+
+                </div>
+
+              {/if}
+
+            </div>
+
+          </article>
+
+        {/each}
+
+      </div>
+
+    </section>
+
+  </div>
+
+{/if}
 
 <style>
   .page-stack {
@@ -897,6 +1540,556 @@
     max-width: 22ch;
   }
 
+  .badge-case-card {
+  overflow: hidden;
+}
+
+.badge-case-head {
+  align-items: center;
+}
+
+.badge-case-summary {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+}
+
+.badge-case-summary strong {
+  color: var(--bug-yellow);
+  font-family: var(--font-score);
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.badge-case-summary span {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+
+.manager-badge-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(245px, 1fr)
+    );
+
+  gap: 12px;
+}
+
+
+.manager-badge {
+   width: 100%;
+  appearance: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  border:
+    2px solid
+    #070808;
+  border-radius:
+    9px;
+  background:
+    linear-gradient(
+      180deg,
+      #343a37,
+      #171b19 52%,
+      #0b0d0d
+    );
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.10),
+
+    0 10px 24px
+      rgba(0, 0, 0, 0.26);
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+
+}
+.manager-badge:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    var(--bug-yellow);
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.12),
+
+    0 14px 30px
+      rgba(0, 0, 0, 0.38);
+}
+
+
+.manager-badge:focus-visible {
+  outline:
+    2px solid
+    #18b7ff;
+
+  outline-offset:
+    3px;
+}
+
+
+.manager-badge-click {
+  margin-top: auto;
+
+  color:
+    #18b7ff;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.66rem;
+
+  font-weight:
+    950;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.manager-badge-latest small {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
+
+  font-size:
+    0.72rem;
+
+  line-height:
+    1.35;
+}
+
+.manager-badge-top {
+  display: grid;
+  grid-template-columns:
+    70px
+    minmax(0, 1fr);
+
+  gap: 12px;
+  align-items: center;
+}
+
+
+.manager-badge-icon-wrap {
+  position: relative;
+
+  width: 70px;
+  height: 70px;
+}
+
+
+.manager-badge-icon {
+  width: 70px;
+  height: 70px;
+
+  object-fit:
+    contain;
+
+  filter:
+    drop-shadow(
+      0 8px 10px
+      rgba(0, 0, 0, 0.45)
+    );
+}
+
+
+.manager-badge-count {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+
+  display: grid;
+  place-items: center;
+
+  min-width: 27px;
+  height: 27px;
+
+  padding:
+    0 6px;
+
+  border:
+    2px solid
+    #070808;
+
+  border-radius:
+    999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      var(--bug-red),
+      var(--bug-red-dark)
+    );
+
+  color:
+    white;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.72rem;
+
+  font-weight:
+    950;
+
+  box-shadow:
+    0 5px 10px
+    rgba(0, 0, 0, 0.45);
+}
+
+
+.manager-badge-title {
+  min-width: 0;
+
+  display: grid;
+  gap: 4px;
+}
+
+
+.manager-badge-title span {
+  color:
+    var(--bug-yellow);
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.63rem;
+
+  font-weight:
+    950;
+
+  letter-spacing:
+    0.12em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.manager-badge-title strong {
+  overflow: hidden;
+
+  color:
+    white;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    1rem;
+
+  line-height:
+    1.05;
+
+  text-overflow:
+    ellipsis;
+}
+
+
+.manager-badge-description {
+  margin: 0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.58
+    );
+
+  font-size:
+    0.78rem;
+
+  line-height:
+    1.35;
+}
+
+
+.manager-badge-latest {
+  display: grid;
+  gap: 4px;
+
+  padding:
+    10px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  border-radius:
+    6px;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.22
+    );
+}
+
+
+.manager-badge-latest span,
+.badge-history-row span {
+  color:
+    #8d9691;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.65rem;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    0.06em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.manager-badge-latest strong,
+.badge-history-row strong {
+  color:
+    #f2f0e6;
+
+  font-size:
+    0.78rem;
+
+  line-height:
+    1.35;
+}
+
+
+.badge-history {
+  border-top:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  padding-top:
+    10px;
+}
+
+
+.badge-history summary {
+  cursor:
+    pointer;
+
+  color:
+    #18b7ff;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.7rem;
+
+  font-weight:
+    950;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+
+  list-style:
+    none;
+}
+
+
+.badge-history summary::-webkit-details-marker {
+  display:
+    none;
+}
+
+
+.badge-history summary::after {
+  content:
+    ' +';
+
+  color:
+    var(--bug-yellow);
+}
+
+
+.badge-history[open]
+summary::after {
+  content:
+    ' −';
+}
+
+
+.badge-history-list {
+  display:
+    grid;
+
+  gap:
+    8px;
+
+  margin-top:
+    10px;
+}
+
+
+.badge-history-row {
+  display:
+    grid;
+
+  gap:
+    3px;
+
+  padding:
+    9px 10px;
+
+  border-radius:
+    5px;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.23
+    );
+}
+
+
+.badge-history-row small {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.43
+    );
+
+  font-size:
+    0.68rem;
+}
+
+
+.badge-case-footer {
+  display:
+    flex;
+
+  justify-content:
+    flex-end;
+
+  margin-top:
+    14px;
+}
+
+
+.badge-case-footer a {
+  color:
+    #18b7ff;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.72rem;
+
+  font-weight:
+    950;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.manager-badge-stains {
+  border-color:
+    rgba(
+      193,
+      49,
+      39,
+      0.68
+    );
+}
+
+
+.manager-badge-legacy {
+  border-color:
+    rgba(
+      219,
+      184,
+      72,
+      0.58
+    );
+}
+
+
+.manager-badge-personas {
+  border-color:
+    rgba(
+      41,
+      126,
+      187,
+      0.52
+    );
+}
+
+
+@media (
+  max-width: 620px
+) {
+  .manager-badge-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .badge-case-summary {
+    justify-items:
+      start;
+  }
+}
+
   .card-head,
   .card-title-row {
     display: flex;
@@ -1109,4 +2302,654 @@
       font-size: clamp(2.2rem, 14vw, 3.4rem);
     }
   }
+
+  .badge-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: grid;
+  place-items: center;
+
+  padding: 24px;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.78
+    );
+
+  backdrop-filter:
+    blur(5px);
+}
+
+
+.badge-modal {
+  position: relative;
+
+  width:
+    min(
+      720px,
+      100%
+    );
+
+  max-height:
+    min(
+      820px,
+      90vh
+    );
+
+  overflow-y: auto;
+
+  border:
+    2px solid
+    #050606;
+
+  border-radius:
+    12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #363d39 0%,
+      #171b19 18%,
+      #090b0a 100%
+    );
+
+  box-shadow:
+    0 30px 90px
+      rgba(
+        0,
+        0,
+        0,
+        0.8
+      );
+}
+
+
+.badge-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    2px solid
+    #050606;
+
+  border-radius:
+    6px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d8d8ce,
+      #727975
+    );
+
+  color:
+    #101111;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    1.35rem;
+
+  font-weight:
+    950;
+
+  cursor:
+    pointer;
+}
+
+
+.badge-modal-header {
+  display: grid;
+
+  grid-template-columns:
+    104px
+    minmax(
+      0,
+      1fr
+    );
+
+  gap:
+    18px;
+
+  align-items:
+    center;
+
+  padding:
+    26px;
+}
+
+
+.badge-modal-header h2 {
+  margin:
+    3px 0 7px;
+
+  color:
+    white;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    clamp(
+      1.4rem,
+      4vw,
+      2rem
+    );
+
+  line-height:
+    1;
+}
+
+
+.badge-modal-header p {
+  max-width:
+    520px;
+
+  margin:
+    0;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.64
+    );
+
+  line-height:
+    1.45;
+}
+
+
+.badge-modal-icon-wrap {
+  position:
+    relative;
+
+  width:
+    104px;
+
+  height:
+    104px;
+}
+
+
+.badge-modal-icon-wrap img {
+  width:
+    104px;
+
+  height:
+    104px;
+
+  object-fit:
+    contain;
+
+  filter:
+    drop-shadow(
+      0 10px 14px
+      rgba(
+        0,
+        0,
+        0,
+        0.5
+      )
+    );
+}
+
+
+.badge-modal-icon-wrap span {
+  position:
+    absolute;
+
+  right:
+    -5px;
+
+  bottom:
+    -4px;
+
+  padding:
+    4px 8px;
+
+  border:
+    2px solid
+    #070808;
+
+  border-radius:
+    999px;
+
+  background:
+    var(--bug-red);
+
+  color:
+    white;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.78rem;
+
+  font-weight:
+    950;
+}
+
+
+.badge-modal-divider {
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  padding:
+    10px 26px;
+
+  border-top:
+    2px solid
+    #050606;
+
+  border-bottom:
+    2px solid
+    #050606;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d9d9cf,
+      #737a76
+    );
+
+  color:
+    #111;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.72rem;
+
+  font-weight:
+    950;
+
+  letter-spacing:
+    0.09em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.badge-modal-history {
+  display:
+    grid;
+
+  gap:
+    12px;
+
+  padding:
+    18px;
+}
+
+
+.badge-modal-award {
+  display:
+    grid;
+
+  grid-template-columns:
+    42px
+    minmax(
+      0,
+      1fr
+    );
+
+  overflow:
+    hidden;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.11
+    );
+
+  border-radius:
+    8px;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.28
+    );
+}
+
+
+.badge-modal-award-number {
+  display:
+    flex;
+
+  justify-content:
+    center;
+
+  align-items:
+    flex-start;
+
+  padding-top:
+    14px;
+
+  border-right:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  color:
+    var(--bug-yellow);
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.68rem;
+
+  font-weight:
+    950;
+}
+
+
+.badge-modal-award-body {
+  display:
+    grid;
+
+  gap:
+    12px;
+
+  padding:
+    14px;
+}
+
+
+.badge-modal-award-head {
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  gap:
+    16px;
+
+  align-items:
+    center;
+}
+
+
+.badge-modal-award-head strong {
+  color:
+    var(--bug-yellow);
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.82rem;
+
+  letter-spacing:
+    0.04em;
+}
+
+
+.badge-modal-award-head span {
+  color:
+    white;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.82rem;
+
+  font-weight:
+    950;
+
+  white-space:
+    nowrap;
+}
+
+
+.badge-modal-reason {
+  margin:
+    0;
+
+  color:
+    #f4f2e8;
+
+  font-size:
+    0.86rem;
+
+  line-height:
+    1.48;
+}
+
+
+.badge-modal-muted {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.45
+    );
+}
+
+
+.badge-modal-detail {
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(
+      90px,
+      auto
+    )
+    minmax(
+      0,
+      1fr
+    )
+    auto;
+
+  gap:
+    10px;
+
+  align-items:
+    center;
+
+  padding:
+    9px 10px;
+
+  border-radius:
+    5px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.045
+    );
+}
+
+
+.badge-modal-detail span,
+.badge-modal-swap span {
+  color:
+    #8d9691;
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    0.62rem;
+
+  font-weight:
+    950;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.badge-modal-detail strong,
+.badge-modal-swap strong {
+  color:
+    white;
+}
+
+
+.badge-modal-detail small,
+.badge-modal-swap small {
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.56
+    );
+}
+
+
+.badge-modal-swap {
+  display:
+    grid;
+
+  grid-template-columns:
+    1fr
+    auto
+    1fr;
+
+  gap:
+    12px;
+
+  align-items:
+    center;
+
+  padding:
+    12px;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      204,
+      0,
+      0.22
+    );
+
+  border-radius:
+    6px;
+
+  background:
+    rgba(
+      255,
+      204,
+      0,
+      0.05
+    );
+}
+
+
+.badge-modal-swap > div:not(
+  .badge-modal-arrow
+) {
+  display:
+    grid;
+
+  gap:
+    3px;
+}
+
+
+.badge-modal-arrow {
+  color:
+    var(--bug-yellow);
+
+  font-family:
+    var(--font-score);
+
+  font-size:
+    1.35rem;
+
+  font-weight:
+    950;
+}
+
+
+@media (
+  max-width: 620px
+) {
+  .badge-modal-backdrop {
+    padding:
+      10px;
+  }
+
+  .badge-modal-header {
+    grid-template-columns:
+      72px
+      minmax(
+        0,
+        1fr
+      );
+
+    padding:
+      20px 52px
+      20px 18px;
+  }
+
+  .badge-modal-icon-wrap,
+  .badge-modal-icon-wrap img {
+    width:
+      72px;
+
+    height:
+      72px;
+  }
+
+  .badge-modal-swap {
+    grid-template-columns:
+      1fr;
+  }
+
+  .badge-modal-arrow {
+    transform:
+      rotate(90deg);
+
+    justify-self:
+      start;
+  }
+}
 </style>

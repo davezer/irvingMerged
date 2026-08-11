@@ -34,11 +34,13 @@
   <div class="card hero">
     <div class="eyebrow">League Admin</div>
     <h1>League control room</h1>
-    <p>The old Sleeper D1 sync/backfill path is retired. League pages now run off cached Sleeper fetches. The main admin control left here is cache invalidation.</p>
+    
   </div>
 
   <div class="grid actions">
-    <div class="card action-card">
+
+   
+    <!-- <div class="card action-card">
       <div class="section-label">Cache</div>
       <h2>Flush league cache</h2>
       <p>Clears cached Sleeper keys for the current runtime. Great for local testing after structural changes.</p>
@@ -59,8 +61,37 @@
       <p class="muted">To physically remove the last retired Sleeper-D1 files from your repo after applying this patch, run <code>./scripts/cleanup-legacy-sleeper-d1.ps1</code> in PowerShell.</p>
     </div>
   </div>
+  <div class="card action-card">
+  <div class="section-label">
+    History
+  </div> -->
 
-  <div class="card">
+  <h2>Draft Capital</h2>
+  <p>HQ for managing draft capital</p>
+   <a
+   class="admin-link"
+  href="/admin/league/draft-capital"
+>
+  Draft Capital
+</a>
+
+  <h2>
+    Badge control
+  </h2>
+
+  <p>
+    Assign, review and revoke league badges.
+  </p>
+
+  <a
+    class="admin-link"
+    href="/admin/league/badges"
+  >
+    OPEN BADGE CONTROL
+  </a>
+</div>
+
+  <!-- <div class="card">
     <div class="section-label">Known cache keys</div>
     {#if data.cacheKeys.length}
       <div class="keys">
@@ -71,7 +102,7 @@
     {:else}
       <p class="muted">No cached Sleeper keys have been registered in this runtime yet.</p>
     {/if}
-  </div>
+  </div> -->
 </div>
 
 <style>
@@ -80,12 +111,24 @@
   .eyebrow,.section-label{text-transform:uppercase;letter-spacing:.2em;font-size:11px;color:#d6b15e}
   h1,h2{margin:.35rem 0 0}
   p,.muted,code{color:rgba(255,255,255,.72)}
-  .grid.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .grid.actions {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+}
   .action-card{display:grid;gap:18px;align-content:start}
   button{appearance:none;border:none;border-radius:999px;padding:14px 18px;font-weight:800;cursor:pointer;background:linear-gradient(180deg,#f0c96d,#c99a34);color:#111;width:100%}
   .stack{display:grid;gap:12px}
   label{display:grid;gap:6px} input{border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#f6f1e8;padding:12px 14px}
   .retired{border-color:rgba(255,255,255,.12)}
+  .admin-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 14px 18px;
+  font-weight: 800;
+  background: linear-gradient(180deg,#f0c96d,#c99a34);
+  color: #111;
+}
   .notice.success{border-color:rgba(90,200,120,.45)} .notice.error{border-color:rgba(220,90,90,.45)}
   pre{white-space:pre-wrap;word-break:break-word;overflow:auto;margin-top:12px;padding:14px;border-radius:16px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.06);color:#f6f1e8;font-size:.92rem}
   .keys{display:grid;gap:10px;margin-top:14px} code{background:rgba(255,255,255,.05);padding:8px 10px;border-radius:10px;display:block;overflow:auto}

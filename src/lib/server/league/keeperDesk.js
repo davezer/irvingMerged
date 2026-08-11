@@ -110,6 +110,41 @@ async function getSeasonDraftSnapshot(league) {
 	};
 }
 
+async function getTransactionsForLeague(
+	leagueId
+) {
+	if (!leagueId) {
+		return [];
+	}
+
+	const buckets =
+		await Promise.all(
+			TRANSACTION_WEEKS.map(
+				async (week) => {
+					const rows =
+						await getSleeperTransactionsForWeek(
+							leagueId,
+							week
+						).catch(
+							() => []
+						);
+
+					return (
+						rows || []
+					).map(
+						(txn) => ({
+							...txn,
+							__leagueWeek:
+								week
+						})
+					);
+				}
+			)
+		);
+
+	return buckets.flat();
+}
+
 function buildDraftPriceMap({
 	sourceDraft,
 	sourceIdentityMap
@@ -1231,26 +1266,170 @@ export async function getKeeperDeskBundle({
 			[]
 	};
 
-	const priceMap =
-		buildDraftPriceMap({
-			sourceDraft,
-			sourceIdentityMap
+	/*
+ * ============================================================
+ * KEEPER PRICE STATE
+ *
+ * The source season's completed draft normally establishes
+ * the starting price state for that season.
+ *
+ * BUT:
+ *
+ * If we're projecting from a season whose draft has not
+ * happened yet, we must carry forward the LAST REAL PRICED
+ * ACQUISITION from the previous season.
+ *
+ * Example:
+ *
+ * 2025:
+ *   Jayden Daniels drafted for $41
+ *   later claimed on waivers for $33
+ *
+ * 2026 draft has not happened yet.
+ *
+ * A 2027 projection must inherit $33, not fall backwards
+ * to the old $41 draft price.
+ * ============================================================
+ */
+
+let priceMap =
+	new Map();
+
+
+const sourceDraftComplete =
+	String(
+		sourceDraftMeta?.status ||
+			''
+	).toLowerCase() ===
+	'complete';
+
+
+/*
+ * If the source-season draft has not happened yet,
+ * reconstruct the previous season's ENDING price state.
+ */
+if (!sourceDraftComplete) {
+	const previousSeason =
+		sourceSeason - 1;
+
+
+	const previousSnapshot =
+		draftHistory.find(
+			(entry) =>
+				Number(
+					entry.season
+				) ===
+				Number(
+					previousSeason
+				)
+		);
+
+
+	if (
+		previousSnapshot?.leagueId
+	) {
+		const previousDraftPrices =
+			buildDraftPriceMap({
+				sourceDraft:
+					previousSnapshot,
+
+				/*
+				 * We only need historical PRICE state here.
+				 * Current ownership is resolved separately
+				 * from the source-season rosters/trades.
+				 */
+				sourceIdentityMap:
+					new Map()
+			});
+
+
+		const previousTransactions =
+			await getTransactionsForLeague(
+				previousSnapshot.leagueId
+			);
+
+
+		applyTransactionPrices({
+			priceMap:
+				previousDraftPrices,
+
+			ownershipMap:
+				new Map(),
+
+			transactions:
+				previousTransactions,
+
+			sourceIdentityMap:
+				new Map(),
+
+			sourceSeason:
+				previousSeason
 		});
 
-	const ownershipMap =
-		new Map();
 
-	const sourceTransactions =
-		sourceTransactionsByWeek.flat();
+		/*
+		 * This map now represents the real ending
+		 * price state of the previous season.
+		 *
+		 * Draft → waiver → FA, etc.
+		 */
+		priceMap =
+			new Map(
+				previousDraftPrices
+			);
+	}
+}
 
-	applyTransactionPrices({
-		priceMap,
-		ownershipMap,
-		transactions:
-			sourceTransactions,
-		sourceIdentityMap,
-		sourceSeason
+
+/*
+ * Overlay whatever actually exists in the source-season
+ * draft.
+ *
+ * Once the draft is complete, these prices naturally become
+ * authoritative and replace the carried-forward prices.
+ */
+const sourceDraftPrices =
+	buildDraftPriceMap({
+		sourceDraft,
+		sourceIdentityMap
 	});
+
+
+for (
+	const [
+		playerId,
+		price
+	] of sourceDraftPrices
+) {
+	priceMap.set(
+		playerId,
+		price
+	);
+}
+
+
+/*
+ * Finally walk source-season transactions chronologically.
+ *
+ * Waivers/free agents replace the current price.
+ * Trades transfer ownership but preserve price.
+ */
+const ownershipMap =
+	new Map();
+
+
+const sourceTransactions =
+	sourceTransactionsByWeek.flat();
+
+
+applyTransactionPrices({
+	priceMap,
+	ownershipMap,
+	transactions:
+		sourceTransactions,
+	sourceIdentityMap,
+	sourceSeason
+});
 
 	const playerIds =
 		candidateRostersRaw.flatMap(

@@ -9,7 +9,9 @@ import { resolveLeagueContext } from '$lib/server/league/context.js';
 import { resolvePlayersByIds } from '$lib/server/league/players.js';
 import { buildWeeklyLineupSnapshots, summarizeLineupAnalytics } from '$lib/server/league/lineupAnalytics.js';
 import { summarizeTradeProfile } from '$lib/server/league/tradeAnalytics.js';
-import { getDraftMoneySnapshot } from '$lib/server/league/draftMoney.js';
+import {
+  getManagerDraftCapital
+} from '$lib/server/league/draftCapitalRepository.js';
 import {
   getLeagueHistory,
   getSleeperDraftPicks,
@@ -342,7 +344,11 @@ export async function getManagersIndexBundle({ url, env } = {}) {
   return { ...context, dossiers, hasData: dossiers.length > 0, source: 'Sleeper API + shared edge/runtime cache' };
 }
 
-export async function getManagerDossierBundle({ url, env, slug, fetchFn = globalThis.fetch } = {}) {
+export async function getManagerDossierBundle({
+  url,
+  env,
+  slug
+} = {}) {
   const profile = getLegacyManagerBySlug(slug);
   if (!profile) return null;
 
@@ -394,14 +400,78 @@ export async function getManagerDossierBundle({ url, env, slug, fetchFn = global
   const career = { ...buildCareerSummary(seasonHistory), ...historicalTitles, titles: historicalTitles.historicalTitles };
   const moveProfile = buildMoveProfile(transactionWeeks, rosterId);
   const tradeProfile = summarizeTradeProfile(transactionWeeks, rosterId, rosterIdentityMap, playersById);
-  const liveTeamName = standing?.teamName || profile.teamName;
-  const draftMoney = await getDraftMoneySnapshot({
-    env,
-    fetchFn,
-    manager: { ...profile, liveTeamName },
-    year: context.season,
-    type: 'draftMoney'
-  });
+  const liveTeamName =
+  standing?.teamName ||
+  profile.teamName;
+
+
+/*
+ * ============================================================
+ * DRAFT CAPITAL
+ *
+ * D1 is now the source of truth.
+ *
+ * Preserve the old draftMoney shape because the
+ * existing team-page UI already expects:
+ *
+ *   draftMoney.value
+ *
+ * That means NO front-end change is required.
+ * ============================================================
+ */
+
+const draftCapital =
+  env?.DB
+    ? await safeValue(
+        `draft capital ${profile.managerID} ${context.season}`,
+
+        () =>
+          getManagerDraftCapital(
+            env.DB,
+            {
+              managerId:
+                profile.managerID,
+
+              year:
+                Number(
+                  context.season
+                )
+            }
+          ),
+
+        null
+      )
+    : null;
+
+
+const draftMoney = {
+  value:
+    draftCapital?.balance ??
+    null,
+
+  balance:
+    draftCapital?.balance ??
+    null,
+
+  balanceCents:
+    draftCapital?.balanceCents ??
+    null,
+
+  year:
+    Number(
+      context.season
+    ),
+
+  managerId:
+    String(
+      profile.managerID
+    ),
+
+  source:
+    draftCapital
+      ? 'D1 draft capital ledger'
+      : 'D1 draft capital unavailable'
+};
   const managerNav = buildManagerNav(profile, context.season);
   const rival = buildRivalProfile(profile, context.season);
 
