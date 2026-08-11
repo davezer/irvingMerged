@@ -854,6 +854,79 @@
 
 		return `${profile?.position || '—'} · ${team}${number}`;
 	}
+
+	function capitalTeamName(
+  event,
+  managerId
+) {
+  const id =
+    String(
+      managerId ||
+      ''
+    );
+
+
+  if (
+    id &&
+    String(
+      event?.fromTeam?.ownerId ||
+      ''
+    ) ===
+      id
+  ) {
+    return (
+      event.fromTeam
+        .teamName ||
+      'Unknown franchise'
+    );
+  }
+
+
+  if (
+    id &&
+    String(
+      event?.toTeam?.ownerId ||
+      ''
+    ) ===
+      id
+  ) {
+    return (
+      event.toTeam
+        .teamName ||
+      'Unknown franchise'
+    );
+  }
+
+
+  return 'Unknown franchise';
+}
+
+
+function capitalDirection(
+  event,
+  capital
+) {
+  if (!capital) {
+    return '';
+  }
+
+
+  const from =
+    capitalTeamName(
+      event,
+      capital.fromManagerId
+    );
+
+
+  const to =
+    capitalTeamName(
+      event,
+      capital.toManagerId
+    );
+
+
+  return `${from} → ${to}`;
+}
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -1491,7 +1564,45 @@
 
 						</div>
 
+						{#if
+  event.type === 'trade' &&
+  event.draftCapital?.length
+}
 
+  <div class="history-capital">
+
+    {#each
+      event.draftCapital
+      as capital
+    }
+
+      <span class="history-capital-chip">
+
+        <b>
+          {money(
+            capital.amount
+          )}
+        </b>
+
+        <em>
+          {capital.futuresYear}
+          draft capital
+        </em>
+
+        <small>
+          {capitalDirection(
+            event,
+            capital
+          )}
+        </small>
+
+      </span>
+
+    {/each}
+
+  </div>
+
+{/if}
 						{#if event.assets?.length}
 
 							<div class="history-assets">
@@ -2208,7 +2319,118 @@
 		);
 }
 
+.history-capital {
+	display:
+		flex;
 
+	flex-wrap:
+		wrap;
+
+	gap:
+		6px;
+
+	margin-top:
+		5px;
+}
+
+
+.history-capital-chip {
+	display:
+		inline-flex;
+
+	align-items:
+		center;
+
+	flex-wrap:
+		wrap;
+
+	gap:
+		5px;
+
+	padding:
+		4px
+		8px;
+
+	border:
+		1px solid
+		rgba(
+			255,
+			211,
+			77,
+			.34
+		);
+
+	border-radius:
+		5px;
+
+	background:
+		rgba(
+			255,
+			211,
+			77,
+			.07
+		);
+
+	font-size:
+		.66rem;
+}
+
+
+.history-capital-chip b {
+	color:
+		var(
+			--bug-yellow,
+			#ffd34d
+		);
+
+	font-family:
+		var(
+			--font-score
+		);
+
+	font-size:
+		.72rem;
+
+	font-weight:
+		950;
+}
+
+
+.history-capital-chip em {
+	color:
+		rgba(
+			255,
+			255,
+			255,
+			.82
+		);
+
+	font-style:
+		normal;
+
+	font-weight:
+		900;
+
+	text-transform:
+		uppercase;
+
+	letter-spacing:
+		.04em;
+}
+
+
+.history-capital-chip small {
+	color:
+		rgba(
+			255,
+			255,
+			255,
+			.48
+		);
+
+	font-size:
+		.62rem;
+}
 .history-header {
 	display: flex;
 

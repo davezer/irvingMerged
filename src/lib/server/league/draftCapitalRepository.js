@@ -142,6 +142,204 @@ export async function getDraftCapitalBalances(
   );
 }
 
+/*
+ * ============================================================
+ * DRAFT CAPITAL TRANSFERS
+ *
+ * Returns one object per two-sided capital transfer.
+ *
+ * Used outside the Admin area to enrich things like the
+ * Player Franchise Trail.
+ * ============================================================
+ */
+
+export async function getDraftCapitalTransfers(
+  db
+) {
+  if (!db) {
+    return [];
+  }
+
+
+  const result =
+    await db
+      .prepare(`
+        SELECT
+          id,
+          futures_year,
+          manager_id,
+          amount_cents,
+          transaction_date,
+          league_season,
+          league_week,
+          sleeper_transaction_id,
+          transfer_id,
+          counterparty_manager_id,
+          source,
+          metadata_json,
+          created_at
+
+        FROM draft_capital_entries
+
+        WHERE
+          entry_type = 'trade'
+          AND voided_at IS NULL
+          AND transfer_id IS NOT NULL
+
+        ORDER BY
+          created_at,
+          id
+      `)
+      .all();
+
+
+  const rows =
+    result.results ?? [];
+
+
+  const transfers =
+    new Map();
+
+
+  for (
+    const row of
+    rows
+  ) {
+    const transferId =
+      String(
+        row.transfer_id ||
+        ''
+      );
+
+
+    if (!transferId) {
+      continue;
+    }
+
+
+    if (
+      !transfers.has(
+        transferId
+      )
+    ) {
+      transfers.set(
+        transferId,
+        {
+          transferId,
+
+          futuresYear:
+            Number(
+              row.futures_year
+            ),
+
+          transactionDate:
+            row.transaction_date ||
+            null,
+
+          leagueSeason:
+            row.league_season == null
+              ? null
+              : Number(
+                  row.league_season
+                ),
+
+          leagueWeek:
+            row.league_week == null
+              ? null
+              : Number(
+                  row.league_week
+                ),
+
+          sleeperTransactionId:
+            row.sleeper_transaction_id
+              ? String(
+                  row.sleeper_transaction_id
+                )
+              : null,
+
+          source:
+            row.source ||
+            null,
+
+          fromManagerId:
+            null,
+
+          toManagerId:
+            null,
+
+          amountCents:
+            0,
+
+          amount:
+            0
+        }
+      );
+    }
+
+
+    const transfer =
+      transfers.get(
+        transferId
+      );
+
+
+    const amountCents =
+      Number(
+        row.amount_cents ||
+        0
+      );
+
+
+    /*
+     * Negative row = team that SENT the capital.
+     * Positive row = team that RECEIVED the capital.
+     */
+    if (
+      amountCents < 0
+    ) {
+      transfer.fromManagerId =
+        String(
+          row.manager_id
+        );
+
+      transfer.amountCents =
+        Math.abs(
+          amountCents
+        );
+    }
+
+
+    if (
+      amountCents > 0
+    ) {
+      transfer.toManagerId =
+        String(
+          row.manager_id
+        );
+
+      transfer.amountCents =
+        Math.abs(
+          amountCents
+        );
+    }
+
+
+    transfer.amount =
+      transfer.amountCents /
+      100;
+  }
+
+
+  return [
+    ...transfers.values()
+  ].filter(
+    (transfer) =>
+      transfer.fromManagerId &&
+      transfer.toManagerId &&
+      transfer.amountCents > 0
+  );
+}
+
 
 /*
  * ============================================================

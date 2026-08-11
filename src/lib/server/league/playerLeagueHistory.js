@@ -1,6 +1,9 @@
 import { resolveLeagueContext } from '$lib/server/league/context.js';
 import { buildRosterIdentityMap } from '$lib/server/league/identity.js';
 import { resolvePlayersByIds } from '$lib/server/league/players.js';
+import {
+  getDraftCapitalTransfers
+} from '$lib/server/league/draftCapitalRepository.js';
 
 import {
 	getLeagueHistory,
@@ -1067,14 +1070,21 @@ function buildHistoryEvents(
 
 
 				events.push({
-					id:
-						`txn:${txn?.transaction_id || `${season}:${timestamp}:trade`}:trade`,
+  id:
+    `txn:${txn?.transaction_id || `${season}:${timestamp}:trade`}:trade`,
 
-					type:
-						'trade',
+  transactionId:
+    txn?.transaction_id
+      ? String(
+          txn.transaction_id
+        )
+      : null,
 
-					label:
-						'TRADED',
+  type:
+    'trade',
+
+  label:
+    'TRADED',
 
 					season,
 
@@ -1583,6 +1593,303 @@ async function buildLeagueLedger({
 	return value;
 }
 
+/*
+ * ============================================================
+ * DRAFT CAPITAL ↔ SLEEPER TRADE MATCHING
+ * ============================================================
+ */
+
+
+/*
+ * Historical CSV rows don't have Sleeper transaction IDs,
+ * so for legacy trades we need the league-local calendar date.
+ */
+function leagueDateFromTimestamp(
+  timestamp
+) {
+  const value =
+    Number(
+      timestamp
+    );
+
+
+  if (
+    !Number.isFinite(value) ||
+    value <= 0
+  ) {
+    return null;
+  }
+
+
+  try {
+    const formatter =
+      new Intl.DateTimeFormat(
+        'en-US',
+        {
+          timeZone:
+            'America/New_York',
+
+          year:
+            'numeric',
+
+          month:
+            '2-digit',
+
+          day:
+            '2-digit'
+        }
+      );
+
+
+    const parts =
+      Object.fromEntries(
+        formatter
+          .formatToParts(
+            new Date(value)
+          )
+          .filter(
+            (part) =>
+              part.type !==
+              'literal'
+          )
+          .map(
+            (part) => [
+              part.type,
+              part.value
+            ]
+          )
+      );
+
+
+    return `${parts.year}-${parts.month}-${parts.day}`;
+
+  } catch {
+    return new Date(
+      value
+    )
+      .toISOString()
+      .slice(
+        0,
+        10
+      );
+  }
+}
+
+
+function sameCapitalTradeParties(
+  event,
+  transfer
+) {
+  const eventIds =
+    new Set(
+      [
+        event?.fromTeam?.ownerId,
+        event?.toTeam?.ownerId
+      ]
+        .filter(Boolean)
+        .map(String)
+    );
+
+
+  if (
+    eventIds.size !== 2
+  ) {
+    return false;
+  }
+
+
+  return (
+    eventIds.has(
+      String(
+        transfer.fromManagerId
+      )
+    ) &&
+    eventIds.has(
+      String(
+        transfer.toManagerId
+      )
+    )
+  );
+}
+
+
+/*
+ * Exact Sleeper transaction-ID match is always preferred.
+ *
+ * Legacy imported transactions don't have that ID, so they
+ * fall back to:
+ *
+ *   transaction date
+ *   +
+ *   exact pair of franchises
+ *
+ * We ONLY use that fallback when exactly one capital transfer
+ * matches, so we never guess when historical data is ambiguous.
+ */
+function attachDraftCapitalToHistory(
+  events,
+  capitalTransfers
+) {
+  const exactByTransaction =
+    new Map();
+
+
+  for (
+    const transfer of
+    capitalTransfers
+  ) {
+    if (
+      !transfer
+        .sleeperTransactionId
+    ) {
+      continue;
+    }
+
+
+    const transactionId =
+      String(
+        transfer
+          .sleeperTransactionId
+      );
+
+
+    if (
+      !exactByTransaction.has(
+        transactionId
+      )
+    ) {
+      exactByTransaction.set(
+        transactionId,
+        []
+      );
+    }
+
+
+    exactByTransaction
+      .get(
+        transactionId
+      )
+      .push(
+        transfer
+      );
+  }
+
+
+  return events.map(
+    (event) => {
+      if (
+        event.type !==
+        'trade'
+      ) {
+        return event;
+      }
+
+
+      /*
+       * ------------------------------------------
+       * BEST CASE:
+       * Exact Sleeper transaction ID.
+       * ------------------------------------------
+       */
+
+      if (
+        event.transactionId
+      ) {
+        const exact =
+          exactByTransaction.get(
+            String(
+              event.transactionId
+            )
+          );
+
+
+        if (
+          exact?.length
+        ) {
+          return {
+            ...event,
+
+            draftCapital:
+              exact.map(
+                (transfer) => ({
+                  ...transfer,
+
+                  matchType:
+                    'sleeper_transaction'
+                })
+              )
+          };
+        }
+      }
+
+
+      /*
+       * ------------------------------------------
+       * LEGACY FALLBACK:
+       * date + same two franchises.
+       * ------------------------------------------
+       */
+
+      const eventDate =
+        leagueDateFromTimestamp(
+          event.timestamp
+        );
+
+
+      if (!eventDate) {
+        return event;
+      }
+
+
+      const legacyMatches =
+        capitalTransfers.filter(
+          (transfer) =>
+            !transfer
+              .sleeperTransactionId &&
+
+            transfer
+              .transactionDate ===
+              eventDate &&
+
+            sameCapitalTradeParties(
+              event,
+              transfer
+            )
+        );
+
+
+      /*
+       * Never guess.
+       *
+       * If multiple historical capital transfers occurred
+       * between the same franchises on the same day,
+       * leave the modal blank rather than attaching the
+       * wrong dollar amount.
+       */
+      if (
+        legacyMatches.length !==
+        1
+      ) {
+        return event;
+      }
+
+
+      return {
+        ...event,
+
+        draftCapital: [
+          {
+            ...legacyMatches[0],
+
+            matchType:
+              'legacy_date_pair'
+          }
+        ]
+      };
+    }
+  );
+}
+
 
 export async function getPlayerLeagueHistory({
 	playerId,
@@ -1626,32 +1933,59 @@ export async function getPlayerLeagueHistory({
 		);
 
 
-	const playersById =
-		await resolvePlayersByIds(
-			relevantIds
-		);
+	const [
+  playersById,
+  capitalTransfers
+] =
+  await Promise.all([
+    resolvePlayersByIds(
+      relevantIds
+    ),
+
+    env?.DB
+      ? getDraftCapitalTransfers(
+          env.DB
+        ).catch(
+          (error) => {
+            console.warn(
+              '[player history] draft capital unavailable:',
+              error
+            );
+
+            return [];
+          }
+        )
+      : Promise.resolve(
+          []
+        )
+  ]);
 
 
-	return {
-	available: true,
+const rawHistory =
+  buildHistoryEvents(
+    cleanPlayerId,
+    ledger.seasons,
+    playersById
+  );
 
-	historyLimited:
-		Boolean(
-			ledger.historyLimited
-		),
 
-	currentRoster:
-		buildCurrentRoster(
-			cleanPlayerId,
-			ledger.currentSeasonData
-		),
+const history =
+  attachDraftCapitalToHistory(
+    rawHistory,
+    capitalTransfers
+  );
 
-	history:
-		buildHistoryEvents(
-			cleanPlayerId,
-			ledger.seasons,
-			playersById
-		),
+
+return {
+  available: true,
+
+  currentRoster:
+    buildCurrentRoster(
+      cleanPlayerId,
+      ledger.currentSeasonData
+    ),
+
+  history,
 
 	historySeasons: [
 		...new Set(
