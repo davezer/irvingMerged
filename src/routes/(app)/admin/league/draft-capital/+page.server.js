@@ -9,7 +9,7 @@ import {
 import {
   getDraftCapitalBalances,
   getDraftCapitalLedger,
-  getDraftCapitalTradeInbox,
+  getDraftCapitalTradeReviews,
   getLegacyDraftCapitalImportStatus,
   importLegacyDraftCapitalLedger,
   addDraftCapitalEntry,
@@ -22,7 +22,14 @@ import {
 import {
   resolvePlayersByIds
 } from '$lib/server/league/players.js';
+import {
+  resolveLeagueContext
+} from '$lib/server/league/context.js';
 
+import {
+  getSleeperTransactionsForWeek,
+  getSleeperRosters
+} from '$lib/server/league/sleeperClient.js';
 
 /*
  * ============================================================
@@ -177,16 +184,19 @@ function buildManagerIndex(
  * ============================================================
  */
 
-async function enrichTradeInbox(
+
+
+/*
+ * ============================================================
+ * TURN LIVE SLEEPER TRADE INTO ADMIN-FRIENDLY CARD
+ * ============================================================
+ */
+
+async function buildTradeCards(
   trades,
-  managers
+  managers,
+  liveRosters
 ) {
-  const managerIndex =
-    buildManagerIndex(
-      managers
-    );
-
-
   const allPlayerIds =
     trades.flatMap(
       (trade) => [
@@ -207,120 +217,54 @@ async function enrichTradeInbox(
     );
 
 
-  /*
-   * We don't want a live Sleeper roster request here.
-   *
-   * sleeper_transactions_seasonal stores roster IDs,
-   * while the seasonal roster table stores owner IDs.
-   *
-   * The manager lookup is filled in later by load().
-   */
-  return {
-    managerIndex,
-    playersById
-  };
-}
-
-
-async function buildTradeCards(
-  db,
-  trades,
-  managers
-) {
-  const {
-    playersById
-  } =
-    await enrichTradeInbox(
-      trades,
-      managers
-    );
-
-
-  /*
-   * Grab every roster identity for this season.
-   */
-  const seasons = [
-    ...new Set(
-      trades.map(
-        (trade) =>
-          Number(
-            trade.season
-          )
-      )
-    )
-  ];
-
-
-  const rosterRows = [];
-
-
-  for (
-    const season of
-    seasons
-  ) {
-    const result =
-      await db
-        .prepare(`
-          SELECT
-            season,
-            roster_id,
-            owner_id
-
-          FROM sleeper_rosters_seasonal
-
-          WHERE
-            season = ?
-        `)
-        .bind(
-          season
-        )
-        .all();
-
-
-    rosterRows.push(
-      ...(
-        result.results ??
-        []
-      )
-    );
-  }
-
-
   const managersById =
     buildManagerIndex(
       managers
     );
 
 
+  /*
+   * roster_id → Irving manager
+   *
+   * Sleeper roster.owner_id is the Sleeper user ID,
+   * which matches manager.managerID in our league data.
+   */
   const rosterManagerMap =
     new Map();
 
 
   for (
     const roster of
-    rosterRows
+    liveRosters || []
   ) {
+    const rosterId =
+      Number(
+        roster.roster_id
+      );
+
+
+    const ownerId =
+      String(
+        roster.owner_id ||
+        ''
+      );
+
+
     const manager =
       managersById.get(
-        String(
-          roster.owner_id ||
-          ''
-        )
+        ownerId
       );
 
 
     rosterManagerMap.set(
-      `${roster.season}:${roster.roster_id}`,
+      rosterId,
 
       manager || {
         id:
-          String(
-            roster.owner_id ||
-            ''
-          ),
+          ownerId,
 
         teamName:
-          `Roster ${roster.roster_id}`,
+          `Roster ${rosterId}`,
 
         name:
           'Unknown Manager',
@@ -339,6 +283,7 @@ async function buildTradeCards(
       playersById.get(
         String(id)
       );
+
 
     return {
       id:
@@ -362,6 +307,12 @@ async function buildTradeCards(
 
   return trades.map(
     (trade) => {
+      /*
+       * Some Sleeper trades populate roster_ids directly.
+       *
+       * For extra safety, derive roster IDs from adds/drops
+       * too so a weird transaction payload still renders.
+       */
       const rosterIds = [
         ...new Set([
           ...(trade.rosterIds || []),
@@ -373,88 +324,100 @@ async function buildTradeCards(
           ...Object.values(
             trade.drops || {}
           )
-        ].map(Number))
+        ]
+          .map(Number)
+          .filter(
+            Number.isFinite
+          ))
       ];
 
 
       const teams =
-        rosterIds
-          .map(
-            (rosterId) => {
-              const manager =
-                rosterManagerMap.get(
-                  `${trade.season}:${rosterId}`
+        rosterIds.map(
+          (rosterId) => {
+            const manager =
+              rosterManagerMap.get(
+                Number(
+                  rosterId
+                )
+              );
+
+
+            const received =
+              Object.entries(
+                trade.adds || {}
+              )
+                .filter(
+                  ([
+                    ,
+                    destinationRoster
+                  ]) =>
+                    Number(
+                      destinationRoster
+                    ) ===
+                    Number(
+                      rosterId
+                    )
+                )
+                .map(
+                  ([playerId]) =>
+                    player(
+                      playerId
+                    )
                 );
 
-              const received =
-                Object.entries(
-                  trade.adds ||
-                  {}
+
+            const sent =
+              Object.entries(
+                trade.drops || {}
+              )
+                .filter(
+                  ([
+                    ,
+                    sourceRoster
+                  ]) =>
+                    Number(
+                      sourceRoster
+                    ) ===
+                    Number(
+                      rosterId
+                    )
                 )
-                  .filter(
-                    ([, destinationRoster]) =>
-                      Number(
-                        destinationRoster
-                      ) ===
-                      Number(
-                        rosterId
-                      )
-                  )
-                  .map(
-                    ([playerId]) =>
-                      player(
-                        playerId
-                      )
-                  );
+                .map(
+                  ([playerId]) =>
+                    player(
+                      playerId
+                    )
+                );
 
 
-              const sent =
-                Object.entries(
-                  trade.drops ||
-                  {}
-                )
-                  .filter(
-                    ([, sourceRoster]) =>
-                      Number(
-                        sourceRoster
-                      ) ===
-                      Number(
-                        rosterId
-                      )
-                  )
-                  .map(
-                    ([playerId]) =>
-                      player(
-                        playerId
-                      )
-                  );
+            return {
+              rosterId:
+                Number(
+                  rosterId
+                ),
 
+              managerId:
+                manager?.id ||
+                null,
 
-              return {
-                rosterId,
+              managerName:
+                manager?.name ||
+                'Unknown Manager',
 
-                managerId:
-                  manager?.id ||
-                  null,
+              teamName:
+                manager?.teamName ||
+                `Roster ${rosterId}`,
 
-                managerName:
-                  manager?.name ||
-                  'Unknown Manager',
+              teamPhoto:
+                manager?.photo ||
+                null,
 
-                teamName:
-                  manager?.teamName ||
-                  `Roster ${rosterId}`,
-
-                teamPhoto:
-                  manager?.photo ||
-                  null,
-
-                received,
-
-                sent
-              };
-            }
-          );
+              received,
+              sent
+            };
+          }
+        );
 
 
       return {
@@ -464,6 +427,7 @@ async function buildTradeCards(
     }
   );
 }
+
 
 /*
  * ============================================================
@@ -1154,7 +1118,232 @@ function parseLegacyLedgerCsv({
     totals
   };
 }
+/*
+ * ============================================================
+ * LIVE SLEEPER TRADE INBOX
+ *
+ * Pull completed trades directly from Sleeper.
+ *
+ * Preseason trades are normally exposed through Sleeper's
+ * Week 1 transaction endpoint, which is also why the normal
+ * league Transactions page can already see them.
+ * ============================================================
+ */
 
+async function getLiveSleeperTrades({
+  url,
+  env,
+  season
+}) {
+  /*
+   * Build a clean URL for resolveLeagueContext.
+   *
+   * We explicitly select the trade season and remove any
+   * page-specific week/team filters.
+   */
+  const contextUrl =
+    new URL(
+      url.toString()
+    );
+
+
+  contextUrl.searchParams.set(
+    'season',
+    String(season)
+  );
+
+
+  contextUrl.searchParams.delete(
+    'week'
+  );
+
+  contextUrl.searchParams.delete(
+    'weeks'
+  );
+
+  contextUrl.searchParams.delete(
+    'team'
+  );
+
+  contextUrl.searchParams.delete(
+    'rosterId'
+  );
+
+
+  const context =
+    await resolveLeagueContext({
+      url:
+        contextUrl,
+
+      env,
+
+      allWeeksByDefault:
+        true
+    });
+
+
+  /*
+   * Use the same week logic as the normal Transactions page.
+   */
+  const weekPairs =
+    await Promise.all(
+      context.weeks.map(
+        async (week) => [
+          week,
+
+          await getSleeperTransactionsForWeek(
+            context.leagueId,
+            week
+          )
+        ]
+      )
+    );
+
+
+  const tradeMap =
+    new Map();
+
+
+  for (
+    const [
+      week,
+      transactions
+    ] of
+    weekPairs
+  ) {
+    for (
+      const transaction of
+      transactions || []
+    ) {
+      if (
+        String(
+          transaction?.type ||
+          ''
+        ).toLowerCase() !==
+        'trade'
+      ) {
+        continue;
+      }
+
+
+      const status =
+        String(
+          transaction?.status ||
+          'complete'
+        ).toLowerCase();
+
+
+      if (
+        status !== 'complete'
+      ) {
+        continue;
+      }
+
+
+      const transactionId =
+        String(
+          transaction.transaction_id ||
+          ''
+        );
+
+
+      if (!transactionId) {
+        continue;
+      }
+
+
+      /*
+       * Map the live Sleeper object into the exact general
+       * shape our Draft Capital UI already understands.
+       */
+      tradeMap.set(
+        transactionId,
+        {
+          transactionId,
+
+          season:
+            Number(season),
+
+          week:
+            Number(week),
+
+          status:
+            transaction.status ||
+            'complete',
+
+          rosterIds:
+            Array.isArray(
+              transaction.roster_ids
+            )
+              ? transaction.roster_ids
+              : [],
+
+          adds:
+            transaction.adds &&
+            typeof transaction.adds ===
+              'object'
+              ? transaction.adds
+              : {},
+
+          drops:
+            transaction.drops &&
+            typeof transaction.drops ===
+              'object'
+              ? transaction.drops
+              : {},
+
+          draftPicks:
+            Array.isArray(
+              transaction.draft_picks
+            )
+              ? transaction.draft_picks
+              : [],
+
+          createdAt:
+            Number(
+              transaction.status_updated ||
+              transaction.created ||
+              transaction.updated ||
+              0
+            )
+        }
+      );
+    }
+  }
+
+
+  /*
+   * Current roster ownership is also loaded directly from
+   * Sleeper instead of relying on the D1 seasonal snapshot.
+   */
+  const rosters =
+    await getSleeperRosters(
+      context.leagueId
+    );
+
+
+  const trades =
+    [...tradeMap.values()]
+      .sort(
+        (a, b) =>
+          Number(
+            b.createdAt || 0
+          ) -
+          Number(
+            a.createdAt || 0
+          )
+      );
+
+
+  return {
+    context,
+    rosters:
+      Array.isArray(rosters)
+        ? rosters
+        : [],
+    trades
+  };
+}
 
 /*
  * ============================================================
@@ -1236,11 +1425,20 @@ const transactionYear =
   const managers =
     managerRows();
 
+const liveTradeData =
+  await getLiveSleeperTrades({
+    url,
 
-  const [
+    env:
+      platform?.env,
+
+    season:
+      tradeSeason
+  });
+const [
   rawBalances,
   fullLedger,
-  rawTrades,
+  tradeReviews,
   legacyImport
 ] =
   await Promise.all([
@@ -1252,11 +1450,6 @@ const transactionYear =
       }
     ),
 
-    /*
-     * Load the full capital-year ledger.
-     *
-     * We then filter by actual transaction year separately.
-     */
     getDraftCapitalLedger(
       db,
       {
@@ -1268,7 +1461,7 @@ const transactionYear =
       }
     ),
 
-    getDraftCapitalTradeInbox(
+    getDraftCapitalTradeReviews(
       db,
       {
         season:
@@ -1284,6 +1477,59 @@ const transactionYear =
       }
     )
   ]);
+
+  /*
+ * ============================================================
+ * MERGE LIVE SLEEPER TRADES + D1 REVIEW STATE
+ * ============================================================
+ */
+
+const reviewByTransaction =
+  new Map(
+    tradeReviews.map(
+      (review) => [
+        String(
+          review.transactionId
+        ),
+
+        review
+      ]
+    )
+  );
+
+
+const rawTrades =
+  liveTradeData.trades.map(
+    (trade) => {
+      const review =
+        reviewByTransaction.get(
+          String(
+            trade.transactionId
+          )
+        );
+
+
+      return {
+        ...trade,
+
+        reviewStatus:
+          review?.reviewStatus ||
+          'pending',
+
+        transferId:
+          review?.transferId ||
+          null,
+
+        reviewNote:
+          review?.reviewNote ||
+          null,
+
+        reviewedAt:
+          review?.reviewedAt ||
+          null
+      };
+    }
+  );
 
   /*
  * ============================================================
@@ -1419,11 +1665,11 @@ const ledger =
 
 
   const tradeCards =
-    await buildTradeCards(
-      db,
-      rawTrades,
-      managers
-    );
+  await buildTradeCards(
+    rawTrades,
+    managers,
+    liveTradeData.rosters
+  );
 
 
   return {

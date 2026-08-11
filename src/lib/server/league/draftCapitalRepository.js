@@ -1175,6 +1175,105 @@ export async function postReviewedTradeCapital(
   return transfer;
 }
 
+/*
+ * ============================================================
+ * GET DRAFT-CAPITAL TRADE REVIEW STATES
+ *
+ * Sleeper is the source of truth for the actual trades.
+ * D1 only remembers whether each trade has been reviewed.
+ * ============================================================
+ */
+
+export async function getDraftCapitalTradeReviews(
+  db,
+  {
+    season
+  } = {}
+) {
+  if (!db) {
+    throw new Error(
+      'D1 database binding is required.'
+    );
+  }
+
+  const year =
+    Number(season);
+
+  if (
+    !Number.isInteger(year)
+  ) {
+    throw new Error(
+      'A valid season is required.'
+    );
+  }
+
+
+  const result =
+    await db
+      .prepare(`
+        SELECT
+          season,
+          week,
+          sleeper_transaction_id,
+          review_status,
+          transfer_id,
+          note,
+          reviewed_at
+
+        FROM draft_capital_trade_reviews
+
+        WHERE
+          season = ?
+      `)
+      .bind(
+        year
+      )
+      .all();
+
+
+  return (
+    result.results ?? []
+  ).map(
+    (row) => ({
+      season:
+        Number(
+          row.season
+        ),
+
+      week:
+        row.week == null
+          ? null
+          : Number(
+              row.week
+            ),
+
+      transactionId:
+        String(
+          row.sleeper_transaction_id
+        ),
+
+      reviewStatus:
+        row.review_status ||
+        'pending',
+
+      transferId:
+        row.transfer_id ||
+        null,
+
+      reviewNote:
+        row.note ||
+        null,
+
+      reviewedAt:
+        row.reviewed_at == null
+          ? null
+          : Number(
+              row.reviewed_at
+            )
+    })
+  );
+}
+
 
 /*
  * ============================================================
