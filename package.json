@@ -13,7 +13,9 @@
 		"wrangler": "wrangler",
 		"pages:dev": "npm run build && wrangler pages dev .svelte-kit/cloudflare",
 		"db:migrate:local": "wrangler d1 migrations apply DB --local",
-		"db:migrate:remote": "wrangler d1 migrations apply DB --remote"
+		"db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+		"generate:player-data": "node scripts/build-player-data.mjs",
+		"prebuild": "npm run generate:player-data"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
