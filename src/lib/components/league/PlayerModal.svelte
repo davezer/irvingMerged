@@ -1761,11 +1761,11 @@
 		display: grid;
 
 		grid-template-columns:
-			190px
-			minmax(0, 1fr)
-			220px;
+		225px
+		minmax(0, 1fr)
+		220px;
 
-		min-height: 230px;
+	min-height: 250px;
 
 
 		border-bottom: 2px solid #050606;
@@ -1785,17 +1785,32 @@
 		background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.18), transparent 46%);
 	}
 
-	.portrait-bay img {
-		width: 178px;
+.portrait-bay img {
+	position: absolute;
 
-		height: 208px;
+	left: 50%;
+	bottom: -4px;
 
-		object-fit: contain;
+	width: 235px;
+	height: 275px;
 
-		object-position: center bottom;
+	max-width: none;
 
-		filter: drop-shadow(0 15px 18px rgba(0, 0, 0, 0.48));
-	}
+	object-fit: contain;
+	object-position: center bottom;
+
+	transform:
+		translateX(-50%)
+		scale(1.35);
+
+	transform-origin: center bottom;
+
+	filter:
+		drop-shadow(
+			0 15px 18px
+			rgba(0, 0, 0, 0.48)
+		);
+}
 
 	.position-bug {
 		position: absolute;
@@ -2658,17 +2673,23 @@
 			max-height: 95vh;
 		}
 
-		.player-hero {
-			grid-template-columns:
-				160px
-				minmax(0, 1fr);
-		}
+		@media (max-width: 900px) {
+	.player-hero {
+		grid-template-columns:
+			190px
+			minmax(0, 1fr);
+	}
 
-		.portrait-bay img {
-			width: 150px;
+	.portrait-bay img {
+		width: 180px;
+		height: 215px;
 
-			height: 190px;
-		}
+		transform: scale(1.08);
+		transform-origin: center bottom;
+	}
+
+	/* keep your existing Irving/context rules below */
+}
 
 		.irving-context {
 			grid-column: 1 / -1;
@@ -2712,34 +2733,43 @@
 
 	@media (max-width: 620px) {
 		.player-modal-backdrop {
-			padding: 0;
+	padding: 10px;
 
-			place-items: stretch;
-		}
+	place-items: center;
+}
 
-		.player-modal {
-			width: 100%;
+.player-modal {
+	width: calc(100% - 4px);
+	max-width: 390px;
 
-			max-height: 100vh;
+	height: auto;
 
-			min-height: 100vh;
+	min-height: 0;
+	max-height: calc(100vh - 20px);
 
-			border-radius: 0;
-		}
+	border-radius: 14px;
+}
 
 		.player-hero {
-			grid-template-columns:
-				120px
-				minmax(0, 1fr);
+	grid-template-columns:
+		145px
+		minmax(0, 1fr);
 
-			min-height: 190px;
-		}
+	min-height: 215px;
+}
 
-		.portrait-bay img {
-			width: 116px;
+	.portrait-bay img {
+		width: 220px;
+		height: 250px;
 
-			height: 165px;
-		}
+		max-width: none;
+
+		transform:
+			translateX(-50%)
+			scale(1.55);
+
+		transform-origin: center bottom;
+	}
 
 		.hero-main {
 			padding: 17px 15px;
