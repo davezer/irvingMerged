@@ -1496,6 +1496,8 @@ importLegacyLedger: async ({
       403,
       {
         ok: false,
+        action:
+          'importLegacyLedger',
         error:
           'Admin access required.'
       }
@@ -1512,6 +1514,8 @@ importLegacyLedger: async ({
       500,
       {
         ok: false,
+        action:
+          'importLegacyLedger',
         error:
           'Cloudflare D1 binding is unavailable.'
       }
@@ -1546,6 +1550,8 @@ importLegacyLedger: async ({
       400,
       {
         ok: false,
+        action:
+          'importLegacyLedger',
         error:
           'Choose the legacy Ledger CSV.'
       }
@@ -1562,14 +1568,22 @@ importLegacyLedger: async ({
       400,
       {
         ok: false,
+        action:
+          'importLegacyLedger',
         error:
-          'Choose a valid draft-capital year.'
+          'Choose a valid auction capital year.'
       }
     );
   }
 
 
   try {
+    /*
+     * ========================================================
+     * READ + PARSE CSV
+     * ========================================================
+     */
+
     const csvText =
       await file.text();
 
@@ -1595,104 +1609,323 @@ importLegacyLedger: async ({
 
     /*
      * ========================================================
+     * LOAD CURRENT D1 BALANCES
+     *
+     * This is the piece that was missing.
+     * ========================================================
+     */
+
+    const current =
+      await getDraftCapitalBalances(
+        db,
+        {
+          year:
+            futuresYear
+        }
+      );
+
+
+    /*
+     * ========================================================
      * SAFETY CHECK
      *
-     * The CSV must calculate to EXACTLY the balances currently
-     * being shown in D1 before we replace the temporary
-     * opening-balance snapshots.
+     * If active ledger rows already exist, the CSV must
+     * calculate to exactly the same balances before we import.
+     *
+     * If the ledger was fully reset and is empty, we allow
+     * the import and verify everything afterward instead.
      * ========================================================
      */
 
     const hasActiveLedger =
-  current.some(
-    (row) =>
-      Number(
-        row.entryCount || 0
-      ) > 0
-  );
-
-
-if (hasActiveLedger) {
-  const currentByManager =
-    new Map(
-      current.map(
-        (row) => [
-          String(
-            row.managerId
-          ),
-
+      current.some(
+        (row) =>
           Number(
-            row.balanceCents
-          )
-        ]
-      )
-    );
-
-
-  const mismatches = [];
-
-
-  for (
-    const manager of
-    managers
-  ) {
-    const managerId =
-      String(
-        manager.id
-      );
-
-
-    const csvBalance =
-      Number(
-        parsed.totals.get(
-          managerId
-        ) || 0
-      );
-
-
-    const d1Balance =
-      Number(
-        currentByManager.get(
-          managerId
-        ) || 0
+            row.entryCount || 0
+          ) > 0
       );
 
 
     if (
-      csvBalance !==
-      d1Balance
+      hasActiveLedger
     ) {
-      mismatches.push({
-        team:
-          manager.teamName,
+      const currentByManager =
+        new Map(
+          current.map(
+            (row) => [
+              String(
+                row.managerId
+              ),
 
-        csv:
-          csvBalance / 100,
-
-        d1:
-          d1Balance / 100
-      });
-    }
-  }
-
-
-  if (
-    mismatches.length
-  ) {
-    const detail =
-      mismatches
-        .slice(0, 8)
-        .map(
-          (item) =>
-            `${item.team}: CSV $${item.csv.toFixed(2)} vs D1 $${item.d1.toFixed(2)}`
-        )
-        .join(
-          ' · '
+              Number(
+                row.balanceCents
+              )
+            ]
+          )
         );
 
 
+      const mismatches =
+        [];
+
+
+      for (
+        const manager of
+        managers
+      ) {
+        const managerId =
+          String(
+            manager.id
+          );
+
+
+        const csvBalance =
+          Number(
+            parsed.totals.get(
+              managerId
+            ) || 0
+          );
+
+
+        const d1Balance =
+          Number(
+            currentByManager.get(
+              managerId
+            ) || 0
+          );
+
+
+        if (
+          csvBalance !==
+          d1Balance
+        ) {
+          mismatches.push({
+            team:
+              manager.teamName,
+
+            csv:
+              csvBalance / 100,
+
+            d1:
+              d1Balance / 100
+          });
+        }
+      }
+
+
+      if (
+        mismatches.length
+      ) {
+        const detail =
+          mismatches
+            .slice(
+              0,
+              8
+            )
+            .map(
+              (item) =>
+                `${item.team}: CSV $${item.csv.toFixed(2)} vs D1 $${item.d1.toFixed(2)}`
+            )
+            .join(
+              ' · '
+            );
+
+
+        return fail(
+          409,
+          {
+            ok: false,
+
+            action:
+              'importLegacyLedger',
+
+            error:
+              `Legacy ledger safety check failed. Nothing was imported. ${detail}`
+          }
+        );
+      }
+    }
+
+
+    /*
+     * ========================================================
+     * IMPORT HISTORICAL LEDGER
+     * ========================================================
+     */
+
+    const result =
+      await importLegacyDraftCapitalLedger(
+        db,
+        {
+          futuresYear,
+
+          rows:
+            parsed.rows,
+
+          createdBy:
+            locals.user.id
+        }
+      );
+
+
+    /*
+     * ========================================================
+     * POST-IMPORT VERIFICATION
+     *
+     * D1 must now exactly equal the balances calculated
+     * from the uploaded CSV.
+     * ========================================================
+     */
+
+    const after =
+      await getDraftCapitalBalances(
+        db,
+        {
+          year:
+            futuresYear
+        }
+      );
+
+
+    const afterMap =
+      new Map(
+        after.map(
+          (row) => [
+            String(
+              row.managerId
+            ),
+
+            Number(
+              row.balanceCents
+            )
+          ]
+        )
+      );
+
+
+    const postImportErrors =
+      [];
+
+
+    for (
+      const manager of
+      managers
+    ) {
+      const managerId =
+        String(
+          manager.id
+        );
+
+
+      const expected =
+        Number(
+          parsed.totals.get(
+            managerId
+          ) || 0
+        );
+
+
+      const actual =
+        Number(
+          afterMap.get(
+            managerId
+          ) || 0
+        );
+
+
+      if (
+        expected !==
+        actual
+      ) {
+        postImportErrors.push({
+          team:
+            manager.teamName,
+
+          expected:
+            expected / 100,
+
+          actual:
+            actual / 100
+        });
+      }
+    }
+
+
+    if (
+      postImportErrors.length
+    ) {
+      const detail =
+        postImportErrors
+          .slice(
+            0,
+            8
+          )
+          .map(
+            (item) =>
+              `${item.team}: expected $${item.expected.toFixed(2)}, got $${item.actual.toFixed(2)}`
+          )
+          .join(
+            ' · '
+          );
+
+
+      console.error(
+        'Legacy draft capital post-import mismatch:',
+        postImportErrors
+      );
+
+
+      return fail(
+        500,
+        {
+          ok: false,
+
+          action:
+            'importLegacyLedger',
+
+          error:
+            `Historical rows were imported, but final verification failed. ${detail}`
+        }
+      );
+    }
+
+
+    /*
+     * Every reconstructed trade has two ledger rows:
+     * one negative and one positive.
+     */
+
+    const tradeRows =
+      parsed.rows.filter(
+        (row) =>
+          row.entryType ===
+          'trade'
+      ).length;
+
+
+    const reconstructedTrades =
+      tradeRows / 2;
+
+
+    return {
+      ok: true,
+
+      action:
+        'importLegacyLedger',
+
+      message:
+        `Legacy ledger imported successfully: ${result.storedRows} historical rows, ${reconstructedTrades} reconstructed trades, and all ${managers.length} balances verified exactly.`
+    };
+
+  } catch (error) {
+    console.error(
+      'Legacy ledger import failed:',
+      error
+    );
+
+
     return fail(
-      409,
+      400,
       {
         ok: false,
 
@@ -1700,11 +1933,13 @@ if (hasActiveLedger) {
           'importLegacyLedger',
 
         error:
-          `Legacy ledger safety check failed. Nothing was imported. ${detail}`
+          error instanceof Error
+            ? error.message
+            : 'Unable to import legacy ledger.'
       }
     );
   }
-}
+},
 
 
     const currentByManager =
