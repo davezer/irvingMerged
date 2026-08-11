@@ -4,10 +4,11 @@ import {
 
 import {
   getSleeperMatchupsForWeek,
-  getSleeperRosters
+  getSleeperRosters,
+  getSleeperPlayers,
+  getSleeperLeague
 } from '$lib/server/league/sleeperClient.js';
 
-import { getSleeperPlayers } from '$lib/server/league/sleeperClient.js';
 const AUTOMATIC_BADGES = [
   'bde',
   'suck',
@@ -18,12 +19,6 @@ const AUTOMATIC_BADGES = [
   'captain'
 ];
 
-import {
-  getSleeperMatchupsForWeek,
-  getSleeperRosters,
-  getSleeperPlayers,
-  getSleeperLeague
-} from '$lib/server/league/sleeperClient.js';
 
 
 function number(value, fallback = 0) {
