@@ -1603,14 +1603,108 @@ importLegacyLedger: async ({
      * ========================================================
      */
 
-    const current =
-      await getDraftCapitalBalances(
-        db,
-        {
-          year:
-            futuresYear
-        }
+    const hasActiveLedger =
+  current.some(
+    (row) =>
+      Number(
+        row.entryCount || 0
+      ) > 0
+  );
+
+
+if (hasActiveLedger) {
+  const currentByManager =
+    new Map(
+      current.map(
+        (row) => [
+          String(
+            row.managerId
+          ),
+
+          Number(
+            row.balanceCents
+          )
+        ]
+      )
+    );
+
+
+  const mismatches = [];
+
+
+  for (
+    const manager of
+    managers
+  ) {
+    const managerId =
+      String(
+        manager.id
       );
+
+
+    const csvBalance =
+      Number(
+        parsed.totals.get(
+          managerId
+        ) || 0
+      );
+
+
+    const d1Balance =
+      Number(
+        currentByManager.get(
+          managerId
+        ) || 0
+      );
+
+
+    if (
+      csvBalance !==
+      d1Balance
+    ) {
+      mismatches.push({
+        team:
+          manager.teamName,
+
+        csv:
+          csvBalance / 100,
+
+        d1:
+          d1Balance / 100
+      });
+    }
+  }
+
+
+  if (
+    mismatches.length
+  ) {
+    const detail =
+      mismatches
+        .slice(0, 8)
+        .map(
+          (item) =>
+            `${item.team}: CSV $${item.csv.toFixed(2)} vs D1 $${item.d1.toFixed(2)}`
+        )
+        .join(
+          ' · '
+        );
+
+
+    return fail(
+      409,
+      {
+        ok: false,
+
+        action:
+          'importLegacyLedger',
+
+        error:
+          `Legacy ledger safety check failed. Nothing was imported. ${detail}`
+      }
+    );
+  }
+}
 
 
     const currentByManager =
