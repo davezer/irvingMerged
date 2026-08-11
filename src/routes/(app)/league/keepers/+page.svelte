@@ -731,6 +731,7 @@ function clearSearch() {
 
   .team-filter { display: grid; gap: 6px; min-width: 235px; }
   .team-filter select {
+    color-scheme: dark;
     border: 2px solid #070808;
     border-radius: 8px;
     padding: 9px 11px;

@@ -805,3 +805,12 @@ PLAYER LINKS
 		max-width: 100%;
 	}
 }
+
+select {
+	color-scheme: dark;
+}
+
+select option {
+	background-color: #171b1a;
+	color: #fff;
+}

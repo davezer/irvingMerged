@@ -256,6 +256,18 @@ if (
               </div>
             </details>
           {/if}
+          <form
+	method="POST"
+	action="/api/auth/logout"
+	class="mobile-logout-form"
+>
+	<button
+		type="submit"
+		class="mobile-logout-button"
+	>
+		Logout
+	</button>
+</form>
         </div>
 
         <form method="POST" action="/api/auth/logout" class="logout-form">
@@ -264,20 +276,59 @@ if (
       </div>
     </div>
 
-    {#if mobileOpen}
-      <button class="mobile-scrim" type="button" aria-label="Close menu" on:click={closeMobile}></button>
-      <nav id="mobile-menu" class="mobile-menu" aria-label="Mobile navigation">
-        {#each primaryLinks as link}
-          <a class:active={isActive(link.href)} href={link.href} on:click={closeMobile}>{link.label}</a>
-        {/each}
-        {#if user.role === 'admin'}
-          <div class="mobile-admin-label">Admin</div>
-          {#each adminLinks as link}
-            <a class:active={isActive(link.href)} href={link.href} on:click={closeMobile}>{link.label}</a>
-          {/each}
-        {/if}
-      </nav>
-    {/if}
+   {#if mobileOpen}
+	<button
+		class="mobile-scrim"
+		type="button"
+		aria-label="Close menu"
+		on:click={closeMobile}
+	></button>
+
+	<nav
+		id="mobile-menu"
+		class="mobile-menu"
+		aria-label="Mobile navigation"
+	>
+		{#each primaryLinks as link}
+			<a
+				class:active={isActive(link.href)}
+				href={link.href}
+				on:click={closeMobile}
+			>
+				{link.label}
+			</a>
+		{/each}
+
+		{#if user.role === 'admin'}
+			<div class="mobile-admin-label">
+				Admin
+			</div>
+
+			{#each adminLinks as link}
+				<a
+					class:active={isActive(link.href)}
+					href={link.href}
+					on:click={closeMobile}
+				>
+					{link.label}
+				</a>
+			{/each}
+		{/if}
+
+		<form
+			method="POST"
+			action="/api/auth/logout"
+			class="mobile-logout-form"
+		>
+			<button
+				class="mobile-logout-button"
+				type="submit"
+			>
+				Logout
+			</button>
+		</form>
+	</nav>
+{/if}
   </header>
 
   <main class="container">
@@ -513,6 +564,66 @@ if (
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
+
+  .mobile-logout-form {
+	margin-top: 6px;
+	padding-top: 10px;
+
+	border-top:
+		1px solid
+		rgba(
+			255,
+			255,
+			255,
+			0.12
+		);
+}
+
+.mobile-logout-form {
+	display: none;
+}
+
+.mobile-logout-button {
+	width: 100%;
+
+	padding: 13px;
+
+	border:
+		1px solid
+		#050606;
+
+	border-radius: 5px;
+
+	background:
+		linear-gradient(
+			180deg,
+			var(--bug-red),
+			var(--bug-red-dark)
+		);
+
+	color: white;
+
+	font-family:
+		var(--font-score);
+
+	font-size: 0.78rem;
+
+	font-weight: 950;
+
+	text-transform: uppercase;
+
+	letter-spacing: 0.04em;
+
+	cursor: pointer;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,0.22),
+		inset 0 -2px 0 rgba(0,0,0,0.58);
+}
+
+.mobile-logout-button:hover {
+	filter: brightness(1.12);
+}
 
   .primary-nav a {
     display: inline-flex;
@@ -798,6 +909,43 @@ if (
     .menu-button {
       display: grid;
     }
+    .mobile-logout-form {
+	display: block;
+	margin-top: 6px;
+	padding-top: 10px;
+
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mobile-logout-button {
+	width: 100%;
+
+	padding: 13px;
+
+	border: 1px solid #050606;
+	border-radius: 5px;
+
+	background:
+		linear-gradient(
+			180deg,
+			var(--bug-red),
+			var(--bug-red-dark)
+		);
+
+	color: white;
+
+	font-family: var(--font-score);
+	font-size: 0.78rem;
+	font-weight: 950;
+
+	text-transform: uppercase;
+
+	cursor: pointer;
+
+	box-shadow:
+		inset 0 1px 0 rgba(255,255,255,0.22),
+		inset 0 -2px 0 rgba(0,0,0,0.58);
+}
   }
 
   @media (max-width: 560px) {
@@ -815,14 +963,13 @@ if (
     }
 
     .brand-mark {
-      width: 48px;
-      height: 48px;
+      width: 42px;
+      flex: 0 0 42px;
     }
 
     .user-chip {
-      max-width: 135px;
-      padding: 7px 8px;
-    }
+	display: none;
+}
 
     .logout-form {
       display: none;
@@ -832,6 +979,43 @@ if (
       width: min(100% - 20px, 1180px);
       padding-top: 14px;
     }
+
+    .topbar-inner {
+	grid-template-columns:
+		minmax(0, 1fr)
+		auto;
+
+	width: 100%;
+	padding: 10px 12px;
+	gap: 8px;
+}
+
+.right-rail {
+	width: auto;
+	flex: 0 0 auto;
+}
+
+.brand {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.brand-copy {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.brand-copy strong {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	font-size: 0.82rem;
+}
+
+.menu-button {
+	flex: 0 0 44px;
+}
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -63,7 +63,7 @@
 </script>
 
 <div class="login-shell">
-  <section class="login-hero">
+  <section class="login-hero icl-hero-shell">
     <div class="hero-bug">
       <span>ICL</span>
       <strong>Member Access</strong>
@@ -82,7 +82,7 @@
     </div>
   </section>
 
-  <section class="login-card">
+  <section class="login-card icl-hero-shell">
     <div class="card-head">
       <div>
         <div class="eyebrow">Access desk</div>
@@ -290,10 +290,6 @@
   .login-hero {
     position: relative;
     padding: 26px;
-    background:
-      linear-gradient(90deg, rgba(180,19,42,.33), transparent 44%),
-      repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 4px),
-      linear-gradient(180deg, #565d59, #222725 48%, #0e1110);
   }
 
   .hero-bug {
@@ -329,10 +325,6 @@
 
   .login-card {
     padding: 22px;
-    background:
-      repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px),
-      linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02)),
-      #171b19;
   }
 
   .card-head {
