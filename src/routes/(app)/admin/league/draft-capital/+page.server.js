@@ -15,6 +15,8 @@ import {
   addDraftCapitalEntry,
   postDraftCapitalTransfer,
   postReviewedTradeCapital,
+  updateReviewedTradeCapital,
+  removeReviewedTradeCapital,
   markTradeReviewedNoCapital,
   voidDraftCapitalEntry
 } from '$lib/server/league/draftCapitalRepository.js';
@@ -1478,6 +1480,126 @@ const [
     )
   ]);
 
+/*
+ * ============================================================
+ * RECOVER POSTED CAPITAL DIRECTLY FROM THE LEDGER
+ *
+ * This makes the edit UI resilient even if an older review
+ * record doesn't contain an enriched `capital` object.
+ * ============================================================
+ */
+
+const capitalByTransfer =
+  new Map();
+
+
+for (
+  const entry of
+  fullLedger
+) {
+  if (
+    !entry.transferId
+  ) {
+    continue;
+  }
+
+
+  const transferId =
+    String(
+      entry.transferId
+    );
+
+
+  if (
+    !capitalByTransfer.has(
+      transferId
+    )
+  ) {
+    capitalByTransfer.set(
+      transferId,
+      {
+        futuresYear:
+          Number(
+            entry.futuresYear ??
+            capitalYear
+          ),
+
+        fromManagerId:
+          null,
+
+        toManagerId:
+          null,
+
+        amountCents:
+          0,
+
+        amount:
+          0,
+
+        transactionDate:
+          entry.transactionDate ||
+          null,
+
+        note:
+          entry.note ||
+          null
+      }
+    );
+  }
+
+
+  const capital =
+    capitalByTransfer.get(
+      transferId
+    );
+
+
+  const amountCents =
+    Number(
+      entry.amountCents ??
+      Math.round(
+        Number(
+          entry.amount || 0
+        ) * 100
+      )
+    );
+
+
+  if (
+    amountCents < 0
+  ) {
+    capital.fromManagerId =
+      String(
+        entry.managerId
+      );
+
+    capital.amountCents =
+      Math.abs(
+        amountCents
+      );
+  }
+
+
+  if (
+    amountCents > 0
+  ) {
+    capital.toManagerId =
+      String(
+        entry.managerId
+      );
+
+    capital.amountCents =
+      Math.abs(
+        amountCents
+      );
+  }
+
+
+  capital.amount =
+    capital.amountCents /
+    100;
+}
+
   /*
  * ============================================================
  * MERGE LIVE SLEEPER TRADES + D1 REVIEW STATE
@@ -1525,8 +1647,20 @@ const rawTrades =
           null,
 
         reviewedAt:
-          review?.reviewedAt ||
-          null
+  review?.reviewedAt ||
+  null,
+
+capital:
+  review?.capital ||
+  (
+    review?.transferId
+      ? capitalByTransfer.get(
+          String(
+            review.transferId
+          )
+        ) || null
+      : null
+  )
       };
     }
   );
@@ -1721,183 +1855,292 @@ const ledger =
  */
 
 export const actions = {
+  /*
+   * ----------------------------------------------------------
+   * IMPORT COMPLETE LEGACY GOOGLE SHEETS LEDGER
+   * ----------------------------------------------------------
+   */
 
-    /*
- * ----------------------------------------------------------
- * IMPORT COMPLETE LEGACY GOOGLE SHEETS LEDGER
- * ----------------------------------------------------------
- */
-
-importLegacyLedger: async ({
-  request,
-  platform,
-  locals
-}) => {
-  if (
-    !assertAdmin(
-      locals
-    )
-  ) {
-    return fail(
-      403,
-      {
-        ok: false,
-        action:
-          'importLegacyLedger',
-        error:
-          'Admin access required.'
-      }
-    );
-  }
-
-
-  const db =
-    platform?.env?.DB;
-
-
-  if (!db) {
-    return fail(
-      500,
-      {
-        ok: false,
-        action:
-          'importLegacyLedger',
-        error:
-          'Cloudflare D1 binding is unavailable.'
-      }
-    );
-  }
-
-
-  const form =
-    await request.formData();
-
-
-  const futuresYear =
-    Number(
-      form.get(
-        'futuresYear'
+  importLegacyLedger: async ({
+    request,
+    platform,
+    locals
+  }) => {
+    if (
+      !assertAdmin(
+        locals
       )
-    );
-
-
-  const file =
-    form.get(
-      'ledgerCsv'
-    );
-
-
-  if (
-    !file ||
-    typeof file.text !==
-      'function'
-  ) {
-    return fail(
-      400,
-      {
-        ok: false,
-        action:
-          'importLegacyLedger',
-        error:
-          'Choose the legacy Ledger CSV.'
-      }
-    );
-  }
-
-
-  if (
-    !Number.isInteger(
-      futuresYear
-    )
-  ) {
-    return fail(
-      400,
-      {
-        ok: false,
-        action:
-          'importLegacyLedger',
-        error:
-          'Choose a valid auction capital year.'
-      }
-    );
-  }
-
-
-  try {
-    /*
-     * ========================================================
-     * READ + PARSE CSV
-     * ========================================================
-     */
-
-    const csvText =
-      await file.text();
-
-
-    const managers =
-      managerRows();
-
-
-    const parsed =
-      parseLegacyLedgerCsv({
-        text:
-          csvText,
-
-        managers,
-
-        futuresYear,
-
-        fileName:
-          file.name ||
-          'legacy-ledger.csv'
-      });
-
-
-    /*
-     * ========================================================
-     * LOAD CURRENT D1 BALANCES
-     *
-     * This is the piece that was missing.
-     * ========================================================
-     */
-
-    const current =
-      await getDraftCapitalBalances(
-        db,
+    ) {
+      return fail(
+        403,
         {
-          year:
-            futuresYear
+          ok: false,
+          action:
+            'importLegacyLedger',
+          error:
+            'Admin access required.'
         }
+      );
+    }
+
+
+    const db =
+      platform?.env?.DB;
+
+
+    if (!db) {
+      return fail(
+        500,
+        {
+          ok: false,
+          action:
+            'importLegacyLedger',
+          error:
+            'Cloudflare D1 binding is unavailable.'
+        }
+      );
+    }
+
+
+    const form =
+      await request.formData();
+
+
+    const futuresYear =
+      Number(
+        form.get(
+          'futuresYear'
+        )
       );
 
 
-    /*
-     * ========================================================
-     * SAFETY CHECK
-     *
-     * If active ledger rows already exist, the CSV must
-     * calculate to exactly the same balances before we import.
-     *
-     * If the ledger was fully reset and is empty, we allow
-     * the import and verify everything afterward instead.
-     * ========================================================
-     */
-
-    const hasActiveLedger =
-      current.some(
-        (row) =>
-          Number(
-            row.entryCount || 0
-          ) > 0
+    const file =
+      form.get(
+        'ledgerCsv'
       );
 
 
     if (
-      hasActiveLedger
+      !file ||
+      typeof file.text !==
+        'function'
     ) {
-      const currentByManager =
+      return fail(
+        400,
+        {
+          ok: false,
+          action:
+            'importLegacyLedger',
+          error:
+            'Choose the legacy Ledger CSV.'
+        }
+      );
+    }
+
+
+    if (
+      !Number.isInteger(
+        futuresYear
+      )
+    ) {
+      return fail(
+        400,
+        {
+          ok: false,
+          action:
+            'importLegacyLedger',
+          error:
+            'Choose a valid auction capital year.'
+        }
+      );
+    }
+
+
+    try {
+      const csvText =
+        await file.text();
+
+
+      const managers =
+        managerRows();
+
+
+      const parsed =
+        parseLegacyLedgerCsv({
+          text:
+            csvText,
+
+          managers,
+
+          futuresYear,
+
+          fileName:
+            file.name ||
+            'legacy-ledger.csv'
+        });
+
+
+      /*
+       * Current balances.
+       */
+      const current =
+        await getDraftCapitalBalances(
+          db,
+          {
+            year:
+              futuresYear
+          }
+        );
+
+
+      const hasActiveLedger =
+        current.some(
+          (row) =>
+            Number(
+              row.entryCount || 0
+            ) > 0
+        );
+
+
+      /*
+       * If D1 already has active entries,
+       * require the CSV to recreate the exact balances.
+       */
+      if (
+        hasActiveLedger
+      ) {
+        const currentByManager =
+          new Map(
+            current.map(
+              (row) => [
+                String(
+                  row.managerId
+                ),
+
+                Number(
+                  row.balanceCents
+                )
+              ]
+            )
+          );
+
+
+        const mismatches =
+          [];
+
+
+        for (
+          const manager of
+          managers
+        ) {
+          const managerId =
+            String(
+              manager.id
+            );
+
+
+          const csvBalance =
+            Number(
+              parsed.totals.get(
+                managerId
+              ) || 0
+            );
+
+
+          const d1Balance =
+            Number(
+              currentByManager.get(
+                managerId
+              ) || 0
+            );
+
+
+          if (
+            csvBalance !==
+            d1Balance
+          ) {
+            mismatches.push({
+              team:
+                manager.teamName,
+
+              csv:
+                csvBalance / 100,
+
+              d1:
+                d1Balance / 100
+            });
+          }
+        }
+
+
+        if (
+          mismatches.length
+        ) {
+          const detail =
+            mismatches
+              .slice(
+                0,
+                8
+              )
+              .map(
+                (item) =>
+                  `${item.team}: CSV $${item.csv.toFixed(2)} vs D1 $${item.d1.toFixed(2)}`
+              )
+              .join(
+                ' · '
+              );
+
+
+          return fail(
+            409,
+            {
+              ok: false,
+
+              action:
+                'importLegacyLedger',
+
+              error:
+                `Legacy ledger safety check failed. Nothing was imported. ${detail}`
+            }
+          );
+        }
+      }
+
+
+      /*
+       * Import.
+       */
+      const result =
+        await importLegacyDraftCapitalLedger(
+          db,
+          {
+            futuresYear,
+
+            rows:
+              parsed.rows,
+
+            createdBy:
+              locals.user.id
+          }
+        );
+
+
+      /*
+       * Verify afterward.
+       */
+      const after =
+        await getDraftCapitalBalances(
+          db,
+          {
+            year:
+              futuresYear
+          }
+        );
+
+
+      const afterMap =
         new Map(
-          current.map(
+          after.map(
             (row) => [
               String(
                 row.managerId
@@ -1911,7 +2154,7 @@ importLegacyLedger: async ({
         );
 
 
-      const mismatches =
+      const postImportErrors =
         [];
 
 
@@ -1925,7 +2168,7 @@ importLegacyLedger: async ({
           );
 
 
-        const csvBalance =
+        const expected =
           Number(
             parsed.totals.get(
               managerId
@@ -1933,52 +2176,58 @@ importLegacyLedger: async ({
           );
 
 
-        const d1Balance =
+        const actual =
           Number(
-            currentByManager.get(
+            afterMap.get(
               managerId
             ) || 0
           );
 
 
         if (
-          csvBalance !==
-          d1Balance
+          expected !==
+          actual
         ) {
-          mismatches.push({
+          postImportErrors.push({
             team:
               manager.teamName,
 
-            csv:
-              csvBalance / 100,
+            expected:
+              expected / 100,
 
-            d1:
-              d1Balance / 100
+            actual:
+              actual / 100
           });
         }
       }
 
 
       if (
-        mismatches.length
+        postImportErrors.length
       ) {
         const detail =
-          mismatches
+          postImportErrors
             .slice(
               0,
               8
             )
             .map(
               (item) =>
-                `${item.team}: CSV $${item.csv.toFixed(2)} vs D1 $${item.d1.toFixed(2)}`
+                `${item.team}: expected $${item.expected.toFixed(2)}, got $${item.actual.toFixed(2)}`
             )
             .join(
               ' · '
             );
 
 
+        console.error(
+          'Legacy draft capital post-import mismatch:',
+          postImportErrors
+        );
+
+
         return fail(
-          409,
+          500,
           {
             ok: false,
 
@@ -1986,143 +2235,43 @@ importLegacyLedger: async ({
               'importLegacyLedger',
 
             error:
-              `Legacy ledger safety check failed. Nothing was imported. ${detail}`
+              `Historical rows were imported, but final verification failed. ${detail}`
           }
         );
       }
-    }
 
 
-    /*
-     * ========================================================
-     * IMPORT HISTORICAL LEDGER
-     * ========================================================
-     */
-
-    const result =
-      await importLegacyDraftCapitalLedger(
-        db,
-        {
-          futuresYear,
-
-          rows:
-            parsed.rows,
-
-          createdBy:
-            locals.user.id
-        }
-      );
+      const tradeRows =
+        parsed.rows.filter(
+          (row) =>
+            row.entryType ===
+            'trade'
+        ).length;
 
 
-    /*
-     * ========================================================
-     * POST-IMPORT VERIFICATION
-     *
-     * D1 must now exactly equal the balances calculated
-     * from the uploaded CSV.
-     * ========================================================
-     */
-
-    const after =
-      await getDraftCapitalBalances(
-        db,
-        {
-          year:
-            futuresYear
-        }
-      );
+      const reconstructedTrades =
+        tradeRows / 2;
 
 
-    const afterMap =
-      new Map(
-        after.map(
-          (row) => [
-            String(
-              row.managerId
-            ),
+      return {
+        ok: true,
 
-            Number(
-              row.balanceCents
-            )
-          ]
-        )
-      );
+        action:
+          'importLegacyLedger',
 
+        message:
+          `Legacy ledger imported successfully: ${result.storedRows} historical rows, ${reconstructedTrades} reconstructed trades, and all ${managers.length} balances verified exactly.`
+      };
 
-    const postImportErrors =
-      [];
-
-
-    for (
-      const manager of
-      managers
-    ) {
-      const managerId =
-        String(
-          manager.id
-        );
-
-
-      const expected =
-        Number(
-          parsed.totals.get(
-            managerId
-          ) || 0
-        );
-
-
-      const actual =
-        Number(
-          afterMap.get(
-            managerId
-          ) || 0
-        );
-
-
-      if (
-        expected !==
-        actual
-      ) {
-        postImportErrors.push({
-          team:
-            manager.teamName,
-
-          expected:
-            expected / 100,
-
-          actual:
-            actual / 100
-        });
-      }
-    }
-
-
-    if (
-      postImportErrors.length
-    ) {
-      const detail =
-        postImportErrors
-          .slice(
-            0,
-            8
-          )
-          .map(
-            (item) =>
-              `${item.team}: expected $${item.expected.toFixed(2)}, got $${item.actual.toFixed(2)}`
-          )
-          .join(
-            ' · '
-          );
-
-
+    } catch (error) {
       console.error(
-        'Legacy draft capital post-import mismatch:',
-        postImportErrors
+        'Legacy ledger import failed:',
+        error
       );
 
 
       return fail(
-        500,
+        400,
         {
           ok: false,
 
@@ -2130,70 +2279,278 @@ importLegacyLedger: async ({
             'importLegacyLedger',
 
           error:
-            `Historical rows were imported, but final verification failed. ${detail}`
+            error instanceof Error
+              ? error.message
+              : 'Unable to import legacy ledger.'
+        }
+      );
+    }
+  },
+
+
+  /*
+   * ----------------------------------------------------------
+   * EDIT POSTED TRADE CAPITAL
+   * ----------------------------------------------------------
+   */
+
+  editTradeCapital: async ({
+    request,
+    platform,
+    locals
+  }) => {
+    if (
+      !assertAdmin(
+        locals
+      )
+    ) {
+      return fail(
+        403,
+        {
+          ok: false,
+          action:
+            'editTradeCapital',
+          error:
+            'Admin access required.'
         }
       );
     }
 
 
-    /*
-     * Every reconstructed trade has two ledger rows:
-     * one negative and one positive.
-     */
-
-    const tradeRows =
-      parsed.rows.filter(
-        (row) =>
-          row.entryType ===
-          'trade'
-      ).length;
+    const db =
+      platform?.env?.DB;
 
 
-    const reconstructedTrades =
-      tradeRows / 2;
+    if (!db) {
+      return fail(
+        500,
+        {
+          ok: false,
+          action:
+            'editTradeCapital',
+          error:
+            'Cloudflare D1 binding is unavailable.'
+        }
+      );
+    }
 
 
-    return {
-      ok: true,
-
-      action:
-        'importLegacyLedger',
-
-      message:
-        `Legacy ledger imported successfully: ${result.storedRows} historical rows, ${reconstructedTrades} reconstructed trades, and all ${managers.length} balances verified exactly.`
-    };
-
-  } catch (error) {
-    console.error(
-      'Legacy ledger import failed:',
-      error
-    );
+    const form =
+      await request.formData();
 
 
-    return fail(
-      400,
-      {
-        ok: false,
+    try {
+      const amount =
+        Number(
+          form.get(
+            'amount'
+          )
+        );
+
+
+      await updateReviewedTradeCapital(
+        db,
+        {
+          season:
+            Number(
+              form.get(
+                'season'
+              )
+            ),
+
+          week:
+            parseNumber(
+              form.get(
+                'week'
+              )
+            ),
+
+          sleeperTransactionId:
+            clean(
+              form.get(
+                'transactionId'
+              )
+            ),
+
+          futuresYear:
+            Number(
+              form.get(
+                'futuresYear'
+              )
+            ),
+
+          fromManagerId:
+            clean(
+              form.get(
+                'fromManagerId'
+              )
+            ),
+
+          toManagerId:
+            clean(
+              form.get(
+                'toManagerId'
+              )
+            ),
+
+          amount,
+
+          transactionDate:
+            clean(
+              form.get(
+                'transactionDate'
+              )
+            ),
+
+          note:
+            clean(
+              form.get(
+                'note'
+              )
+            ),
+
+          metadata: {
+            reviewedFrom:
+              'Admin Draft Capital Trade Inbox'
+          },
+
+          updatedBy:
+            locals.user.id
+        }
+      );
+
+
+      return {
+        ok: true,
 
         action:
-          'importLegacyLedger',
+          'editTradeCapital',
 
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Unable to import legacy ledger.'
-      }
-    );
-  }
-},
+        message:
+          `Trade capital updated to $${amount.toFixed(2)}.`
+      };
+
+    } catch (error) {
+      return fail(
+        400,
+        {
+          ok: false,
+
+          action:
+            'editTradeCapital',
+
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Unable to edit trade capital.'
+        }
+      );
+    }
+  },
+
 
   /*
    * ----------------------------------------------------------
-   * ONE-TIME OPENING BALANCE IMPORT
+   * REMOVE CAPITAL FROM POSTED TRADE
    * ----------------------------------------------------------
    */
 
+  removeTradeCapital: async ({
+    request,
+    platform,
+    locals
+  }) => {
+    if (
+      !assertAdmin(
+        locals
+      )
+    ) {
+      return fail(
+        403,
+        {
+          ok: false,
+          action:
+            'removeTradeCapital',
+          error:
+            'Admin access required.'
+        }
+      );
+    }
 
+
+    const db =
+      platform?.env?.DB;
+
+
+    if (!db) {
+      return fail(
+        500,
+        {
+          ok: false,
+          action:
+            'removeTradeCapital',
+          error:
+            'Cloudflare D1 binding is unavailable.'
+        }
+      );
+    }
+
+
+    const form =
+      await request.formData();
+
+
+    try {
+      await removeReviewedTradeCapital(
+        db,
+        {
+          season:
+            Number(
+              form.get(
+                'season'
+              )
+            ),
+
+          sleeperTransactionId:
+            clean(
+              form.get(
+                'transactionId'
+              )
+            ),
+
+          removedBy:
+            locals.user.id
+        }
+      );
+
+
+      return {
+        ok: true,
+
+        action:
+          'removeTradeCapital',
+
+        message:
+          'Draft capital removed from trade.'
+      };
+
+    } catch (error) {
+      return fail(
+        400,
+        {
+          ok: false,
+
+          action:
+            'removeTradeCapital',
+
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Unable to remove trade capital.'
+        }
+      );
+    }
+  },
 
 
   /*
@@ -2226,6 +2583,7 @@ importLegacyLedger: async ({
     const db =
       platform?.env?.DB;
 
+
     const form =
       await request.formData();
 
@@ -2238,6 +2596,7 @@ importLegacyLedger: async ({
           )
         );
 
+
       const futuresYear =
         Number(
           form.get(
@@ -2245,12 +2604,14 @@ importLegacyLedger: async ({
           )
         );
 
+
       const amount =
         Number(
           form.get(
             'amount'
           )
         );
+
 
       const entryType =
         clean(
@@ -2297,12 +2658,14 @@ importLegacyLedger: async ({
 
       return {
         ok: true,
+
         action:
           'addEntry',
 
         message:
           'Draft capital entry posted.'
       };
+
     } catch (error) {
       return fail(
         400,
@@ -2348,6 +2711,7 @@ importLegacyLedger: async ({
 
     const db =
       platform?.env?.DB;
+
 
     const form =
       await request.formData();
@@ -2410,12 +2774,14 @@ importLegacyLedger: async ({
 
       return {
         ok: true,
+
         action:
           'transfer',
 
         message:
           'Draft capital transfer posted.'
       };
+
     } catch (error) {
       return fail(
         400,
@@ -2462,6 +2828,7 @@ importLegacyLedger: async ({
     const db =
       platform?.env?.DB;
 
+
     const form =
       await request.formData();
 
@@ -2474,12 +2841,14 @@ importLegacyLedger: async ({
           )
         );
 
+
       const week =
         parseNumber(
           form.get(
             'week'
           )
         );
+
 
       const transactionId =
         clean(
@@ -2495,6 +2864,7 @@ importLegacyLedger: async ({
             'fromManagerId'
           )
         );
+
 
       const toManagerId =
         clean(
@@ -2564,12 +2934,14 @@ importLegacyLedger: async ({
 
       return {
         ok: true,
+
         action:
           'postTradeCapital',
 
         message:
           `Posted $${amount.toFixed(2)} of ${futuresYear} draft capital.`
       };
+
     } catch (error) {
       const message =
         error instanceof Error
@@ -2636,6 +3008,7 @@ importLegacyLedger: async ({
     const db =
       platform?.env?.DB;
 
+
     const form =
       await request.formData();
 
@@ -2683,6 +3056,7 @@ importLegacyLedger: async ({
         message:
           'Trade marked as reviewed with no draft capital.'
       };
+
     } catch (error) {
       return fail(
         400,
@@ -2701,7 +3075,7 @@ importLegacyLedger: async ({
 
   /*
    * ----------------------------------------------------------
-   * VOID
+   * VOID LEDGER ENTRY
    * ----------------------------------------------------------
    */
 
@@ -2729,35 +3103,43 @@ importLegacyLedger: async ({
     const db =
       platform?.env?.DB;
 
+
     const form =
       await request.formData();
 
 
     try {
-      await voidDraftCapitalEntry(
-        db,
-        {
-          entryId:
-            Number(
-              form.get(
-                'entryId'
-              )
-            ),
+      const result =
+  await voidDraftCapitalEntry(
+    db,
+    {
+      entryId:
+        Number(
+          form.get(
+            'entryId'
+          )
+        ),
 
-          voidedBy:
-            locals.user.id
-        }
-      );
+      voidedBy:
+        locals.user.id
+    }
+  );
 
 
       return {
-        ok: true,
-        action:
-          'voidEntry',
+  ok: true,
 
-        message:
-          'Ledger entry voided.'
-      };
+  action:
+    'voidEntry',
+
+  message:
+    result.reopenedTradeReview
+      ? 'Capital transfer voided. The linked Sleeper trade has been reopened for review.'
+      : result.voidedTransfer
+        ? 'Capital transfer voided.'
+        : 'Ledger entry voided.'
+};
+
     } catch (error) {
       return fail(
         400,

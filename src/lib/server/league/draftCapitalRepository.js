@@ -1394,8 +1394,10 @@ export async function getDraftCapitalTradeReviews(
     );
   }
 
+
   const year =
     Number(season);
+
 
   if (
     !Number.isInteger(year)
@@ -1410,18 +1412,75 @@ export async function getDraftCapitalTradeReviews(
     await db
       .prepare(`
         SELECT
-          season,
-          week,
-          sleeper_transaction_id,
-          review_status,
-          transfer_id,
-          note,
-          reviewed_at
+          r.season,
+          r.week,
+          r.sleeper_transaction_id,
+          r.review_status,
+          r.transfer_id,
+          r.note,
+          r.reviewed_at,
 
-        FROM draft_capital_trade_reviews
+          outgoing.futures_year
+            AS futures_year,
+
+          outgoing.manager_id
+            AS from_manager_id,
+
+          incoming.manager_id
+            AS to_manager_id,
+
+          ABS(
+            outgoing.amount_cents
+          )
+            AS amount_cents,
+
+          COALESCE(
+            outgoing.transaction_date,
+            incoming.transaction_date
+          )
+            AS transaction_date,
+
+          COALESCE(
+            outgoing.note,
+            incoming.note,
+            r.note
+          )
+            AS capital_note
+
+        FROM draft_capital_trade_reviews r
+
+        LEFT JOIN draft_capital_entries outgoing
+          ON
+            outgoing.transfer_id =
+              r.transfer_id
+
+            AND
+            outgoing.amount_cents < 0
+
+            AND
+            outgoing.voided_at IS NULL
+
+        LEFT JOIN draft_capital_entries incoming
+          ON
+            incoming.transfer_id =
+              r.transfer_id
+
+            AND
+            incoming.amount_cents > 0
+
+            AND
+            incoming.voided_at IS NULL
 
         WHERE
-          season = ?
+          r.season = ?
+
+        ORDER BY
+          COALESCE(
+            r.week,
+            0
+          ) DESC,
+
+          r.reviewed_at DESC
       `)
       .bind(
         year
@@ -1432,47 +1491,656 @@ export async function getDraftCapitalTradeReviews(
   return (
     result.results ?? []
   ).map(
-    (row) => ({
-      season:
-        Number(
-          row.season
-        ),
-
-      week:
-        row.week == null
+    (row) => {
+      const amountCents =
+        row.amount_cents == null
           ? null
           : Number(
-              row.week
-            ),
+              row.amount_cents
+            );
 
-      transactionId:
-        String(
-          row.sleeper_transaction_id
-        ),
 
-      reviewStatus:
-        row.review_status ||
-        'pending',
+      return {
+        season:
+          Number(
+            row.season
+          ),
 
-      transferId:
-        row.transfer_id ||
-        null,
+        week:
+          row.week == null
+            ? null
+            : Number(
+                row.week
+              ),
 
-      reviewNote:
-        row.note ||
-        null,
+        transactionId:
+          String(
+            row.sleeper_transaction_id
+          ),
 
-      reviewedAt:
-        row.reviewed_at == null
-          ? null
-          : Number(
-              row.reviewed_at
-            )
-    })
+        reviewStatus:
+          row.review_status ||
+          'pending',
+
+        transferId:
+          row.transfer_id ||
+          null,
+
+        reviewNote:
+          row.note ||
+          null,
+
+        reviewedAt:
+          row.reviewed_at == null
+            ? null
+            : Number(
+                row.reviewed_at
+              ),
+
+        capital:
+          row.transfer_id &&
+          amountCents != null
+            ? {
+                futuresYear:
+                  Number(
+                    row.futures_year
+                  ),
+
+                fromManagerId:
+                  String(
+                    row.from_manager_id
+                  ),
+
+                toManagerId:
+                  String(
+                    row.to_manager_id
+                  ),
+
+                amountCents,
+
+                amount:
+                  amountCents /
+                  100,
+
+                transactionDate:
+                  row.transaction_date ||
+                  null,
+
+                note:
+                  row.capital_note ||
+                  null
+              }
+            : null
+      };
+    }
   );
 }
 
+/*
+ * ============================================================
+ * EDIT EXISTING REVIEWED SLEEPER CAPITAL TRANSFER
+ *
+ * Keeps the SAME transfer_id and SAME Sleeper transaction ID.
+ *
+ * That means:
+ *
+ * - audit trail remains intact
+ * - player Franchise Trail remains linked
+ * - no duplicate ledger entries
+ * ============================================================
+ */
 
+export async function updateReviewedTradeCapital(
+  db,
+  {
+    season,
+    week,
+
+    sleeperTransactionId,
+
+    futuresYear,
+
+    fromManagerId,
+    toManagerId,
+
+    amount,
+
+    transactionDate = null,
+
+    note = null,
+
+    metadata = {},
+
+    updatedBy = null
+  } = {}
+) {
+  if (!db) {
+    throw new Error(
+      'D1 database binding is required.'
+    );
+  }
+
+
+  const year =
+    Number(
+      futuresYear
+    );
+
+
+  if (
+    !Number.isInteger(year)
+  ) {
+    throw new Error(
+      'A valid auction capital year is required.'
+    );
+  }
+
+
+  if (
+    !fromManagerId ||
+    !toManagerId
+  ) {
+    throw new Error(
+      'Both teams are required.'
+    );
+  }
+
+
+  if (
+    String(fromManagerId) ===
+    String(toManagerId)
+  ) {
+    throw new Error(
+      'Capital cannot be transferred to the same team.'
+    );
+  }
+
+
+  const amountCents =
+    Math.abs(
+      dollarsToCents(
+        amount
+      )
+    );
+
+
+  if (
+    amountCents <= 0
+  ) {
+    throw new Error(
+      'Transfer amount must be greater than zero.'
+    );
+  }
+
+
+  /*
+   * Find the existing review + transfer.
+   */
+  const review =
+    await db
+      .prepare(`
+        SELECT
+          transfer_id
+
+        FROM draft_capital_trade_reviews
+
+        WHERE
+          season = ?
+          AND sleeper_transaction_id = ?
+          AND review_status = 'posted'
+      `)
+      .bind(
+        Number(season),
+        String(
+          sleeperTransactionId
+        )
+      )
+      .first();
+
+
+  if (
+    !review?.transfer_id
+  ) {
+    throw new Error(
+      'Posted draft-capital transfer could not be found.'
+    );
+  }
+
+
+  const transferId =
+    String(
+      review.transfer_id
+    );
+
+
+  /*
+   * Make sure both active ledger halves exist.
+   */
+  const existing =
+    await db
+      .prepare(`
+        SELECT
+          id,
+          amount_cents
+
+        FROM draft_capital_entries
+
+        WHERE
+          transfer_id = ?
+          AND voided_at IS NULL
+      `)
+      .bind(
+        transferId
+      )
+      .all();
+
+
+  const rows =
+    existing.results ??
+    [];
+
+
+  const outgoingRow =
+    rows.find(
+      (row) =>
+        Number(
+          row.amount_cents
+        ) < 0
+    );
+
+
+  const incomingRow =
+    rows.find(
+      (row) =>
+        Number(
+          row.amount_cents
+        ) > 0
+    );
+
+
+  if (
+    !outgoingRow ||
+    !incomingRow
+  ) {
+    throw new Error(
+      'The linked ledger transfer is incomplete.'
+    );
+  }
+
+
+  const transactionId =
+    String(
+      sleeperTransactionId
+    );
+
+
+  const outgoingDedupe =
+    `capital:${transactionId}:${year}:${fromManagerId}:out`;
+
+
+  const incomingDedupe =
+    `capital:${transactionId}:${year}:${toManagerId}:in`;
+
+
+  const commonMetadata = {
+    ...metadata,
+
+    transferId,
+
+    futuresYear:
+      year,
+
+    dollarAmount:
+      amountCents /
+      100,
+
+    edited:
+      true,
+
+    editedAt:
+      new Date()
+        .toISOString(),
+
+    editedBy:
+      updatedBy
+        ? String(
+            updatedBy
+          )
+        : null
+  };
+
+
+  const outgoing =
+    db
+      .prepare(`
+        UPDATE draft_capital_entries
+
+        SET
+          futures_year = ?,
+          manager_id = ?,
+          amount_cents = ?,
+          transaction_date = ?,
+          league_season = ?,
+          league_week = ?,
+          sleeper_transaction_id = ?,
+          counterparty_manager_id = ?,
+          note = ?,
+          metadata_json = ?,
+          source = 'sleeper_trade',
+          dedupe_key = ?,
+          updated_at = unixepoch()
+
+        WHERE
+          id = ?
+          AND voided_at IS NULL
+      `)
+      .bind(
+        year,
+
+        String(
+          fromManagerId
+        ),
+
+        -amountCents,
+
+        clean(
+          transactionDate
+        ),
+
+        Number(season),
+
+        week == null
+          ? null
+          : Number(
+              week
+            ),
+
+        transactionId,
+
+        String(
+          toManagerId
+        ),
+
+        clean(note),
+
+        JSON.stringify({
+          ...commonMetadata,
+          direction:
+            'away'
+        }),
+
+        outgoingDedupe,
+
+        Number(
+          outgoingRow.id
+        )
+      );
+
+
+  const incoming =
+    db
+      .prepare(`
+        UPDATE draft_capital_entries
+
+        SET
+          futures_year = ?,
+          manager_id = ?,
+          amount_cents = ?,
+          transaction_date = ?,
+          league_season = ?,
+          league_week = ?,
+          sleeper_transaction_id = ?,
+          counterparty_manager_id = ?,
+          note = ?,
+          metadata_json = ?,
+          source = 'sleeper_trade',
+          dedupe_key = ?,
+          updated_at = unixepoch()
+
+        WHERE
+          id = ?
+          AND voided_at IS NULL
+      `)
+      .bind(
+        year,
+
+        String(
+          toManagerId
+        ),
+
+        amountCents,
+
+        clean(
+          transactionDate
+        ),
+
+        Number(season),
+
+        week == null
+          ? null
+          : Number(
+              week
+            ),
+
+        transactionId,
+
+        String(
+          fromManagerId
+        ),
+
+        clean(note),
+
+        JSON.stringify({
+          ...commonMetadata,
+          direction:
+            'received'
+        }),
+
+        incomingDedupe,
+
+        Number(
+          incomingRow.id
+        )
+      );
+
+
+  const updateReview =
+    db
+      .prepare(`
+        UPDATE draft_capital_trade_reviews
+
+        SET
+          week = ?,
+          note = ?,
+          reviewed_by = ?,
+          reviewed_at = unixepoch(),
+          updated_at = unixepoch()
+
+        WHERE
+          season = ?
+          AND sleeper_transaction_id = ?
+      `)
+      .bind(
+        week == null
+          ? null
+          : Number(
+              week
+            ),
+
+        clean(note),
+
+        clean(
+          updatedBy
+        ),
+
+        Number(season),
+
+        transactionId
+      );
+
+
+  await db.batch([
+    outgoing,
+    incoming,
+    updateReview
+  ]);
+
+
+  return {
+    transferId,
+
+    futuresYear:
+      year,
+
+    amount:
+      amountCents /
+      100,
+
+    fromManagerId:
+      String(
+        fromManagerId
+      ),
+
+    toManagerId:
+      String(
+        toManagerId
+      )
+  };
+}
+
+/*
+ * ============================================================
+ * REMOVE CAPITAL FROM A REVIEWED TRADE
+ *
+ * Voids the linked ledger pair and changes the review to
+ * "no_capital".
+ * ============================================================
+ */
+
+export async function removeReviewedTradeCapital(
+  db,
+  {
+    season,
+    sleeperTransactionId,
+    removedBy = null
+  } = {}
+) {
+  if (!db) {
+    throw new Error(
+      'D1 database binding is required.'
+    );
+  }
+
+
+  const review =
+    await db
+      .prepare(`
+        SELECT
+          transfer_id
+
+        FROM draft_capital_trade_reviews
+
+        WHERE
+          season = ?
+          AND sleeper_transaction_id = ?
+      `)
+      .bind(
+        Number(season),
+
+        String(
+          sleeperTransactionId
+        )
+      )
+      .first();
+
+
+  if (
+    !review?.transfer_id
+  ) {
+    throw new Error(
+      'No linked capital transfer was found.'
+    );
+  }
+
+
+  const transferId =
+    String(
+      review.transfer_id
+    );
+
+
+  await db.batch([
+    db
+      .prepare(`
+        UPDATE draft_capital_entries
+
+        SET
+          voided_at =
+            unixepoch(),
+
+          voided_by =
+            ?,
+
+          updated_at =
+            unixepoch()
+
+        WHERE
+          transfer_id = ?
+          AND voided_at IS NULL
+      `)
+      .bind(
+        clean(
+          removedBy
+        ),
+
+        transferId
+      ),
+
+    db
+      .prepare(`
+        UPDATE draft_capital_trade_reviews
+
+        SET
+          review_status =
+            'no_capital',
+
+          transfer_id =
+            NULL,
+
+          note =
+            'Capital removed by commissioner edit.',
+
+          reviewed_by =
+            ?,
+
+          reviewed_at =
+            unixepoch(),
+
+          updated_at =
+            unixepoch()
+
+        WHERE
+          season = ?
+          AND sleeper_transaction_id = ?
+      `)
+      .bind(
+        clean(
+          removedBy
+        ),
+
+        Number(season),
+
+        String(
+          sleeperTransactionId
+        )
+      )
+  ]);
+
+
+  return {
+    transferId
+  };
+}
 /*
  * ============================================================
  * GET STORED SLEEPER TRADES FOR ADMIN REVIEW
@@ -1644,109 +2312,287 @@ export async function voidDraftCapitalEntry(
     voidedBy = null
   } = {}
 ) {
-  const row =
-    await db
-      .prepare(`
-        SELECT
-          id,
-          transfer_id
-        FROM draft_capital_entries
-        WHERE
-          id = ?
-          AND voided_at IS NULL
-      `)
-      .bind(
-        Number(entryId)
-      )
-      .first();
-
-
-  if (!row) {
+  if (!db) {
     throw new Error(
-      'Ledger entry not found.'
+      'D1 database binding is required.'
+    );
+  }
+
+
+  const id =
+    Number(
+      entryId
+    );
+
+
+  if (
+    !Number.isInteger(id)
+  ) {
+    throw new Error(
+      'A valid ledger entry ID is required.'
     );
   }
 
 
   /*
-   * A trade is always voided as a pair.
+   * First find out WHAT we're voiding.
+   *
+   * If it belongs to a transfer, we want to void the
+   * entire transfer pair rather than only one side.
    */
-  if (row.transfer_id) {
+  const entry =
     await db
       .prepare(`
-        UPDATE draft_capital_entries
+        SELECT
+          id,
+          transfer_id,
+          sleeper_transaction_id,
+          entry_type,
+          source
 
-        SET
-          voided_at =
-            unixepoch(),
-
-          voided_by =
-            ?,
-
-          updated_at =
-            unixepoch()
+        FROM draft_capital_entries
 
         WHERE
-          transfer_id = ?
+          id = ?
           AND voided_at IS NULL
       `)
       .bind(
-        clean(
-          voidedBy
-        ),
-
-        row.transfer_id
+        id
       )
-      .run();
+      .first();
 
 
-    return {
-      transferId:
-        row.transfer_id
-    };
+  if (!entry) {
+    throw new Error(
+      'Active ledger entry could not be found.'
+    );
   }
 
 
-  await db
-    .prepare(`
-      UPDATE draft_capital_entries
+  const transferId =
+    entry.transfer_id
+      ? String(
+          entry.transfer_id
+        )
+      : null;
 
-      SET
-        voided_at =
-          unixepoch(),
 
-        voided_by =
-          ?,
+  /*
+   * See whether this transfer came from a reviewed
+   * Sleeper trade.
+   */
+  let tradeReview =
+    null;
 
-        updated_at =
-          unixepoch()
 
-      WHERE
-        id = ?
-        AND voided_at IS NULL
-    `)
-    .bind(
-      clean(
-        voidedBy
-      ),
+  if (transferId) {
+    tradeReview =
+      await db
+        .prepare(`
+          SELECT
+            season,
+            sleeper_transaction_id,
+            review_status,
+            transfer_id
 
-      Number(entryId)
-    )
-    .run();
+          FROM draft_capital_trade_reviews
+
+          WHERE
+            transfer_id = ?
+
+          LIMIT 1
+        `)
+        .bind(
+          transferId
+        )
+        .first();
+  }
+
+
+  const statements =
+    [];
+
+
+  if (transferId) {
+    /*
+     * ========================================================
+     * VOID THE ENTIRE TRANSFER
+     *
+     * Never leave one team with +$20 while the other team's
+     * -$20 has been voided.
+     * ========================================================
+     */
+
+    statements.push(
+      db
+        .prepare(`
+          UPDATE draft_capital_entries
+
+          SET
+            voided_at =
+              unixepoch(),
+
+            voided_by =
+              ?,
+
+            /*
+             * Allow this Sleeper trade to create a replacement
+             * capital entry later, even if dedupe_key has a
+             * global unique constraint.
+             */
+            dedupe_key =
+              NULL,
+
+            updated_at =
+              unixepoch()
+
+          WHERE
+            transfer_id = ?
+            AND voided_at IS NULL
+        `)
+        .bind(
+          voidedBy
+            ? String(
+                voidedBy
+              )
+            : null,
+
+          transferId
+        )
+    );
+
+
+    /*
+     * ========================================================
+     * REOPEN THE SLEEPER TRADE
+     *
+     * If the capital transfer has been voided, "posted" is no
+     * longer a truthful review state.
+     * ========================================================
+     */
+
+    if (tradeReview) {
+      statements.push(
+        db
+          .prepare(`
+            UPDATE draft_capital_trade_reviews
+
+            SET
+              review_status =
+                'pending',
+
+              transfer_id =
+                NULL,
+
+              reviewed_by =
+                NULL,
+
+              reviewed_at =
+                NULL,
+
+              note =
+                CASE
+
+                  WHEN
+                    note IS NULL
+                    OR TRIM(note) = ''
+
+                  THEN
+                    'Reopened automatically because the linked draft-capital transfer was voided.'
+
+                  ELSE
+                    note ||
+                    ' · Reopened automatically because the linked draft-capital transfer was voided.'
+
+                END,
+
+              updated_at =
+                unixepoch()
+
+            WHERE
+              transfer_id = ?
+          `)
+          .bind(
+            transferId
+          )
+      );
+    }
+
+  } else {
+    /*
+     * ========================================================
+     * NORMAL NON-TRANSFER LEDGER ENTRY
+     *
+     * Manual adjustment, auction funding, auction spend, etc.
+     * ========================================================
+     */
+
+    statements.push(
+      db
+        .prepare(`
+          UPDATE draft_capital_entries
+
+          SET
+            voided_at =
+              unixepoch(),
+
+            voided_by =
+              ?,
+
+            dedupe_key =
+              NULL,
+
+            updated_at =
+              unixepoch()
+
+          WHERE
+            id = ?
+            AND voided_at IS NULL
+        `)
+        .bind(
+          voidedBy
+            ? String(
+                voidedBy
+              )
+            : null,
+
+          id
+        )
+    );
+  }
+
+
+  await db.batch(
+    statements
+  );
 
 
   return {
     entryId:
-      Number(entryId)
+      id,
+
+    transferId,
+
+    voidedTransfer:
+      Boolean(
+        transferId
+      ),
+
+    reopenedTradeReview:
+      Boolean(
+        tradeReview
+      ),
+
+    sleeperTransactionId:
+      tradeReview
+        ?.sleeper_transaction_id
+        ? String(
+            tradeReview
+              .sleeper_transaction_id
+          )
+        : null
   };
 }
-
-
-export {
-  centsToDollars,
-  dollarsToCents
-};
-
 /*
  * ============================================================
  * LEGACY IMPORT STATUS
