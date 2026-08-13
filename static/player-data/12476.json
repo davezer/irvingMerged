@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T22:33:03.627Z",
+  "generatedAt": "2026-08-13T02:36:01.693Z",
   "playerId": "12476",
   "profile": {
     "id": "12476",
@@ -9,7 +9,7 @@
     "position": "RB",
     "team": "NO",
     "number": 24,
-    "age": 22,
+    "age": 23,
     "height": "71",
     "weight": 213,
     "yearsExp": 1,
@@ -17,7 +17,7 @@
     "status": "Active",
     "injuryStatus": "Questionable",
     "practiceParticipation": null,
-    "depthChartOrder": 4,
+    "depthChartOrder": 3,
     "fantasyPositions": [
       "RB"
     ],

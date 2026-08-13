@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T22:33:00.035Z",
+  "generatedAt": "2026-08-13T02:35:57.864Z",
   "playerId": "10222",
   "profile": {
     "id": "10222",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "Michigan State",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [

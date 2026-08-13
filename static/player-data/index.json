@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-08-10T22:33:07.171Z",
-  "leagueId": "1374405214093709312",
+  "generatedAt": "2026-08-13T02:36:05.371Z",
+  "leagueId": "1253040502786228224",
   "seasons": [
     2026,
     2025,
     2024,
     2023
   ],
-  "playerCount": 211,
+  "playerCount": 227,
   "failedCount": 0,
   "players": [
     {
@@ -27,6 +27,12 @@
       "name": "Aaron Rodgers",
       "position": "QB",
       "team": "PIT"
+    },
+    {
+      "playerId": "11625",
+      "name": "Adonai Mitchell",
+      "position": "WR",
+      "team": "NYJ"
     },
     {
       "playerId": "11603",
@@ -93,6 +99,12 @@
       "name": "Brandon Aubrey",
       "position": "K",
       "team": "DAL"
+    },
+    {
+      "playerId": "12455",
+      "name": "Brashard Smith",
+      "position": "RB",
+      "team": "KC"
     },
     {
       "playerId": "8155",
@@ -338,7 +350,7 @@
       "playerId": "2505",
       "name": "Darren Waller",
       "position": "TE",
-      "team": "MIA"
+      "team": "CAR"
     },
     {
       "playerId": "2133",
@@ -395,6 +407,12 @@
       "team": "NO"
     },
     {
+      "playerId": "6130",
+      "name": "Devin Singletary",
+      "position": "RB",
+      "team": "NYG"
+    },
+    {
       "playerId": "7525",
       "name": "DeVonta Smith",
       "position": "WR",
@@ -429,6 +447,12 @@
       "name": "Dylan Sampson",
       "position": "RB",
       "team": "CLE"
+    },
+    {
+      "playerId": "5189",
+      "name": "Eddy Pineiro",
+      "position": "K",
+      "team": "SF"
     },
     {
       "playerId": "11435",
@@ -551,6 +575,12 @@
       "team": "DET"
     },
     {
+      "playerId": "11539",
+      "name": "Jake Bates",
+      "position": "K",
+      "team": "DET"
+    },
+    {
       "playerId": "4195",
       "name": "Jake Elliott",
       "position": "K",
@@ -641,6 +671,12 @@
       "team": "WAS"
     },
     {
+      "playerId": "12484",
+      "name": "Jayden Higgins",
+      "position": "WR",
+      "team": "HOU"
+    },
+    {
       "playerId": "10222",
       "name": "Jayden Reed",
       "position": "WR",
@@ -681,6 +717,12 @@
       "name": "Joe Mixon",
       "position": "RB",
       "team": "HOU"
+    },
+    {
+      "playerId": "8147",
+      "name": "John Metchie",
+      "position": "WR",
+      "team": "CAR"
     },
     {
       "playerId": "6813",
@@ -743,9 +785,21 @@
       "team": "NO"
     },
     {
+      "playerId": "3451",
+      "name": "Ka'imi Fairbairn",
+      "position": "K",
+      "team": "HOU"
+    },
+    {
       "playerId": "KC",
       "name": "Kansas City Chiefs",
       "position": "DEF",
+      "team": "KC"
+    },
+    {
+      "playerId": "4098",
+      "name": "Kareem Hunt",
+      "position": "RB",
       "team": "KC"
     },
     {
@@ -765,6 +819,12 @@
       "name": "Keenan Allen",
       "position": "WR",
       "team": "LAC"
+    },
+    {
+      "playerId": "9757",
+      "name": "Kendre Miller",
+      "position": "RB",
+      "team": "NO"
     },
     {
       "playerId": "8151",
@@ -917,10 +977,28 @@
       "team": "SF"
     },
     {
+      "playerId": "4993",
+      "name": "Mike Gesicki",
+      "position": "TE",
+      "team": "CIN"
+    },
+    {
+      "playerId": "MIN",
+      "name": "Minnesota Vikings",
+      "position": "DEF",
+      "team": "MIN"
+    },
+    {
       "playerId": "NE",
       "name": "New England Patriots",
       "position": "DEF",
       "team": "NE"
+    },
+    {
+      "playerId": "NO",
+      "name": "New Orleans Saints",
+      "position": "DEF",
+      "team": "NO"
     },
     {
       "playerId": "650",
@@ -1067,6 +1145,12 @@
       "team": "DET"
     },
     {
+      "playerId": "SF",
+      "name": "San Francisco 49ers",
+      "position": "DEF",
+      "team": "SF"
+    },
+    {
       "playerId": "4866",
       "name": "Saquon Barkley",
       "position": "RB",
@@ -1101,6 +1185,12 @@
       "name": "Tampa Bay Buccaneers",
       "position": "DEF",
       "team": "TB"
+    },
+    {
+      "playerId": "4381",
+      "name": "Taysom Hill",
+      "position": "TE",
+      "team": "NO"
     },
     {
       "playerId": "6801",
@@ -1275,6 +1365,12 @@
       "name": "Zay Flowers",
       "position": "WR",
       "team": "BAL"
+    },
+    {
+      "playerId": "8122",
+      "name": "Zonovan Knight",
+      "position": "RB",
+      "team": "ARI"
     }
   ],
   "failed": []

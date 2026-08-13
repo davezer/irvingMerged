@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T22:33:02.954Z",
+  "generatedAt": "2026-08-13T02:36:00.857Z",
   "playerId": "5846",
   "profile": {
     "id": "5846",
@@ -15,7 +15,7 @@
     "yearsExp": 7,
     "college": "Ole Miss",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

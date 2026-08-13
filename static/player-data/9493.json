@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T22:33:02.383Z",
+  "generatedAt": "2026-08-13T02:36:00.276Z",
   "playerId": "9493",
   "profile": {
     "id": "9493",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "BYU",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

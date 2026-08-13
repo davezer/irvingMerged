@@ -1,0 +1,131 @@
+{
+  "generatedAt": "2026-08-13T02:35:57.397Z",
+  "playerId": "8122",
+  "profile": {
+    "id": "8122",
+    "name": "Zonovan Knight",
+    "firstName": "Zonovan",
+    "lastName": "Knight",
+    "position": "RB",
+    "team": "ARI",
+    "number": 20,
+    "age": 25,
+    "height": "71",
+    "weight": 210,
+    "yearsExp": 4,
+    "college": "North Carolina State",
+    "status": "Active",
+    "injuryStatus": null,
+    "practiceParticipation": null,
+    "depthChartOrder": 5,
+    "fantasyPositions": [
+      "RB"
+    ],
+    "headshotUrl": "https://sleepercdn.com/content/nfl/players/thumb/8122.jpg"
+  },
+  "availableSeasons": [
+    2026,
+    2025,
+    2024,
+    2023
+  ],
+  "seasons": {
+    "2023": {
+      "season": 2023,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    },
+    "2024": {
+      "season": 2024,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    },
+    "2025": {
+      "season": 2025,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    },
+    "2026": {
+      "season": 2026,
+      "summary": {
+        "games": 0,
+        "fantasyPoints": 0,
+        "fantasyPointsPerGame": 0,
+        "passingYards": 0,
+        "passingTds": 0,
+        "interceptions": 0,
+        "rushingYards": 0,
+        "rushingTds": 0,
+        "receptions": 0,
+        "receivingYards": 0,
+        "receivingTds": 0,
+        "fumblesLost": 0
+      },
+      "games": [],
+      "dataMatch": {
+        "playerCrosswalk": null,
+        "statMatch": null,
+        "gsisId": null
+      }
+    }
+  },
+  "sources": {
+    "profile": "Sleeper",
+    "stats": "nflverse / nflfastR weekly player stats",
+    "fantasyScoring": "Half-PPR"
+  }
+}

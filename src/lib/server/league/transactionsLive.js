@@ -71,11 +71,36 @@ function buildDraftPickRows(draftPicks = [], rosterIdentityMap) {
   });
 }
 
-function buildFaabRows(waiverBudget = {}, rosterIdentityMap) {
-  return Object.entries(waiverBudget || {}).map(([rosterId, amount]) => ({
-    ...resolveRoster(rosterIdentityMap, rosterId),
-    amount: Number(amount || 0)
-  })).sort((a, b) => b.amount - a.amount || a.teamName.localeCompare(b.teamName));
+function buildFaabRows(raw = {}, rosterIdentityMap) {
+  if (String(raw?.type || '').toLowerCase() !== 'waiver') {
+    return [];
+  }
+
+  const bid = Number(raw?.settings?.waiver_bid);
+
+  if (!Number.isFinite(bid)) {
+    return [];
+  }
+
+  const rosterCandidates = [
+    ...Object.values(raw?.adds || {}),
+    ...(raw?.roster_ids || [])
+  ]
+    .map(Number)
+    .filter(Number.isFinite);
+
+  const rosterId = rosterCandidates[0];
+
+  if (!Number.isFinite(rosterId)) {
+    return [];
+  }
+
+  return [
+    {
+      ...resolveRoster(rosterIdentityMap, rosterId),
+      amount: bid
+    }
+  ];
 }
 
 function summarizeTransaction(txn) {
@@ -111,7 +136,7 @@ function buildTransactionView(raw, week, playersById, rosterIdentityMap) {
   const addGroups = groupEntriesByRoster(raw.adds || {}, playersById, rosterIdentityMap, 'add');
   const dropGroups = groupEntriesByRoster(raw.drops || {}, playersById, rosterIdentityMap, 'drop');
   const draftPicks = buildDraftPickRows(raw.draft_picks || [], rosterIdentityMap);
-  const faabRows = buildFaabRows(raw.settings?.waiver_budget || raw.waiver_budget || {}, rosterIdentityMap);
+  const faabRows = buildFaabRows(raw, rosterIdentityMap);
 
   const item = {
     id: String(raw.transaction_id || `${week}-${raw.type || 'move'}-${Math.random().toString(36).slice(2, 8)}`),

@@ -2,74 +2,12 @@ import { resolveLeagueContext } from '$lib/server/league/context.js';
 import { buildRosterIdentityMap, resolveSelectedTeam } from '$lib/server/league/identity.js';
 import { resolvePlayersByIds } from '$lib/server/league/players.js';
 import { getSleeperMatchupsForWeek, getSleeperRosters, getSleeperUsers } from '$lib/server/league/sleeperClient.js';
-
-function numberValue(value) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
-}
-
-function recordLabel(settings = {}) {
-  const wins = numberValue(settings.wins);
-  const losses = numberValue(settings.losses);
-  const ties = numberValue(settings.ties);
-  return `${wins}-${losses}${ties ? `-${ties}` : ''}`;
-}
-
-function chunkPairs(entries = []) {
-  const grouped = new Map();
-
-  for (const entry of entries) {
-    const key = Number(entry.matchup_id || 0);
-    if (!grouped.has(key)) grouped.set(key, []);
-    grouped.get(key).push(entry);
-  }
-
-  return [...grouped.entries()].map(([matchupId, teams]) => ({ matchupId, teams }));
-}
-
-function buildRosterSettingsMap(rosters = []) {
-  return new Map(rosters.map((roster) => [Number(roster.roster_id), roster?.settings || {}]));
-}
-
-function normalizeMatchupGroup(group, rosterIdentityMap, rosterSettingsMap, playersById, { includeStarters = true } = {}) {
-  const normalizeSide = (side) => {
-    if (!side) return null;
-    const rosterId = Number(side.roster_id);
-    const identity = rosterIdentityMap.get(rosterId);
-    const settings = rosterSettingsMap.get(rosterId) || {};
-
-    return {
-      rosterId,
-      teamName: identity?.teamName || `Roster ${side.roster_id}`,
-      managerName: identity?.managerName || 'Unknown Manager',
-      teamPhoto: identity?.teamPhoto || null,
-      initials: identity?.initials || '?',
-      managerSlug: identity?.managerSlug || null,
-      score: numberValue(side.custom_points ?? side.points ?? 0),
-      recordLabel: recordLabel(settings),
-      starters: includeStarters
-        ? (side.starters || []).slice(0, 8).map((playerId) => playersById.get(String(playerId))).filter(Boolean)
-        : []
-    };
-  };
-
-  const left = normalizeSide(group.teams[0]);
-  const right = normalizeSide(group.teams[1]);
-  const hasTwoSides = Boolean(left && right);
-  const margin = hasTwoSides ? Number(Math.abs(left.score - right.score).toFixed(2)) : null;
-  const totalScore = hasTwoSides ? Number((left.score + right.score).toFixed(2)) : null;
-  const winner = !hasTwoSides || left.score === right.score ? null : (left.score > right.score ? left.rosterId : right.rosterId);
-
-  return {
-    matchupId: group.matchupId,
-    left,
-    right,
-    margin,
-    totalScore,
-    winner,
-    winnerName: winner === left?.rosterId ? left.teamName : winner === right?.rosterId ? right.teamName : null
-  };
-}
+import {
+  buildRosterSettingsMap,
+  buildWeekHighlights,
+  chunkPairs,
+  normalizeMatchupGroup
+} from '$lib/server/league/matchupAnalytics.js';
 
 function buildRivalryCards(historyWeeks = [], rosterIdentityMap, selectedRosterId = null) {
   const rivalryMap = new Map();
@@ -124,16 +62,6 @@ function buildRivalryCards(historyWeeks = [], rosterIdentityMap, selectedRosterI
     .slice(0, 6);
 }
 
-function buildWeekHighlights(matchups = []) {
-  const played = matchups.filter((matchup) => matchup.left && matchup.right);
-  if (!played.length) return null;
-
-  const highestCombined = [...played].sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))[0] || null;
-  const closestGame = [...played].sort((a, b) => (a.margin || 999) - (b.margin || 999))[0] || null;
-  const biggestBlowout = [...played].sort((a, b) => (b.margin || 0) - (a.margin || 0))[0] || null;
-
-  return { highestCombined, closestGame, biggestBlowout };
-}
 
 function matchupsForSelectedTeam(matchups = [], selectedRosterId = null) {
   if (!selectedRosterId) return matchups;
@@ -163,7 +91,12 @@ export async function load({ url, platform }) {
   const rawByWeek = new Map(fetched);
 
   const selectedRaw = rawByWeek.get(context.selectedWeek) || [];
-  const selectedPlayerIds = selectedRaw.flatMap((entry) => entry.starters || []);
+  const selectedPlayerIds = selectedRaw.flatMap(
+  (entry) => [
+    ...(entry.starters || []),
+    ...(entry.players || [])
+  ]
+);
   const playersById = await resolvePlayersByIds(selectedPlayerIds);
 
   const selectedWeekMatchups = chunkPairs(selectedRaw)

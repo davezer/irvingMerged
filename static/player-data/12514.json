@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T22:32:56.814Z",
+  "generatedAt": "2026-08-13T02:35:53.961Z",
   "playerId": "12514",
   "profile": {
     "id": "12514",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Ohio State",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

@@ -5,6 +5,10 @@ import {
 	getPlayerCard
 } from '../src/lib/server/league/playerCard.js';
 
+import {
+	leagueID as FALLBACK_LEAGUE_ID
+} from '../src/lib/legacy/leagueInfo.js';
+
 
 /*
  * =====================================================
@@ -28,6 +32,7 @@ const leagueId =
 	String(
 		process.argv[2] ||
 		process.env.SLEEPER_LEAGUE_ID ||
+		FALLBACK_LEAGUE_ID ||
 		''
 	).trim();
 
