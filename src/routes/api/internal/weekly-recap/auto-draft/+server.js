@@ -345,349 +345,531 @@ async function findLatestCompletedWeek({
 
 
 export async function POST({
-  request,
-  url,
-  platform
+	request,
+	url,
+	platform
 }) {
-  const env =
-    platform?.env;
+	const env =
+		platform?.env;
 
-  if (
-    !isAuthorized(
-      request,
-      env
-    )
-  ) {
-    return json(
-      {
-        ok: false,
-        error:
-          'Unauthorized.'
-      },
-      {
-        status: 401
-      }
-    );
-  }
+	/*
+	 * ------------------------------------------------------------
+	 * AUTH
+	 * ------------------------------------------------------------
+	 */
+	if (
+		!isAuthorized(
+			request,
+			env
+		)
+	) {
+		return json(
+			{
+				ok: false,
+				error:
+					'Unauthorized.'
+			},
+			{
+				status: 401
+			}
+		);
+	}
 
-  const db =
-    env?.DB;
+	const db =
+		env?.DB;
 
-  if (!db) {
-    return json(
-      {
-        ok: false,
-        error:
-          'D1 binding is unavailable.'
-      },
-      {
-        status: 500
-      }
-    );
-  }
+	if (!db) {
+		return json(
+			{
+				ok: false,
+				error:
+					'D1 binding is unavailable.'
+			},
+			{
+				status: 500
+			}
+		);
+	}
 
-  const apiKey =
-    String(
-      env?.OPENAI_API_KEY ||
-      ''
-    ).trim();
+	/*
+	 * Keep track of exactly where a
+	 * production failure happens.
+	 */
+	let stage =
+		'startup';
 
-  if (!apiKey) {
-    return json(
-      {
-        ok: false,
-        error:
-          'OPENAI_API_KEY is not configured.'
-      },
-      {
-        status: 500
-      }
-    );
-  }
+	try {
+		/*
+		 * ------------------------------------------------------------
+		 * READ REQUEST
+		 * ------------------------------------------------------------
+		 */
 
-  try {
-    const seasonParam =
-      numberOrNull(
-        url.searchParams.get(
-          'season'
-        )
-      );
+		stage =
+			'reading_selection';
 
-    const weekParam =
-      numberOrNull(
-        url.searchParams.get(
-          'week'
-        )
-      );
+		const seasonParam =
+			numberOrNull(
+				url.searchParams.get(
+					'season'
+				)
+			);
 
-    const force =
-      url.searchParams.get(
-        'force'
-      ) ===
-      '1';
+		const weekParam =
+			numberOrNull(
+				url.searchParams.get(
+					'week'
+				)
+			);
 
-    /*
-     * Explicit season/week is handy
-     * for safe manual testing.
-     *
-     * Normal cron calls provide neither.
-     */
-    const hasExplicitSelection =
-      Number.isInteger(
-        seasonParam
-      ) &&
-      Number.isInteger(
-        weekParam
-      );
+		const force =
+			url.searchParams.get(
+				'force'
+			) ===
+			'1';
 
-    if (
-      (
-        seasonParam !== null ||
-        weekParam !== null
-      ) &&
-      !hasExplicitSelection
-    ) {
-      return json(
-        {
-          ok: false,
-          error:
-            'Provide both season and week, or neither.'
-        },
-        {
-          status: 400
-        }
-      );
-    }
+		const dryRun =
+			url.searchParams.get(
+				'dryRun'
+			) ===
+			'1';
 
-    const selection =
-      hasExplicitSelection
-        ? {
-            season:
-              seasonParam,
+		const packetOnly =
+			url.searchParams.get(
+				'packetOnly'
+			) ===
+			'1';
 
-            week:
-              weekParam
-          }
-        : await findLatestCompletedWeek({
-            url,
-            env
-          });
+		/*
+		 * Explicit season/week is useful
+		 * for testing.
+		 *
+		 * The actual Tuesday cron provides
+		 * neither and lets us auto-detect.
+		 */
+		const hasExplicitSelection =
+			Number.isInteger(
+				seasonParam
+			) &&
+			Number.isInteger(
+				weekParam
+			);
 
-    if (!selection) {
-      return json({
-        ok: true,
+		if (
+			(
+				seasonParam !== null ||
+				weekParam !== null
+			) &&
+			!hasExplicitSelection
+		) {
+			return json(
+				{
+					ok: false,
+					error:
+						'Provide both season and week, or neither.'
+				},
+				{
+					status: 400
+				}
+			);
+		}
 
-        status:
-          'skipped',
+		/*
+		 * ------------------------------------------------------------
+		 * DETERMINE SEASON / WEEK
+		 * ------------------------------------------------------------
+		 */
 
-        reason:
-          'No completed Irving fantasy week was found.'
-      });
-    }
+		stage =
+			'selecting_week';
 
-    const {
-      season,
-      week
-    } =
-      selection;
+		const selection =
+			hasExplicitSelection
+				? {
+						season:
+							seasonParam,
 
-    if (
-      week < 1 ||
-      week >
-        MAX_AUTO_RECAP_WEEK
-    ) {
-      return json(
-        {
-          ok: false,
+						week:
+							weekParam
+					}
+				: await findLatestCompletedWeek({
+						url,
+						env
+					});
 
-          error:
-            'Selected week is outside the automatic recap window.'
-        },
-        {
-          status: 400
-        }
-      );
-    }
+		if (!selection) {
+			return json({
+				ok: true,
 
-    const existing =
-      await getWeeklyRecap(
-        db,
-        {
-          season,
-          week
-        }
-      );
+				status:
+					'skipped',
 
-      const dryRun =
-  url.searchParams.get(
-    'dryRun'
-  ) ===
-  '1';
+				reason:
+					'No completed Irving fantasy week was found.'
+			});
+		}
 
-if (dryRun) {
-  return json({
-    ok: true,
+		const {
+			season,
+			week
+		} =
+			selection;
 
-    status:
-      'dry_run',
+		if (
+			!Number.isInteger(
+				season
+			) ||
+			season < 2017 ||
+			season > 2100
+		) {
+			return json(
+				{
+					ok: false,
 
-    season,
-    week,
+					error:
+						'Selected season is invalid.'
+				},
+				{
+					status: 400
+				}
+			);
+		}
 
-    existing: {
-      found:
-        Boolean(existing),
+		if (
+			!Number.isInteger(
+				week
+			) ||
+			week < 1 ||
+			week >
+				MAX_AUTO_RECAP_WEEK
+		) {
+			return json(
+				{
+					ok: false,
 
-      hasDraft:
-        Boolean(
-          existing?.draftRecap
-        ),
+					error:
+						'Selected week is outside the automatic recap window.'
+				},
+				{
+					status: 400
+				}
+			);
+		}
 
-      hasPublished:
-        Boolean(
-          existing?.publishedRecap
-        )
-    }
-  });
-}
+		/*
+		 * ------------------------------------------------------------
+		 * CHECK EXISTING RECAP
+		 * ------------------------------------------------------------
+		 */
 
-    /*
-     * The cron should never stomp on
-     * something Dave has already worked on.
-     */
-    if (
-      !force &&
-      (
-        existing?.draftRecap ||
-        existing?.publishedRecap
-      )
-    ) {
-      return json({
-        ok: true,
+		stage =
+			'checking_existing';
 
-        status:
-          'skipped',
+		const existing =
+			await getWeeklyRecap(
+				db,
+				{
+					season,
+					week
+				}
+			);
 
-        reason:
-          'A draft or published recap already exists.',
+		/*
+		 * Diagnostic:
+		 *
+		 * Tells us whether this recap exists
+		 * in THIS D1 database without doing
+		 * anything else.
+		 */
+		if (dryRun) {
+			return json({
+				ok: true,
 
-        season,
-        week
-      });
-    }
+				status:
+					'dry_run',
 
-    const recapUrl =
-      packetUrl({
-        url,
-        season,
-        week
-      });
+				season,
+				week,
 
-    console.log(
-      `[weekly-cron] Building ${season} Week ${week} packet.`
-    );
+				existing: {
+					found:
+						Boolean(
+							existing
+						),
 
-    const packet =
-      await buildWeeklyRecapPacket({
-        url:
-          recapUrl,
+					hasDraft:
+						Boolean(
+							existing
+								?.draftRecap
+						),
 
-        env
-      });
+					hasPublished:
+						Boolean(
+							existing
+								?.publishedRecap
+						)
+				}
+			});
+		}
 
-    console.log(
-      `[weekly-cron] Sending ${season} Week ${week} to OpenAI.`
-    );
+		/*
+		 * Normal automation should never
+		 * overwrite Dave's existing work.
+		 *
+		 * packetOnly deliberately bypasses
+		 * this because it performs no writes.
+		 */
+		if (
+			!force &&
+			!packetOnly &&
+			(
+				existing?.draftRecap ||
+				existing?.publishedRecap
+			)
+		) {
+			return json({
+				ok: true,
 
-    const {
-      recap,
-      meta
-    } =
-      await generateWeeklyRecap({
-        packet,
-        apiKey
-      });
+				status:
+					'skipped',
 
-    console.log(
-      `[weekly-cron] Saving ${season} Week ${week} draft.`
-    );
+				reason:
+					'A draft or published recap already exists.',
 
-    const savedRecap =
-      await saveWeeklyRecapDraft(
-        db,
-        {
-          season,
-          week,
+				season,
+				week
+			});
+		}
 
-          leagueId:
-            packet.league.id,
+		/*
+		 * ------------------------------------------------------------
+		 * BUILD FACTUAL PACKET
+		 * ------------------------------------------------------------
+		 */
 
-          recap,
+		const recapUrl =
+			packetUrl({
+				url,
+				season,
+				week
+			});
 
-          packet,
+		stage =
+			'building_packet';
 
-          aiMeta:
-            meta,
+		console.log(
+			`[weekly-cron] Building ${season} Week ${week} packet.`
+		);
 
-          generatedBy:
-            'automation'
-        }
-      );
+		const packet =
+			await buildWeeklyRecapPacket({
+				url:
+					recapUrl,
 
-    await upsertWeeklyRecapDraftPost(
-      db,
-      {
-        season,
-        week,
+				env
+			});
 
-        title:
-          recap.title,
+		/*
+		 * Diagnostic:
+		 *
+		 * Build the entire authoritative
+		 * recap packet, but STOP before
+		 * OpenAI and before any database
+		 * writes.
+		 */
+		if (packetOnly) {
+			return json({
+				ok: true,
 
-        subtitle:
-          recap.subtitle
-      }
-    );
+				status:
+					'packet_ready',
 
-    return json(
-      {
-        ok: true,
+				season,
+				week,
 
-        status:
-          'draft_created',
+				leagueId:
+					packet?.league?.id ||
+					null,
 
-        season,
-        week,
+				matchups:
+					Array.isArray(
+						packet?.matchups
+					)
+						? packet.matchups.length
+						: 0,
 
-        title:
-          recap.title,
+				transactions:
+					Array.isArray(
+						packet?.transactions
+					)
+						? packet.transactions.length
+						: 0,
 
-        generatedAt:
-          savedRecap
-            ?.draftGeneratedAt ||
-          null
-      },
-      {
-        status: 201
-      }
-    );
-  } catch (error) {
-    console.error(
-      '[weekly-cron] Auto draft failed:',
-      error
-    );
+				warnings:
+					packet
+						?.enrichmentWarnings ||
+					[]
+			});
+		}
 
-    return json(
-      {
-        ok: false,
+		/*
+		 * ------------------------------------------------------------
+		 * OPENAI
+		 * ------------------------------------------------------------
+		 *
+		 * We intentionally check the API key
+		 * HERE instead of at the top.
+		 *
+		 * That means dryRun and packetOnly
+		 * diagnostics do not require OpenAI.
+		 */
 
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Automatic recap generation failed.'
-      },
-      {
-        status: 500
-      }
-    );
-  }
+		const apiKey =
+			String(
+				env
+					?.OPENAI_API_KEY ||
+				''
+			).trim();
+
+		if (!apiKey) {
+			return json(
+				{
+					ok: false,
+
+					stage:
+						'generating_ai',
+
+					error:
+						'OPENAI_API_KEY is not configured.'
+				},
+				{
+					status: 500
+				}
+			);
+		}
+
+		stage =
+			'generating_ai';
+
+		console.log(
+			`[weekly-cron] Sending ${season} Week ${week} to OpenAI.`
+		);
+
+		const {
+			recap,
+			meta
+		} =
+			await generateWeeklyRecap({
+				packet,
+				apiKey
+			});
+
+		/*
+		 * ------------------------------------------------------------
+		 * SAVE RECAP DRAFT
+		 * ------------------------------------------------------------
+		 */
+
+		stage =
+			'saving_recap';
+
+		console.log(
+			`[weekly-cron] Saving ${season} Week ${week} draft.`
+		);
+
+		const savedRecap =
+			await saveWeeklyRecapDraft(
+				db,
+				{
+					season,
+					week,
+
+					leagueId:
+						packet.league.id,
+
+					recap,
+
+					packet,
+
+					aiMeta:
+						meta,
+
+					generatedBy:
+						'automation'
+				}
+			);
+
+		/*
+		 * ------------------------------------------------------------
+		 * REGISTER WITH THE IRVING WEEKLY
+		 * ------------------------------------------------------------
+		 */
+
+		stage =
+			'saving_weekly_post';
+
+		await upsertWeeklyRecapDraftPost(
+			db,
+			{
+				season,
+				week,
+
+				title:
+					recap.title,
+
+				subtitle:
+					recap.subtitle
+			}
+		);
+
+		/*
+		 * ------------------------------------------------------------
+		 * SUCCESS
+		 * ------------------------------------------------------------
+		 */
+
+		return json(
+			{
+				ok: true,
+
+				status:
+					'draft_created',
+
+				season,
+				week,
+
+				title:
+					recap.title,
+
+				generatedAt:
+					savedRecap
+						?.draftGeneratedAt ||
+					null
+			},
+			{
+				status: 201
+			}
+		);
+	} catch (error) {
+		console.error(
+			`[weekly-cron] Auto draft failed during ${stage}:`,
+			error
+		);
+
+		return json(
+			{
+				ok: false,
+
+				stage,
+
+				error:
+					error instanceof Error
+						? error.message
+						: 'Automatic recap generation failed.'
+			},
+			{
+				status: 500
+			}
+		);
+	}
 }
