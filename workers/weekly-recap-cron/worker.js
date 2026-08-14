@@ -31,24 +31,30 @@ async function runWeeklyRecap(
 	);
 
 	const response =
-		await fetch(
-			endpoint,
-			{
-				method: 'POST',
+	await fetch(
+		endpoint,
+		{
+			method:
+				'POST',
 
-				headers: {
-					authorization:
-						`Bearer ${secret}`,
+			headers: {
+				authorization:
+					`Bearer ${secret}`,
 
-					accept:
-						'application/json',
+				accept:
+					'application/json',
 
-					'user-agent':
-						'IrvingWeeklyCron/1.0'
-				}
-			}
-		);
+				'content-type':
+					'application/json',
 
+				'user-agent':
+					'IrvingWeeklyCron/1.0'
+			},
+
+			body:
+				'{}'
+		}
+	);
 	const body =
 		await response.text();
 

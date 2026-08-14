@@ -518,6 +518,39 @@ export async function POST({
         }
       );
 
+      const dryRun =
+  url.searchParams.get(
+    'dryRun'
+  ) ===
+  '1';
+
+if (dryRun) {
+  return json({
+    ok: true,
+
+    status:
+      'dry_run',
+
+    season,
+    week,
+
+    existing: {
+      found:
+        Boolean(existing),
+
+      hasDraft:
+        Boolean(
+          existing?.draftRecap
+        ),
+
+      hasPublished:
+        Boolean(
+          existing?.publishedRecap
+        )
+    }
+  });
+}
+
     /*
      * The cron should never stomp on
      * something Dave has already worked on.
