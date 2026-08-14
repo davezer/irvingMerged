@@ -39,7 +39,11 @@
   {
     href: '/league/parlay',
     label: 'Parlay'
-  }
+  },
+  {
+	href: '/league/constitution',
+	label: 'Constitution'
+}
 ];
 
   const adminLinks = [
@@ -49,25 +53,9 @@
     { href: '/admin/invites', label: 'Invites' }
   ];
 
-  const tickerItems = [
-    { type: 'live', label: 'LIVE' },
-    { type: 'strong', label: 'IRVING STREET PROGRAMMING NETWORK' },
-    { type: 'dot' },
-    { type: 'live', label: 'ISPN' },
-    { type: 'dot' },
-    { type: 'strong', label: 'IRVING CHAMPIONS LEAGUE' },
-    { type: 'live', label: 'LIVE' },
-    { type: 'strong', label: 'IRVING GENTLEMENS COLLECTIVE' },
-    { type: 'dot' },
-    { type: 'strong', label: 'SET YOUR LINEUPS' },
-    { type: 'dot' },
-    { type: 'strong', label: 'TRADE' },
-    { type: 'dot' },
-    { type: 'strong', label: 'BET' },
-    { type: 'dot' }
-  ];
 
-  const tickerRepeats = [0, 1, 2];
+
+
 
   $: path = $page.url.pathname;
   $: user = data?.user || {};
