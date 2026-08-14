@@ -1,43 +1,158 @@
 <script>
 	export let data;
 
-	const initials = (value = '') =>
-		String(value)
-			.split(/\s+/)
-			.filter(Boolean)
-			.slice(0, 2)
-			.map((part) => part[0]?.toUpperCase())
-			.join('') || 'ICL';
 
-	const points = (value) => Number(value || 0).toFixed(2);
+	const initials = (
+		value = ''
+	) =>
+		String(
+			value
+		)
+			.split(
+				/\s+/
+			)
+			.filter(
+				Boolean
+			)
+			.slice(
+				0,
+				2
+			)
+			.map(
+				(part) =>
+					part[0]
+						?.toUpperCase()
+			)
+			.join('') ||
+		'ICL';
 
-	const fmtUnix = (unix) => {
-		if (!unix) return 'TBD';
 
-		return new Date(Number(unix) * 1000).toLocaleString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: '2-digit'
-		});
+	const points = (
+		value
+	) =>
+		Number(
+			value ||
+			0
+		).toFixed(
+			2
+		);
+
+
+	const fmtUnix = (
+		unix
+	) => {
+		if (!unix) {
+			return 'TBD';
+		}
+
+		return new Date(
+			Number(
+				unix
+			) *
+				1000
+		).toLocaleString(
+			'en-US',
+			{
+				month:
+					'short',
+
+				day:
+					'numeric',
+
+				hour:
+					'numeric',
+
+				minute:
+					'2-digit'
+			}
+		);
 	};
 
-	$: who = data?.user?.displayName || 'Member';
 
-	$: topStandings = (data?.topBoard || []).slice(0, 5);
+	const postTypeLabel = (
+		post
+	) => {
+		if (
+			post?.sourceType ===
+			'weekly_recap'
+		) {
+			return `Week ${post.recapWeek} Recap`;
+		}
 
-	$: managers = data?.managers || [];
+		const labels = {
+			feature:
+				'Feature',
 
-	$: posts = data?.posts || [];
+			commissioner:
+				'Commissioner',
 
-	$: collective = data?.collective || {};
+			league_news:
+				'League News',
 
-	$: nextEvent = collective?.nextEvent || null;
+			power_rankings:
+				'Power Rankings',
+
+			announcement:
+				'Announcement',
+
+			opinion:
+				'Opinion'
+		};
+
+		return (
+			labels[
+				post?.postType
+			] ||
+			post?.tag ||
+			'Irving Weekly'
+		);
+	};
 
 
-	$: latestPosts = posts.slice(0, 3);
+	$: who =
+		data?.user
+			?.displayName ||
+		'Member';
+
+
+	$: topStandings =
+		(
+			data?.topBoard ||
+			data?.standings ||
+			[]
+		).slice(
+			0,
+			5
+		);
+
+
+	$: managers =
+		data?.managers ||
+		[];
+
+
+	$: posts =
+		data?.posts ||
+		[];
+
+
+	$: collective =
+		data?.collective ||
+		{};
+
+
+	$: nextEvent =
+		collective
+			?.nextEvent ||
+		null;
+
+
+	$: latestPosts =
+		posts.slice(
+			0,
+			3
+		);
 </script>
-
 <svelte:head>
 	<title>Irving Champions League</title>
 
@@ -79,6 +194,58 @@
 		</div>
 	</section>
 
+		<!-- =================================================
+     THE IRVING WEEKLY
+================================================== -->
+
+{#if latestPosts.length}
+	<section class="blog-section">
+		<div class="section-heading">
+			<div>
+				<span class="eyebrow">
+					From The Irving Weekly
+				</span>
+
+				<h2>
+					Latest from Irving
+				</h2>
+			</div>
+
+			<a href="/league/weekly">
+				View The Irving Weekly →
+			</a>
+		</div>
+
+		<div class="blog-grid">
+			{#each latestPosts as post}
+				<a
+					class="blog-card"
+					href={`/league/weekly/${post.slug}`}
+				>
+					<span>
+						{postTypeLabel(post)}
+					</span>
+
+					<strong>
+						{post.title}
+					</strong>
+
+					<p>
+						{post.subtitle ||
+							post.excerpt ||
+							'Read the latest from The Irving Weekly.'}
+					</p>
+
+					<em>
+						Read story →
+					</em>
+				</a>
+			{/each}
+		</div>
+	</section>
+{/if}
+
+
 	<!-- =================================================
 	     QUICK ACCESS
 	================================================== -->
@@ -115,7 +282,7 @@
 				<em> View rosters → </em>
 			</a>
 
-			<a class="quick-card" href="/league/draft">
+			<a class="quick-card" href="/league/drafts">
 				<span>03</span>
 
 				<strong> Drafts </strong>
@@ -295,43 +462,6 @@
 		</article>
 	</section>
 
-	<!-- =================================================
-	     BLOG
-	================================================== -->
-
-	{#if latestPosts.length}
-		<section class="blog-section">
-			<div class="section-heading">
-				<div>
-					<span class="eyebrow"> From the league blog </span>
-
-					<h2>Latest from Irving</h2>
-				</div>
-
-				<a href="/news"> View archive → </a>
-			</div>
-
-			<div class="blog-grid">
-				{#each latestPosts as post}
-					<a class="blog-card" href={`/news/${post.slug}`}>
-						<span>
-							{post.tag || 'League'}
-						</span>
-
-						<strong>
-							{post.title}
-						</strong>
-
-						<p>
-							{post.excerpt}
-						</p>
-
-						<em> Read more → </em>
-					</a>
-				{/each}
-			</div>
-		</section>
-	{/if}
 
 	<!-- =================================================
 	     FRANCHISE STRIP

@@ -28,7 +28,7 @@
 
   {
     href: '/games',
-    label: 'Games'
+    label: 'Offseason Games'
   },
 
   {
