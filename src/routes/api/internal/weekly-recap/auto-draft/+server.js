@@ -352,6 +352,12 @@ export async function POST({
 	const env =
 		platform?.env;
 
+    const phase =
+	url.searchParams.get(
+		'phase'
+	) ||
+	'full';
+
 	/*
 	 * ------------------------------------------------------------
 	 * AUTH
@@ -390,6 +396,220 @@ export async function POST({
 			}
 		);
 	}
+  /*
+ * ============================================================
+ * PHASE 2 — WRITE
+ *
+ * This is intentionally a separate HTTP invocation so the
+ * Cloudflare subrequest counter starts fresh.
+ * ============================================================
+ */
+
+if (
+	phase === 'write'
+) {
+	let stage =
+		'reading_write_payload';
+
+	try {
+		const body =
+			await request.json();
+
+		const season =
+			Number(
+				body?.season
+			);
+
+		const week =
+			Number(
+				body?.week
+			);
+
+		const packet =
+			body?.packet;
+
+		if (
+			!Number.isInteger(
+				season
+			) ||
+			!Number.isInteger(
+				week
+			) ||
+			!packet
+		) {
+			return json(
+				{
+					ok: false,
+					stage,
+
+					error:
+						'Write phase requires season, week, and packet.'
+				},
+				{
+					status: 400
+				}
+			);
+		}
+
+		/*
+		 * Never overwrite something that
+		 * appeared between PREPARE and WRITE.
+		 */
+		stage =
+			'checking_existing';
+
+		const existing =
+			await getWeeklyRecap(
+				db,
+				{
+					season,
+					week
+				}
+			);
+
+		if (
+			existing?.draftRecap ||
+			existing?.publishedRecap
+		) {
+			return json({
+				ok: true,
+
+				status:
+					'skipped',
+
+				reason:
+					'A draft or published recap already exists.',
+
+				season,
+				week
+			});
+		}
+
+		const apiKey =
+			String(
+				env
+					?.OPENAI_API_KEY ||
+				''
+			).trim();
+
+		if (!apiKey) {
+			return json(
+				{
+					ok: false,
+
+					stage:
+						'generating_ai',
+
+					error:
+						'OPENAI_API_KEY is not configured.'
+				},
+				{
+					status: 500
+				}
+			);
+		}
+
+		stage =
+			'generating_ai';
+
+		console.log(
+			`[weekly-cron] Writing ${season} Week ${week}.`
+		);
+
+		const {
+			recap,
+			meta
+		} =
+			await generateWeeklyRecap({
+				packet,
+				apiKey
+			});
+
+		stage =
+			'saving_recap';
+
+		const savedRecap =
+			await saveWeeklyRecapDraft(
+				db,
+				{
+					season,
+					week,
+
+					leagueId:
+						packet.league.id,
+
+					recap,
+					packet,
+
+					aiMeta:
+						meta,
+
+					generatedBy:
+						'automation'
+				}
+			);
+
+		stage =
+			'saving_weekly_post';
+
+		await upsertWeeklyRecapDraftPost(
+			db,
+			{
+				season,
+				week,
+
+				title:
+					recap.title,
+
+				subtitle:
+					recap.subtitle
+			}
+		);
+
+		return json(
+			{
+				ok: true,
+
+				status:
+					'draft_created',
+
+				season,
+				week,
+
+				title:
+					recap.title,
+
+				generatedAt:
+					savedRecap
+						?.draftGeneratedAt ||
+					null
+			},
+			{
+				status: 201
+			}
+		);
+	} catch (error) {
+		console.error(
+			`[weekly-cron] Write phase failed during ${stage}:`,
+			error
+		);
+
+		return json(
+			{
+				ok: false,
+				stage,
+
+				error:
+					error instanceof Error
+						? error.message
+						: 'Automatic recap writing failed.'
+			},
+			{
+				status: 500
+			}
+		);
+	}
+}
 
 	/*
 	 * Keep track of exactly where a
@@ -677,41 +897,64 @@ export async function POST({
 		 * OpenAI and before any database
 		 * writes.
 		 */
-		if (packetOnly) {
-			return json({
-				ok: true,
+		/*
+ * PREPARE mode returns the actual packet
+ * to the cron orchestrator.
+ *
+ * packetOnly remains our smaller diagnostic.
+ */
 
-				status:
-					'packet_ready',
+if (
+	phase === 'prepare'
+) {
+	return json({
+		ok: true,
 
-				season,
-				week,
+		status:
+			'packet_ready',
 
-				leagueId:
-					packet?.league?.id ||
-					null,
+		season,
+		week,
 
-				matchups:
-					Array.isArray(
-						packet?.matchups
-					)
-						? packet.matchups.length
-						: 0,
+		packet
+	});
+}
 
-				transactions:
-					Array.isArray(
-						packet?.transactions
-					)
-						? packet.transactions.length
-						: 0,
 
-				warnings:
-					packet
-						?.enrichmentWarnings ||
-					[]
-			});
-		}
+if (packetOnly) {
+	return json({
+		ok: true,
 
+		status:
+			'packet_ready',
+
+		season,
+		week,
+
+		leagueId:
+			packet?.league?.id ||
+			null,
+
+		matchups:
+			Array.isArray(
+				packet?.matchups
+			)
+				? packet.matchups.length
+				: 0,
+
+		transactions:
+			Array.isArray(
+				packet?.transactions
+			)
+				? packet.transactions.length
+				: 0,
+
+		warnings:
+			packet
+				?.enrichmentWarnings ||
+			[]
+	});
+}
 		/*
 		 * ------------------------------------------------------------
 		 * OPENAI
