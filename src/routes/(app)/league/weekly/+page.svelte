@@ -287,7 +287,7 @@
 	}
 
 	.masthead-bottom {
-		margin-top: 11px;
+		margin-top: 31px;
 		color: var(--bug-yellow);
 		font-family:
 			var(--font-score);
