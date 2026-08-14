@@ -428,7 +428,77 @@
                   {/if}
                 </div>
               </div>
+              {#if txnKind(txn) === 'trade'}
+  <div class="capital-panel">
+    <div class="label">
+      Draft capital movement
+    </div>
 
+    {#if txn.draftCapitalReview?.capital}
+      <div class="capital-transfer">
+        <div class="capital-year">
+          {txn.draftCapitalReview.capital.futuresYear}
+          Draft
+        </div>
+
+        <div class="capital-route">
+          <strong>
+            {txn.draftCapitalReview.capital.from?.teamName ||
+              txn.draftCapitalReview.capital.fromManagerId}
+          </strong>
+
+          <span>
+            sent
+          </span>
+
+          <strong class="capital-amount">
+            ${txn.draftCapitalReview.capital.amount}
+          </strong>
+
+          <span>
+            to
+          </span>
+
+          <strong>
+            {txn.draftCapitalReview.capital.to?.teamName ||
+              txn.draftCapitalReview.capital.toManagerId}
+          </strong>
+        </div>
+
+        {#if txn.draftCapitalReview.source === 'legacy_sheet'}
+          <small>
+            Historical ledger match
+          </small>
+        {:else if txn.draftCapitalReview.status === 'posted'}
+          <small>
+            Posted to draft-capital ledger
+          </small>
+        {/if}
+
+        {#if txn.draftCapitalReview.capital.note}
+          <p>
+            {txn.draftCapitalReview.capital.note}
+          </p>
+        {/if}
+      </div>
+
+    {:else if txn.draftCapitalReview?.status === 'no_capital'}
+      <div class="capital-none">
+        Reviewed — no draft capital exchanged.
+      </div>
+
+    {:else if txn.draftCapitalReview?.status === 'ambiguous'}
+      <div class="capital-pending">
+        Historical capital exists, but the ledger match is ambiguous.
+      </div>
+
+    {:else}
+      <div class="capital-pending">
+        Draft-capital status has not been confirmed for this trade.
+      </div>
+    {/if}
+  </div>
+{/if}
               {#if txn.draftPicks.length || txn.faabRows.length}
                 <div class="txn-grid secondary">
                   <div class="panel compact-panel">
@@ -884,7 +954,72 @@
     font-size: 0.68rem;
     font-weight: 950;
   }
+  .capital-panel {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 2px solid #070808;
+  border-radius: 12px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(244,220,123,.10),
+      rgba(0,0,0,.14)
+    ),
+    linear-gradient(
+      180deg,
+      #303735,
+      #111313
+    );
+  box-shadow:
+    inset 0 1px 0
+    rgba(255,255,255,.13),
+    inset 0 -1px 0
+    rgba(0,0,0,.5);
+}
 
+.capital-transfer {
+  display: grid;
+  gap: 7px;
+}
+
+.capital-year {
+  color: var(--bug-yellow);
+  font-family: var(--font-score);
+  font-size: .68rem;
+  font-weight: 950;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.capital-route {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: baseline;
+}
+
+.capital-route span {
+  color: var(--muted);
+}
+
+.capital-amount {
+  color: #7ee59a;
+  font-family: var(--font-score);
+  font-size: 1.15rem;
+}
+
+.capital-transfer small {
+  color: var(--muted);
+}
+
+.capital-none {
+  color: #b9b9b2;
+}
+
+.capital-pending {
+  color: #efc86a;
+}
   .team-photo.small,
   .team-photo.mini {
     width: 24px;

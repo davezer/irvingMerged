@@ -9,6 +9,10 @@ import {
   getSleeperLeague
 } from '$lib/server/league/sleeperClient.js';
 
+import {
+  resolveHistoricalPlayerTeams
+} from '$lib/server/league/playerCard.js';
+
 const AUTOMATIC_BADGES = [
   'bde',
   'suck',
@@ -488,11 +492,55 @@ const NFL_TEAM_NAMES = {
 
 function playerTeamFromId(
   playersById,
-  playerId
+  playerId,
+  historicalTeamsById =
+    new Map(),
+  allowCurrentFallback =
+    true
 ) {
+  const id =
+    String(
+      playerId ||
+      ''
+    );
+
+  /*
+   * Sleeper defenses use the
+   * NFL abbreviation as ID.
+   */
+  if (
+    /^[A-Z]{2,4}$/.test(
+      id
+    )
+  ) {
+    return id;
+  }
+
+  const historicalTeam =
+    historicalTeamsById.get(
+      id
+    );
+
+  if (historicalTeam) {
+    return String(
+      historicalTeam
+    ).toUpperCase();
+  }
+
+  /*
+   * Never let today's Sleeper team
+   * leak backward into historical
+   * seasons.
+   */
+  if (
+    !allowCurrentFallback
+  ) {
+    return '';
+  }
+
   return String(
     playersById?.[
-      String(playerId)
+      id
     ]?.team || ''
   ).toUpperCase();
 }
@@ -945,6 +993,70 @@ const starterSlots =
     );
   }
 
+  const starterPlayerIds =
+  [
+    ...new Set(
+      teams.flatMap(
+        (team) =>
+          team.starters
+      )
+    )
+  ];
+
+let historicalPlayerTeams =
+  new Map();
+
+const selectedSeason =
+  Number(
+    season
+  );
+
+const currentYear =
+  new Date()
+    .getFullYear();
+
+const allowCurrentTeamFallback =
+  selectedSeason >=
+  currentYear;
+
+try {
+  const historicalTeamResult =
+    await resolveHistoricalPlayerTeams({
+      playersById,
+
+      playerIds:
+        starterPlayerIds,
+
+      season:
+        selectedSeason,
+
+      week:
+        weekNumber
+    });
+
+  historicalPlayerTeams =
+    historicalTeamResult.teams;
+
+  if (
+    historicalTeamResult
+      .unresolved
+      .length
+  ) {
+    warnings.push(
+      `Historical NFL team could not be resolved for ${historicalTeamResult.unresolved.length} starter(s) in ${season} Week ${weekNumber}. Those players were excluded from bye-week classification rather than guessed.`
+    );
+  }
+} catch (error) {
+  console.warn(
+    '[badges] Historical NFL-team resolution failed:',
+    error
+  );
+
+  warnings.push(
+    `Historical NFL-team lookup failed for ${season} Week ${weekNumber}; ambiguous historical bye classifications were skipped.`
+  );
+}
+
 
   /*
    * Group teams into actual H2H matchups.
@@ -1280,8 +1392,23 @@ for (const team of teams) {
     const nflTeam =
   playerTeamFromId(
     playersById,
-    playerId
+    playerId,
+    historicalPlayerTeams,
+    allowCurrentTeamFallback
   );
+
+  /*
+ * For an old season, if we cannot
+ * establish the player's NFL team
+ * safely, do not guess whether the
+ * zero came during a bye.
+ */
+if (
+  !allowCurrentTeamFallback &&
+  !nflTeam
+) {
+  continue;
+}
 
 /*
  * Bye-week starters belong to
@@ -1331,7 +1458,7 @@ if (
 
   if (count === 1) {
     reason =
-      `Started ${names[0]} in Week ${weekNumber}. He scored 0.00 points.`;
+      `Started ${names[0]} in Week ${weekNumber}. Scored 0.00 points.`;
   } else if (count === 2) {
     reason =
       `Started ${names[0]} and ${names[1]} in Week ${weekNumber}. Both scored 0.00 points.`;
@@ -1401,10 +1528,12 @@ if (
       team.starters
     ) {
       const nflTeam =
-        playerTeamFromId(
-          playersById,
-          playerId
-        );
+  playerTeamFromId(
+    playersById,
+    playerId,
+    historicalPlayerTeams,
+    allowCurrentTeamFallback
+  );
 
       if (
         !nflTeam ||

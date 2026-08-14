@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T02:35:59.925Z",
+  "generatedAt": "2026-08-14T17:55:01.263Z",
   "playerId": "7594",
   "profile": {
     "id": "7594",
@@ -15,7 +15,7 @@
     "yearsExp": 5,
     "college": "Oklahoma State",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

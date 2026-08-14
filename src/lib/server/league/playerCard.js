@@ -504,6 +504,419 @@ function findPlayerStatRows({
 	};
 }
 
+/*
+ * Historical NFL-team resolver.
+ *
+ * Sleeper's player map describes a player's CURRENT NFL team.
+ * That is not safe when reconstructing old fantasy weeks.
+ *
+ * nflverse weekly stats include recent_team for that season,
+ * so use those rows whenever possible.
+ */
+
+function findHistoricalPlayerStatRows({
+	sleeperPlayer,
+	nflversePlayer,
+	allStats
+}) {
+	const gsisId =
+		String(
+			nflversePlayer?.gsis_id ||
+			''
+		).trim();
+
+	/*
+	 * Strongest match:
+	 * nflverse GSIS player ID.
+	 */
+	if (gsisId) {
+		const rows =
+			allStats.filter(
+				(row) =>
+					String(
+						row?.player_id ||
+						''
+					).trim() ===
+					gsisId
+			);
+
+		if (rows.length) {
+			return rows;
+		}
+	}
+
+	/*
+	 * Fallback:
+	 * name + position.
+	 *
+	 * IMPORTANT:
+	 * Do NOT filter this using Sleeper's current
+	 * team. That is exactly what breaks historical
+	 * team resolution after a player changes teams.
+	 */
+	const sleeperName =
+		normalizeText(
+			fullSleeperName(
+				sleeperPlayer
+			)
+		);
+
+	const sleeperPosition =
+		String(
+			sleeperPlayer?.position ||
+			''
+		).toUpperCase();
+
+	return allStats.filter(
+		(row) => {
+			const rowName =
+				normalizeText(
+					row?.player_display_name ||
+					row?.player_name
+				);
+
+			const rowPosition =
+				String(
+					row?.position ||
+						''
+				).toUpperCase();
+
+			return (
+				rowName ===
+					sleeperName &&
+				(
+					!sleeperPosition ||
+					!rowPosition ||
+					rowPosition ===
+						sleeperPosition
+				)
+			);
+		}
+	);
+}
+
+
+function historicalTeamFromRows(
+	rows,
+	targetWeek
+) {
+	const games =
+		(rows || [])
+			.filter(
+				(row) =>
+					String(
+						row?.season_type ||
+							'REG'
+					).toUpperCase() ===
+					'REG'
+			)
+			.map(
+				(row) => ({
+					week:
+						Number(
+							row?.week
+						),
+
+					team:
+						normalizeTeam(
+							row?.recent_team ||
+							row?.team
+						)
+				})
+			)
+			.filter(
+				(row) =>
+					Number.isInteger(
+						row.week
+					) &&
+					row.week >= 1 &&
+					row.team
+			)
+			.sort(
+				(a, b) =>
+					a.week -
+					b.week
+			);
+
+	if (!games.length) {
+		return null;
+	}
+
+	/*
+	 * Best case:
+	 * the player has a stat row
+	 * during the requested week.
+	 */
+	const exact =
+		games.find(
+			(game) =>
+				game.week ===
+				targetWeek
+		);
+
+	if (exact) {
+		return exact.team;
+	}
+
+	/*
+	 * Bye weeks naturally have no
+	 * player stat row, so inspect
+	 * the games immediately before
+	 * and after the requested week.
+	 */
+	const before =
+		[...games]
+			.reverse()
+			.find(
+				(game) =>
+					game.week <
+					targetWeek
+			) ||
+		null;
+
+	const after =
+		games.find(
+			(game) =>
+				game.week >
+				targetWeek
+		) ||
+		null;
+
+	/*
+	 * Same team on both sides of
+	 * the missing week = extremely
+	 * strong evidence of team.
+	 */
+	if (
+		before &&
+		after &&
+		before.team ===
+			after.team
+	) {
+		return before.team;
+	}
+
+	/*
+	 * If the surrounding games show
+	 * DIFFERENT teams, the player may
+	 * have been traded during this gap.
+	 *
+	 * Do not guess.
+	 */
+	if (
+		before &&
+		after &&
+		before.team !==
+			after.team
+	) {
+		return null;
+	}
+
+	/*
+	 * At the edge of a player's season,
+	 * use whichever nearby game exists.
+	 */
+	return (
+		before?.team ||
+		after?.team ||
+		null
+	);
+}
+
+
+export async function resolveHistoricalPlayerTeams({
+	playersById = {},
+	playerIds = [],
+	season,
+	week,
+	fetchFn = fetch
+} = {}) {
+	const cleanSeason =
+		Number(
+			season
+		);
+
+	const cleanWeek =
+		Number(
+			week
+		);
+
+	if (
+		!Number.isInteger(
+			cleanSeason
+		) ||
+		cleanSeason < 1999 ||
+		cleanSeason > 2100
+	) {
+		throw new Error(
+			'A valid NFL season is required.'
+		);
+	}
+
+	if (
+		!Number.isInteger(
+			cleanWeek
+		) ||
+		cleanWeek < 1 ||
+		cleanWeek > 18
+	) {
+		throw new Error(
+			'A valid NFL week is required.'
+		);
+	}
+
+	const ids =
+		[
+			...new Set(
+				(playerIds || [])
+					.map(
+						(id) =>
+							String(
+								id ||
+								''
+							).trim()
+					)
+					.filter(
+						Boolean
+					)
+			)
+		];
+
+	if (!ids.length) {
+		return {
+			teams:
+				new Map(),
+
+			unresolved:
+				[]
+		};
+	}
+
+	const [
+		nflversePlayers,
+		allStats
+	] =
+		await Promise.all([
+			getNflversePlayers(
+				fetchFn
+			),
+
+			getSeasonStats(
+				fetchFn,
+				cleanSeason
+			)
+		]);
+
+	const teams =
+		new Map();
+
+	const unresolved =
+		[];
+
+	const currentYear =
+		new Date()
+			.getFullYear();
+
+	for (const playerId of ids) {
+		/*
+		 * Sleeper D/ST IDs are the
+		 * NFL abbreviation itself.
+		 *
+		 * CIN = Cincinnati,
+		 * MIN = Minnesota, etc.
+		 */
+		if (
+			/^[A-Z]{2,4}$/.test(
+				playerId
+			)
+		) {
+			teams.set(
+				playerId,
+				playerId
+			);
+
+			continue;
+		}
+
+		const sleeperPlayer =
+			playersById?.[
+				playerId
+			];
+
+		if (!sleeperPlayer) {
+			unresolved.push({
+				playerId,
+				name:
+					`Player ${playerId}`
+			});
+
+			continue;
+		}
+
+		const crosswalk =
+			findNflversePlayer(
+				sleeperPlayer,
+				nflversePlayers
+			);
+
+		const statRows =
+			findHistoricalPlayerStatRows({
+				sleeperPlayer,
+
+				nflversePlayer:
+					crosswalk.player,
+
+				allStats
+			});
+
+		let team =
+			historicalTeamFromRows(
+				statRows,
+				cleanWeek
+			);
+
+		/*
+		 * During the CURRENT season,
+		 * current Sleeper metadata is
+		 * an acceptable final fallback.
+		 *
+		 * For an old season, absolutely
+		 * do not use today's team.
+		 */
+		if (
+			!team &&
+			cleanSeason >=
+				currentYear
+		) {
+			team =
+				normalizeTeam(
+					sleeperPlayer?.team
+				);
+		}
+
+		if (team) {
+			teams.set(
+				playerId,
+				team
+			);
+		} else {
+			unresolved.push({
+				playerId,
+
+				name:
+					fullSleeperName(
+						sleeperPlayer
+					)
+			});
+		}
+	}
+
+	return {
+		teams,
+		unresolved
+	};
+}
+
 
 /*
  * nflverse fantasy_points = standard scoring.

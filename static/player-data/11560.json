@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T02:35:56.807Z",
+  "generatedAt": "2026-08-14T17:54:58.237Z",
   "playerId": "11560",
   "profile": {
     "id": "11560",
@@ -523,12 +523,12 @@
       "season": 2025,
       "summary": {
         "games": 17,
-        "fantasyPoints": 317.18,
-        "fantasyPointsPerGame": 18.66,
+        "fantasyPoints": 317.68,
+        "fantasyPointsPerGame": 18.69,
         "passingYards": 3942,
         "passingTds": 27,
         "interceptions": 0,
-        "rushingYards": 383,
+        "rushingYards": 388,
         "rushingTds": 3,
         "receptions": 2,
         "receivingYards": 22,
@@ -645,7 +645,7 @@
           "seasonType": "REG",
           "team": "CHI",
           "opponent": "WAS",
-          "fantasyPoints": 19.88,
+          "fantasyPoints": 20.38,
           "passing": {
             "completions": 17,
             "attempts": 29,
@@ -655,7 +655,7 @@
           },
           "rushing": {
             "attempts": 4,
-            "yards": -2,
+            "yards": 3,
             "tds": 1
           },
           "receiving": {

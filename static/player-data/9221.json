@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T02:36:04.227Z",
+  "generatedAt": "2026-08-14T17:55:05.414Z",
   "playerId": "9221",
   "profile": {
     "id": "9221",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "Alabama",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

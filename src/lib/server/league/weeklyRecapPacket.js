@@ -36,12 +36,7 @@ import {
 } from '$lib/server/league/weeklyBadgeGenerator.js';
 
 import {
-  getDraftCapitalTradeReviews
-} from '$lib/server/league/draftCapitalRepository.js';
-
-import {
-  buildWeeklyStoryFacts,
-  enrichTradesWithCapitalReviews
+  buildWeeklyStoryFacts
 } from '$lib/server/league/weeklyRecapEnrichment.js';
 
 function compactPlayer(player) {
@@ -175,7 +170,103 @@ function compactTransactionGroup(
         )
   };
 }
+function compactDraftCapitalReview(
+  review
+) {
+  if (!review) {
+    return null;
+  }
 
+  return {
+    status:
+      review.status ||
+      'unreviewed',
+
+    reviewStatus:
+      review.reviewStatus ||
+      null,
+
+    source:
+      review.source ||
+      null,
+
+    matchMethod:
+      review.matchMethod ||
+      null,
+
+    transferId:
+      review.transferId ||
+      null,
+
+    reviewedAt:
+      review.reviewedAt ??
+      null,
+
+    note:
+      review.note ||
+      null,
+
+    capital:
+      review.capital
+        ? {
+            futuresYear:
+              review
+                .capital
+                .futuresYear,
+
+            amount:
+              Number(
+                review
+                  .capital
+                  .amount ||
+                0
+              ),
+
+            amountCents:
+              Number(
+                review
+                  .capital
+                  .amountCents ||
+                0
+              ),
+
+            fromManagerId:
+              review
+                .capital
+                .fromManagerId,
+
+            toManagerId:
+              review
+                .capital
+                .toManagerId,
+
+            from:
+              review
+                .capital
+                .from ||
+              null,
+
+            to:
+              review
+                .capital
+                .to ||
+              null,
+
+            transactionDate:
+              review
+                .capital
+                .transactionDate ||
+              null,
+
+            note:
+              review
+                .capital
+                .note ||
+              null
+          }
+        : null
+  };
+}
 function compactTransaction(
   transaction
 ) {
@@ -271,7 +362,11 @@ function compactTransaction(
           Number(
             row.amount || 0
           )
-      }))
+      })),
+      draftCapitalReview:
+        compactDraftCapitalReview(
+        transaction.draftCapitalReview
+  ),
   };
 }
 
@@ -484,103 +579,61 @@ export async function buildWeeklyRecapPacket({
         'commish'
     );
 
-      let badgePreview =
-    null;
+    let badgePreview =
+  null;
 
-  let tradeReviews =
-    [];
+if (db) {
+  try {
+    badgePreview =
+      await buildWeeklyBadgePreview({
+        db,
 
-  if (db) {
-    const [
-      badgeResult,
-      tradeReviewResult
-    ] =
-      await Promise.allSettled([
-        buildWeeklyBadgePreview({
-          db,
+        leagueId:
+          context.leagueId,
 
-          leagueId:
-            context.leagueId,
+        season:
+          Number(
+            context.season
+          ),
 
-          season:
-            Number(
-              context.season
-            ),
+        week
+      });
+  } catch (error) {
+    console.warn(
+      '[weekly-recap] Badge enrichment failed:',
+      error
+    );
 
-          week
-        }),
-
-        getDraftCapitalTradeReviews(
-          db,
-          {
-            season:
-              Number(
-                context.season
-              )
-          }
-        )
-      ]);
-
-    if (
-      badgeResult.status ===
-      'fulfilled'
-    ) {
-      badgePreview =
-        badgeResult.value;
-    } else {
-      console.warn(
-        '[weekly-recap] Badge enrichment failed:',
-        badgeResult.reason
-      );
-
-      enrichmentWarnings.push(
-        `Weekly badge enrichment failed: ${
-          badgeResult.reason instanceof Error
-            ? badgeResult.reason.message
-            : String(
-                badgeResult.reason
-              )
-        }`
-      );
-    }
-
-    if (
-      tradeReviewResult.status ===
-      'fulfilled'
-    ) {
-      tradeReviews =
-        tradeReviewResult.value;
-    } else {
-      console.warn(
-        '[weekly-recap] Trade review enrichment failed:',
-        tradeReviewResult.reason
-      );
-
-      enrichmentWarnings.push(
-        `Trade review enrichment failed: ${
-          tradeReviewResult.reason instanceof Error
-            ? tradeReviewResult.reason.message
-            : String(
-                tradeReviewResult.reason
-              )
-        }`
-      );
-    }
-  } else {
     enrichmentWarnings.push(
-      'D1 binding unavailable; weekly badge and draft-capital enrichment were skipped.'
+      `Weekly badge enrichment failed: ${
+        error instanceof Error
+          ? error.message
+          : String(error)
+      }`
     );
   }
+} else {
+  enrichmentWarnings.push(
+    'D1 binding unavailable; weekly badge enrichment was skipped.'
+  );
+}
 
-    const enrichedTrades =
-    enrichTradesWithCapitalReviews({
-      trades,
+/*
+ * Draft-capital warnings now come
+ * from transactionsLive.js.
+ */
+enrichmentWarnings.push(
+  ...(
+    transactionBundle
+      .capitalWarnings ||
+    []
+  )
+);
 
-      reviews:
-        tradeReviews,
+   
 
-      rosterIdentityMap
-    });
+
+ 
 
   const knownTypes =
     new Set([
@@ -598,53 +651,49 @@ export async function buildWeeklyRecapPacket({
         )
     );
 
-      const transactionPacket = {
-    waivers,
-    freeAgents,
+  const transactionPacket = {
+  waivers,
+  freeAgents,
+  trades,
+  commissionerMoves,
+  other:
+    otherTransactions
+};
 
-    trades:
-      enrichedTrades,
+const standingsPacket = {
+  beforeWeek:
+    historicalStandings.beforeWeek,
 
-    commissionerMoves,
+  afterWeek:
+    historicalStandings.afterWeek,
 
-    other:
-      otherTransactions
-  };
+  movement:
+    historicalStandings.movement,
 
-  const standingsPacket = {
-    beforeWeek:
-      historicalStandings.beforeWeek,
+  weeklyResults:
+    historicalStandings.selectedWeekResults,
 
-    afterWeek:
-      historicalStandings.afterWeek,
+  medianScore:
+    historicalStandings.selectedWeekMedian,
 
-    movement:
-      historicalStandings.movement,
+  weeksProcessed:
+    historicalStandings.weeksProcessed
+};
 
-    weeklyResults:
-      historicalStandings.selectedWeekResults,
+const storyFacts =
+  buildWeeklyStoryFacts({
+    matchups,
 
-    medianScore:
-      historicalStandings.selectedWeekMedian,
+    highlights,
 
-    weeksProcessed:
-      historicalStandings.weeksProcessed
-  };
+    standings:
+      standingsPacket,
 
-  const storyFacts =
-    buildWeeklyStoryFacts({
-      matchups,
+    transactions:
+      transactionPacket,
 
-      highlights,
-
-      standings:
-        standingsPacket,
-
-      transactions:
-        transactionPacket,
-
-      badgePreview
-    });
+    badgePreview
+  });
 
   return {
     schemaVersion:
@@ -727,9 +776,6 @@ export async function buildWeeklyRecapPacket({
         Boolean(
           badgePreview
         ),
-
-      tradeReviewsLoaded:
-        tradeReviews.length,
 
       warnings:
         enrichmentWarnings

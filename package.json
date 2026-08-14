@@ -15,7 +15,9 @@
 		"db:migrate:local": "wrangler d1 migrations apply DB --local",
 		"db:migrate:remote": "wrangler d1 migrations apply DB --remote",
 		"generate:player-data": "node scripts/build-player-data.mjs",
-		"prebuild": "npm run generate:player-data"
+		"prebuild": "npm run generate:player-data",
+		"cron:dev": "cd workers/weekly-recap-cron && wrangler dev --test-scheduled",
+"cron:deploy": "cd workers/weekly-recap-cron && wrangler deploy"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
@@ -36,6 +38,8 @@
 	},
 	"dependencies": {
 		"@sveltejs/adapter-cloudflare": "^7.2.5",
-		"svelte-dnd-action": "^0.9.69"
+		"openai": "^7.4.0",
+		"svelte-dnd-action": "^0.9.69",
+		"zod": "^4.4.3"
 	}
 }

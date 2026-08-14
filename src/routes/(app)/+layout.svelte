@@ -10,12 +10,37 @@
   let adminDD;
 
   const primaryLinks = [
-    { href: '/', label: 'Clubhouse' },
-    { href: '/league', label: 'Irving Champions League', navClass: 'league-link' },
-    { href: '/games', label: 'Games' },
-    { href: '/history', label: 'History' },
-    { href: '/league/parlay', label: 'Parlay' }
-  ];
+  {
+    href: '/',
+    label: 'Clubhouse'
+  },
+
+  {
+    href: '/league',
+    label: 'Irving Champions League',
+    navClass: 'league-link'
+  },
+
+  {
+    href: '/league/weekly',
+    label: 'The Irving Weekly'
+  },
+
+  {
+    href: '/games',
+    label: 'Games'
+  },
+
+  {
+    href: '/history',
+    label: 'History'
+  },
+
+  {
+    href: '/league/parlay',
+    label: 'Parlay'
+  }
+];
 
   const adminLinks = [
     { href: '/admin/events', label: 'Events' },
@@ -48,10 +73,43 @@
   $: user = data?.user || {};
   $: username = user.displayName || user.display_name || 'Member';
 
-  const isActive = (href) =>
+  const isActive = (
+  href
+) => {
+  if (
+    href ===
+    '/league'
+  ) {
+    return (
+      path ===
+        '/league' ||
+      (
+        path.startsWith(
+          '/league/'
+        ) &&
+        !path.startsWith(
+          '/league/weekly'
+        )
+      )
+    );
+  }
+
+  return (
     path === href ||
-    (href !== '/' && path.startsWith(`${href}/`)) ||
-    (href === '/games' && path.startsWith('/leaderboard'));
+    (
+      href !== '/' &&
+      path.startsWith(
+        `${href}/`
+      )
+    ) ||
+    (
+      href === '/games' &&
+      path.startsWith(
+        '/leaderboard'
+      )
+    )
+  );
+};
   const closeMobile = () => (mobileOpen = false);
   const closeAdmin = () => adminDD?.removeAttribute('open');
 

@@ -1,4 +1,6 @@
 <script>
+  import WeeklyRecapArticle
+  from '$lib/components/league/WeeklyRecapArticle.svelte';
   export let data;
   export let form;
 
@@ -18,13 +20,34 @@
     }
   }
 
-  $: packet =
-    form?.packet ||
-    null;
+$: savedRecap =
+  form?.savedRecap ||
+  data.savedRecap ||
+  null;
 
-  $: summary =
-    packet?.summary ||
-    null;
+$: packet =
+  form?.packet ||
+  savedRecap?.draftPacket ||
+  null;
+
+$: summary =
+  packet?.summary ||
+  null;
+
+$: recap =
+  form?.recap ||
+  savedRecap?.draftRecap ||
+  null;
+
+$: aiMeta =
+  form?.aiMeta ||
+  savedRecap?.draftAiMeta ||
+  null;
+
+$: isPublished =
+  Boolean(
+    savedRecap?.publishedRecap
+  );
 </script>
 
 <div class="page-stack">
@@ -81,10 +104,70 @@
         />
       </label>
 
-      <button type="submit">
-        Build Week Packet
-      </button>
+<button
+  type="submit"
+  formaction="?/build"
+>
+  Build Facts
+</button>
+
+<button
+  type="submit"
+  formaction="?/generate"
+  class="ai-button"
+>
+  {recap
+    ? 'Regenerate Draft'
+    : 'Generate Draft'}
+</button>
+
+<button
+  type="submit"
+  formaction="?/publish"
+  class="publish-button"
+  disabled={!recap}
+>
+  Publish Draft
+</button>
     </form>
+    {#if savedRecap}
+  <div class="recap-status">
+    <span
+      class:published={isPublished}
+      class:draft={!isPublished}
+    >
+      {isPublished
+        ? 'Published'
+        : 'Draft'}
+    </span>
+
+    {#if savedRecap.draftGeneratedAt}
+      <small>
+        Draft saved
+        {new Date(
+          savedRecap.draftGeneratedAt *
+          1000
+        ).toLocaleString()}
+      </small>
+    {/if}
+
+    {#if savedRecap.publishedAt}
+      <small>
+        · Published
+        {new Date(
+          savedRecap.publishedAt *
+          1000
+        ).toLocaleString()}
+      </small>
+    {/if}
+  </div>
+{/if}
+
+{#if form?.message}
+  <div class="success-message">
+    {form.message}
+  </div>
+{/if}
   </section>
 
   {#if form && form.ok === false}
@@ -483,18 +566,37 @@
     {/if}
   </section>
 {/if}
-    <section class="card">
-      <div class="section-label">
-        Raw authoritative packet
-      </div>
 
-      <p class="muted">
-        This is what the AI writer will eventually receive.
-      </p>
+{#if recap}
+  <section class="card">
+    <div class="section-label">
+      AI Weekly Recap
+    </div>
 
-      <pre>{pretty(packet)}</pre>
-    </section>
-  {/if}
+    <div class="admin-recap-preview">
+      <WeeklyRecapArticle
+        {recap}
+        {aiMeta}
+        preview={true}
+      />
+    </div>
+  </section>
+{/if}
+
+<section class="card">
+  <div class="section-label">
+    Raw authoritative packet
+  </div>
+
+  <p class="muted">
+    This is what the AI writer will eventually receive.
+  </p>
+
+  <pre>{pretty(packet)}</pre>
+</section>
+
+{/if}
+
 </div>
 
 <style>
@@ -567,18 +669,31 @@
     margin-top: 10px;
     color: var(--muted);
   }
+ .admin-recap-preview {
+  margin-top: 16px;
+} 
 
-  .controls {
-    display: grid;
-    grid-template-columns:
-      minmax(120px, 180px)
-      minmax(120px, 180px)
-      minmax(200px, 1fr);
-    gap: 12px;
-    align-items: end;
-    margin-top: 18px;
-  }
-
+.controls {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 180px)
+    minmax(120px, 180px)
+    minmax(190px, 1fr)
+    minmax(190px, 1fr)
+    minmax(170px, .8fr);
+  gap: 12px;
+  align-items: end;
+  margin-top: 18px;
+}
+.ai-button {
+  background:
+    linear-gradient(
+      180deg,
+      #6bdce6,
+      #158ea2
+    );
+  color: #071012;
+}
   label {
     display: grid;
     gap: 7px;
@@ -594,7 +709,60 @@
   gap: 10px;
   margin-top: 18px;
 }
+.publish-button {
+  background:
+    linear-gradient(
+      180deg,
+      #83df9d,
+      #329759
+    );
+  color: #07120a;
+}
 
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  filter: grayscale(.4);
+}
+
+.recap-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.recap-status > span {
+  padding: 5px 9px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+  font-family: var(--font-score);
+  font-size: .68rem;
+  font-weight: 950;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.recap-status .draft {
+  color: #efc86a;
+}
+
+.recap-status .published {
+  color: #7ee59a;
+}
+
+.recap-status small {
+  color: var(--muted);
+}
+
+.success-message {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(126,229,154,.35);
+  border-radius: 8px;
+  background: rgba(126,229,154,.06);
+}
 .story-card {
   display: grid;
   gap: 7px;

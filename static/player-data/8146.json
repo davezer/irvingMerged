@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T02:36:04.194Z",
+  "generatedAt": "2026-08-14T17:55:05.382Z",
   "playerId": "8146",
   "profile": {
     "id": "8146",
@@ -636,7 +636,7 @@
             "tds": 0
           },
           "receiving": {
-            "targets": 22,
+            "targets": 23,
             "receptions": 13,
             "yards": 101,
             "tds": 1
