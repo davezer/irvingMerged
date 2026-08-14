@@ -322,6 +322,62 @@ function badgeAwardWhen(
   );
 }
 
+function capitalMoney(
+	value
+) {
+	const amount =
+		Number(
+			value ||
+			0
+		);
+
+	return `$${amount.toLocaleString(
+		'en-US',
+		{
+			minimumFractionDigits:
+				0,
+
+			maximumFractionDigits:
+				2
+		}
+	)}`;
+}
+
+
+function signedCapitalMoney(
+	value
+) {
+	const amount =
+		Number(
+			value ||
+			0
+		);
+
+	if (amount > 0) {
+		return `+$${amount.toLocaleString(
+			'en-US',
+			{
+				maximumFractionDigits:
+					2
+			}
+		)}`;
+	}
+
+	if (amount < 0) {
+		return `-$${Math.abs(
+			amount
+		).toLocaleString(
+			'en-US',
+			{
+				maximumFractionDigits:
+					2
+			}
+		)}`;
+	}
+
+	return '$0';
+}
+
 
 function badgeAwardDetail(
   award
@@ -760,20 +816,163 @@ function badgeScoreLabel(
     </article>
 
     <article class="card">
-      <div class="card-head">
-        <div>
-          <div class="eyebrow">Market profile</div>
-          <h3>Trades & waivers</h3>
-        </div>
-        <strong>{moveProfile.totalMoves || 0}</strong>
-      </div>
-      <dl class="facts">
-        <div><dt>Trade style</dt><dd>{tradeProfile.marketStyle || 'Quiet market'}</dd></div>
-        <div><dt>Total trades</dt><dd>{tradeProfile.tradeCount || 0}</dd></div>
-        <div><dt>Favorite partner</dt><dd>{tradeProfile.favoritePartner ? `${tradeProfile.favoritePartner} (${tradeProfile.favoritePartnerCount})` : '—'}</dd></div>
-        <div><dt>Moves sampled</dt><dd>{moveProfile.totalMoves || 0} total · {moveProfile.waivers || 0} waivers · {moveProfile.freeAgents || 0} FA</dd></div>
-      </dl>
-    </article>
+	<div class="card-head">
+		<div>
+			<div class="eyebrow">
+				All-Time Market Profile
+			</div>
+
+			<h3>
+				Trades & Waivers
+			</h3>
+		</div>
+
+		<strong>
+			{moveProfile.totalMoves || 0}
+		</strong>
+	</div>
+
+	<dl class="facts">
+		<div>
+			<dt>
+				Trade style
+			</dt>
+
+			<dd>
+				{tradeProfile.marketStyle ||
+					'Quiet market'}
+			</dd>
+		</div>
+
+		<div>
+			<dt>
+				Career trades
+			</dt>
+
+			<dd>
+				{tradeProfile.tradeCount || 0}
+			</dd>
+		</div>
+
+		<div>
+			<dt>
+				Favorite partner
+			</dt>
+
+			<dd>
+				{tradeProfile.favoritePartner
+					? `${tradeProfile.favoritePartner} (${tradeProfile.favoritePartnerCount})`
+					: '—'}
+			</dd>
+		</div>
+<div>
+	<dt>
+		Draft capital sent
+	</dt>
+
+	<dd>
+		{capitalMoney(
+			tradeProfile.draftCapitalSent
+		)}
+	</dd>
+</div>
+
+<div>
+	<dt>
+		Draft capital acquired
+	</dt>
+
+	<dd>
+		{capitalMoney(
+			tradeProfile.draftCapitalAcquired
+		)}
+	</dd>
+</div>
+
+<div>
+	<dt>
+		Net capital
+	</dt>
+
+	<dd
+		class:capital-positive={
+			Number(
+				tradeProfile.draftCapitalNet ||
+				0
+			) > 0
+		}
+		class:capital-negative={
+			Number(
+				tradeProfile.draftCapitalNet ||
+				0
+			) < 0
+		}
+	>
+		{signedCapitalMoney(
+			tradeProfile.draftCapitalNet
+		)}
+	</dd>
+</div>
+		<div>
+			<dt>
+				Waiver claims
+			</dt>
+
+			<dd>
+				{moveProfile.waivers || 0}
+			</dd>
+		</div>
+
+		<div>
+			<dt>
+				Free-agent moves
+			</dt>
+
+			<dd>
+				{moveProfile.freeAgents || 0}
+			</dd>
+		</div>
+
+		<div>
+			<dt>
+				Transaction tape
+			</dt>
+
+			<dd>
+				{moveProfile.totalMoves || 0} moves ·
+				{moveProfile.adds || 0} adds ·
+				{moveProfile.drops || 0} drops
+			</dd>
+		</div>
+
+		<dd>
+	{#if moveProfile.seasonsTracked}
+
+		{#if moveProfile.firstSeason ===
+			moveProfile.lastSeason}
+
+			{moveProfile.firstSeason}
+			·
+			{moveProfile.seasonsTracked}
+			season{moveProfile.seasonsTracked === 1
+				? ''
+				: 's'}
+
+		{:else}
+
+			{moveProfile.firstSeason}–{moveProfile.lastSeason}
+			·
+			{moveProfile.seasonsTracked}
+			seasons
+
+		{/if}
+
+	{:else}
+		—
+	{/if}
+</dd>
+	</dl>
+</article>
   </section>
 
   <section class="grid two-up">
@@ -1972,7 +2171,13 @@ summary::after {
     10px;
 }
 
+.capital-positive {
+	color: #78e49b;
+}
 
+.capital-negative {
+	color: #ff7e7e;
+}
 .badge-history-row {
   display:
     grid;

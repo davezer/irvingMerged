@@ -1,59 +1,38 @@
-function centsToDollars(
-  cents
-) {
-  return Number(cents || 0) / 100;
+function centsToDollars(cents) {
+	return Number(cents || 0) / 100;
 }
 
+function dollarsToCents(dollars) {
+	const value = Number(dollars);
 
-function dollarsToCents(
-  dollars
-) {
-  const value =
-    Number(dollars);
+	if (!Number.isFinite(value)) {
+		throw new Error('Invalid dollar amount.');
+	}
 
-  if (!Number.isFinite(value)) {
-    throw new Error(
-      'Invalid dollar amount.'
-    );
-  }
-
-  return Math.round(
-    value * 100
-  );
+	return Math.round(value * 100);
 }
 
+function parseJson(value, fallback) {
+	if (!value) {
+		return fallback;
+	}
 
-function parseJson(
-  value,
-  fallback
-) {
-  if (!value) {
-    return fallback;
-  }
+	if (typeof value === 'object') {
+		return value;
+	}
 
-  if (
-    typeof value === 'object'
-  ) {
-    return value;
-  }
-
-  try {
-    return JSON.parse(value);
-  } catch {
-    return fallback;
-  }
+	try {
+		return JSON.parse(value);
+	} catch {
+		return fallback;
+	}
 }
 
+function clean(value) {
+	const result = String(value ?? '').trim();
 
-function clean(
-  value
-) {
-  const result =
-    String(value ?? '').trim();
-
-  return result || null;
+	return result || null;
 }
-
 
 /*
  * ============================================================
@@ -61,35 +40,20 @@ function clean(
  * ============================================================
  */
 
-export async function getDraftCapitalBalances(
-  db,
-  {
-    year
-  } = {}
-) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+export async function getDraftCapitalBalances(db, { year } = {}) {
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
-  const futuresYear =
-    Number(year);
+	const futuresYear = Number(year);
 
-  if (
-    !Number.isInteger(
-      futuresYear
-    )
-  ) {
-    throw new Error(
-      'A valid futures year is required.'
-    );
-  }
+	if (!Number.isInteger(futuresYear)) {
+		throw new Error('A valid futures year is required.');
+	}
 
-
-  const result =
-    await db
-      .prepare(`
+	const result = await db
+		.prepare(
+			`
         SELECT
           manager_id,
 
@@ -108,38 +72,20 @@ export async function getDraftCapitalBalances(
 
         GROUP BY
           manager_id
-      `)
-      .bind(
-        futuresYear
-      )
-      .all();
+      `
+		)
+		.bind(futuresYear)
+		.all();
 
+	return (result.results ?? []).map((row) => ({
+		managerId: String(row.manager_id),
 
-  return (
-    result.results ?? []
-  ).map(
-    (row) => ({
-      managerId:
-        String(
-          row.manager_id
-        ),
+		balanceCents: Number(row.balance_cents || 0),
 
-      balanceCents:
-        Number(
-          row.balance_cents || 0
-        ),
+		balance: centsToDollars(row.balance_cents),
 
-      balance:
-        centsToDollars(
-          row.balance_cents
-        ),
-
-      entryCount:
-        Number(
-          row.entry_count || 0
-        )
-    })
-  );
+		entryCount: Number(row.entry_count || 0)
+	}));
 }
 
 /*
@@ -153,17 +99,14 @@ export async function getDraftCapitalBalances(
  * ============================================================
  */
 
-export async function getDraftCapitalTransfers(
-  db
-) {
-  if (!db) {
-    return [];
-  }
+export async function getDraftCapitalTransfers(db) {
+	if (!db) {
+		return [];
+	}
 
-
-  const result =
-    await db
-      .prepare(`
+	const result = await db
+		.prepare(
+			`
         SELECT
           id,
           futures_year,
@@ -189,157 +132,235 @@ export async function getDraftCapitalTransfers(
         ORDER BY
           created_at,
           id
-      `)
-      .all();
+      `
+		)
+		.all();
 
+	const rows = result.results ?? [];
 
-  const rows =
-    result.results ?? [];
+	const transfers = new Map();
 
+	for (const row of rows) {
+		const transferId = String(row.transfer_id || '');
 
-  const transfers =
-    new Map();
+		if (!transferId) {
+			continue;
+		}
 
+		if (!transfers.has(transferId)) {
+			transfers.set(transferId, {
+				transferId,
 
-  for (
-    const row of
-    rows
-  ) {
-    const transferId =
-      String(
-        row.transfer_id ||
-        ''
-      );
+				futuresYear: Number(row.futures_year),
 
+				transactionDate: row.transaction_date || null,
 
-    if (!transferId) {
-      continue;
-    }
+				leagueSeason: row.league_season == null ? null : Number(row.league_season),
 
+				leagueWeek: row.league_week == null ? null : Number(row.league_week),
 
-    if (
-      !transfers.has(
-        transferId
-      )
-    ) {
-      transfers.set(
-        transferId,
-        {
-          transferId,
+				sleeperTransactionId: row.sleeper_transaction_id
+					? String(row.sleeper_transaction_id)
+					: null,
 
-          futuresYear:
-            Number(
-              row.futures_year
-            ),
+				source: row.source || null,
 
-          transactionDate:
-            row.transaction_date ||
-            null,
+				fromManagerId: null,
 
-          leagueSeason:
-            row.league_season == null
-              ? null
-              : Number(
-                  row.league_season
-                ),
+				toManagerId: null,
 
-          leagueWeek:
-            row.league_week == null
-              ? null
-              : Number(
-                  row.league_week
-                ),
+				amountCents: 0,
 
-          sleeperTransactionId:
-            row.sleeper_transaction_id
-              ? String(
-                  row.sleeper_transaction_id
-                )
-              : null,
+				amount: 0
+			});
+		}
 
-          source:
-            row.source ||
-            null,
+		const transfer = transfers.get(transferId);
 
-          fromManagerId:
-            null,
+		const amountCents = Number(row.amount_cents || 0);
 
-          toManagerId:
-            null,
+		/*
+		 * Negative row = team that SENT the capital.
+		 * Positive row = team that RECEIVED the capital.
+		 */
+		if (amountCents < 0) {
+			transfer.fromManagerId = String(row.manager_id);
 
-          amountCents:
-            0,
+			transfer.amountCents = Math.abs(amountCents);
+		}
 
-          amount:
-            0
-        }
-      );
-    }
+		if (amountCents > 0) {
+			transfer.toManagerId = String(row.manager_id);
 
+			transfer.amountCents = Math.abs(amountCents);
+		}
 
-    const transfer =
-      transfers.get(
-        transferId
-      );
+		transfer.amount = transfer.amountCents / 100;
+	}
 
-
-    const amountCents =
-      Number(
-        row.amount_cents ||
-        0
-      );
-
-
-    /*
-     * Negative row = team that SENT the capital.
-     * Positive row = team that RECEIVED the capital.
-     */
-    if (
-      amountCents < 0
-    ) {
-      transfer.fromManagerId =
-        String(
-          row.manager_id
-        );
-
-      transfer.amountCents =
-        Math.abs(
-          amountCents
-        );
-    }
-
-
-    if (
-      amountCents > 0
-    ) {
-      transfer.toManagerId =
-        String(
-          row.manager_id
-        );
-
-      transfer.amountCents =
-        Math.abs(
-          amountCents
-        );
-    }
-
-
-    transfer.amount =
-      transfer.amountCents /
-      100;
-  }
-
-
-  return [
-    ...transfers.values()
-  ].filter(
-    (transfer) =>
-      transfer.fromManagerId &&
-      transfer.toManagerId &&
-      transfer.amountCents > 0
-  );
+	return [...transfers.values()].filter(
+		(transfer) => transfer.fromManagerId && transfer.toManagerId && transfer.amountCents > 0
+	);
 }
 
+/*
+ * ============================================================
+ * ALL-TIME MANAGER TRADE CAPITAL TOTALS
+ *
+ * Uses the signed ledger rows directly rather than requiring
+ * a paired transfer_id.
+ *
+ * This intentionally includes historical/legacy trade rows.
+ * Voided rows never count.
+ * ============================================================
+ */
+
+export async function getManagerDraftCapitalTradeTotals(
+	db,
+	{
+		managerId
+	} = {}
+) {
+	const empty = {
+		managerId:
+			managerId
+				? String(managerId)
+				: null,
+
+		sentCents:
+			0,
+
+		acquiredCents:
+			0,
+
+		netCents:
+			0,
+
+		sent:
+			0,
+
+		acquired:
+			0,
+
+		net:
+			0,
+
+		movementCount:
+			0,
+
+		firstDate:
+			null,
+
+		lastDate:
+			null
+	};
+
+	if (
+		!db ||
+		!managerId
+	) {
+		return empty;
+	}
+
+	const row =
+		await db
+			.prepare(`
+				SELECT
+					COALESCE(
+						SUM(
+							CASE
+								WHEN amount_cents < 0
+								THEN ABS(amount_cents)
+								ELSE 0
+							END
+						),
+						0
+					) AS sent_cents,
+
+					COALESCE(
+						SUM(
+							CASE
+								WHEN amount_cents > 0
+								THEN amount_cents
+								ELSE 0
+							END
+						),
+						0
+					) AS acquired_cents,
+
+					COUNT(*) AS movement_count,
+
+					MIN(transaction_date)
+						AS first_date,
+
+					MAX(transaction_date)
+						AS last_date
+
+				FROM draft_capital_entries
+
+				WHERE
+					manager_id = ?
+					AND entry_type = 'trade'
+					AND voided_at IS NULL
+			`)
+			.bind(
+				String(managerId)
+			)
+			.first();
+
+	const sentCents =
+		Number(
+			row?.sent_cents ||
+			0
+		);
+
+	const acquiredCents =
+		Number(
+			row?.acquired_cents ||
+			0
+		);
+
+	const netCents =
+		acquiredCents -
+		sentCents;
+
+	return {
+		managerId:
+			String(managerId),
+
+		sentCents,
+
+		acquiredCents,
+
+		netCents,
+
+		sent:
+			sentCents /
+			100,
+
+		acquired:
+			acquiredCents /
+			100,
+
+		net:
+			netCents /
+			100,
+
+		movementCount:
+			Number(
+				row?.movement_count ||
+				0
+			),
+
+		firstDate:
+			row?.first_date ||
+			null,
+
+		lastDate:
+			row?.last_date ||
+			null
+	};
+}
 
 /*
  * ============================================================
@@ -347,25 +368,16 @@ export async function getDraftCapitalTransfers(
  * ============================================================
  */
 
-export async function getManagerDraftCapital(
-  db,
-  {
-    managerId,
-    year
-  } = {}
-) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+export async function getManagerDraftCapital(db, { managerId, year } = {}) {
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
-  const futuresYear =
-    Number(year);
+	const futuresYear = Number(year);
 
-  const result =
-    await db
-      .prepare(`
+	const result = await db
+		.prepare(
+			`
         SELECT
           COALESCE(
             SUM(amount_cents),
@@ -378,35 +390,23 @@ export async function getManagerDraftCapital(
           manager_id = ?
           AND futures_year = ?
           AND voided_at IS NULL
-      `)
-      .bind(
-        String(managerId),
-        futuresYear
-      )
-      .first();
+      `
+		)
+		.bind(String(managerId), futuresYear)
+		.first();
 
+	const balanceCents = Number(result?.balance_cents || 0);
 
-  const balanceCents =
-    Number(
-      result?.balance_cents || 0
-    );
+	return {
+		managerId: String(managerId),
 
+		futuresYear,
 
-  return {
-    managerId:
-      String(managerId),
+		balanceCents,
 
-    futuresYear,
-
-    balanceCents,
-
-    balance:
-      centsToDollars(
-        balanceCents
-      )
-  };
+		balance: centsToDollars(balanceCents)
+	};
 }
-
 
 /*
  * ============================================================
@@ -415,69 +415,36 @@ export async function getManagerDraftCapital(
  */
 
 export async function getDraftCapitalLedger(
-  db,
-  {
-    year = null,
-    managerId = null,
-    limit = 250
-  } = {}
+	db,
+	{ year = null, managerId = null, limit = 250 } = {}
 ) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
-  const clauses = [
-    'voided_at IS NULL'
-  ];
+	const clauses = ['voided_at IS NULL'];
 
-  const binds = [];
+	const binds = [];
 
+	if (year != null && String(year).trim() !== '') {
+		clauses.push('futures_year = ?');
 
-  if (
-    year != null &&
-    String(year).trim() !== ''
-  ) {
-    clauses.push(
-      'futures_year = ?'
-    );
+		binds.push(Number(year));
+	}
 
-    binds.push(
-      Number(year)
-    );
-  }
+	if (managerId) {
+		clauses.push('manager_id = ?');
 
+		binds.push(String(managerId));
+	}
 
-  if (managerId) {
-    clauses.push(
-      'manager_id = ?'
-    );
+	const safeLimit = Math.min(1000, Math.max(1, Number(limit) || 250));
 
-    binds.push(
-      String(managerId)
-    );
-  }
+	binds.push(safeLimit);
 
-
-  const safeLimit =
-    Math.min(
-      1000,
-      Math.max(
-        1,
-        Number(limit) || 250
-      )
-    );
-
-
-  binds.push(
-    safeLimit
-  );
-
-
-  const result =
-    await db
-      .prepare(`
+	const result = await db
+		.prepare(
+			`
         SELECT
           id,
           futures_year,
@@ -499,9 +466,7 @@ export async function getDraftCapitalLedger(
         FROM draft_capital_entries
 
         WHERE
-          ${clauses.join(
-            '\nAND '
-          )}
+          ${clauses.join('\nAND ')}
 
         ORDER BY
           COALESCE(
@@ -514,98 +479,47 @@ export async function getDraftCapitalLedger(
           id DESC
 
         LIMIT ?
-      `)
-      .bind(
-        ...binds
-      )
-      .all();
+      `
+		)
+		.bind(...binds)
+		.all();
 
+	return (result.results ?? []).map((row) => ({
+		id: Number(row.id),
 
-  return (
-    result.results ?? []
-  ).map(
-    (row) => ({
-      id:
-        Number(row.id),
+		futuresYear: Number(row.futures_year),
 
-      futuresYear:
-        Number(
-          row.futures_year
-        ),
+		managerId: String(row.manager_id),
 
-      managerId:
-        String(
-          row.manager_id
-        ),
+		amountCents: Number(row.amount_cents),
 
-      amountCents:
-        Number(
-          row.amount_cents
-        ),
+		amount: centsToDollars(row.amount_cents),
 
-      amount:
-        centsToDollars(
-          row.amount_cents
-        ),
+		entryType: row.entry_type,
 
-      entryType:
-        row.entry_type,
+		transactionDate: row.transaction_date || null,
 
-      transactionDate:
-        row.transaction_date ||
-        null,
+		leagueSeason: row.league_season == null ? null : Number(row.league_season),
 
-      leagueSeason:
-        row.league_season == null
-          ? null
-          : Number(
-              row.league_season
-            ),
+		leagueWeek: row.league_week == null ? null : Number(row.league_week),
 
-      leagueWeek:
-        row.league_week == null
-          ? null
-          : Number(
-              row.league_week
-            ),
+		sleeperTransactionId: row.sleeper_transaction_id || null,
 
-      sleeperTransactionId:
-        row.sleeper_transaction_id ||
-        null,
+		transferId: row.transfer_id || null,
 
-      transferId:
-        row.transfer_id ||
-        null,
+		counterpartyManagerId: row.counterparty_manager_id || null,
 
-      counterpartyManagerId:
-        row.counterparty_manager_id ||
-        null,
+		note: row.note || null,
 
-      note:
-        row.note ||
-        null,
+		metadata: parseJson(row.metadata_json, {}),
 
-      metadata:
-        parseJson(
-          row.metadata_json,
-          {}
-        ),
+		source: row.source,
 
-      source:
-        row.source,
+		createdBy: row.created_by || null,
 
-      createdBy:
-        row.created_by ||
-        null,
-
-      createdAt:
-        Number(
-          row.created_at || 0
-        )
-    })
-  );
+		createdAt: Number(row.created_at || 0)
+	}));
 }
-
 
 /*
  * ============================================================
@@ -614,75 +528,54 @@ export async function getDraftCapitalLedger(
  */
 
 export async function addDraftCapitalEntry(
-  db,
-  {
-    futuresYear,
-    managerId,
-    amount,
-    entryType = 'manual_adjustment',
+	db,
+	{
+		futuresYear,
+		managerId,
+		amount,
+		entryType = 'manual_adjustment',
 
-    transactionDate = null,
+		transactionDate = null,
 
-    leagueSeason = null,
-    leagueWeek = null,
+		leagueSeason = null,
+		leagueWeek = null,
 
-    sleeperTransactionId = null,
-    transferId = null,
-    counterpartyManagerId = null,
+		sleeperTransactionId = null,
+		transferId = null,
+		counterpartyManagerId = null,
 
-    note = null,
-    metadata = {},
+		note = null,
+		metadata = {},
 
-    source = 'manual',
-    createdBy = null,
+		source = 'manual',
+		createdBy = null,
 
-    dedupeKey = null
-  } = {}
+		dedupeKey = null
+	} = {}
 ) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
+	const year = Number(futuresYear);
 
-  const year =
-    Number(
-      futuresYear
-    );
+	if (!Number.isInteger(year)) {
+		throw new Error('A valid futures year is required.');
+	}
 
-  if (
-    !Number.isInteger(year)
-  ) {
-    throw new Error(
-      'A valid futures year is required.'
-    );
-  }
+	if (!managerId) {
+		throw new Error('Manager is required.');
+	}
 
+	const amountCents = dollarsToCents(amount);
 
-  if (!managerId) {
-    throw new Error(
-      'Manager is required.'
-    );
-  }
+	if (amountCents === 0) {
+		throw new Error('Ledger amount cannot be zero.');
+	}
 
-
-  const amountCents =
-    dollarsToCents(
-      amount
-    );
-
-
-  if (amountCents === 0) {
-    throw new Error(
-      'Ledger amount cannot be zero.'
-    );
-  }
-
-
-  const result =
-    await db
-      .prepare(`
+	const result = await db
+		.prepare(
+			`
         INSERT INTO draft_capital_entries (
           futures_year,
           manager_id,
@@ -720,82 +613,50 @@ export async function addDraftCapitalEntry(
           ?,
           unixepoch()
         )
-      `)
-      .bind(
-        year,
-        String(managerId),
-        amountCents,
-        String(entryType),
+      `
+		)
+		.bind(
+			year,
+			String(managerId),
+			amountCents,
+			String(entryType),
 
-        clean(
-          transactionDate
-        ),
+			clean(transactionDate),
 
-        leagueSeason == null
-          ? null
-          : Number(
-              leagueSeason
-            ),
+			leagueSeason == null ? null : Number(leagueSeason),
 
-        leagueWeek == null
-          ? null
-          : Number(
-              leagueWeek
-            ),
+			leagueWeek == null ? null : Number(leagueWeek),
 
-        clean(
-          sleeperTransactionId
-        ),
+			clean(sleeperTransactionId),
 
-        clean(
-          transferId
-        ),
+			clean(transferId),
 
-        clean(
-          counterpartyManagerId
-        ),
+			clean(counterpartyManagerId),
 
-        clean(note),
+			clean(note),
 
-        JSON.stringify(
-          metadata || {}
-        ),
+			JSON.stringify(metadata || {}),
 
-        String(
-          source || 'manual'
-        ),
+			String(source || 'manual'),
 
-        clean(
-          createdBy
-        ),
+			clean(createdBy),
 
-        clean(
-          dedupeKey
-        )
-      )
-      .run();
+			clean(dedupeKey)
+		)
+		.run();
 
+	return {
+		id: result.meta?.last_row_id ?? null,
 
-  return {
-    id:
-      result.meta?.last_row_id ??
-      null,
+		futuresYear: year,
 
-    futuresYear:
-      year,
+		managerId: String(managerId),
 
-    managerId:
-      String(managerId),
+		amountCents,
 
-    amountCents,
-
-    amount:
-      centsToDollars(
-        amountCents
-      )
-  };
+		amount: centsToDollars(amountCents)
+	};
 }
-
 
 /*
  * ============================================================
@@ -813,125 +674,80 @@ export async function addDraftCapitalEntry(
  */
 
 export async function postDraftCapitalTransfer(
-  db,
-  {
-    futuresYear,
+	db,
+	{
+		futuresYear,
 
-    fromManagerId,
-    toManagerId,
+		fromManagerId,
+		toManagerId,
 
-    amount,
+		amount,
 
-    transactionDate = null,
+		transactionDate = null,
 
-    leagueSeason = null,
-    leagueWeek = null,
+		leagueSeason = null,
+		leagueWeek = null,
 
-    sleeperTransactionId = null,
+		sleeperTransactionId = null,
 
-    note = null,
+		note = null,
 
-    metadata = {},
+		metadata = {},
 
-    source = 'manual',
+		source = 'manual',
 
-    createdBy = null
-  } = {}
+		createdBy = null
+	} = {}
 ) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
+	if (!fromManagerId || !toManagerId) {
+		throw new Error('Both teams are required.');
+	}
 
-  if (
-    !fromManagerId ||
-    !toManagerId
-  ) {
-    throw new Error(
-      'Both teams are required.'
-    );
-  }
+	if (String(fromManagerId) === String(toManagerId)) {
+		throw new Error('Capital cannot be transferred to the same team.');
+	}
 
+	const year = Number(futuresYear);
 
-  if (
-    String(fromManagerId) ===
-    String(toManagerId)
-  ) {
-    throw new Error(
-      'Capital cannot be transferred to the same team.'
-    );
-  }
+	const amountCents = Math.abs(dollarsToCents(amount));
 
+	if (!Number.isInteger(year)) {
+		throw new Error('A valid futures year is required.');
+	}
 
-  const year =
-    Number(
-      futuresYear
-    );
+	if (amountCents <= 0) {
+		throw new Error('Transfer amount must be greater than zero.');
+	}
 
-  const amountCents =
-    Math.abs(
-      dollarsToCents(
-        amount
-      )
-    );
+	const transferId = crypto.randomUUID();
 
+	const transactionId = clean(sleeperTransactionId);
 
-  if (
-    !Number.isInteger(year)
-  ) {
-    throw new Error(
-      'A valid futures year is required.'
-    );
-  }
+	const baseMetadata = {
+		...metadata,
 
+		transferId,
 
-  if (amountCents <= 0) {
-    throw new Error(
-      'Transfer amount must be greater than zero.'
-    );
-  }
+		futuresYear: year,
 
+		dollarAmount: centsToDollars(amountCents)
+	};
 
-  const transferId =
-    crypto.randomUUID();
+	const outgoingDedupe = transactionId
+		? `capital:${transactionId}:${year}:${fromManagerId}:out`
+		: null;
 
+	const incomingDedupe = transactionId
+		? `capital:${transactionId}:${year}:${toManagerId}:in`
+		: null;
 
-  const transactionId =
-    clean(
-      sleeperTransactionId
-    );
-
-
-  const baseMetadata = {
-    ...metadata,
-
-    transferId,
-
-    futuresYear:
-      year,
-
-    dollarAmount:
-      centsToDollars(
-        amountCents
-      )
-  };
-
-
-  const outgoingDedupe =
-    transactionId
-      ? `capital:${transactionId}:${year}:${fromManagerId}:out`
-      : null;
-
-  const incomingDedupe =
-    transactionId
-      ? `capital:${transactionId}:${year}:${toManagerId}:in`
-      : null;
-
-
-  const outgoing =
-    db.prepare(`
+	const outgoing = db
+		.prepare(
+			`
       INSERT INTO draft_capital_entries (
         futures_year,
         manager_id,
@@ -969,60 +785,44 @@ export async function postDraftCapitalTransfer(
         ?,
         unixepoch()
       )
-    `)
-      .bind(
-        year,
+    `
+		)
+		.bind(
+			year,
 
-        String(
-          fromManagerId
-        ),
+			String(fromManagerId),
 
-        -amountCents,
+			-amountCents,
 
-        clean(
-          transactionDate
-        ),
+			clean(transactionDate),
 
-        leagueSeason == null
-          ? null
-          : Number(
-              leagueSeason
-            ),
+			leagueSeason == null ? null : Number(leagueSeason),
 
-        leagueWeek == null
-          ? null
-          : Number(
-              leagueWeek
-            ),
+			leagueWeek == null ? null : Number(leagueWeek),
 
-        transactionId,
+			transactionId,
 
-        transferId,
+			transferId,
 
-        String(
-          toManagerId
-        ),
+			String(toManagerId),
 
-        clean(note),
+			clean(note),
 
-        JSON.stringify({
-          ...baseMetadata,
-          direction:
-            'away'
-        }),
+			JSON.stringify({
+				...baseMetadata,
+				direction: 'away'
+			}),
 
-        String(source),
+			String(source),
 
-        clean(
-          createdBy
-        ),
+			clean(createdBy),
 
-        outgoingDedupe
-      );
+			outgoingDedupe
+		);
 
-
-  const incoming =
-    db.prepare(`
+	const incoming = db
+		.prepare(
+			`
       INSERT INTO draft_capital_entries (
         futures_year,
         manager_id,
@@ -1060,89 +860,57 @@ export async function postDraftCapitalTransfer(
         ?,
         unixepoch()
       )
-    `)
-      .bind(
-        year,
+    `
+		)
+		.bind(
+			year,
 
-        String(
-          toManagerId
-        ),
+			String(toManagerId),
 
-        amountCents,
+			amountCents,
 
-        clean(
-          transactionDate
-        ),
+			clean(transactionDate),
 
-        leagueSeason == null
-          ? null
-          : Number(
-              leagueSeason
-            ),
+			leagueSeason == null ? null : Number(leagueSeason),
 
-        leagueWeek == null
-          ? null
-          : Number(
-              leagueWeek
-            ),
+			leagueWeek == null ? null : Number(leagueWeek),
 
-        transactionId,
+			transactionId,
 
-        transferId,
+			transferId,
 
-        String(
-          fromManagerId
-        ),
+			String(fromManagerId),
 
-        clean(note),
+			clean(note),
 
-        JSON.stringify({
-          ...baseMetadata,
-          direction:
-            'received'
-        }),
+			JSON.stringify({
+				...baseMetadata,
+				direction: 'received'
+			}),
 
-        String(source),
+			String(source),
 
-        clean(
-          createdBy
-        ),
+			clean(createdBy),
 
-        incomingDedupe
-      );
+			incomingDedupe
+		);
 
+	await db.batch([outgoing, incoming]);
 
-  await db.batch([
-    outgoing,
-    incoming
-  ]);
+	return {
+		transferId,
 
+		futuresYear: year,
 
-  return {
-    transferId,
+		amountCents,
 
-    futuresYear:
-      year,
+		amount: centsToDollars(amountCents),
 
-    amountCents,
+		fromManagerId: String(fromManagerId),
 
-    amount:
-      centsToDollars(
-        amountCents
-      ),
-
-    fromManagerId:
-      String(
-        fromManagerId
-      ),
-
-    toManagerId:
-      String(
-        toManagerId
-      )
-  };
+		toManagerId: String(toManagerId)
+	};
 }
-
 
 /*
  * ============================================================
@@ -1151,17 +919,12 @@ export async function postDraftCapitalTransfer(
  */
 
 export async function markTradeReviewedNoCapital(
-  db,
-  {
-    season,
-    week,
-    sleeperTransactionId,
-    note = null,
-    reviewedBy = null
-  } = {}
+	db,
+	{ season, week, sleeperTransactionId, note = null, reviewedBy = null } = {}
 ) {
-  await db
-    .prepare(`
+	await db
+		.prepare(
+			`
       INSERT INTO draft_capital_trade_reviews (
         season,
         week,
@@ -1210,27 +973,21 @@ export async function markTradeReviewedNoCapital(
 
         updated_at =
           unixepoch()
-    `)
-    .bind(
-      Number(season),
+    `
+		)
+		.bind(
+			Number(season),
 
-      week == null
-        ? null
-        : Number(week),
+			week == null ? null : Number(week),
 
-      String(
-        sleeperTransactionId
-      ),
+			String(sleeperTransactionId),
 
-      clean(note),
+			clean(note),
 
-      clean(
-        reviewedBy
-      )
-    )
-    .run();
+			clean(reviewedBy)
+		)
+		.run();
 }
-
 
 /*
  * ============================================================
@@ -1239,64 +996,57 @@ export async function markTradeReviewedNoCapital(
  */
 
 export async function postReviewedTradeCapital(
-  db,
-  {
-    season,
-    week,
+	db,
+	{
+		season,
+		week,
 
-    sleeperTransactionId,
+		sleeperTransactionId,
 
-    futuresYear,
+		futuresYear,
 
-    fromManagerId,
-    toManagerId,
+		fromManagerId,
+		toManagerId,
 
-    amount,
+		amount,
 
-    transactionDate = null,
+		transactionDate = null,
 
-    note = null,
+		note = null,
 
-    metadata = {},
+		metadata = {},
 
-    createdBy = null
-  } = {}
+		createdBy = null
+	} = {}
 ) {
-  const transfer =
-    await postDraftCapitalTransfer(
-      db,
-      {
-        futuresYear,
+	const transfer = await postDraftCapitalTransfer(db, {
+		futuresYear,
 
-        fromManagerId,
-        toManagerId,
+		fromManagerId,
+		toManagerId,
 
-        amount,
+		amount,
 
-        transactionDate,
+		transactionDate,
 
-        leagueSeason:
-          season,
+		leagueSeason: season,
 
-        leagueWeek:
-          week,
+		leagueWeek: week,
 
-        sleeperTransactionId,
+		sleeperTransactionId,
 
-        note,
+		note,
 
-        metadata,
+		metadata,
 
-        source:
-          'sleeper_trade',
+		source: 'sleeper_trade',
 
-        createdBy
-      }
-    );
+		createdBy
+	});
 
-
-  await db
-    .prepare(`
+	await db
+		.prepare(
+			`
       INSERT INTO draft_capital_trade_reviews (
         season,
         week,
@@ -1347,30 +1097,24 @@ export async function postReviewedTradeCapital(
 
         updated_at =
           unixepoch()
-    `)
-    .bind(
-      Number(season),
+    `
+		)
+		.bind(
+			Number(season),
 
-      week == null
-        ? null
-        : Number(week),
+			week == null ? null : Number(week),
 
-      String(
-        sleeperTransactionId
-      ),
+			String(sleeperTransactionId),
 
-      transfer.transferId,
+			transfer.transferId,
 
-      clean(note),
+			clean(note),
 
-      clean(
-        createdBy
-      )
-    )
-    .run();
+			clean(createdBy)
+		)
+		.run();
 
-
-  return transfer;
+	return transfer;
 }
 
 /*
@@ -1382,35 +1126,20 @@ export async function postReviewedTradeCapital(
  * ============================================================
  */
 
-export async function getDraftCapitalTradeReviews(
-  db,
-  {
-    season
-  } = {}
-) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+export async function getDraftCapitalTradeReviews(db, { season } = {}) {
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
+	const year = Number(season);
 
-  const year =
-    Number(season);
+	if (!Number.isInteger(year)) {
+		throw new Error('A valid season is required.');
+	}
 
-
-  if (
-    !Number.isInteger(year)
-  ) {
-    throw new Error(
-      'A valid season is required.'
-    );
-  }
-
-
-  const result =
-    await db
-      .prepare(`
+	const result = await db
+		.prepare(
+			`
         SELECT
           r.season,
           r.week,
@@ -1481,99 +1210,49 @@ export async function getDraftCapitalTradeReviews(
           ) DESC,
 
           r.reviewed_at DESC
-      `)
-      .bind(
-        year
-      )
-      .all();
+      `
+		)
+		.bind(year)
+		.all();
 
+	return (result.results ?? []).map((row) => {
+		const amountCents = row.amount_cents == null ? null : Number(row.amount_cents);
 
-  return (
-    result.results ?? []
-  ).map(
-    (row) => {
-      const amountCents =
-        row.amount_cents == null
-          ? null
-          : Number(
-              row.amount_cents
-            );
+		return {
+			season: Number(row.season),
 
+			week: row.week == null ? null : Number(row.week),
 
-      return {
-        season:
-          Number(
-            row.season
-          ),
+			transactionId: String(row.sleeper_transaction_id),
 
-        week:
-          row.week == null
-            ? null
-            : Number(
-                row.week
-              ),
+			reviewStatus: row.review_status || 'pending',
 
-        transactionId:
-          String(
-            row.sleeper_transaction_id
-          ),
+			transferId: row.transfer_id || null,
 
-        reviewStatus:
-          row.review_status ||
-          'pending',
+			reviewNote: row.note || null,
 
-        transferId:
-          row.transfer_id ||
-          null,
+			reviewedAt: row.reviewed_at == null ? null : Number(row.reviewed_at),
 
-        reviewNote:
-          row.note ||
-          null,
+			capital:
+				row.transfer_id && amountCents != null
+					? {
+							futuresYear: Number(row.futures_year),
 
-        reviewedAt:
-          row.reviewed_at == null
-            ? null
-            : Number(
-                row.reviewed_at
-              ),
+							fromManagerId: String(row.from_manager_id),
 
-        capital:
-          row.transfer_id &&
-          amountCents != null
-            ? {
-                futuresYear:
-                  Number(
-                    row.futures_year
-                  ),
+							toManagerId: String(row.to_manager_id),
 
-                fromManagerId:
-                  String(
-                    row.from_manager_id
-                  ),
+							amountCents,
 
-                toManagerId:
-                  String(
-                    row.to_manager_id
-                  ),
+							amount: amountCents / 100,
 
-                amountCents,
+							transactionDate: row.transaction_date || null,
 
-                amount:
-                  amountCents /
-                  100,
-
-                transactionDate:
-                  row.transaction_date ||
-                  null,
-
-                note:
-                  row.capital_note ||
-                  null
-              }
-            : null
-      };
-    }
-  );
+							note: row.capital_note || null
+						}
+					: null
+		};
+	});
 }
 
 /*
@@ -1591,94 +1270,59 @@ export async function getDraftCapitalTradeReviews(
  */
 
 export async function updateReviewedTradeCapital(
-  db,
-  {
-    season,
-    week,
+	db,
+	{
+		season,
+		week,
 
-    sleeperTransactionId,
+		sleeperTransactionId,
 
-    futuresYear,
+		futuresYear,
 
-    fromManagerId,
-    toManagerId,
+		fromManagerId,
+		toManagerId,
 
-    amount,
+		amount,
 
-    transactionDate = null,
+		transactionDate = null,
 
-    note = null,
+		note = null,
 
-    metadata = {},
+		metadata = {},
 
-    updatedBy = null
-  } = {}
+		updatedBy = null
+	} = {}
 ) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
+	const year = Number(futuresYear);
 
-  const year =
-    Number(
-      futuresYear
-    );
+	if (!Number.isInteger(year)) {
+		throw new Error('A valid auction capital year is required.');
+	}
 
+	if (!fromManagerId || !toManagerId) {
+		throw new Error('Both teams are required.');
+	}
 
-  if (
-    !Number.isInteger(year)
-  ) {
-    throw new Error(
-      'A valid auction capital year is required.'
-    );
-  }
+	if (String(fromManagerId) === String(toManagerId)) {
+		throw new Error('Capital cannot be transferred to the same team.');
+	}
 
+	const amountCents = Math.abs(dollarsToCents(amount));
 
-  if (
-    !fromManagerId ||
-    !toManagerId
-  ) {
-    throw new Error(
-      'Both teams are required.'
-    );
-  }
+	if (amountCents <= 0) {
+		throw new Error('Transfer amount must be greater than zero.');
+	}
 
-
-  if (
-    String(fromManagerId) ===
-    String(toManagerId)
-  ) {
-    throw new Error(
-      'Capital cannot be transferred to the same team.'
-    );
-  }
-
-
-  const amountCents =
-    Math.abs(
-      dollarsToCents(
-        amount
-      )
-    );
-
-
-  if (
-    amountCents <= 0
-  ) {
-    throw new Error(
-      'Transfer amount must be greater than zero.'
-    );
-  }
-
-
-  /*
-   * Find the existing review + transfer.
-   */
-  const review =
-    await db
-      .prepare(`
+	/*
+	 * Find the existing review + transfer.
+	 */
+	const review = await db
+		.prepare(
+			`
         SELECT
           transfer_id
 
@@ -1688,37 +1332,23 @@ export async function updateReviewedTradeCapital(
           season = ?
           AND sleeper_transaction_id = ?
           AND review_status = 'posted'
-      `)
-      .bind(
-        Number(season),
-        String(
-          sleeperTransactionId
-        )
-      )
-      .first();
+      `
+		)
+		.bind(Number(season), String(sleeperTransactionId))
+		.first();
 
+	if (!review?.transfer_id) {
+		throw new Error('Posted draft-capital transfer could not be found.');
+	}
 
-  if (
-    !review?.transfer_id
-  ) {
-    throw new Error(
-      'Posted draft-capital transfer could not be found.'
-    );
-  }
+	const transferId = String(review.transfer_id);
 
-
-  const transferId =
-    String(
-      review.transfer_id
-    );
-
-
-  /*
-   * Make sure both active ledger halves exist.
-   */
-  const existing =
-    await db
-      .prepare(`
+	/*
+	 * Make sure both active ledger halves exist.
+	 */
+	const existing = await db
+		.prepare(
+			`
         SELECT
           id,
           amount_cents
@@ -1728,91 +1358,46 @@ export async function updateReviewedTradeCapital(
         WHERE
           transfer_id = ?
           AND voided_at IS NULL
-      `)
-      .bind(
-        transferId
-      )
-      .all();
+      `
+		)
+		.bind(transferId)
+		.all();
 
+	const rows = existing.results ?? [];
 
-  const rows =
-    existing.results ??
-    [];
+	const outgoingRow = rows.find((row) => Number(row.amount_cents) < 0);
 
+	const incomingRow = rows.find((row) => Number(row.amount_cents) > 0);
 
-  const outgoingRow =
-    rows.find(
-      (row) =>
-        Number(
-          row.amount_cents
-        ) < 0
-    );
+	if (!outgoingRow || !incomingRow) {
+		throw new Error('The linked ledger transfer is incomplete.');
+	}
 
+	const transactionId = String(sleeperTransactionId);
 
-  const incomingRow =
-    rows.find(
-      (row) =>
-        Number(
-          row.amount_cents
-        ) > 0
-    );
+	const outgoingDedupe = `capital:${transactionId}:${year}:${fromManagerId}:out`;
 
+	const incomingDedupe = `capital:${transactionId}:${year}:${toManagerId}:in`;
 
-  if (
-    !outgoingRow ||
-    !incomingRow
-  ) {
-    throw new Error(
-      'The linked ledger transfer is incomplete.'
-    );
-  }
+	const commonMetadata = {
+		...metadata,
 
+		transferId,
 
-  const transactionId =
-    String(
-      sleeperTransactionId
-    );
+		futuresYear: year,
 
+		dollarAmount: amountCents / 100,
 
-  const outgoingDedupe =
-    `capital:${transactionId}:${year}:${fromManagerId}:out`;
+		edited: true,
 
+		editedAt: new Date().toISOString(),
 
-  const incomingDedupe =
-    `capital:${transactionId}:${year}:${toManagerId}:in`;
+		editedBy: updatedBy ? String(updatedBy) : null
+	};
 
-
-  const commonMetadata = {
-    ...metadata,
-
-    transferId,
-
-    futuresYear:
-      year,
-
-    dollarAmount:
-      amountCents /
-      100,
-
-    edited:
-      true,
-
-    editedAt:
-      new Date()
-        .toISOString(),
-
-    editedBy:
-      updatedBy
-        ? String(
-            updatedBy
-          )
-        : null
-  };
-
-
-  const outgoing =
-    db
-      .prepare(`
+	const outgoing = db
+		.prepare(
+			`
         UPDATE draft_capital_entries
 
         SET
@@ -1833,53 +1418,40 @@ export async function updateReviewedTradeCapital(
         WHERE
           id = ?
           AND voided_at IS NULL
-      `)
-      .bind(
-        year,
+      `
+		)
+		.bind(
+			year,
 
-        String(
-          fromManagerId
-        ),
+			String(fromManagerId),
 
-        -amountCents,
+			-amountCents,
 
-        clean(
-          transactionDate
-        ),
+			clean(transactionDate),
 
-        Number(season),
+			Number(season),
 
-        week == null
-          ? null
-          : Number(
-              week
-            ),
+			week == null ? null : Number(week),
 
-        transactionId,
+			transactionId,
 
-        String(
-          toManagerId
-        ),
+			String(toManagerId),
 
-        clean(note),
+			clean(note),
 
-        JSON.stringify({
-          ...commonMetadata,
-          direction:
-            'away'
-        }),
+			JSON.stringify({
+				...commonMetadata,
+				direction: 'away'
+			}),
 
-        outgoingDedupe,
+			outgoingDedupe,
 
-        Number(
-          outgoingRow.id
-        )
-      );
+			Number(outgoingRow.id)
+		);
 
-
-  const incoming =
-    db
-      .prepare(`
+	const incoming = db
+		.prepare(
+			`
         UPDATE draft_capital_entries
 
         SET
@@ -1900,53 +1472,40 @@ export async function updateReviewedTradeCapital(
         WHERE
           id = ?
           AND voided_at IS NULL
-      `)
-      .bind(
-        year,
+      `
+		)
+		.bind(
+			year,
 
-        String(
-          toManagerId
-        ),
+			String(toManagerId),
 
-        amountCents,
+			amountCents,
 
-        clean(
-          transactionDate
-        ),
+			clean(transactionDate),
 
-        Number(season),
+			Number(season),
 
-        week == null
-          ? null
-          : Number(
-              week
-            ),
+			week == null ? null : Number(week),
 
-        transactionId,
+			transactionId,
 
-        String(
-          fromManagerId
-        ),
+			String(fromManagerId),
 
-        clean(note),
+			clean(note),
 
-        JSON.stringify({
-          ...commonMetadata,
-          direction:
-            'received'
-        }),
+			JSON.stringify({
+				...commonMetadata,
+				direction: 'received'
+			}),
 
-        incomingDedupe,
+			incomingDedupe,
 
-        Number(
-          incomingRow.id
-        )
-      );
+			Number(incomingRow.id)
+		);
 
-
-  const updateReview =
-    db
-      .prepare(`
+	const updateReview = db
+		.prepare(
+			`
         UPDATE draft_capital_trade_reviews
 
         SET
@@ -1959,53 +1518,33 @@ export async function updateReviewedTradeCapital(
         WHERE
           season = ?
           AND sleeper_transaction_id = ?
-      `)
-      .bind(
-        week == null
-          ? null
-          : Number(
-              week
-            ),
+      `
+		)
+		.bind(
+			week == null ? null : Number(week),
 
-        clean(note),
+			clean(note),
 
-        clean(
-          updatedBy
-        ),
+			clean(updatedBy),
 
-        Number(season),
+			Number(season),
 
-        transactionId
-      );
+			transactionId
+		);
 
+	await db.batch([outgoing, incoming, updateReview]);
 
-  await db.batch([
-    outgoing,
-    incoming,
-    updateReview
-  ]);
+	return {
+		transferId,
 
+		futuresYear: year,
 
-  return {
-    transferId,
+		amount: amountCents / 100,
 
-    futuresYear:
-      year,
+		fromManagerId: String(fromManagerId),
 
-    amount:
-      amountCents /
-      100,
-
-    fromManagerId:
-      String(
-        fromManagerId
-      ),
-
-    toManagerId:
-      String(
-        toManagerId
-      )
-  };
+		toManagerId: String(toManagerId)
+	};
 }
 
 /*
@@ -2018,23 +1557,16 @@ export async function updateReviewedTradeCapital(
  */
 
 export async function removeReviewedTradeCapital(
-  db,
-  {
-    season,
-    sleeperTransactionId,
-    removedBy = null
-  } = {}
+	db,
+	{ season, sleeperTransactionId, removedBy = null } = {}
 ) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
-
-  const review =
-    await db
-      .prepare(`
+	const review = await db
+		.prepare(
+			`
         SELECT
           transfer_id
 
@@ -2043,35 +1575,25 @@ export async function removeReviewedTradeCapital(
         WHERE
           season = ?
           AND sleeper_transaction_id = ?
-      `)
-      .bind(
-        Number(season),
+      `
+		)
+		.bind(
+			Number(season),
 
-        String(
-          sleeperTransactionId
-        )
-      )
-      .first();
+			String(sleeperTransactionId)
+		)
+		.first();
 
+	if (!review?.transfer_id) {
+		throw new Error('No linked capital transfer was found.');
+	}
 
-  if (
-    !review?.transfer_id
-  ) {
-    throw new Error(
-      'No linked capital transfer was found.'
-    );
-  }
+	const transferId = String(review.transfer_id);
 
-
-  const transferId =
-    String(
-      review.transfer_id
-    );
-
-
-  await db.batch([
-    db
-      .prepare(`
+	await db.batch([
+		db
+			.prepare(
+				`
         UPDATE draft_capital_entries
 
         SET
@@ -2087,17 +1609,17 @@ export async function removeReviewedTradeCapital(
         WHERE
           transfer_id = ?
           AND voided_at IS NULL
-      `)
-      .bind(
-        clean(
-          removedBy
-        ),
+      `
+			)
+			.bind(
+				clean(removedBy),
 
-        transferId
-      ),
+				transferId
+			),
 
-    db
-      .prepare(`
+		db
+			.prepare(
+				`
         UPDATE draft_capital_trade_reviews
 
         SET
@@ -2122,24 +1644,20 @@ export async function removeReviewedTradeCapital(
         WHERE
           season = ?
           AND sleeper_transaction_id = ?
-      `)
-      .bind(
-        clean(
-          removedBy
-        ),
+      `
+			)
+			.bind(
+				clean(removedBy),
 
-        Number(season),
+				Number(season),
 
-        String(
-          sleeperTransactionId
-        )
-      )
-  ]);
+				String(sleeperTransactionId)
+			)
+	]);
 
-
-  return {
-    transferId
-  };
+	return {
+		transferId
+	};
 }
 /*
  * ============================================================
@@ -2147,21 +1665,12 @@ export async function removeReviewedTradeCapital(
  * ============================================================
  */
 
-export async function getDraftCapitalTradeInbox(
-  db,
-  {
-    season
-  } = {}
-) {
-  const year =
-    Number(
-      season
-    );
+export async function getDraftCapitalTradeInbox(db, { season } = {}) {
+	const year = Number(season);
 
-
-  const result =
-    await db
-      .prepare(`
+	const result = await db
+		.prepare(
+			`
         SELECT
           t.transaction_id,
           t.season,
@@ -2216,88 +1725,39 @@ export async function getDraftCapitalTradeInbox(
             t.created_at,
             0
           ) DESC
-      `)
-      .bind(
-        year
-      )
-      .all();
+      `
+		)
+		.bind(year)
+		.all();
 
+	return (result.results ?? []).map((row) => ({
+		transactionId: String(row.transaction_id),
 
-  return (
-    result.results ?? []
-  ).map(
-    (row) => ({
-      transactionId:
-        String(
-          row.transaction_id
-        ),
+		season: Number(row.season),
 
-      season:
-        Number(
-          row.season
-        ),
+		week: row.round == null ? null : Number(row.round),
 
-      week:
-        row.round == null
-          ? null
-          : Number(
-              row.round
-            ),
+		status: row.status,
 
-      status:
-        row.status,
+		rosterIds: parseJson(row.roster_ids_json, []),
 
-      rosterIds:
-        parseJson(
-          row.roster_ids_json,
-          []
-        ),
+		adds: parseJson(row.adds_json, {}),
 
-      adds:
-        parseJson(
-          row.adds_json,
-          {}
-        ),
+		drops: parseJson(row.drops_json, {}),
 
-      drops:
-        parseJson(
-          row.drops_json,
-          {}
-        ),
+		draftPicks: parseJson(row.draft_picks_json, []),
 
-      draftPicks:
-        parseJson(
-          row.draft_picks_json,
-          []
-        ),
+		createdAt: Number(row.created_at || 0),
 
-      createdAt:
-        Number(
-          row.created_at || 0
-        ),
+		reviewStatus: row.review_status || 'pending',
 
-      reviewStatus:
-        row.review_status ||
-        'pending',
+		transferId: row.transfer_id || null,
 
-      transferId:
-        row.transfer_id ||
-        null,
+		reviewNote: row.review_note || null,
 
-      reviewNote:
-        row.review_note ||
-        null,
-
-      reviewedAt:
-        row.reviewed_at == null
-          ? null
-          : Number(
-              row.reviewed_at
-            )
-    })
-  );
+		reviewedAt: row.reviewed_at == null ? null : Number(row.reviewed_at)
+	}));
 }
-
 
 /*
  * ============================================================
@@ -2305,44 +1765,26 @@ export async function getDraftCapitalTradeInbox(
  * ============================================================
  */
 
-export async function voidDraftCapitalEntry(
-  db,
-  {
-    entryId,
-    voidedBy = null
-  } = {}
-) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+export async function voidDraftCapitalEntry(db, { entryId, voidedBy = null } = {}) {
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
+	const id = Number(entryId);
 
-  const id =
-    Number(
-      entryId
-    );
+	if (!Number.isInteger(id)) {
+		throw new Error('A valid ledger entry ID is required.');
+	}
 
-
-  if (
-    !Number.isInteger(id)
-  ) {
-    throw new Error(
-      'A valid ledger entry ID is required.'
-    );
-  }
-
-
-  /*
-   * First find out WHAT we're voiding.
-   *
-   * If it belongs to a transfer, we want to void the
-   * entire transfer pair rather than only one side.
-   */
-  const entry =
-    await db
-      .prepare(`
+	/*
+	 * First find out WHAT we're voiding.
+	 *
+	 * If it belongs to a transfer, we want to void the
+	 * entire transfer pair rather than only one side.
+	 */
+	const entry = await db
+		.prepare(
+			`
         SELECT
           id,
           transfer_id,
@@ -2355,40 +1797,27 @@ export async function voidDraftCapitalEntry(
         WHERE
           id = ?
           AND voided_at IS NULL
-      `)
-      .bind(
-        id
-      )
-      .first();
+      `
+		)
+		.bind(id)
+		.first();
 
+	if (!entry) {
+		throw new Error('Active ledger entry could not be found.');
+	}
 
-  if (!entry) {
-    throw new Error(
-      'Active ledger entry could not be found.'
-    );
-  }
+	const transferId = entry.transfer_id ? String(entry.transfer_id) : null;
 
+	/*
+	 * See whether this transfer came from a reviewed
+	 * Sleeper trade.
+	 */
+	let tradeReview = null;
 
-  const transferId =
-    entry.transfer_id
-      ? String(
-          entry.transfer_id
-        )
-      : null;
-
-
-  /*
-   * See whether this transfer came from a reviewed
-   * Sleeper trade.
-   */
-  let tradeReview =
-    null;
-
-
-  if (transferId) {
-    tradeReview =
-      await db
-        .prepare(`
+	if (transferId) {
+		tradeReview = await db
+			.prepare(
+				`
           SELECT
             season,
             sleeper_transaction_id,
@@ -2401,31 +1830,28 @@ export async function voidDraftCapitalEntry(
             transfer_id = ?
 
           LIMIT 1
-        `)
-        .bind(
-          transferId
-        )
-        .first();
-  }
+        `
+			)
+			.bind(transferId)
+			.first();
+	}
 
+	const statements = [];
 
-  const statements =
-    [];
+	if (transferId) {
+		/*
+		 * ========================================================
+		 * VOID THE ENTIRE TRANSFER
+		 *
+		 * Never leave one team with +$20 while the other team's
+		 * -$20 has been voided.
+		 * ========================================================
+		 */
 
-
-  if (transferId) {
-    /*
-     * ========================================================
-     * VOID THE ENTIRE TRANSFER
-     *
-     * Never leave one team with +$20 while the other team's
-     * -$20 has been voided.
-     * ========================================================
-     */
-
-    statements.push(
-      db
-        .prepare(`
+		statements.push(
+			db
+				.prepare(
+					`
           UPDATE draft_capital_entries
 
           SET
@@ -2449,32 +1875,29 @@ export async function voidDraftCapitalEntry(
           WHERE
             transfer_id = ?
             AND voided_at IS NULL
-        `)
-        .bind(
-          voidedBy
-            ? String(
-                voidedBy
-              )
-            : null,
+        `
+				)
+				.bind(
+					voidedBy ? String(voidedBy) : null,
 
-          transferId
-        )
-    );
+					transferId
+				)
+		);
 
+		/*
+		 * ========================================================
+		 * REOPEN THE SLEEPER TRADE
+		 *
+		 * If the capital transfer has been voided, "posted" is no
+		 * longer a truthful review state.
+		 * ========================================================
+		 */
 
-    /*
-     * ========================================================
-     * REOPEN THE SLEEPER TRADE
-     *
-     * If the capital transfer has been voided, "posted" is no
-     * longer a truthful review state.
-     * ========================================================
-     */
-
-    if (tradeReview) {
-      statements.push(
-        db
-          .prepare(`
+		if (tradeReview) {
+			statements.push(
+				db
+					.prepare(
+						`
             UPDATE draft_capital_trade_reviews
 
             SET
@@ -2511,25 +1934,24 @@ export async function voidDraftCapitalEntry(
 
             WHERE
               transfer_id = ?
-          `)
-          .bind(
-            transferId
-          )
-      );
-    }
+          `
+					)
+					.bind(transferId)
+			);
+		}
+	} else {
+		/*
+		 * ========================================================
+		 * NORMAL NON-TRANSFER LEDGER ENTRY
+		 *
+		 * Manual adjustment, auction funding, auction spend, etc.
+		 * ========================================================
+		 */
 
-  } else {
-    /*
-     * ========================================================
-     * NORMAL NON-TRANSFER LEDGER ENTRY
-     *
-     * Manual adjustment, auction funding, auction spend, etc.
-     * ========================================================
-     */
-
-    statements.push(
-      db
-        .prepare(`
+		statements.push(
+			db
+				.prepare(
+					`
           UPDATE draft_capital_entries
 
           SET
@@ -2548,50 +1970,31 @@ export async function voidDraftCapitalEntry(
           WHERE
             id = ?
             AND voided_at IS NULL
-        `)
-        .bind(
-          voidedBy
-            ? String(
-                voidedBy
-              )
-            : null,
+        `
+				)
+				.bind(
+					voidedBy ? String(voidedBy) : null,
 
-          id
-        )
-    );
-  }
+					id
+				)
+		);
+	}
 
+	await db.batch(statements);
 
-  await db.batch(
-    statements
-  );
+	return {
+		entryId: id,
 
+		transferId,
 
-  return {
-    entryId:
-      id,
+		voidedTransfer: Boolean(transferId),
 
-    transferId,
+		reopenedTradeReview: Boolean(tradeReview),
 
-    voidedTransfer:
-      Boolean(
-        transferId
-      ),
-
-    reopenedTradeReview:
-      Boolean(
-        tradeReview
-      ),
-
-    sleeperTransactionId:
-      tradeReview
-        ?.sleeper_transaction_id
-        ? String(
-            tradeReview
-              .sleeper_transaction_id
-          )
-        : null
-  };
+		sleeperTransactionId: tradeReview?.sleeper_transaction_id
+			? String(tradeReview.sleeper_transaction_id)
+			: null
+	};
 }
 /*
  * ============================================================
@@ -2599,25 +2002,16 @@ export async function voidDraftCapitalEntry(
  * ============================================================
  */
 
-export async function getLegacyDraftCapitalImportStatus(
-  db,
-  {
-    year
-  } = {}
-) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+export async function getLegacyDraftCapitalImportStatus(db, { year } = {}) {
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
-  const futuresYear =
-    Number(year);
+	const futuresYear = Number(year);
 
-
-  const legacy =
-    await db
-      .prepare(`
+	const legacy = await db
+		.prepare(
+			`
         SELECT
           COUNT(*) AS row_count,
           MIN(transaction_date) AS first_date,
@@ -2629,16 +2023,14 @@ export async function getLegacyDraftCapitalImportStatus(
           futures_year = ?
           AND source = 'legacy_sheet'
           AND voided_at IS NULL
-      `)
-      .bind(
-        futuresYear
-      )
-      .first();
+      `
+		)
+		.bind(futuresYear)
+		.first();
 
-
-  const opening =
-    await db
-      .prepare(`
+	const opening = await db
+		.prepare(
+			`
         SELECT
           COUNT(*) AS row_count
 
@@ -2648,34 +2040,21 @@ export async function getLegacyDraftCapitalImportStatus(
           futures_year = ?
           AND entry_type = 'opening_balance'
           AND voided_at IS NULL
-      `)
-      .bind(
-        futuresYear
-      )
-      .first();
+      `
+		)
+		.bind(futuresYear)
+		.first();
 
+	return {
+		rowCount: Number(legacy?.row_count || 0),
 
-  return {
-    rowCount:
-      Number(
-        legacy?.row_count || 0
-      ),
+		firstDate: legacy?.first_date || null,
 
-    firstDate:
-      legacy?.first_date ||
-      null,
+		lastDate: legacy?.last_date || null,
 
-    lastDate:
-      legacy?.last_date ||
-      null,
-
-    openingBalanceCount:
-      Number(
-        opening?.row_count || 0
-      )
-  };
+		openingBalanceCount: Number(opening?.row_count || 0)
+	};
 }
-
 
 /*
  * ============================================================
@@ -2696,56 +2075,33 @@ export async function getLegacyDraftCapitalImportStatus(
  */
 
 export async function importLegacyDraftCapitalLedger(
-  db,
-  {
-    futuresYear,
-    rows,
-    createdBy = null
-  } = {}
+	db,
+	{ futuresYear, rows, createdBy = null } = {}
 ) {
-  if (!db) {
-    throw new Error(
-      'D1 database binding is required.'
-    );
-  }
+	if (!db) {
+		throw new Error('D1 database binding is required.');
+	}
 
+	const year = Number(futuresYear);
 
-  const year =
-    Number(
-      futuresYear
-    );
+	if (!Number.isInteger(year)) {
+		throw new Error('A valid futures year is required.');
+	}
 
+	if (!Array.isArray(rows) || !rows.length) {
+		throw new Error('No legacy ledger rows were supplied.');
+	}
 
-  if (
-    !Number.isInteger(year)
-  ) {
-    throw new Error(
-      'A valid futures year is required.'
-    );
-  }
-
-
-  if (
-    !Array.isArray(rows) ||
-    !rows.length
-  ) {
-    throw new Error(
-      'No legacy ledger rows were supplied.'
-    );
-  }
-
-
-  /*
-   * D1 batches are kept intentionally modest.
-   *
-   * The import is idempotent because every CSV row
-   * gets its own deterministic dedupe key.
-   */
-  const statements =
-    rows.map(
-      (row) =>
-        db
-          .prepare(`
+	/*
+	 * D1 batches are kept intentionally modest.
+	 *
+	 * The import is idempotent because every CSV row
+	 * gets its own deterministic dedupe key.
+	 */
+	const statements = rows.map((row) =>
+		db
+			.prepare(
+				`
             INSERT OR IGNORE INTO draft_capital_entries (
               futures_year,
               manager_id,
@@ -2777,74 +2133,47 @@ export async function importLegacyDraftCapitalLedger(
               ?,
               unixepoch()
             )
-          `)
-          .bind(
-            year,
+          `
+			)
+			.bind(
+				year,
 
-            String(
-              row.managerId
-            ),
+				String(row.managerId),
 
-            Number(
-              row.amountCents
-            ),
+				Number(row.amountCents),
 
-            String(
-              row.entryType
-            ),
+				String(row.entryType),
 
-            row.transactionDate ||
-              null,
+				row.transactionDate || null,
 
-            row.transferId ||
-              null,
+				row.transferId || null,
 
-            row.counterpartyManagerId ||
-              null,
+				row.counterpartyManagerId || null,
 
-            row.note ||
-              null,
+				row.note || null,
 
-            JSON.stringify(
-              row.metadata ||
-              {}
-            ),
+				JSON.stringify(row.metadata || {}),
 
-            createdBy
-              ? String(createdBy)
-              : null,
+				createdBy ? String(createdBy) : null,
 
-            String(
-              row.dedupeKey
-            )
-          )
-    );
+				String(row.dedupeKey)
+			)
+	);
 
+	const chunkSize = 40;
 
-  const chunkSize = 40;
+	for (let index = 0; index < statements.length; index += chunkSize) {
+		await db.batch(statements.slice(index, index + chunkSize));
+	}
 
-
-  for (
-    let index = 0;
-    index < statements.length;
-    index += chunkSize
-  ) {
-    await db.batch(
-      statements.slice(
-        index,
-        index + chunkSize
-      )
-    );
-  }
-
-
-  /*
-   * Historical entries are safely in D1.
-   *
-   * NOW retire the temporary snapshot rows.
-   */
-  await db
-    .prepare(`
+	/*
+	 * Historical entries are safely in D1.
+	 *
+	 * NOW retire the temporary snapshot rows.
+	 */
+	await db
+		.prepare(
+			`
       UPDATE draft_capital_entries
 
       SET
@@ -2861,20 +2190,18 @@ export async function importLegacyDraftCapitalLedger(
         futures_year = ?
         AND entry_type = 'opening_balance'
         AND voided_at IS NULL
-    `)
-    .bind(
-      createdBy
-        ? String(createdBy)
-        : null,
+    `
+		)
+		.bind(
+			createdBy ? String(createdBy) : null,
 
-      year
-    )
-    .run();
+			year
+		)
+		.run();
 
-
-  const stored =
-    await db
-      .prepare(`
+	const stored = await db
+		.prepare(
+			`
         SELECT
           COUNT(*) AS row_count
 
@@ -2884,23 +2211,16 @@ export async function importLegacyDraftCapitalLedger(
           futures_year = ?
           AND source = 'legacy_sheet'
           AND voided_at IS NULL
-      `)
-      .bind(
-        year
-      )
-      .first();
+      `
+		)
+		.bind(year)
+		.first();
 
+	return {
+		futuresYear: year,
 
-  return {
-    futuresYear:
-      year,
+		storedRows: Number(stored?.row_count || 0),
 
-    storedRows:
-      Number(
-        stored?.row_count || 0
-      ),
-
-    submittedRows:
-      rows.length
-  };
+		submittedRows: rows.length
+	};
 }
