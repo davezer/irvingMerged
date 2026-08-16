@@ -1,249 +1,1569 @@
 <script>
-  export let data;
+	export let data;
 
-  function dateLabel(
-    post
-  ) {
-    const value =
-      post.publishedAt ||
-      (
-        post.updatedAt
-          ? new Date(
-              post.updatedAt *
-              1000
-            ).toISOString()
-          : null
-      );
+	$: posts =
+		Array.isArray(data?.posts)
+			? data.posts
+			: [];
 
-    if (!value) {
-      return '—';
-    }
+	$: publishedCount =
+		posts.filter(
+			(post) =>
+				String(post.status).toLowerCase() ===
+				'published'
+		).length;
 
-    return new Date(
-      value
-    ).toLocaleString();
-  }
+	$: draftCount =
+		posts.filter(
+			(post) =>
+				String(post.status).toLowerCase() !==
+				'published'
+		).length;
+
+	$: manualCount =
+		posts.filter(
+			(post) =>
+				post.sourceType === 'manual'
+		).length;
+
+	$: recapCount =
+		posts.filter(
+			(post) =>
+				post.sourceType === 'weekly_recap'
+		).length;
+
+
+	function dateLabel(post) {
+		const value =
+			post.publishedAt ||
+			(
+				post.updatedAt
+					? new Date(
+							post.updatedAt * 1000
+						).toISOString()
+					: null
+			);
+
+		if (!value) {
+			return '—';
+		}
+
+		const date =
+			new Date(value);
+
+		if (
+			Number.isNaN(
+				date.getTime()
+			)
+		) {
+			return '—';
+		}
+
+		return date.toLocaleString(
+			'en-US',
+			{
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit'
+			}
+		);
+	}
+
+
+	function typeLabel(post) {
+		if (
+			post.sourceType ===
+			'weekly_recap'
+		) {
+			return `Week ${post.recapWeek} Recap`;
+		}
+
+		const labels = {
+			feature:
+				'Feature',
+
+			commissioner:
+				'Commissioner',
+
+			league_news:
+				'League News',
+
+			power_rankings:
+				'Power Rankings',
+
+			announcement:
+				'Announcement',
+
+			opinion:
+				'Opinion'
+		};
+
+		return (
+			labels[post.postType] ||
+			String(
+				post.postType ||
+					'Article'
+			)
+				.replaceAll('_', ' ')
+		);
+	}
+
+
+	function statusLabel(post) {
+		const status =
+			String(
+				post.status ||
+					'draft'
+			).toLowerCase();
+
+		if (
+			status === 'published'
+		) {
+			return 'Published';
+		}
+
+		return 'Draft';
+	}
+
+
+	function statusClass(post) {
+		return String(
+			post.status ||
+				'draft'
+		).toLowerCase() ===
+			'published'
+			? 'published'
+			: 'draft';
+	}
 </script>
 
+
+<svelte:head>
+	<title>
+		Irving Weekly Desk | Irving Collective
+	</title>
+
+	<meta
+		name="description"
+		content="Manage stories, automated weekly recaps, drafts, and published articles for The Irving Weekly."
+	/>
+</svelte:head>
+
+
 <div class="weekly-admin">
-  <header class="hero">
-    <div>
-      <div class="eyebrow">
-        League Media
-      </div>
 
-      <h1>
-        The Irving Weekly
-      </h1>
+	<!-- ==================================================
+	     HERO
+	     ================================================== -->
 
-      <p>
-        AI recaps, commissioner notes, league news,
-        power rankings, features, and other nonsense.
-      </p>
-    </div>
+	<header class="weekly-hero">
 
-    <a
-      class="new-button"
-      href="/admin/league/irving-weekly/new"
-    >
-      + New Article
-    </a>
-  </header>
+		<div class="hero-main">
 
-  <section class="post-list">
-    {#if data.posts.length}
-      {#each data.posts as post}
-        <article class="post-row">
-          <div class="post-main">
-            <div class="meta">
-              <span class:published={post.status === 'published'}>
-                {post.status}
-              </span>
+			<div class="eyebrow">
+				League Media
+			</div>
 
-              <span>
-                {post.sourceType === 'weekly_recap'
-                  ? `Week ${post.recapWeek} Recap`
-                  : post.postType.replaceAll('_', ' ')}
-              </span>
-            </div>
+			<h1>
+				The Irving Weekly
+			</h1>
 
-            <h2>
-              {post.title}
-            </h2>
+			<p>
+				The league newsroom. Create stories,
+				manage drafts, review automated recaps,
+				and decide what actually makes print.
+			</p>
 
-            {#if post.subtitle}
-              <p>
-                {post.subtitle}
-              </p>
-            {/if}
 
-            <small>
-              {dateLabel(post)}
-            </small>
-          </div>
+			<div class="hero-actions">
 
-          <div class="post-actions">
-            {#if post.sourceType === 'manual'}
-              <a
-                href={`/admin/league/irving-weekly/${post.id}`}
-              >
-                Edit
-              </a>
-            {:else}
-              <a
-                href={`/admin/league/weekly-recap?season=${post.recapSeason}&week=${post.recapWeek}`}
-              >
-                Recap Lab
-              </a>
-            {/if}
-          </div>
-        </article>
-      {/each}
-    {:else}
-      <div class="empty">
-        No Irving Weekly posts yet.
-      </div>
-    {/if}
-  </section>
+				<a
+					class="primary-action"
+					href="/admin/league/irving-weekly/new"
+				>
+					<span>
+						+
+					</span>
+
+					New Article
+				</a>
+
+
+				<a
+					class="secondary-action"
+					href="/admin/league/weekly-recap"
+				>
+					Recap Lab
+				</a>
+
+
+				<a
+					class="secondary-action"
+					href="/league/weekly"
+				>
+					View Public Weekly →
+				</a>
+
+			</div>
+
+		</div>
+
+
+		<div class="publication-mark">
+
+			<div class="iw-mark">
+				IW
+			</div>
+
+			<div>
+				<span>
+					Irving Collective
+				</span>
+
+				<strong>
+					Newsroom
+				</strong>
+
+				<small>
+					League publication desk
+				</small>
+			</div>
+
+		</div>
+
+
+		<div
+			class="hero-watermark"
+			aria-hidden="true"
+		>
+			WEEKLY
+		</div>
+
+	</header>
+
+
+	<!-- ==================================================
+	     PUBLICATION SUMMARY
+	     ================================================== -->
+
+	<section
+		class="summary-strip"
+		aria-label="Publication summary"
+	>
+
+		<div>
+			<span>
+				Total Stories
+			</span>
+
+			<strong>
+				{posts.length}
+			</strong>
+		</div>
+
+
+		<div>
+			<span>
+				Published
+			</span>
+
+			<strong>
+				{publishedCount}
+			</strong>
+		</div>
+
+
+		<div>
+			<span>
+				Drafts
+			</span>
+
+			<strong>
+				{draftCount}
+			</strong>
+		</div>
+
+
+		<div>
+			<span>
+				Manual
+			</span>
+
+			<strong>
+				{manualCount}
+			</strong>
+		</div>
+
+
+		<div>
+			<span>
+				Recaps
+			</span>
+
+			<strong>
+				{recapCount}
+			</strong>
+		</div>
+
+	</section>
+
+
+	<!-- ==================================================
+	     STORY DESK
+	     ================================================== -->
+
+	<section class="story-desk">
+
+		<header class="section-heading">
+
+			<div>
+
+				<div class="section-kicker">
+					Publication Archive
+				</div>
+
+				<h2>
+					Story Desk
+				</h2>
+
+				<p>
+					Published stories, works in progress,
+					and automated weekly recaps.
+				</p>
+
+			</div>
+
+
+			<div class="story-count">
+				{posts.length}
+				stor{posts.length === 1 ? 'y' : 'ies'}
+			</div>
+
+		</header>
+
+
+		{#if posts.length}
+
+			<div class="post-list">
+
+				{#each posts as post, index}
+
+					<article class="post-row">
+
+						<div class="story-number">
+							{String(index + 1)
+								.padStart(
+									2,
+									'0'
+								)}
+						</div>
+
+
+						<div class="post-main">
+
+							<div class="meta">
+
+								<span
+									class={`status ${statusClass(post)}`}
+								>
+									{statusLabel(post)}
+								</span>
+
+
+								<span class="story-type">
+									{typeLabel(post)}
+								</span>
+
+
+								{#if post.sourceType === 'weekly_recap'}
+									<span class="source-label">
+										Automated
+									</span>
+								{:else}
+									<span class="source-label">
+										Manual
+									</span>
+								{/if}
+
+							</div>
+
+
+							<h3>
+								{post.title}
+							</h3>
+
+
+							{#if post.subtitle}
+
+								<p>
+									{post.subtitle}
+								</p>
+
+							{/if}
+
+
+							<div class="post-date">
+								{dateLabel(post)}
+							</div>
+
+						</div>
+
+
+						<div class="post-actions">
+
+							{#if post.sourceType === 'manual'}
+
+								<a
+									href={`/admin/league/irving-weekly/${post.id}`}
+								>
+									<span>
+										Edit Story
+									</span>
+
+									<strong>
+										→
+									</strong>
+								</a>
+
+							{:else}
+
+								<a
+									href={`/admin/league/weekly-recap?season=${post.recapSeason}&week=${post.recapWeek}`}
+								>
+									<span>
+										Open Recap Lab
+									</span>
+
+									<strong>
+										→
+									</strong>
+								</a>
+
+							{/if}
+
+						</div>
+
+					</article>
+
+				{/each}
+
+			</div>
+
+		{:else}
+
+			<div class="empty">
+
+				<div class="empty-mark">
+					IW
+				</div>
+
+				<div class="section-kicker">
+					Newsroom
+				</div>
+
+				<h3>
+					The presses are quiet.
+				</h3>
+
+				<p>
+					No Irving Weekly stories exist yet.
+				</p>
+
+
+				<a
+					href="/admin/league/irving-weekly/new"
+				>
+					Create the First Article →
+				</a>
+
+			</div>
+
+		{/if}
+
+	</section>
+
 </div>
 
+
 <style>
-  .weekly-admin {
-    display: grid;
-    gap: 18px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-bottom: 50px;
-  }
+	/* ==================================================
+	   PAGE
+	   ================================================== */
 
-  .hero {
-    display: flex;
-    justify-content: space-between;
-    gap: 24px;
-    align-items: center;
-    padding: 22px;
-    border: 2px solid #070808;
-    border-radius: 16px;
-    background:
-      linear-gradient(
-        180deg,
-        var(--bug-gray),
-        var(--bug-charcoal)
-      );
-  }
+	.weekly-admin {
+		width: 100%;
+		max-width: 1320px;
 
-  .eyebrow,
-  .meta {
-    color: var(--bug-yellow);
-    font-family: var(--font-score);
-    font-size: .68rem;
-    font-weight: 950;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-  }
+		display: grid;
+		gap: 18px;
 
-  h1 {
-    margin: 6px 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 6vw, 4.4rem);
-  }
+		margin: 0 auto;
 
-  .hero p {
-    margin: 8px 0 0;
-    color: var(--muted);
-  }
+		padding-bottom: 60px;
+	}
 
-  .new-button,
-  .post-actions a {
-    color: inherit;
-    text-decoration: none;
-  }
 
-  .new-button {
-    padding: 12px 16px;
-    border: 2px solid #070808;
-    border-radius: 8px;
-    background:
-      linear-gradient(
-        180deg,
-        #83df9d,
-        #329759
-      );
-    color: #07120a;
-    font-family: var(--font-score);
-    font-weight: 950;
-    text-transform: uppercase;
-  }
+	.eyebrow,
+	.section-kicker {
+		color:
+			var(--brand-gold);
 
-  .post-list {
-    display: grid;
-    gap: 10px;
-  }
+		font-size: .56rem;
 
-  .post-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 18px;
-    border: 2px solid #070808;
-    border-radius: 12px;
-    background:
-      linear-gradient(
-        180deg,
-        #303735,
-        #141716
-      );
-  }
+		font-weight: 800;
 
-  .post-main {
-    display: grid;
-    gap: 6px;
-  }
+		letter-spacing: .15em;
 
-  .meta {
-    display: flex;
-    gap: 12px;
-  }
+		text-transform: uppercase;
+	}
 
-  .meta .published {
-    color: #7ee59a;
-  }
 
-  .post-row h2,
-  .post-row p {
-    margin: 0;
-  }
+	/* ==================================================
+	   HERO
+	   ================================================== */
 
-  .post-row p,
-  .post-row small {
-    color: var(--muted);
-  }
+	.weekly-hero {
+		position: relative;
 
-  .post-actions {
-    display: flex;
-    align-items: center;
-  }
+		min-height: 280px;
 
-  .post-actions a {
-    padding: 8px 12px;
-    border:
-      1px solid rgba(255,255,255,.2);
-    border-radius: 7px;
-    color: #67dbe8;
-    font-family: var(--font-score);
-    font-weight: 900;
-    text-transform: uppercase;
-  }
+		display: grid;
 
-  .empty {
-    padding: 24px;
-    color: var(--muted);
-  }
+		grid-template-columns:
+			minmax(0, 1fr)
+			250px;
 
-  @media (max-width: 700px) {
-    .hero,
-    .post-row {
-      display: grid;
-    }
-  }
+		align-items: center;
+
+		gap: 40px;
+
+		overflow: hidden;
+
+		padding:
+			clamp(
+				30px,
+				5vw,
+				46px
+			);
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius:
+			var(--radius-lg);
+
+		background:
+			linear-gradient(
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.05
+				),
+				transparent 42%
+			),
+			var(--panel-strong);
+
+		box-shadow:
+			var(--shadow-panel);
+	}
+
+
+	.hero-main {
+		position: relative;
+
+		z-index: 2;
+
+		min-width: 0;
+	}
+
+
+	.weekly-hero h1 {
+		margin:
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				4rem,
+				6.8vw,
+				6.7rem
+			);
+
+		font-weight: 400;
+
+		line-height: .86;
+
+		letter-spacing: -.02em;
+
+		text-transform: uppercase;
+	}
+
+
+	.weekly-hero p {
+		max-width: 720px;
+
+		margin:
+			22px 0 0;
+
+		color:
+			var(--muted);
+
+		font-size: .96rem;
+
+		font-weight: 600;
+
+		line-height: 1.55;
+	}
+
+
+	/* ==================================================
+	   HERO ACTIONS
+	   ================================================== */
+
+	.hero-actions {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		gap: 8px;
+
+		margin-top: 25px;
+	}
+
+
+	.hero-actions a {
+		min-height: 39px;
+
+		display: inline-flex;
+
+		align-items: center;
+
+		justify-content: center;
+
+		gap: 7px;
+
+		padding:
+			8px 12px;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius: 3px;
+
+		font-size: .56rem;
+
+		font-weight: 850;
+
+		letter-spacing: .07em;
+
+		text-decoration: none;
+
+		text-transform: uppercase;
+
+		transition:
+			border-color 120ms ease,
+			color 120ms ease,
+			background 120ms ease,
+			transform 120ms ease;
+	}
+
+
+	.hero-actions a:hover {
+		transform:
+			translateY(-1px);
+	}
+
+
+	.primary-action {
+		border-color:
+			var(--brand-gold) !important;
+
+		background:
+			var(--brand-gold);
+
+		color:
+			var(--brand-charcoal);
+	}
+
+
+	.primary-action:hover {
+		background:
+			var(--brand-sand);
+
+		border-color:
+			var(--brand-sand) !important;
+	}
+
+
+	.primary-action > span {
+		font-size: .9rem;
+
+		line-height: .5;
+	}
+
+
+	.secondary-action {
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.35
+			);
+
+		color:
+			var(--brand-sand);
+	}
+
+
+	.secondary-action:hover {
+		border-color:
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+	}
+
+
+	/* ==================================================
+	   NEWSROOM IDENTITY
+	   ================================================== */
+
+	.publication-mark {
+		position: relative;
+
+		z-index: 2;
+
+		min-height: 180px;
+
+		display: flex;
+
+		align-items: center;
+
+		justify-content: center;
+
+		gap: 16px;
+
+		padding: 20px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.22
+			);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.38
+			);
+	}
+
+
+	.iw-mark {
+		flex: 0 0 auto;
+
+		width: 62px;
+		height: 62px;
+
+		display: grid;
+
+		place-items: center;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.45rem;
+	}
+
+
+	.publication-mark > div:last-child {
+		display: grid;
+
+		gap: 2px;
+	}
+
+
+	.publication-mark span {
+		color:
+			var(--brand-stone);
+
+		font-size: .48rem;
+
+		font-weight: 800;
+
+		letter-spacing: .14em;
+
+		text-transform: uppercase;
+	}
+
+
+	.publication-mark strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+
+		text-transform: uppercase;
+	}
+
+
+	.publication-mark small {
+		margin-top: 5px;
+
+		color:
+			var(--brand-gold);
+
+		font-size: .45rem;
+
+		font-weight: 750;
+
+		letter-spacing: .08em;
+
+		text-transform: uppercase;
+	}
+
+
+	.hero-watermark {
+		position: absolute;
+
+		right: -25px;
+		bottom: -45px;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.017
+			);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				8rem,
+				14vw,
+				13rem
+			);
+
+		line-height: 1;
+
+		pointer-events: none;
+	}
+
+
+	/* ==================================================
+	   SUMMARY
+	   ================================================== */
+
+	.summary-strip {
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				5,
+				minmax(0,1fr)
+			);
+
+		border:
+			1px solid
+			var(--border);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.3
+			);
+	}
+
+
+	.summary-strip > div {
+		min-height: 80px;
+
+		display: grid;
+
+		align-content: center;
+
+		gap: 4px;
+
+		padding:
+			12px 15px;
+
+		border-right:
+			1px solid
+			var(--border);
+	}
+
+
+	.summary-strip > div:last-child {
+		border-right: 0;
+	}
+
+
+	.summary-strip span {
+		color:
+			var(--brand-stone);
+
+		font-size: .5rem;
+
+		font-weight: 800;
+
+		letter-spacing: .12em;
+
+		text-transform: uppercase;
+	}
+
+
+	.summary-strip strong {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.65rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	/* ==================================================
+	   STORY DESK
+	   ================================================== */
+
+	.story-desk {
+		overflow: hidden;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-md);
+
+		background:
+			var(--panel);
+
+		box-shadow:
+			var(--shadow-panel);
+	}
+
+
+	.section-heading {
+		min-height: 95px;
+
+		display: flex;
+
+		align-items: center;
+
+		justify-content:
+			space-between;
+
+		gap: 25px;
+
+		padding:
+			18px 20px;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.13
+			);
+	}
+
+
+	.section-heading h2 {
+		margin:
+			4px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2.35rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.section-heading p {
+		margin:
+			6px 0 0;
+
+		color:
+			var(--muted);
+
+		font-size: .72rem;
+	}
+
+
+	.story-count {
+		color:
+			var(--brand-stone);
+
+		font-size: .52rem;
+
+		font-weight: 800;
+
+		letter-spacing: .1em;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   POSTS
+	   ================================================== */
+
+	.post-list {
+		display: grid;
+	}
+
+
+	.post-row {
+		position: relative;
+
+		display: grid;
+
+		grid-template-columns:
+			54px
+			minmax(0,1fr)
+			auto;
+
+		align-items: center;
+
+		gap: 17px;
+
+		min-height: 135px;
+
+		padding:
+			17px 20px;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.1
+			);
+
+		background:
+			transparent;
+
+		transition:
+			background 100ms ease;
+	}
+
+
+	.post-row:last-child {
+		border-bottom: 0;
+	}
+
+
+	.post-row:hover {
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				.025
+			);
+	}
+
+
+	.story-number {
+		align-self: stretch;
+
+		display: grid;
+
+		place-items: start center;
+
+		padding-top: 4px;
+
+		border-right:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.14
+			);
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.42
+			);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.4rem;
+	}
+
+
+	.post-main {
+		min-width: 0;
+
+		display: grid;
+
+		gap: 6px;
+	}
+
+
+	.meta {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		align-items: center;
+
+		gap: 8px;
+	}
+
+
+	.meta > span {
+		font-size: .5rem;
+
+		font-weight: 800;
+
+		letter-spacing: .1em;
+
+		text-transform: uppercase;
+	}
+
+
+	.status {
+		padding:
+			3px 5px;
+
+		border:
+			1px solid
+			var(--border);
+	}
+
+
+	.status.published {
+		border-color:
+			rgba(
+				116,
+				160,
+				123,
+				.45
+			);
+
+		color:
+			#91b897;
+	}
+
+
+	.status.draft {
+		border-color:
+			rgba(
+				191,
+				161,
+				106,
+				.42
+			);
+
+		color:
+			var(--brand-gold);
+	}
+
+
+	.story-type {
+		color:
+			var(--brand-sand);
+	}
+
+
+	.source-label {
+		color:
+			var(--brand-stone);
+	}
+
+
+	.post-row h3 {
+		max-width: 900px;
+
+		margin: 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.55rem;
+
+		font-weight: 400;
+
+		line-height: 1.08;
+
+		text-transform: uppercase;
+	}
+
+
+	.post-row p {
+		max-width: 880px;
+
+		margin: 0;
+
+		color:
+			var(--muted);
+
+		font-size: .82rem;
+
+		line-height: 1.45;
+	}
+
+
+	.post-date {
+		color:
+			var(--brand-stone);
+
+		font-size: .62rem;
+	}
+
+
+	/* ==================================================
+	   POST ACTIONS
+	   ================================================== */
+
+	.post-actions {
+		display: flex;
+
+		align-items: center;
+	}
+
+
+	.post-actions a {
+		min-width: 140px;
+
+		display: flex;
+
+		align-items: center;
+
+		justify-content:
+			space-between;
+
+		gap: 15px;
+
+		padding:
+			10px 11px;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius: 3px;
+
+		color:
+			var(--brand-sand);
+
+		font-size: .52rem;
+
+		font-weight: 800;
+
+		letter-spacing: .07em;
+
+		text-decoration: none;
+
+		text-transform: uppercase;
+
+		transition:
+			border-color 120ms ease,
+			color 120ms ease,
+			background 120ms ease;
+	}
+
+
+	.post-actions a strong {
+		color:
+			var(--brand-gold);
+
+		font-size: .9rem;
+	}
+
+
+	.post-actions a:hover {
+		border-color:
+			var(--brand-gold);
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				.04
+			);
+
+		color:
+			var(--brand-gold);
+	}
+
+
+	/* ==================================================
+	   EMPTY
+	   ================================================== */
+
+	.empty {
+		min-height: 300px;
+
+		display: grid;
+
+		place-items: center;
+
+		align-content: center;
+
+		gap: 7px;
+
+		padding: 30px;
+
+		text-align: center;
+	}
+
+
+	.empty-mark {
+		width: 62px;
+		height: 62px;
+
+		display: grid;
+
+		place-items: center;
+
+		margin-bottom: 5px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.4rem;
+	}
+
+
+	.empty h3 {
+		margin: 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.7rem;
+
+		font-weight: 400;
+	}
+
+
+	.empty p {
+		margin: 0;
+
+		color:
+			var(--muted);
+	}
+
+
+	.empty a {
+		margin-top: 10px;
+
+		color:
+			var(--brand-gold);
+
+		font-size: .58rem;
+
+		font-weight: 800;
+
+		letter-spacing: .07em;
+
+		text-decoration: none;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   RESPONSIVE
+	   ================================================== */
+
+	@media (max-width: 900px) {
+
+		.weekly-hero {
+			grid-template-columns:
+				1fr
+				210px;
+		}
+
+
+		.summary-strip {
+			grid-template-columns:
+				repeat(
+					3,
+					minmax(0,1fr)
+				);
+		}
+
+
+		.summary-strip > div {
+			border-bottom:
+				1px solid
+				var(--border);
+		}
+
+	}
+
+
+	@media (max-width: 700px) {
+
+		.weekly-hero {
+			grid-template-columns:
+				1fr;
+
+			min-height: 0;
+
+			padding:
+				28px 22px;
+		}
+
+
+		.publication-mark {
+			display: none;
+		}
+
+
+		.weekly-hero h1 {
+			font-size:
+				clamp(
+					3.4rem,
+					15vw,
+					5.3rem
+				);
+		}
+
+
+		.summary-strip {
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(0,1fr)
+				);
+		}
+
+
+		.section-heading {
+			align-items:
+				flex-start;
+
+			flex-direction:
+				column;
+		}
+
+
+		.post-row {
+			grid-template-columns:
+				36px
+				minmax(0,1fr);
+		}
+
+
+		.post-actions {
+			grid-column:
+				2;
+		}
+
+
+		.post-actions a {
+			width: fit-content;
+		}
+
+	}
+
+
+	@media (max-width: 480px) {
+
+		.summary-strip {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.hero-actions {
+			display: grid;
+		}
+
+
+		.hero-actions a {
+			width: 100%;
+		}
+
+
+		.story-number {
+			display: none;
+		}
+
+
+		.post-row {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.post-actions {
+			grid-column: auto;
+		}
+
+	}
 </style>

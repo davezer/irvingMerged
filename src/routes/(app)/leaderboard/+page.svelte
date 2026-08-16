@@ -1,872 +1,2260 @@
 <script>
-  import { getLeaderboardBreakdownComponent } from '$lib/games/leaderboard/index.js';
-  import { eventDisplay } from '$lib/events/displayNames';
-  import Pill from '$lib/ui/Pill.svelte';
-  export let data;
-  import { page } from '$app/stores';
+	import {
+		getLeaderboardBreakdownComponent
+	} from '$lib/games/leaderboard/index.js';
 
-  let expanded = new Set(); // user_id set
+	import {
+		eventDisplay
+	} from '$lib/events/displayNames';
 
-  function toggleUser(userId) {
-    const next = new Set(expanded);
-    if (next.has(userId)) next.delete(userId);
-    else next.add(userId);
-    expanded = next;
-  }
+	import {
+		page
+	} from '$app/stores';
 
-  function fmtDate(unix) {
-    if (!unix) return '';
-    return new Date(Number(unix) * 1000).toLocaleDateString();
-  }
 
-  function hasAnyBreakdown(ev) {
-    return Boolean(ev?.totals || ev?.breakdown);
-  }
+	export let data;
 
-    function evTitle(ev) {
-    // ev.slug is strongly preferred. If it's missing, we fall back to official name.
-    return eventDisplay({ slug: ev?.slug, name: ev?.event_name }).title;
-  }
 
-  function evSubtitle(ev) {
-    return eventDisplay({ slug: ev?.slug, name: ev?.event_name }).subtitle;
-  }
+	let expanded =
+		new Set();
 
-  function evIsPast(ev) {
-  if (!ev?.start_at) return false;
-  const now = Math.floor(Date.now() / 1000);
-  return now >= Number(ev.start_at);
-}
 
-function evStatusText(ev) {
-  return evIsPast(ev) ? 'Complete' : 'Upcoming';
-}
+	const ALL = 'all';
 
-function evStatusClass(ev) {
-  return evIsPast(ev) ? 'pill pill--gold' : 'pill pill--green';
-}
 
-$: leaderPoints = Number(data?.totals?.[0]?.points ?? 0) || 1;
-function pct(points) {
-  const p = Number(points ?? 0);
-  return Math.max(0, Math.min(100, Math.round((p / leaderPoints) * 100)));
-}
+	let gameFilter =
+		ALL;
 
-$: top3 = (data?.totals || []).slice(0, 3);
 
- const ALL = 'all';
-  $: gameTypes = (() => {
-    const s = new Set();
-    for (const uid of Object.keys(data.byUser || {})) {
-      for (const ev of data.byUser[uid] || []) {
-        if (ev?.type) s.add(ev.type);
-      }
-    }
-    return Array.from(s);
-  })();
+	function toggleUser(
+		userId
+	) {
+		const next =
+			new Set(
+				expanded
+			);
 
-  let gameFilter = ALL;
+		if (
+			next.has(
+				userId
+			)
+		) {
+			next.delete(
+				userId
+			);
+		} else {
+			next.add(
+				userId
+			);
+		}
 
-  function prettyGameLabel(type) {
-    // Keep it simple and lounge-y (you can expand later)
-    if (type === 'daytona') return 'Daytona';
-    if (type === 'madness') return 'Madness';
-    return type?.charAt(0).toUpperCase() + type?.slice(1);
-  }
+		expanded =
+			next;
+	}
 
-  function pointsForUser(userId) {
-    if (gameFilter === ALL) {
-      // use server totals as source of truth for overall
-      const row = (data.totals || []).find((r) => r.user_id === userId);
-      return Number(row?.points ?? 0);
-    }
-    const evs = data.byUser?.[userId] || [];
-    return evs
-      .filter((ev) => ev?.type === gameFilter)
-      .reduce((sum, ev) => sum + Number(ev?.points ?? 0), 0);
-  }
 
-  $: filteredTotals = (() => {
-    // Use the displayed users from data.totals as the "roster"
-    const base = (data.totals || []).map((r) => ({
-      user_id: r.user_id,
-      display_name: r.display_name,
-      points: pointsForUser(r.user_id)
-    }));
+	function fmtDate(
+		unix
+	) {
+		if (!unix) {
+			return '';
+		}
 
-    base.sort((a, b) => b.points - a.points);
+		return new Date(
+			Number(unix) *
+			1000
+		).toLocaleDateString(
+			'en-US',
+			{
+				month:
+					'short',
 
-    // Rank with ties (1,2,2,4 style)
-    let rank = 0;
-    let lastPoints = null;
-    let seen = 0;
+				day:
+					'numeric',
 
-    return base.map((r) => {
-      seen++;
-      if (lastPoints === null || r.points !== lastPoints) rank = seen;
-      lastPoints = r.points;
-      return { ...r, rank };
-    });
-  })();
+				year:
+					'numeric'
+			}
+		);
+	}
 
- const gamesNav = [
-    { href: '/games', label: 'Games Floor', meta: 'Events' },
-    { href: '/leaderboard', label: 'Leaderboard', meta: 'Offseason board' }
-  ];
 
-  $: currentPath = $page.url.pathname;
+	function hasAnyBreakdown(
+		ev
+	) {
+		return Boolean(
+			ev?.totals ||
+			ev?.breakdown
+		);
+	}
 
-  function gamesNavActive(href) {
-    if (href === '/games') return currentPath === '/games' || currentPath.startsWith('/games/');
-    return currentPath === href || currentPath.startsWith(`${href}/`);
-  }
 
+	function evIsPast(
+		ev
+	) {
+		if (!ev?.start_at) {
+			return false;
+		}
+
+		const now =
+			Math.floor(
+				Date.now() /
+				1000
+			);
+
+		return (
+			now >=
+			Number(
+				ev.start_at
+			)
+		);
+	}
+
+
+	function evStatusText(
+		ev
+	) {
+		return evIsPast(ev)
+			? 'Complete'
+			: 'Upcoming';
+	}
+
+
+	function prettyGameLabel(
+		type
+	) {
+		if (
+			type ===
+			'daytona'
+		) {
+			return 'Daytona';
+		}
+
+		if (
+			type ===
+			'madness'
+		) {
+			return 'Madness';
+		}
+
+		return (
+			type
+				?.charAt(0)
+				.toUpperCase() +
+			type?.slice(1)
+		);
+	}
+
+
+	$: gameTypes =
+		(() => {
+			const types =
+				new Set();
+
+			for (
+				const userId
+				of Object.keys(
+					data?.byUser ||
+					{}
+				)
+			) {
+				for (
+					const ev
+					of data.byUser[
+						userId
+					] || []
+				) {
+					if (
+						ev?.type
+					) {
+						types.add(
+							ev.type
+						);
+					}
+				}
+			}
+
+			return Array.from(
+				types
+			);
+		})();
+
+
+	function pointsForUser(
+		userId
+	) {
+		if (
+			gameFilter ===
+			ALL
+		) {
+			const row =
+				(
+					data?.totals ||
+					[]
+				).find(
+					(row) =>
+						row.user_id ===
+						userId
+				);
+
+			return Number(
+				row?.points ??
+				0
+			);
+		}
+
+		const events =
+			data?.byUser?.[
+				userId
+			] || [];
+
+		return events
+			.filter(
+				(ev) =>
+					ev?.type ===
+					gameFilter
+			)
+			.reduce(
+				(
+					sum,
+					ev
+				) =>
+					sum +
+					Number(
+						ev?.points ??
+							0
+					),
+				0
+			);
+	}
+
+
+	$: filteredTotals =
+		(() => {
+			const base =
+				(
+					data?.totals ||
+					[]
+				).map(
+					(row) => ({
+						user_id:
+							row.user_id,
+
+						display_name:
+							row.display_name,
+
+						points:
+							pointsForUser(
+								row.user_id
+							)
+					})
+				);
+
+			base.sort(
+				(a, b) =>
+					b.points -
+					a.points
+			);
+
+			let rank =
+				0;
+
+			let lastPoints =
+				null;
+
+			let seen =
+				0;
+
+			return base.map(
+				(row) => {
+					seen++;
+
+					if (
+						lastPoints ===
+							null ||
+						row.points !==
+							lastPoints
+					) {
+						rank =
+							seen;
+					}
+
+					lastPoints =
+						row.points;
+
+					return {
+						...row,
+						rank
+					};
+				}
+			);
+		})();
+
+
+	$: top3 =
+		filteredTotals.slice(
+			0,
+			3
+		);
+
+
+	$: leaderPoints =
+		Number(
+			filteredTotals?.[
+				0
+			]?.points ??
+				0
+		) || 1;
+
+
+	function pct(
+		points
+	) {
+		const value =
+			Number(
+				points ??
+				0
+			);
+
+		return Math.max(
+			0,
+			Math.min(
+				100,
+				Math.round(
+					(
+						value /
+						leaderPoints
+					) *
+						100
+				)
+			)
+		);
+	}
+
+
+	const gamesNav = [
+		{
+			href:
+				'/games',
+
+			label:
+				'Games Floor',
+
+			meta:
+				'Events'
+		},
+		{
+			href:
+				'/leaderboard',
+
+			label:
+				'Leaderboard',
+
+			meta:
+				'Offseason Board'
+		}
+	];
+
+
+	$: currentPath =
+		$page.url.pathname;
+
+
+	function gamesNavActive(
+		href
+	) {
+		if (
+			href ===
+			'/games'
+		) {
+			return (
+				currentPath ===
+					'/games' ||
+				currentPath.startsWith(
+					'/games/'
+				)
+			);
+		}
+
+		return (
+			currentPath ===
+				href ||
+			currentPath.startsWith(
+				`${href}/`
+			)
+		);
+	}
 </script>
-<nav class="games-subnav" aria-label="Games navigation">
-  <span class="games-bug">ICL</span>
 
-  {#each gamesNav as item}
-    <a class:active={gamesNavActive(item.href)} href={item.href}>
-      <strong>{item.label}</strong>
-      <small>{item.meta}</small>
-    </a>
-  {/each}
+
+<nav
+	class="games-subnav"
+	aria-label="Games navigation"
+>
+	<span class="games-bug">
+		ICL
+	</span>
+
+	{#each gamesNav as item}
+		<a
+			class:active={gamesNavActive(
+				item.href
+			)}
+			href={item.href}
+		>
+			<strong>
+				{item.label}
+			</strong>
+
+			<small>
+				{item.meta}
+			</small>
+		</a>
+	{/each}
 </nav>
 
-<div class="card">
-  <div class="section-head">
-    <div>
-      <div class="kicker">Overall</div>
-      <h2 class="h2" style="margin: 0;">Totals</h2>
-      <div class="muted" style="margin-top:6px;">
-        {#if data.updated_at}
-          Updated {fmtDate(data.updated_at)}
-        {:else}
-          Updated recently
-        {/if}
-      </div>
-    </div>
 
-    <span class="pill pill--gold">{filteredTotals?.length ?? 0} players</span>
-    <div class="filters">
-  <button
-    type="button"
-    class={"seg " + (gameFilter === ALL ? "seg--on" : "")}
-    on:click={() => (gameFilter = ALL)}
-  >
-    Overall
-  </button>
+<div class="leaderboard-page">
 
-  {#each gameTypes as t (t)}
-    <button
-      type="button"
-      class={"seg " + (gameFilter === t ? "seg--on" : "")}
-      on:click={() => (gameFilter = t)}
-    >
-      {prettyGameLabel(t)}
-    </button>
-  {/each}
+	<section class="hero">
+
+		<div class="hero-copy">
+
+			<div class="eyebrow">
+				Irving Collective · Offseason Games
+			</div>
+
+			<h1>
+				Leaderboard
+			</h1>
+
+			<p>
+				Every bracket, race, pool, collapse,
+				and completely unnecessary offseason competition
+				feeds the same board.
+			</p>
+
+		</div>
+
+
+		<div class="leader-callout">
+
+			<span>
+				Current Leader
+			</span>
+
+			{#if top3[0]}
+				<strong>
+					{top3[0].display_name}
+				</strong>
+
+				<div class="leader-score">
+					{top3[0].points}
+					<small>
+						Irving Coin
+					</small>
+				</div>
+			{:else}
+				<strong>
+					No leader yet
+				</strong>
+			{/if}
+
+		</div>
+
+
+		<div class="hero-bottom">
+
+			<div class="hero-stat">
+				<strong>
+					{filteredTotals.length}
+				</strong>
+
+				<span>
+					GMs on Board
+				</span>
+			</div>
+
+
+			<div class="hero-stat">
+				<strong>
+					{gameTypes.length}
+				</strong>
+
+				<span>
+					Game Types
+				</span>
+			</div>
+
+
+			<div class="hero-stat updated">
+				<strong>
+					{data.updated_at
+						? fmtDate(
+								data.updated_at
+							)
+						: 'Recently'}
+				</strong>
+
+				<span>
+					Last Updated
+				</span>
+			</div>
+
+
+			<div class="filter-group">
+
+				<span class="filter-label">
+					View
+				</span>
+
+				<div class="filters">
+
+					<button
+						type="button"
+						class:active={gameFilter ===
+							ALL}
+						on:click={() =>
+							(gameFilter =
+								ALL)}
+					>
+						Overall
+					</button>
+
+					{#each gameTypes as type}
+						<button
+							type="button"
+							class:active={gameFilter ===
+								type}
+							on:click={() =>
+								(gameFilter =
+									type)}
+						>
+							{prettyGameLabel(
+								type
+							)}
+						</button>
+					{/each}
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+		<div
+			class="hero-watermark"
+			aria-hidden="true"
+		>
+			GAMES
+		</div>
+
+	</section>
+
+
+	{#if top3.length}
+		<section class="podium-section">
+
+			<div class="section-heading">
+
+				<div>
+					<div class="eyebrow">
+						Front Runners
+					</div>
+
+					<h2>
+						Top of the Board
+					</h2>
+				</div>
+
+				<span>
+					{gameFilter === ALL
+						? 'Overall'
+						: prettyGameLabel(
+								gameFilter
+							)}
+				</span>
+
+			</div>
+
+
+			<div
+				class={`podium podium-count-${top3.length}`}
+			>
+
+				{#each top3 as player}
+
+					<button
+						type="button"
+						class="podium-card"
+						class:champion={player.rank ===
+							1}
+						on:click={() =>
+							toggleUser(
+								player.user_id
+							)}
+						aria-expanded={expanded.has(
+							player.user_id
+						)}
+					>
+
+						<div class="podium-rank">
+							{#if player.rank === 1}
+								<span class="crown">
+									♛
+								</span>
+							{:else}
+								#{player.rank}
+							{/if}
+						</div>
+
+						<div class="podium-person">
+
+							<strong>
+								{player.display_name}
+							</strong>
+
+							<span>
+								{expanded.has(
+									player.user_id
+								)
+									? 'Hide breakdown'
+									: 'View breakdown'}
+							</span>
+
+						</div>
+
+						<div class="podium-score">
+							<strong>
+								{player.points}
+							</strong>
+
+							<span>
+								Irving Coin
+							</span>
+						</div>
+
+					</button>
+
+				{/each}
+
+			</div>
+
+		</section>
+	{/if}
+
+
+	<section class="standings-section">
+
+		<div class="section-heading board-heading">
+
+			<div>
+				<div class="eyebrow">
+					Offseason Ledger
+				</div>
+
+				<h2>
+					Full Standings
+				</h2>
+			</div>
+
+			<span>
+				{filteredTotals.length}
+				GMs
+			</span>
+
+		</div>
+
+
+		<div class="leaderboard-table">
+
+			<div class="table-head">
+
+				<span>
+					Rank
+				</span>
+
+				<span>
+					GM
+				</span>
+
+				<span class="right">
+					Irving Coin
+				</span>
+
+			</div>
+
+
+			{#each filteredTotals as row}
+
+				<div
+					class="standing-row"
+					class:leader={row.rank ===
+						1}
+				>
+
+					<div class="rank">
+						#{row.rank}
+					</div>
+
+
+					<button
+						type="button"
+						class="gm-button"
+						class:open={expanded.has(
+							row.user_id
+						)}
+						on:click={() =>
+							toggleUser(
+								row.user_id
+							)}
+						aria-expanded={expanded.has(
+							row.user_id
+						)}
+					>
+						<span class="chevron">
+							›
+						</span>
+
+						<strong>
+							{row.display_name}
+						</strong>
+					</button>
+
+
+					<div class="score-cell">
+
+						<div class="score-bar">
+							<div
+								class="score-fill"
+								style={`width: ${pct(
+									row.points
+								)}%`}
+							></div>
+						</div>
+
+						<strong>
+							{row.points}
+						</strong>
+
+					</div>
+
+				</div>
+
+
+				{#if expanded.has(
+					row.user_id
+				)}
+					<div class="breakdown-row">
+
+						{#if data.byUser?.[
+							row.user_id
+						]?.length}
+
+							<div class="event-list">
+
+								{#each (
+									gameFilter ===
+									ALL
+										? data.byUser[
+												row.user_id
+											]
+										: (
+												data.byUser[
+													row.user_id
+												] ||
+												[]
+											).filter(
+												(ev) =>
+													ev?.type ===
+													gameFilter
+											)
+								) as ev (
+									ev.event_id
+								)}
+
+									<article class="event-block">
+
+										<div class="event-header">
+
+											<div class="event-identity">
+
+												{#if eventDisplay(
+													ev
+												).logo}
+													<img
+														src={eventDisplay(
+															ev
+														).logo}
+														alt={`${eventDisplay(
+															ev
+														).title} logo`}
+														loading="lazy"
+													/>
+												{/if}
+
+
+												<div class="event-copy">
+
+													<div class="event-meta">
+														<span>
+															{prettyGameLabel(
+																ev.type
+															)}
+														</span>
+
+														<span
+															class:complete={evIsPast(
+																ev
+															)}
+															class="event-status"
+														>
+															{evStatusText(
+																ev
+															)}
+														</span>
+													</div>
+
+													<strong>
+														{eventDisplay(
+															ev
+														).title}
+													</strong>
+
+												</div>
+
+											</div>
+
+
+											<div class="event-points">
+												<strong>
+													{ev.points}
+												</strong>
+
+												<span>
+													Points
+												</span>
+											</div>
+
+										</div>
+
+
+										{#if hasAnyBreakdown(
+											ev
+										)}
+											{@const Breakdown =
+												getLeaderboardBreakdownComponent(
+													ev.type
+												)}
+
+											{#if Breakdown}
+												<div class="event-breakdown">
+
+													<svelte:component
+														this={Breakdown}
+														ev={ev}
+														row={ev}
+														breakdown={ev.breakdown}
+														totals={ev.totals}
+														points={ev.points}
+														teamLogoById={data.teamLogoById}
+													/>
+
+												</div>
+											{:else}
+												<div class="empty-breakdown">
+													No breakdown renderer registered
+													for {ev.type}.
+												</div>
+											{/if}
+										{:else}
+											<div class="empty-breakdown">
+												No breakdown available.
+											</div>
+										{/if}
+
+									</article>
+
+								{/each}
+
+							</div>
+
+						{:else}
+							<div class="empty-breakdown">
+								No scored events yet.
+							</div>
+						{/if}
+
+					</div>
+				{/if}
+
+			{/each}
+
+		</div>
+
+	</section>
+
 </div>
 
-  </div>
-    {#if top3.length}
-      <div class="podium">
-        {#each top3 as p (p.user_id)}
-          <button
-            type="button"
-            class={"podium-card " + (p.rank === 1 ? 'podium-1' : p.rank === 2 ? 'podium-2' : 'podium-3')}
-            on:click={() => toggleUser(p.user_id)}
-            aria-expanded={expanded.has(p.user_id)}
-          >
-            <div class="podium-rank">{p.rank === 1 ? '♛' : `#${p.rank}`}</div>
-            <div class="podium-name">{p.display_name}</div>
-            <div class="podium-points">{p.points}</div>
-            <div class="podium-sub muted">{expanded.has(p.user_id) ? 'Hide breakdown' : 'View breakdown'}</div>
-          </button>
-        {/each}
-      </div>
-    {/if}
 
-  <div class="table-wrap">
-    <table class="lb">
-      <colgroup>
-        <col class="col-rank" />
-        <col />
-        <col class="col-points" />
-      </colgroup>
-
-      <thead>
-        <tr>
-          <th class="rank-h">Rank</th>
-          <th class="gm-h">GM</th>
-          <th class="right points-h">Points</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {#each filteredTotals as row (row.user_id)}
-          <tr class={"row " + (row.rank === 1 ? 'row-leader' : '')}>
-            <td class="rank">{row.rank}</td>
-
-            <td class="gm">
-              <button
-                type="button"
-                class={"gm-btn " + (expanded.has(row.user_id) ? 'is-open' : '')}
-                on:click={() => toggleUser(row.user_id)}
-                aria-expanded={expanded.has(row.user_id)}
-              >
-                <span class="chev">▸</span>
-                <span class="name">{row.display_name}</span>
-              </button>
-            </td>
-
-            <td class="right points">
-              <div class="points-wrap">
-                <div class="bar">
-                  <div class="bar-fill" style={"width:" + pct(row.points) + "%"}></div>
-                </div>
-                <div class="points-num">{row.points}</div>
-              </div>
-            </td>
-          </tr>
-
-          {#if expanded.has(row.user_id)}
-            <tr class="detail">
-              <td colspan="3">
-                <div class="detail-inner">
-                  {#if data.byUser?.[row.user_id]?.length}
-                    {#each (gameFilter === ALL
-                      ? data.byUser[row.user_id]
-                      : (data.byUser[row.user_id] || []).filter((ev) => ev?.type === gameFilter)
-                    ) as ev (ev.event_id)}
-                      <div class="ev">
-                        <div class="ev-head">
-                          <div class="event-top">
-                            <div class="event-titlewrap">
-                              <div class="event-name-row">
-                                {#if eventDisplay(ev).logo}
-                                  <img
-                                    class="event-logo"
-                                    src={eventDisplay(ev).logo}
-                                    alt={`${eventDisplay(ev).title} logo`}
-                                    loading="lazy"
-                                  />
-                                {/if}
-
-                                <div class="event-text">
-                                  <div class="event-name">{eventDisplay(ev).title}</div>
-                                  {#if eventDisplay(ev).subtitle}
-                                    <div class="event-subtitle">{eventDisplay(ev).subtitle}</div>
-                                  {/if}
-                                </div>
-
-                                <span class={evStatusClass(ev)}>{evStatusText(ev)}</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div class="ev-points">{ev.points}</div>
-                        </div>
-
-                        {#if hasAnyBreakdown(ev)}
-                          {#if ev?.type}
-                            {@const Breakdown = getLeaderboardBreakdownComponent(ev.type)}
-                            {#if Breakdown}
-                              <svelte:component
-                                this={Breakdown}
-                                ev={ev}
-                                row={ev}
-                                breakdown={ev.breakdown}
-                                totals={ev.totals}
-                                points={ev.points}
-                                teamLogoById={data.teamLogoById}
-                              />
-                            {:else}
-                              <div class="muted" style="margin-top: 8px;">
-                                No breakdown renderer registered for <code>{ev.type}</code>.
-                              </div>
-                            {/if}
-                          {:else}
-                            <div class="muted" style="margin-top: 8px;">Missing event type.</div>
-                          {/if}
-                        {:else}
-                          <div class="muted" style="margin-top: 8px;">No breakdown available.</div>
-                        {/if}
-                      </div>
-
-                      
-                    {/each}
-                  {:else}
-                    <div class="muted">No scored events yet.</div>
-                  {/if}
-                </div>
-              </td>
-            </tr>
-          {/if}
-        {/each}
-      </tbody>
-    </table>
-  </div>
-</div>
 <style>
-  .right { text-align: right; }
-
-  .table-wrap {
-    margin-top: 12px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.10);
-    background: rgba(0,0,0,0.18);
-    overflow: hidden; /* keeps rounded corners */
-  }
-
-  table.lb {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  thead th {
-    text-align: left;
-    padding: 14px 16px;
-    font-weight: 800;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-
-  tbody td {
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    vertical-align: top;
-  }
-
-  tbody tr:last-child td {
-    border-bottom: 0;
-  }
-
-  .points {
-    font-weight: 950;
-  }
-
-  .gm-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: transparent;
-    border: 0;
-    color: inherit;
-    cursor: pointer;
-    padding: 0;
-    font: inherit;
-  }
-
-  .gm-btn:hover .name { text-decoration: underline; }
-
-.chev {
-  width: 14px;
-  display: inline-block;
-  opacity: 0.85;
-  transform: translateY(-1px);
-  transition: transform 140ms ease;
-}
-
-.gm-btn.is-open .chev {
-  transform: translateY(-1px) rotate(90deg);
-}
-
-  /* --- Fun name + official subtitle styling in expanded events --- */
-  .ev-name {
-    font-weight: 650;
-    line-height: 1.2;
-  }
-
-  .ev-subname {
-    margin-top: 2px;
-    font-size: 0.78rem;
-    opacity: 0.7;
-    line-height: 1.2;
-  }
-.event-name-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.event-logo {
-  width: 95px;
-  height: 95px;
-  border-radius: 55px;
-  object-fit: cover;
-  flex: 0 0 auto;
-  border: 1px solid rgba(131, 118, 3, 0.637);
-  background: rgba(0,0,0,0.25);
-}
-  /* Expanded section inside table */
-  tr.detail td {
-    padding: 0 16px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .detail-inner {
-    margin-top: 8px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.10);
-    background: rgba(0,0,0,0.20);
-    padding: 12px 14px;
-  }
-
-  .ev {
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .ev:last-child { border-bottom: 0; }
-
-  .ev-top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 14px;
-  }
-
-  .ev-name {
-    font-weight: 850;
-    font-size: 1.02rem;
-  }
-
-  .ev-date { margin-top: 2px; }
-
-  .ev-points {
-    font-weight: 950;
-    min-width: 60px;
-    text-align: right;
-  }
-
-  /* Chips */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .chip {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 8px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.04);
-  }
-
-  .chip--badge {
-    border-color: rgba(255,210,120,0.22);
-    background: rgba(255,210,120,0.06);
-  }
-
-  .muted { opacity: 0.75; }
-
-  /* Tighten table column widths */
-table.lb {
-  table-layout: fixed; /* makes colgroup widths actually matter */
-}
-
-/* Give Rank a fixed compact width, keep Points compact too */
-table.lb col.col-rank { width: 64px; }
-table.lb col.col-points { width: 90px; }
-/* GM takes the rest automatically */
-
-/* Reduce padding a bit so it feels tighter */
-thead th,
-tbody td {
-  padding: 12px 12px; /* was 14px 16px */
-}
-
-/* Make the GM cell sit closer to Rank */
-td.rank { padding-right: 6px; }
-td.gm { padding-left: 6px; }
-
-/* Keep the GM button compact */
-.gm-btn { gap: 8px; }
-.chev { width: 14px; }
-/* ---------------------------
-   COMPACT MODE OVERRIDES
----------------------------- */
-
-/* Overall container padding tighter */
-.detail-inner {
-  padding: 10px 12px;            /* was 12px 14px */
-}
-
-/* Each event block: less vertical space */
-.ev {
-  padding: 8px 0;                /* was 10px 0 */
-}
-
-/* Make the event header align nicely and reduce height */
-.event-top {
-  display: grid;
-  grid-template-columns: auto 1fr auto;  /* logo | text | status */
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
-}
-
-/* Smaller logo */
-.event-logo {
-  width: 64px;                   /* was 95px */
-  height: 64px;
-  border-radius: 18px;           /* was 55px */
-}
-
-/* Title + subtitle tighter */
-.event-name {
-  font-weight: 850;
-  font-size: 1rem;               /* slightly smaller */
-  line-height: 1.15;
-}
-
-.event-subtitle {
-  margin-top: 2px;
-  font-size: 0.78rem;
-  opacity: 0.7;
-  line-height: 1.15;
-}
-
-/* Status pill smaller */
-.pill {
-  padding: 6px 10px;
-  font-size: 0.82rem;
-}
-
-/* Points in the top-right: tighter and aligned */
-.ev-points {
-  font-weight: 950;
-  min-width: 52px;
-  text-align: right;
-  font-size: 0.95rem;
-}
-
-/* Chips: smaller + less vertical space */
-.chips {
-  gap: 6px;                      /* was 8px */
-  margin-top: 8px;               /* was 10px */
-}
-
-.chip {
-  padding: 5px 9px;              /* was 6px 10px */
-  gap: 7px;                      /* was 8px */
-  font-size: 0.9rem;
-}
-
-.chip .k {
-  font-size: 0.78rem;            /* was 0.85rem */
-}
-
-.chip .v {
-  font-size: 0.9rem;             /* was 0.95rem */
-}
-
-/* If you added the mini logo inside chips, keep it tiny */
-.chip img.logo {
-  width: 16px;
-  height: 16px;
-}
-
-/* Tighten table row padding slightly (optional) */
-tbody td {
-  padding: 10px 12px;            /* was 12px 12px */
-}
-.detail-inner {
-  border-radius: 12px;
-  background: rgba(0,0,0,0.14);  /* slightly lighter */
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.event-subtitle { display: none; }
-
-/* --- tighter expanded rows --- */
-.detail-inner {
-  padding: 8px 10px;
-}
-
-/* Event block tighter */
-.ev {
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.ev:last-child { border-bottom: 0; }
-
-/* Head row: logo/title/status on left, points on right */
-.ev-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-/* Keep header compact */
-.event-top { width: 100%; }
-
-/* Row with logo + text + status */
-.event-name-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-/* Slightly smaller logo */
-.event-logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-}
-
-/* Text tighter */
-.event-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.event-name {
-  font-weight: 900;
-  font-size: 0.98rem;
-  line-height: 1.1;
-}
-
-.event-subtitle {
-  font-size: 0.75rem;
-  opacity: 0.65;
-  line-height: 1.1;
-}
-
-/* ✅ Status pill should NOT expand — make it auto sized */
-.event-name-row > .pill {
-  flex: 0 0 auto;
-  width: auto;
-  white-space: nowrap;
-  padding: 6px 10px;
-  font-size: 0.8rem;
-  justify-self: end;
-}
-
-/* Points tighter */
-.ev-points {
-  min-width: 52px;
-  text-align: right;
-  font-weight: 950;
-  font-size: 0.95rem;
-}
-
-/* Chips tighter and closer to header */
-.chips {
-  margin-top: 8px;
-  gap: 6px;
-}
-
-/* Smaller chips */
-.chip {
-  padding: 5px 9px;
-  gap: 7px;
-}
-
-.chip .k { font-size: 0.78rem; }
-.chip .v { font-size: 0.9rem; }
-
-/* If you have chip logos */
-.chip img.logo {
-  width: 15px;
-  height: 15px;
-}
-.section-head .h2 {
-  font-size: 1.2rem;
-}
-.kicker {
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
-}
-
-.podium {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 14px;
-  margin-bottom: 12px;
-}
-
-.podium-card {
-  text-align: left;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.20);
-  border-radius: 18px;
-  padding: 14px 14px 12px;
-  cursor: pointer;
-  color: inherit;
-  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
-}
-
-.podium-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(212,175,55,0.22);
-  background: rgba(0,0,0,0.26);
-}
-
-.podium-1 {
-  border-color: rgba(212,175,55,0.35);
-  box-shadow: 0 0 0 1px rgba(212,175,55,0.10) inset;
-}
-
-.podium-rank { font-weight: 950; font-size: 1.1rem; opacity: 0.95; }
-.podium-name { font-weight: 900; font-size: 1.05rem; margin-top: 6px; }
-.podium-points { font-weight: 950; font-size: 1.4rem; margin-top: 6px; }
-.podium-sub { margin-top: 6px; font-size: 0.85rem; }
-@media (max-width: 900px) {
-  .podium { grid-template-columns: 1fr; }
-}
-.points-wrap {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-}
-
-.bar {
-  width: 140px;
-  height: 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.22);
-  overflow: hidden;
-}
-
-.bar-fill {
-  height: 100%;
-  background: rgba(212,175,55,0.32);
-  border-right: 1px solid rgba(212,175,55,0.28);
-}
-
-.points-num { min-width: 52px; text-align: right; font-weight: 950; }
-@media (max-width: 900px) {
-  .bar { width: 90px; }
-}
-.row-leader td {
-  background: rgba(212,175,55,0.06);
-}
-.row-leader td:first-child {
-  box-shadow: 3px 0 0 rgba(212,175,55,0.30) inset;
-}
-
-.detail-inner {
-  animation: drop 140ms ease-out;
-  transform-origin: top;
-}
-@keyframes drop {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.chev { transition: transform 120ms ease; }
-.gm-btn[aria-expanded="true"] .chev { transform: rotate(90deg) translateY(-1px); }
-
-.filters {
-  display: inline-flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.seg {
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.18);
-  color: rgba(255,255,255,0.85);
-  padding: 7px 10px;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
-}
-
-.seg:hover {
-  transform: translateY(-1px);
-  border-color: rgba(212,175,55,0.22);
-  background: rgba(0,0,0,0.24);
-}
-
-.seg--on {
-  border-color: rgba(212,175,55,0.35);
-  background: rgba(212,175,55,0.08);
-  color: rgba(255,255,255,0.95);
-}
-
-.games-subnav {
-  display: flex;
-  align-items: stretch;
-  gap: 7px;
-  flex-wrap: wrap;
-  margin: 16px 0;
-  padding: 7px;
-  border: 2px solid #070808;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #6a716e, #2d3331 46%, #0d0f0f);
-  box-shadow: var(--shadow-bug);
-}
-
-.games-bug,
-.games-subnav a {
-  min-height: 42px;
-  border: 1px solid #050606;
-  border-radius: 5px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.24),
-    inset 0 -2px 0 rgba(0,0,0,0.45);
-}
-
-.games-bug {
-  display: inline-grid;
-  place-items: center;
-  padding: 0 13px;
-  color: #fff;
-  background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-  font-family: var(--font-score);
-  font-weight: 950;
-}
-
-.games-subnav a {
-  display: grid;
-  align-content: center;
-  gap: 2px;
-  min-width: 170px;
-  padding: 7px 12px;
-  color: rgba(247,245,235,0.86);
-  background: linear-gradient(180deg, #4f5754, #202625 55%, #0b0d0d);
-  text-decoration: none;
-}
-
-.games-subnav a strong {
-  font-family: var(--font-score);
-  font-size: 0.78rem;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.games-subnav a small {
-  color: rgba(247,245,235,0.58);
-  font-size: 0.68rem;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.games-subnav a:hover,
-.games-subnav a.active {
-  color: #111;
-  background: linear-gradient(180deg, #fffdf3, #cfd1c9 52%, #8a918c);
-}
-
-.games-subnav a:hover small,
-.games-subnav a.active small {
-  color: rgba(0,0,0,0.7);
-}
+	/* ==================================================
+	   SUBNAV
+	   ================================================== */
 
+	.games-subnav {
+		width: 100%;
+		max-width: 1500px;
+
+		display: flex;
+		align-items: center;
+
+		gap: 4px;
+
+		margin:
+			10px auto
+			22px;
+
+		padding:
+			0 0 9px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.games-bug {
+		width: 38px;
+		height: 38px;
+
+		display: grid;
+		place-items: center;
+
+		flex: 0 0 auto;
+
+		margin-right: 16px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.1rem;
+
+		line-height: 1;
+	}
+
+
+	.games-subnav a {
+		display: grid;
+
+		gap: 2px;
+
+		padding:
+			8px 13px;
+
+		border-bottom:
+			1px solid
+			transparent;
+
+		color:
+			var(--brand-stone);
+
+		text-decoration: none;
+	}
+
+
+	.games-subnav a strong {
+		font-size: .68rem;
+
+		font-weight: 850;
+
+		letter-spacing: .06em;
+
+		text-transform: uppercase;
+	}
+
+
+	.games-subnav a small {
+		color:
+			rgba(157,155,145,.72);
+
+		font-size: .56rem;
+
+		letter-spacing: .08em;
+
+		text-transform: uppercase;
+	}
+
+
+	.games-subnav a:hover,
+	.games-subnav a.active {
+		border-bottom-color:
+			var(--brand-gold);
+
+		color:
+			var(--brand-sand);
+	}
+
+
+	.games-subnav a.active small {
+		color:
+			var(--brand-gold);
+	}
+
+
+	/* ==================================================
+	   PAGE
+	   ================================================== */
+
+	.leaderboard-page {
+		width: 100%;
+		max-width: 1500px;
+
+		display: grid;
+
+		gap: 34px;
+
+		margin: 0 auto;
+
+		padding-bottom: 70px;
+	}
+
+
+	.eyebrow {
+		color:
+			var(--brand-gold);
+
+		font-size: .64rem;
+
+		font-weight: 850;
+
+		letter-spacing: .12em;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   HERO
+	   ================================================== */
+
+	.hero {
+		position: relative;
+
+		display: grid;
+
+		grid-template-columns:
+			minmax(0,1fr)
+			290px;
+
+		gap: 44px;
+
+		overflow: hidden;
+
+		padding:
+			38px
+			clamp(
+				30px,
+				4vw,
+				54px
+			)
+			0;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius:
+			var(--radius-lg);
+
+		background:
+			linear-gradient(
+				120deg,
+				rgba(191,161,106,.04),
+				transparent 42%
+			),
+			var(--panel-strong);
+
+		box-shadow:
+			var(--shadow-panel);
+	}
+
+
+	.hero-copy {
+		position: relative;
+
+		z-index: 2;
+	}
+
+
+	.hero h1 {
+		margin:
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				4.5rem,
+				8vw,
+				7.5rem
+			);
+
+		font-weight: 400;
+
+		line-height: .84;
+
+		letter-spacing: -.025em;
+
+		text-transform: uppercase;
+	}
+
+
+	.hero-copy p {
+		max-width: 720px;
+
+		margin:
+			20px 0 0;
+
+		color:
+			var(--muted);
+
+		font-size: .95rem;
+
+		font-weight: 600;
+
+		line-height: 1.6;
+	}
+
+
+	.leader-callout {
+		position: relative;
+
+		z-index: 2;
+
+		align-self: center;
+
+		display: grid;
+
+		gap: 6px;
+
+		padding:
+			20px;
+
+		border:
+			1px solid
+			rgba(191,161,106,.28);
+
+		background:
+			rgba(7,10,9,.55);
+	}
+
+
+	.leader-callout > span {
+		color:
+			var(--brand-gold);
+
+		font-size: .61rem;
+
+		font-weight: 850;
+
+		letter-spacing: .1em;
+
+		text-transform: uppercase;
+	}
+
+
+	.leader-callout > strong {
+		color:
+			var(--brand-ivory);
+
+		font-size: 1rem;
+
+		font-weight: 800;
+	}
+
+
+	.leader-score {
+		display: flex;
+
+		align-items: baseline;
+
+		gap: 8px;
+
+		margin-top: 8px;
+
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2.5rem;
+
+		line-height: 1;
+	}
+
+
+	.leader-score small {
+		color:
+			var(--brand-stone);
+
+		font-family: inherit;
+
+		font-size: .78rem;
+	}
+
+
+	.hero-bottom {
+		position: relative;
+
+		z-index: 2;
+
+		grid-column:
+			1 / -1;
+
+		display: grid;
+
+		grid-template-columns:
+			130px
+			130px
+			180px
+			minmax(0,1fr);
+
+		align-items: stretch;
+
+		margin-top: 6px;
+
+		border-top:
+			1px solid
+			var(--border);
+	}
+
+
+	.hero-stat {
+		display: grid;
+
+		gap: 3px;
+
+		align-content: center;
+
+		min-height: 70px;
+
+		padding:
+			12px 16px;
+
+		border-right:
+			1px solid
+			var(--border);
+	}
+
+
+	.hero-stat strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.45rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.hero-stat.updated strong {
+		font-size: 1.1rem;
+	}
+
+
+	.hero-stat span {
+		color:
+			var(--brand-stone);
+
+		font-size: .58rem;
+
+		font-weight: 750;
+
+		letter-spacing: .06em;
+
+		text-transform: uppercase;
+	}
+
+
+	.filter-group {
+		display: flex;
+
+		align-items: center;
+
+		justify-content: flex-end;
+
+		gap: 14px;
+
+		padding:
+			12px 0
+			12px 18px;
+	}
+
+
+	.filter-label {
+		color:
+			var(--brand-stone);
+
+		font-size: .59rem;
+
+		font-weight: 850;
+
+		letter-spacing: .1em;
+
+		text-transform: uppercase;
+	}
+
+
+	.filters {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		justify-content: flex-end;
+
+		gap: 6px;
+	}
+
+
+	.filters button {
+		min-height: 34px;
+
+		cursor: pointer;
+
+		padding:
+			0 11px;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius: 2px;
+
+		background:
+			#0a0e0d;
+
+		color:
+			var(--brand-stone);
+
+		font: inherit;
+
+		font-size: .64rem;
+
+		font-weight: 800;
+	}
+
+
+	.filters button:hover,
+	.filters button.active {
+		border-color:
+			var(--brand-gold);
+
+		color:
+			var(--brand-charcoal);
+
+		background:
+			var(--brand-gold);
+	}
+
+
+	.hero-watermark {
+		position: absolute;
+
+		right: -20px;
+
+		bottom: -52px;
+
+		color:
+			rgba(191,161,106,.018);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				10rem,
+				18vw,
+				16rem
+			);
+
+		line-height: 1;
+
+		pointer-events: none;
+	}
+
+
+	/* ==================================================
+	   SECTION HEADINGS
+	   ================================================== */
+
+	.section-heading {
+		display: flex;
+
+		justify-content: space-between;
+
+		align-items: end;
+
+		gap: 20px;
+
+		padding-bottom: 13px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.section-heading h2 {
+		margin:
+			5px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				2.4rem,
+				4vw,
+				3.4rem
+			);
+
+		font-weight: 400;
+
+		line-height: .95;
+
+		text-transform: uppercase;
+	}
+
+
+	.section-heading > span {
+		color:
+			var(--brand-stone);
+
+		font-size: .63rem;
+
+		font-weight: 800;
+
+		letter-spacing: .08em;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   PODIUM
+	   ================================================== */
+
+	.podium-section {
+		display: grid;
+
+		gap: 14px;
+	}
+
+
+	.podium {
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				3,
+				minmax(0,1fr)
+			);
+
+		gap: 10px;
+	}
+
+
+	.podium-count-2 {
+		grid-template-columns:
+			repeat(
+				2,
+				minmax(0,1fr)
+			);
+	}
+
+
+	.podium-count-1 {
+		grid-template-columns:
+			minmax(
+				0,
+				1fr
+			);
+	}
+
+
+	.podium-card {
+		position: relative;
+
+		min-width: 0;
+
+		display: grid;
+
+		grid-template-columns:
+			54px
+			minmax(0,1fr)
+			auto;
+
+		gap: 14px;
+
+		align-items: center;
+
+		padding:
+			18px 19px;
+
+		cursor: pointer;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-sm);
+
+		background:
+			var(--panel);
+
+		color: inherit;
+
+		text-align: left;
+
+		transition:
+			transform 120ms ease,
+			border-color 120ms ease;
+	}
+
+
+	.podium-card:hover {
+		transform:
+			translateY(-2px);
+
+		border-color:
+			rgba(191,161,106,.44);
+	}
+
+
+	.podium-card.champion {
+		border-color:
+			rgba(191,161,106,.5);
+
+		background:
+			linear-gradient(
+				110deg,
+				rgba(191,161,106,.07),
+				transparent 46%
+			),
+			var(--panel);
+	}
+
+
+	.podium-rank {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.55rem;
+
+		line-height: 1;
+	}
+
+
+	.crown {
+		font-size: 1.8rem;
+	}
+
+
+	.podium-person {
+		min-width: 0;
+
+		display: grid;
+
+		gap: 4px;
+	}
+
+
+	.podium-person strong {
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-size: .95rem;
+
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+	}
+
+
+	.podium-person span {
+		color:
+			var(--brand-stone);
+
+		font-size: .68rem;
+	}
+
+
+	.podium-score {
+		display: grid;
+
+		justify-items: end;
+
+		gap: 2px;
+	}
+
+
+	.podium-score strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2.1rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.podium-score span {
+		color:
+			var(--brand-stone);
+
+		font-size: .56rem;
+
+		font-weight: 750;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   FULL BOARD
+	   ================================================== */
+
+	.standings-section {
+		display: grid;
+
+		gap: 0;
+	}
+
+
+	.board-heading {
+		margin-bottom: 0;
+	}
+
+
+	.leaderboard-table {
+		width: 100%;
+	}
+
+
+	.table-head,
+	.standing-row {
+		display: grid;
+
+		grid-template-columns:
+			86px
+			minmax(0,1fr)
+			300px;
+
+		align-items: center;
+	}
+
+
+	.table-head {
+		min-height: 42px;
+
+		padding:
+			0 14px;
+
+		border-bottom:
+			1px solid
+			var(--border-strong);
+
+		color:
+			var(--brand-stone);
+
+		font-size: .6rem;
+
+		font-weight: 850;
+
+		letter-spacing: .09em;
+
+		text-transform: uppercase;
+	}
+
+
+	.right {
+		text-align: right;
+	}
+
+
+	.standing-row {
+		min-height: 70px;
+
+		padding:
+			0 14px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+
+		transition:
+			background 120ms ease;
+	}
+
+
+	.standing-row:hover {
+		background:
+			rgba(191,161,106,.018);
+	}
+
+
+	.standing-row.leader {
+		background:
+			linear-gradient(
+				90deg,
+				rgba(191,161,106,.055),
+				transparent 34%
+			);
+	}
+
+
+	.standing-row.leader::before {
+		content: '';
+
+		position: absolute;
+	}
+
+
+	.rank {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.35rem;
+	}
+
+
+	.gm-button {
+		min-width: 0;
+
+		display: inline-flex;
+
+		align-items: center;
+
+		gap: 11px;
+
+		justify-self: start;
+
+		cursor: pointer;
+
+		padding: 0;
+
+		border: 0;
+
+		background: transparent;
+
+		color:
+			var(--brand-ivory);
+
+		font: inherit;
+	}
+
+
+	.gm-button strong {
+		overflow: hidden;
+
+		font-size: .86rem;
+
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+	}
+
+
+	.chevron {
+		display: inline-block;
+
+		color:
+			var(--brand-gold);
+
+		font-size: 1.2rem;
+
+		transition:
+			transform 120ms ease;
+	}
+
+
+	.gm-button.open .chevron {
+		transform:
+			rotate(90deg);
+	}
+
+
+	.score-cell {
+		display: grid;
+
+		grid-template-columns:
+			minmax(
+				80px,
+				1fr
+			)
+			50px;
+
+		align-items: center;
+
+		gap: 14px;
+	}
+
+
+	.score-bar {
+		height: 4px;
+
+		overflow: hidden;
+
+		background:
+			rgba(191,161,106,.08);
+	}
+
+
+	.score-fill {
+		height: 100%;
+
+		background:
+			var(--brand-gold);
+	}
+
+
+	.score-cell > strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.3rem;
+
+		font-weight: 400;
+
+		text-align: right;
+	}
+
+
+	/* ==================================================
+	   BREAKDOWN
+	   ================================================== */
+
+	.breakdown-row {
+		padding:
+			0 14px
+			22px 100px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+
+		animation:
+			drop 140ms ease-out;
+	}
+
+
+	@keyframes drop {
+		from {
+			opacity: 0;
+
+			transform:
+				translateY(-5px);
+		}
+
+		to {
+			opacity: 1;
+
+			transform:
+				translateY(0);
+		}
+	}
+
+
+	.event-list {
+		display: grid;
+	}
+
+
+	.event-block {
+		padding:
+			18px 0;
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.event-block:last-child {
+		border-bottom: 0;
+	}
+
+
+	.event-header {
+		display: flex;
+
+		align-items: center;
+
+		justify-content: space-between;
+
+		gap: 20px;
+	}
+
+
+	.event-identity {
+		min-width: 0;
+
+		display: flex;
+
+		align-items: center;
+
+		gap: 14px;
+	}
+
+
+	.event-identity img {
+		width: 54px;
+		height: 54px;
+
+		flex: 0 0 auto;
+
+		object-fit: contain;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		background:
+			#0a0e0d;
+	}
+
+
+	.event-copy {
+		min-width: 0;
+
+		display: grid;
+
+		gap: 5px;
+	}
+
+
+	.event-meta {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		align-items: center;
+
+		gap: 8px;
+	}
+
+
+	.event-meta > span:first-child {
+		color:
+			var(--brand-gold);
+
+		font-size: .57rem;
+
+		font-weight: 850;
+
+		letter-spacing: .08em;
+
+		text-transform: uppercase;
+	}
+
+
+	.event-status {
+		padding:
+			3px 6px;
+
+		border:
+			1px solid
+			var(--border);
+
+		color:
+			var(--brand-stone);
+
+		font-size: .52rem;
+
+		font-weight: 750;
+
+		text-transform: uppercase;
+	}
+
+
+	.event-status.complete {
+		color:
+			#92b89b;
+
+		border-color:
+			rgba(146,184,155,.35);
+	}
+
+
+	.event-copy > strong {
+		color:
+			var(--brand-ivory);
+
+		font-size: .88rem;
+	}
+
+
+	.event-points {
+		display: grid;
+
+		justify-items: end;
+	}
+
+
+	.event-points strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.55rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.event-points span {
+		margin-top: 2px;
+
+		color:
+			var(--brand-stone);
+
+		font-size: .54rem;
+
+		font-weight: 750;
+
+		text-transform: uppercase;
+	}
+
+
+	.event-breakdown {
+		margin-top: 14px;
+
+		padding-top: 14px;
+
+		border-top:
+			1px solid
+			rgba(191,161,106,.12);
+	}
+
+
+	.empty-breakdown {
+		margin-top: 12px;
+
+		color:
+			var(--brand-stone);
+
+		font-size: .72rem;
+	}
+
+
+	/* ==================================================
+	   MOBILE
+	   ================================================== */
+
+	@media (max-width: 1000px) {
+
+		.hero {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.leader-callout {
+			max-width: 320px;
+		}
+
+
+		.hero-bottom {
+			grid-template-columns:
+				repeat(
+					3,
+					1fr
+				);
+		}
+
+
+		.filter-group {
+			grid-column:
+				1 / -1;
+
+			justify-content:
+				flex-start;
+
+			border-top:
+				1px solid
+				var(--border);
+
+			padding:
+				14px 0;
+		}
+
+
+		.filters {
+			justify-content:
+				flex-start;
+		}
+
+
+		.podium,
+		.podium-count-2 {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.table-head,
+		.standing-row {
+			grid-template-columns:
+				70px
+				minmax(0,1fr)
+				200px;
+		}
+
+
+		.breakdown-row {
+			padding-left:
+				84px;
+		}
+
+	}
+
+
+	@media (max-width: 650px) {
+
+		.games-subnav {
+			overflow-x: auto;
+
+			flex-wrap: nowrap;
+		}
+
+
+		.games-subnav a {
+			flex: 0 0 auto;
+		}
+
+
+		.hero {
+			padding:
+				28px 21px 0;
+		}
+
+
+		.hero h1 {
+			font-size:
+				clamp(
+					4rem,
+					18vw,
+					5.5rem
+				);
+		}
+
+
+		.hero-bottom {
+			grid-template-columns:
+				1fr 1fr;
+		}
+
+
+		.hero-stat.updated {
+			grid-column:
+				1 / -1;
+
+			border-top:
+				1px solid
+				var(--border);
+		}
+
+
+		.table-head {
+			grid-template-columns:
+				58px
+				1fr
+				75px;
+		}
+
+
+		.standing-row {
+			grid-template-columns:
+				58px
+				1fr
+				75px;
+
+			padding:
+				0 5px;
+		}
+
+
+		.score-cell {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.score-bar {
+			display: none;
+		}
+
+
+		.breakdown-row {
+			padding:
+				0 5px
+				18px 63px;
+		}
+
+
+		.event-header {
+			align-items:
+				flex-start;
+		}
+
+
+		.event-identity img {
+			width: 44px;
+			height: 44px;
+		}
+
+	}
 </style>

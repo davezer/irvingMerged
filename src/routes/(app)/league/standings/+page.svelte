@@ -1,91 +1,83 @@
 <script>
-  import LeagueSubnav from '$lib/components/league/LeagueSubnav.svelte';
+	import LeagueSubnav from '$lib/components/league/LeagueSubnav.svelte';
 
-  export let data;
+	export let data;
 
-  const FALLBACK_SEASONS = [2026, 2025];
+	const FALLBACK_SEASONS = [2026, 2025];
 
-  $: standings = data.standings || [];
-  $: season = data.season || new Date().getFullYear();
-  $: topSeed = data.pulse?.topSeed || standings[0] || null;
-  $: averagePoints = data.pulse?.averagePoints || 0;
-  $: hottest = data.pulse?.hottest || null;
-  $: teamCount = standings.length;
+	$: standings = data.standings || [];
+	$: season = data.season || new Date().getFullYear();
+	$: topSeed = data.pulse?.topSeed || standings[0] || null;
+	$: averagePoints = data.pulse?.averagePoints || 0;
+	$: hottest = data.pulse?.hottest || null;
+	$: teamCount = standings.length;
 
-  const fmt = (value, digits = 2) =>
-    Number(value || 0).toFixed(digits);
+	const fmt = (value, digits = 2) => Number(value || 0).toFixed(digits);
 
-  const pct = (value) =>
-    `${(Number(value || 0) * 100).toFixed(1)}%`;
+	const pct = (value) => `${(Number(value || 0) * 100).toFixed(1)}%`;
 
-  $: availableSeasons = (
-    Array.isArray(data.seasons) && data.seasons.length
-      ? data.seasons
-      : FALLBACK_SEASONS
-  )
-    .map(Number)
-    .filter(Number.isFinite)
-    .sort((a, b) => b - a);
+	$: availableSeasons = (
+		Array.isArray(data.seasons) && data.seasons.length ? data.seasons : FALLBACK_SEASONS
+	)
+		.map(Number)
+		.filter(Number.isFinite)
+		.sort((a, b) => b - a);
 
-  function buildHref({ nextSeason = season } = {}) {
-    const params = new URLSearchParams();
-    params.set('season', String(nextSeason));
+	function buildHref({ nextSeason = season } = {}) {
+		const params = new URLSearchParams();
+		params.set('season', String(nextSeason));
 
-    return `/league/standings?${params.toString()}`;
-  }
+		return `/league/standings?${params.toString()}`;
+	}
 
-  function teamHref(row) {
-    return row.slug
-      ? `/league/teams/${row.slug}?season=${season}`
-      : `/league/teams?season=${season}`;
-  }
+	function teamHref(row) {
+		return row.slug
+			? `/league/teams/${row.slug}?season=${season}`
+			: `/league/teams?season=${season}`;
+	}
 
-  function trendClass(row) {
-    const diff = Number(row.pointDiff || 0);
+	function trendClass(row) {
+		const diff = Number(row.pointDiff || 0);
 
-    if (diff > 0) return 'good';
-    if (diff < 0) return 'bad';
+		if (diff > 0) return 'good';
+		if (diff < 0) return 'bad';
 
-    return 'even';
-  }
+		return 'even';
+	}
 </script>
 
 <div class="page-stack">
-  <LeagueSubnav season={season} active="standings" />
+	<LeagueSubnav {season} active="standings" />
 
-  <section class="studio-header icl-hero-shell pad-md" aria-label="Standings header">
-  
+	<section class="studio-header icl-hero-shell pad-md" aria-label="Standings header">
+		<div class="header-copy">
+			<h1>Standings Desk</h1>
+		</div>
 
-    <div class="header-copy">
-      <h1>Standings Desk</h1>
-      
-    </div>
+		<div class="standings-season-box icl-hero-shell pad-md" aria-label="Season selector">
+			<span class="standings-season-label">Season Feed</span>
 
-<div class="standings-season-box icl-hero-shell pad-md" aria-label="Season selector">
-	<span class="standings-season-label">Season Feed</span>
+			<div class="standings-season-pills">
+				{#each availableSeasons as option}
+					<a
+						class:active={Number(option) === Number(season)}
+						href={`/league/standings?season=${option}`}
+					>
+						{option}
+					</a>
+				{/each}
+			</div>
+		</div>
+	</section>
 
-	<div class="standings-season-pills">
-		{#each availableSeasons as option}
-			<a
-				class:active={Number(option) === Number(season)}
-				href={`/league/standings?season=${option}`}
-			>
-				{option}
-			</a>
-		{/each}
-	</div>
-</div>
-</section>
-
-
-  {#if !data.hasData}
-    <section class="studio-card empty-state">
-      <div class="bug-row"><span>ICL</span><strong>No Signal</strong></div>
-      <h2>No standings data yet</h2>
-      <p>We could not pull Sleeper standings for this season.</p>
-    </section>
-  {:else}
-    <!-- <section class="studio-strip" aria-label="Standings summary">
+	{#if !data.hasData}
+		<section class="studio-card empty-state">
+			<div class="bug-row"><span>ICL</span><strong>No Signal</strong></div>
+			<h2>No standings data yet</h2>
+			<p>We could not pull Sleeper standings for this season.</p>
+		</section>
+	{:else}
+		<!-- <section class="studio-strip" aria-label="Standings summary">
       
 
       <article>
@@ -101,620 +93,1030 @@
       </article>
     </section> -->
 
-    <section class="standings-board icl-hero-shell pad-md" aria-label="Full league standings">
-      <div class="board-topper">
-        <div class="bug-row"><span>ICL</span><strong>FantasyCast Standings</strong></div>
-        <!-- <div class="board-note">Sleeper API + runtime cache</div> -->
-      </div>
+		<section class="standings-board icl-hero-shell pad-md" aria-label="Full league standings">
+			<div class="board-topper">
+				<div>
+					<div class="eyebrow">League Table</div>
 
-      <div class="table-shell">
-        <table>
-          <thead>
-            <tr>
-              <th class="rank-col">Rank</th>
-              <th class="team-col">Franchise</th>
-              <th>Manager</th>
-              <th>Record</th>
-              <th>PF</th>
-              <th>PA</th>
-              <th>Diff</th>
-              <th>Win %</th>
-              <!-- <th>Back</th> -->
-              <!-- <th>Tier</th> -->
-            </tr>
-          </thead>
-          <tbody>
-            {#each standings as row}
-              <tr class:leader={row.rank === 1}>
-                <td class="rank-cell">#{row.rank}</td>
-                <td class="team-cell">
-                  <a class="team-inline" href={teamHref(row)}>
-                    <span class="inline-photo">
-                      {#if row.teamPhoto}
-                        <img src={row.teamPhoto} alt={row.teamName} />
-                      {:else}
-                        <span>{row.initials}</span>
-                      {/if}
-                    </span>
-                    <span class="team-copy">
-                      <strong>{row.teamName}</strong>
-                      <!-- <small>{row.branded ? 'Franchise feed' : 'Sleeper feed'}</small> -->
-                    </span>
-                  </a>
-                </td>
-                <td>{row.managerName}</td>
-                <td><strong class="record-text">{row.recordLabel}</strong></td>
-                <td class="num">{fmt(row.points)}</td>
-                <td class="num">{fmt(row.pointsAgainst)}</td>
-                <td class={`num diff ${trendClass(row)}`}>{fmt(row.pointDiff)}</td>
-                <td class="num">{pct(row.pct)}</td>
-                <!-- <td class="num">{fmt(row.pointsBehind)}</td> -->
-                <!-- <td><span class="tier-chip">{row.tier}</span></td> -->
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  {/if}
+					<h2>Current Standings</h2>
+				</div>
+
+				<div class="board-note">
+					{teamCount} franchises
+				</div>
+			</div>
+
+			<div class="table-shell">
+				<table>
+					<thead>
+						<tr>
+							<th class="rank-col">Rank</th>
+							<th class="team-col">Franchise</th>
+							<th>Manager</th>
+							<th>Record</th>
+							<th>PF</th>
+							<th>PA</th>
+							<th>Diff</th>
+							<th>Win %</th>
+							<!-- <th>Back</th> -->
+							<!-- <th>Tier</th> -->
+						</tr>
+					</thead>
+					<tbody>
+						{#each standings as row}
+							<tr class:leader={row.rank === 1}>
+								<td class="rank-cell">#{row.rank}</td>
+								<td class="team-cell">
+									<a class="team-inline" href={teamHref(row)}>
+										<span class="inline-photo">
+											{#if row.teamPhoto}
+												<img src={row.teamPhoto} alt={row.teamName} />
+											{:else}
+												<span>{row.initials}</span>
+											{/if}
+										</span>
+										<span class="team-copy">
+											<strong>{row.teamName}</strong>
+											<!-- <small>{row.branded ? 'Franchise feed' : 'Sleeper feed'}</small> -->
+										</span>
+									</a>
+								</td>
+								<td>{row.managerName}</td>
+								<td><strong class="record-text">{row.recordLabel}</strong></td>
+								<td class="num">{fmt(row.points)}</td>
+								<td class="num">{fmt(row.pointsAgainst)}</td>
+								<td class={`num diff ${trendClass(row)}`}>{fmt(row.pointDiff)}</td>
+								<td class="num">{pct(row.pct)}</td>
+								<!-- <td class="num">{fmt(row.pointsBehind)}</td> -->
+								<!-- <td><span class="tier-chip">{row.tier}</span></td> -->
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		</section>
+	{/if}
 </div>
 
 <style>
-  .page-stack {
-    display: grid;
-    gap: 18px;
-  }
- .studio-card,
-  .studio-strip article {
-    border: 2px solid #070808;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.025) 18%, rgba(0, 0, 0, 0.18)),
-      linear-gradient(180deg, var(--bug-gray), var(--bug-charcoal) 48%, var(--bug-black));
-    box-shadow: var(--shadow-panel);
-  }
+	/* =========================================================
+	   IRVING COLLECTIVE — STANDINGS
+	   ========================================================= */
 
-  .studio-header {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 18px;
-    align-items: stretch;
-    overflow: hidden;
-    border-radius: 18px;
-  }
+	.page-stack {
+		display: grid;
+		gap: 18px;
+	}
 
-  .studio-header::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: .82;
-  }
 
-  .header-bug,
-  .header-copy,
-  .score-meta {
-    position: relative;
-    z-index: 1;
-  }
+	/* =========================================================
+	   HERO
+	   ========================================================= */
 
-  .header-bug {
-    display: grid;
-    grid-template-columns: 58px 1fr;
-    align-self: start;
-    min-width: 270px;
-    border-right: 2px solid #070808;
-    border-bottom: 2px solid #070808;
-    background: linear-gradient(180deg, #171a19, #050606);
-    font-family: var(--font-score);
-    font-weight: 950;
-    text-transform: uppercase;
-    letter-spacing: .15em;
-    color: var(--bug-yellow);
-  }
+	.studio-header {
+		position: relative;
 
-  .network,
-  .bug-row span {
-    display: grid;
-    place-items: center;
-    min-height: 42px;
-    padding: 0 12px;
-    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-    color: #fff;
-    border-right: 2px solid #070808;
-    letter-spacing: 0;
-  }
+		display: grid;
 
-  .header-bug > span:last-child {
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-  }
+		grid-template-columns:
+			minmax(0, 1fr)
+			auto;
 
-  .header-copy {
-    padding: 7px 0 19px;
-  }
+		align-items: center;
 
-  .eyebrow {
-    margin-bottom: 8px;
-    color: var(--bug-yellow);
-    font-family: var(--font-score);
-    font-size: .72rem;
-    font-weight: 950;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-  }
+		gap: 28px;
 
-  h1 {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(2.8rem, 7vw, 6.2rem);
-    line-height: .88;
-    letter-spacing: -.065em;
-  }
+		min-height: 190px;
 
-  .header-copy p {
-    max-width: 68ch;
-    margin: 12px 0 0;
-    color: var(--bug-cream);
-    line-height: 1.45;
-    text-shadow: 0 2px 0 rgba(0,0,0,.78);
-  }
+		padding: 26px 28px;
 
-  .score-meta {
-    align-self: start;
-    justify-self: end;
-    min-width: 120px;
-    margin: 18px 18px 0 0;
-    overflow: hidden;
-    border: 2px solid #070808;
-    border-radius: 8px;
-    background: linear-gradient(180deg, #eeeeea, #aeb4af 48%, #5d6460);
-    color: #080909;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.72), inset 0 -2px 0 rgba(0,0,0,.35);
-    text-align: center;
-    font-family: var(--font-score);
-    text-transform: uppercase;
-  }
+		overflow: hidden;
 
-  .score-meta span {
-    display: block;
-    padding: 5px 8px 3px;
-    background: linear-gradient(180deg, #2e3432, #090a0a);
-    color: var(--bug-yellow);
-    font-size: .62rem;
-    letter-spacing: .14em;
-  }
+		border:
+			1px solid
+			var(--border-strong) !important;
 
-  .score-meta strong {
-    display: block;
-    padding: 8px 10px 9px;
-    font-size: 1.05rem;
-  }
+		border-radius:
+			var(--radius-lg);
 
-  .season-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+		background:
+			linear-gradient(
+				120deg,
+				rgba(191,161,106,.055),
+				transparent 38%
+			),
+			var(--panel-strong) !important;
 
-    .control-stack {
-    display: grid;
-    gap: 10px;
-    min-width: 0;
-  }
+		box-shadow:
+			var(--shadow-panel) !important;
+	}
 
-  .control-box {
-    display: grid;
-    gap: 9px;
-    padding: 12px;
-    border: 2px solid #111;
-    border-radius: 7px;
-    background: linear-gradient(180deg, #d9d9cf, #777d78 48%, #222826);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 0 rgba(0,0,0,0.55);
-  }
 
-  .control-box > span,
+	.studio-header::after {
+		content: 'STANDINGS';
 
-  .season-pills a {
-    border: 2px solid #070808;
-    border-radius: 8px;
-    padding: 8px 12px;
-    background: linear-gradient(180deg, #6b726f, #252a29 50%, #101212);
-    color: var(--bug-white);
-    font-family: var(--font-score);
-    font-size: .76rem;
-    font-weight: 950;
-    text-decoration: none;
-    text-transform: uppercase;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(0,0,0,.48);
-  }
+		position: absolute;
 
-  .season-pills a.selected,
-  .season-pills a:hover {
-    background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-    color: #fff;
-  }
+		right: 28px;
 
-  .studio-strip {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-  }
+		bottom: -19px;
 
-  .studio-strip article {
-    min-height: 104px;
-    display: grid;
-    align-content: space-between;
-    gap: 12px;
-    border-radius: 16px;
-    padding: 14px 16px;
-  }
+		color:
+			rgba(191,161,106,.024);
 
-  .studio-strip span,
-  .board-note {
-    color: var(--bug-yellow);
-    font-family: var(--font-score);
-    font-size: .66rem;
-    font-weight: 950;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-  }
+		font-family:
+			var(--font-display);
 
-  .studio-strip strong {
-    display: block;
-    color: var(--bug-white);
-    font-family: var(--font-score);
-    font-size: clamp(1.35rem, 3vw, 2.4rem);
-    line-height: .92;
-    text-shadow: 0 2px 0 #000;
-  }
+		font-size:
+			clamp(
+				5rem,
+				12vw,
+				10rem
+			);
 
-  .studio-strip small {
-    color: var(--muted);
-  }
+		line-height: 1;
 
-  .standings-board {
-    overflow: hidden;
-    border-radius: 18px;
-  }
+		letter-spacing: .04em;
 
-  .board-topper {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    gap: 14px;
-    border-bottom: 2px solid #070808;
-    background: linear-gradient(180deg, #171a19, #050606);
-  }
+		pointer-events: none;
+	}
 
-  .bug-row {
-    display: inline-grid;
-    grid-template-columns: 58px auto;
-    align-items: stretch;
-    color: var(--bug-yellow);
-    font-family: var(--font-score);
-    text-transform: uppercase;
-    letter-spacing: .15em;
-  }
 
-  .bug-row strong {
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-    min-height: 42px;
-  }
+	.header-copy {
+		position: relative;
 
-  .board-note {
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    text-align: right;
-  }
+		z-index: 1;
 
-  .table-shell {
-    overflow-x: auto;
-    background:
-      repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px),
-      linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.12));
-  }
+		padding: 0;
+	}
 
-  table {
-    width: 100%;
-    min-width: 1060px;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-variant-numeric: tabular-nums;
-  }
 
-  th,
-  td {
-    padding: 1px 50px ;
-    border-bottom: 1px solid rgba(247, 245, 235, 0.12);
-    text-align: left;
-    vertical-align: middle;
-  }
+	h1 {
+		margin: 0;
 
-  th {
-    position: sticky;
-    top: 0;
-    z-index: 3;
-    background: linear-gradient(180deg, #e8e8df, #9ca39e 52%, #555c59);
-    color: #080909;
-    border-bottom: 2px solid #070808;
-    font-family: var(--font-score);
-    font-size: .72rem;
-    font-weight: 950;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    text-shadow: 0 1px 0 rgba(255,255,255,.45);
-  }
+		color:
+			var(--brand-ivory);
 
-  tbody tr {
-    background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
-  }
+		font-family:
+			var(--font-display);
 
-  tbody tr:nth-child(even) {
-    background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
-  }
+		font-size:
+			clamp(
+				3.8rem,
+				7vw,
+				6.8rem
+			);
 
-  tbody tr:hover,
-  tbody tr.leader {
-    background:
-      linear-gradient(90deg, rgba(199,25,47,.22), transparent 38%),
-      linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.025));
-  }
+		font-weight: 400;
 
-  .rank-col,
-  .rank-cell {
-    width: 76px;
-    text-align: center;
-  }
+		line-height: .88;
 
-  .rank-cell {
-    color: var(--bug-yellow);
-    font-family: var(--font-score);
-    font-size: 1.05rem;
-    text-shadow: 0 2px 0 #000;
-  }
+		letter-spacing: .015em;
 
-  .team-col {
-    min-width: 270px;
-  }
+		text-shadow: none;
+	}
 
-  .team-inline {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--bug-white);
-    text-decoration: none;
-  }
 
-  .team-inline:hover strong {
-    color: var(--bug-yellow);
-  }
+	.eyebrow,
+	.board-note {
+		color:
+			var(--brand-gold);
 
-  .inline-photo {
-    width: 42px;
-    height: 42px;
-    flex: 0 0 42px;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    border: 2px solid #070808;
-    border-radius: 50%;
-    background: #e8e2d4;
-    color: #111;
-    font-family: var(--font-score);
-    font-size: .8rem;
-    box-shadow: 0 1px 0 rgba(255,255,255,.28), 0 5px 10px rgba(0,0,0,.42);
-  }
+		font-family:
+			var(--font-body);
 
-  .inline-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+		font-size: .62rem;
 
-  .team-copy {
-    display: grid;
-    gap: 2px;
-    min-width: 0;
-  }
+		font-weight: 700;
 
-  .team-copy strong {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 950;
-  }
+		letter-spacing: .16em;
 
-  .team-copy small {
-    color: var(--muted);
-    font-size: .76rem;
-  }
+		text-transform: uppercase;
+	}
 
-  .record-text,
-  .num {
-    font-family: var(--font-score);
-    text-shadow: 0 2px 0 #000;
-  }
 
-  .num {
-    text-align: right;
-    white-space: nowrap;
-  }
+	/* =========================================================
+	   SEASON SELECTOR
+	   ========================================================= */
 
-  .standings-season-box {
-	position: relative;
-	z-index: 2;
+	.standings-season-box {
+		position: relative;
 
-	align-self: center;
-	justify-self: end;
+		z-index: 2;
 
-	display: grid;
-	gap: 9px;
+		align-self: center;
 
-	margin-right: 14px;
-	padding: 10px 12px 12px;
+		justify-self: end;
 
-	border: 2px solid #070808;
-	border-radius: 8px;
+		display: grid;
 
-	background:
-		linear-gradient(
-			180deg,
-			#eeeeea 0%,
-			#c7cbc7 16%,
-			#8b918d 52%,
-			#3d4340 100%
-		);
+		gap: 9px;
 
-	box-shadow:
-		inset 0 1px 0 rgba(255,255,255,.85),
-		inset 0 -2px 0 rgba(0,0,0,.45),
-		0 4px 10px rgba(0,0,0,.35);
+		min-width: 180px;
+
+		margin: 0;
+
+		padding:
+			12px 14px;
+
+		border:
+			1px solid
+			var(--border-strong) !important;
+
+		border-radius:
+			var(--radius-sm);
+
+		background:
+			rgba(13,16,15,.78) !important;
+
+		box-shadow:
+			none !important;
+	}
+
+
+	.standings-season-label {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .61rem;
+
+		font-weight: 700;
+
+		letter-spacing: .16em;
+
+		text-transform: uppercase;
+
+		text-shadow: none;
+	}
+
+
+	.standings-season-pills {
+		display: flex;
+
+		gap: 6px;
+
+		flex-wrap: wrap;
+	}
+
+
+	.standings-season-pills a {
+		display: grid;
+
+		place-items: center;
+
+		min-width: 54px;
+
+		min-height: 32px;
+
+		padding:
+			5px 9px;
+
+		border:
+			1px solid
+			rgba(191,161,106,.18);
+
+		border-radius: 3px;
+
+		background:
+			transparent;
+
+		color:
+			var(--brand-stone);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .67rem;
+
+		font-weight: 700;
+
+		letter-spacing: .08em;
+
+		text-decoration: none;
+
+		text-shadow: none;
+
+		box-shadow: none;
+
+		transition:
+			border-color 130ms ease,
+			color 130ms ease,
+			background 130ms ease;
+	}
+
+
+	.standings-season-pills a:hover {
+		border-color:
+			var(--brand-gold);
+
+		color:
+			var(--brand-ivory);
+	}
+
+
+	.standings-season-pills a.active {
+		border-color:
+			var(--brand-gold);
+
+		background:
+			var(--brand-gold);
+
+		color:
+			var(--brand-charcoal);
+	}
+
+
+	/* =========================================================
+	   STANDINGS BOARD
+	   ========================================================= */
+
+	.standings-board {
+		overflow: hidden;
+
+		padding: 0 !important;
+
+		border:
+			1px solid
+			var(--border) !important;
+
+		border-radius:
+			var(--radius-lg);
+
+		background:
+			var(--panel) !important;
+
+		box-shadow:
+			var(--shadow-panel) !important;
+	}
+
+
+	.board-topper {
+		display: flex;
+
+		align-items: end;
+
+		justify-content: space-between;
+
+		gap: 18px;
+
+		padding:
+			20px 22px 17px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+
+		background:
+			linear-gradient(
+				180deg,
+				rgba(255,255,255,.018),
+				transparent
+			);
+	}
+
+
+	.board-topper h2 {
+		margin:
+			4px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+
+		letter-spacing: .02em;
+	}
+
+
+	.board-note {
+		padding-bottom: 2px;
+
+		color:
+			var(--brand-stone);
+	}
+
+
+	/* =========================================================
+	   TABLE
+	   ========================================================= */
+
+	.table-shell {
+		overflow-x: auto;
+
+		background:
+			transparent;
+	}
+
+
+table {
+	width: 100%;
+	min-width: 1000px;
+
+	border-collapse: collapse;
+
+	table-layout: fixed;
+
+	font-variant-numeric:
+		tabular-nums;
 }
 
-.standings-season-label {
-	color: #090a0a;
+th,
+td {
+	padding:
+		10px 12px;
 
-	font-family: var(--font-score);
-	font-size: .68rem;
-	font-weight: 950;
-	letter-spacing: .14em;
-	text-transform: uppercase;
+	border-bottom:
+		1px solid
+		rgba(191,161,106,.10);
 
-	text-shadow: 0 1px 0 rgba(255,255,255,.65);
+	text-align: left;
+
+	vertical-align: middle;
+}
+th:nth-child(1),
+td:nth-child(1) {
+	width: 58px;
+
+	text-align: center;
 }
 
-.standings-season-pills {
-	display: flex;
-	gap: 8px;
+
+/* Franchise */
+th:nth-child(2),
+td:nth-child(2) {
+	width: 34%;
 }
 
-.standings-season-pills a {
-	display: grid;
-	place-items: center;
 
-	min-width: 60px;
-	min-height: 36px;
-	padding: 6px 12px;
-
-	border: 2px solid #070808;
-	border-radius: 8px;
-
-	background:
-		linear-gradient(
-			180deg,
-			#777e7a,
-			#343938 48%,
-			#151717
-		);
-
-	color: var(--bug-white);
-
-	font-family: var(--font-score);
-	font-size: .75rem;
-	font-weight: 950;
-	text-decoration: none;
-
-	box-shadow:
-		inset 0 1px 0 rgba(255,255,255,.25),
-		inset 0 -2px 0 rgba(0,0,0,.55);
-
-	text-shadow: 0 2px 0 #000;
+/* Manager */
+th:nth-child(3),
+td:nth-child(3) {
+	width: 18%;
 }
 
-.standings-season-pills a.active {
-	background:
-		linear-gradient(
-			180deg,
-			var(--bug-red),
-			var(--bug-red-dark)
-		);
 
-	color: white;
-
-	box-shadow:
-		inset 0 1px 0 rgba(255,255,255,.28),
-		inset 0 -2px 0 rgba(0,0,0,.55);
+/* Record */
+th:nth-child(4),
+td:nth-child(4) {
+	width: 9%;
+}
+th:nth-child(n + 4),
+td:nth-child(n + 4) {
+	text-align: right;
+}
+th:nth-child(4),
+td:nth-child(4) {
+	text-align: center;
 }
 
-.standings-season-pills a:hover {
-	filter: brightness(1.12);
+/* PF */
+th:nth-child(5),
+td:nth-child(5) {
+	width: 8%;
 }
 
-  .diff.good { color: var(--success); }
-  .diff.bad { color: #ff6464; }
-  .diff.even { color: var(--bug-silver); }
 
-  .tier-chip {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-    max-width: 100%;
-    padding: 7px 10px;
-    border: 1px solid #070808;
-    border-radius: 999px;
-    background: linear-gradient(180deg, #504522, #221d0d);
-    color: var(--bug-yellow);
-    font-family: var(--font-score);
-    font-size: .68rem;
-    font-weight: 950;
-    text-transform: uppercase;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.5);
-  }
+/* PA */
+th:nth-child(6),
+td:nth-child(6) {
+	width: 8%;
+}
 
-  .empty-state {
-    display: grid;
-    gap: 10px;
-    padding: 24px;
-    border-radius: 18px;
-  }
 
-  .empty-state h2,
-  .empty-state p {
-    margin: 0;
-  }
+/* Diff */
+th:nth-child(7),
+td:nth-child(7) {
+	width: 8%;
+}
 
-  @media (max-width: 960px) {
-    .studio-header {
-      grid-template-columns: 1fr;
-    }
 
-    .header-bug {
-      width: 100%;
-      min-width: 0;
-      border-right: 0;
-    }
+/* Win % */
+th:nth-child(8),
+td:nth-child(8) {
+	width: 9%;
+}
 
-    .header-copy {
-      padding: 4px 18px 24px;
-    }
+	/* =========================================================
+	   TABLE HEADER
+	   ========================================================= */
 
-    .score-meta {
-      justify-self: start;
-      margin: 0 18px 18px;
-    }
+	th {
+		position: sticky;
 
-    .studio-strip {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
+		top: 0;
 
-  @media (max-width: 640px) {
-    .studio-strip {
-      grid-template-columns: 1fr;
-    }
+		z-index: 3;
 
-    .board-topper {
-      display: grid;
-    }
+		padding-top: 9px;
 
-    .board-note {
-      padding: 0 14px 12px;
-      text-align: left;
-    }
-  }
+		padding-bottom: 9px;
+
+		border-bottom:
+			1px solid
+			var(--border-strong);
+
+		background:
+			#101312;
+
+		color:
+			var(--brand-stone);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .58rem;
+
+		font-weight: 700;
+
+		letter-spacing: .13em;
+
+		text-transform: uppercase;
+
+		text-shadow: none;
+	}
+
+
+	/* =========================================================
+	   ROWS
+	   ========================================================= */
+
+	tbody tr {
+		position: relative;
+
+		background:
+			transparent;
+
+		transition:
+			background 120ms ease;
+	}
+
+
+	tbody tr:nth-child(even) {
+		background:
+			rgba(255,255,255,.012);
+	}
+
+
+	tbody tr:hover {
+		background:
+			rgba(191,161,106,.045);
+	}
+
+
+	tbody tr.leader {
+		background:
+			linear-gradient(
+				90deg,
+				rgba(191,161,106,.07),
+				transparent 34%
+			);
+	}
+
+
+	tbody tr.leader td:first-child {
+		box-shadow:
+			inset 2px 0 0
+			var(--brand-gold);
+	}
+
+
+	/* =========================================================
+	   RANK
+	   ========================================================= */
+
+
+
+
+	.rank-cell {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .77rem;
+
+		font-weight: 800;
+
+		text-shadow: none;
+	}
+
+
+	/* =========================================================
+	   FRANCHISE
+	   ========================================================= */
+
+.team-col {
+	min-width: 0;
+}
+
+
+	.team-inline {
+		display: flex;
+
+		align-items: center;
+
+		gap: 11px;
+
+		color:
+			var(--brand-ivory);
+
+		text-decoration: none;
+	}
+
+
+	.team-inline:hover strong {
+		color:
+			var(--brand-gold);
+	}
+
+
+	.inline-photo {
+		width: 38px;
+
+		height: 38px;
+
+		flex:
+			0 0 38px;
+
+		display: grid;
+
+		place-items: center;
+
+		overflow: hidden;
+
+		border:
+			1px solid
+			rgba(191,161,106,.28);
+
+		border-radius: 4px;
+
+		background:
+			var(--brand-ivory);
+
+		color:
+			var(--brand-charcoal);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .7rem;
+
+		font-weight: 800;
+
+		box-shadow: none;
+	}
+
+
+	.inline-photo img {
+		width: 100%;
+
+		height: 100%;
+
+		object-fit: cover;
+	}
+
+
+	.team-copy {
+		display: grid;
+
+		gap: 2px;
+
+		min-width: 0;
+	}
+
+
+	.team-copy strong {
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-size: .84rem;
+
+		font-weight: 800;
+
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+	}
+
+
+	/* =========================================================
+	   BODY DATA
+	   ========================================================= */
+
+	td {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .78rem;
+	}
+
+
+	.record-text {
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-body);
+
+		font-weight: 800;
+
+		text-shadow: none;
+	}
+
+
+	.num {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-body);
+
+		font-weight: 600;
+
+		text-align: right;
+
+		white-space: nowrap;
+
+		text-shadow: none;
+	}
+
+
+	.diff.good {
+		color:
+			#91b69c;
+	}
+
+
+	.diff.bad {
+		color:
+			#d98585;
+	}
+
+
+	.diff.even {
+		color:
+			var(--brand-stone);
+	}
+
+
+	/* =========================================================
+	   EMPTY STATE
+	   ========================================================= */
+
+	.studio-card {
+		border:
+			1px solid
+			var(--border) !important;
+
+		background:
+			var(--panel) !important;
+
+		box-shadow:
+			var(--shadow-panel) !important;
+	}
+
+
+	.empty-state {
+		display: grid;
+
+		gap: 10px;
+
+		padding: 24px;
+
+		border-radius:
+			var(--radius-lg);
+	}
+
+
+	.empty-state h2,
+	.empty-state p {
+		margin: 0;
+	}
+
+
+	.empty-state p {
+		color:
+			var(--muted);
+	}
+
+
+	.bug-row {
+		display: inline-flex;
+
+		width: max-content;
+
+		align-items: center;
+
+		overflow: hidden;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius: 3px;
+
+		background:
+			var(--brand-charcoal);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .62rem;
+
+		font-weight: 700;
+
+		letter-spacing: .1em;
+
+		text-transform: uppercase;
+	}
+
+
+	.bug-row span {
+		display: grid;
+
+		place-items: center;
+
+		min-height: 30px;
+
+		padding:
+			0 9px;
+
+		border-right:
+			1px solid
+			var(--border-strong);
+
+		background:
+			transparent;
+
+		color:
+			var(--brand-gold);
+	}
+
+
+	.bug-row strong {
+		padding:
+			7px 10px;
+	}
+
+
+	/* =========================================================
+	   OPTIONAL / FUTURE SUMMARY CARDS
+	   ========================================================= */
+
+	.studio-strip {
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				4,
+				minmax(0,1fr)
+			);
+
+		gap: 12px;
+	}
+
+
+	.studio-strip article {
+		min-height: 104px;
+
+		display: grid;
+
+		align-content: space-between;
+
+		gap: 12px;
+
+		padding:
+			14px 16px;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-md);
+
+		background:
+			var(--panel);
+
+		box-shadow:
+			var(--shadow-panel);
+	}
+
+
+	.studio-strip span {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-body);
+
+		font-size: .6rem;
+
+		font-weight: 700;
+
+		letter-spacing: .14em;
+
+		text-transform: uppercase;
+	}
+
+
+	.studio-strip strong {
+		display: block;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				1.5rem,
+				3vw,
+				2.5rem
+			);
+
+		font-weight: 400;
+
+		line-height: .92;
+
+		text-shadow: none;
+	}
+
+
+	.studio-strip small {
+		color:
+			var(--muted);
+	}
+
+
+	/* =========================================================
+	   RESPONSIVE
+	   ========================================================= */
+
+	@media (
+		max-width: 960px
+	) {
+		.studio-header {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.studio-header::after {
+			display: none;
+		}
+
+
+		.standings-season-box {
+			justify-self: start;
+
+			width: 100%;
+		}
+
+
+		.studio-strip {
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(0,1fr)
+				);
+		}
+	}
+
+
+	@media (
+		max-width: 640px
+	) {
+		.board-topper {
+			align-items: start;
+
+			flex-direction: column;
+		}
+
+
+		.studio-strip {
+			grid-template-columns:
+				1fr;
+		}
+	}
 </style>

@@ -1,19 +1,27 @@
 <svelte:head>
 	<title>
-		League Control Room | Irving Champions League
+		League Control Room | Irving Collective
 	</title>
+
+	<meta
+		name="description"
+		content="Commissioner administration for Irving Collective league operations, publishing, history, and draft capital."
+	/>
 </svelte:head>
+
 
 <div class="control-room">
 
-	<!-- ======================================================
+	<!-- ==================================================
 	     HERO
-	     ====================================================== -->
+	     ================================================== -->
 
 	<header class="control-hero">
+
 		<div class="hero-copy">
+
 			<div class="eyebrow">
-				League Admin
+				League Administration
 			</div>
 
 			<h1>
@@ -22,27 +30,58 @@
 
 			<p>
 				Commissioner tools for league operations,
-				history, media, and general Irving nonsense.
+				history, publishing, and the general upkeep
+				of Irving nonsense.
 			</p>
+
 		</div>
 
-		<div class="hero-status">
-			<span class="status-dot"></span>
 
-			<span>
-				Commissioner Access
-			</span>
+		<div class="hero-command">
+
+			<div class="command-mark">
+				ICL
+			</div>
+
+			<div class="command-copy">
+
+				<span>
+					Commissioner
+				</span>
+
+				<strong>
+					Control
+				</strong>
+
+				<small>
+					Authorized access
+				</small>
+
+			</div>
+
 		</div>
+
+
+		<div
+			class="hero-watermark"
+			aria-hidden="true"
+		>
+			ADMIN
+		</div>
+
 	</header>
 
 
-	<!-- ======================================================
-	     LEAGUE MEDIA
-	     ====================================================== -->
+	<!-- ==================================================
+	     NEWSROOM
+	     ================================================== -->
 
-	<section class="section">
-		<div class="section-heading">
+	<section class="admin-section">
+
+		<header class="section-heading">
+
 			<div>
+
 				<div class="section-kicker">
 					Newsroom
 				</div>
@@ -50,73 +89,141 @@
 				<h2>
 					League Media
 				</h2>
+
+				<p>
+					Write, generate, review, and publish
+					The Irving Weekly.
+				</p>
+
 			</div>
 
+
 			<a
-				class="text-link"
+				class="public-link"
 				href="/league/weekly"
 			>
 				View Public Weekly →
 			</a>
-		</div>
 
-		<div class="media-card">
-			<div class="media-copy">
-				<div class="card-icon media-icon">
-					IW
+		</header>
+
+
+		<div class="newsroom-grid">
+
+			<a
+				class="admin-card publication-card"
+				href="/admin/league/irving-weekly"
+			>
+
+				<div class="card-top">
+
+					<div class="card-mark">
+						IW
+					</div>
+
+					<span class="card-number">
+						01
+					</span>
+
 				</div>
 
-				<div>
+
+				<div class="card-copy">
+
+					<div class="card-kicker">
+						Publication
+					</div>
+
 					<h3>
-						The Irving Weekly
+						Publication Desk
 					</h3>
 
 					<p>
-						Create manual stories, review automated
-						recaps, and manage the league's weekly
-						publication from one newsroom.
+						Create manual stories, manage drafts,
+						edit published articles, and control
+						The Irving Weekly archive.
 					</p>
+
 				</div>
-			</div>
 
-			<div class="media-actions">
-				<a
-					class="action-button primary"
-					href="/admin/league/irving-weekly"
-				>
-					<span class="button-label">
-						Publication Desk
+
+				<footer>
+					<span>
+						Open Publication Desk
 					</span>
 
-					<span class="button-note">
-						Manage articles & drafts
-					</span>
-				</a>
+					<strong>
+						→
+					</strong>
+				</footer>
 
-				<a
-					class="action-button cyan"
-					href="/admin/league/weekly-recap"
-				>
-					<span class="button-label">
+			</a>
+
+
+			<a
+				class="admin-card recap-card"
+				href="/admin/league/weekly-recap"
+			>
+
+				<div class="card-top">
+
+					<div class="card-mark">
+						WR
+					</div>
+
+					<span class="card-number">
+						02
+					</span>
+
+				</div>
+
+
+				<div class="card-copy">
+
+					<div class="card-kicker">
+						Automation
+					</div>
+
+					<h3>
 						Weekly Recap Lab
+					</h3>
+
+					<p>
+						Build the factual packet, generate the
+						AI-written weekly recap, review the draft,
+						and publish when it is ready.
+					</p>
+
+				</div>
+
+
+				<footer>
+					<span>
+						Open Recap Lab
 					</span>
 
-					<span class="button-note">
-						Build, generate & publish
-					</span>
-				</a>
-			</div>
+					<strong>
+						→
+					</strong>
+				</footer>
+
+			</a>
+
 		</div>
+
 	</section>
 
 
-	<!-- ======================================================
+	<!-- ==================================================
 	     LEAGUE OPERATIONS
-	     ====================================================== -->
+	     ================================================== -->
 
-	<section class="section">
-		<div class="section-heading">
+	<section class="admin-section">
+
+		<header class="section-heading">
+
 			<div>
+
 				<div class="section-kicker">
 					Commissioner Tools
 				</div>
@@ -124,30 +231,43 @@
 				<h2>
 					League Operations
 				</h2>
-			</div>
-		</div>
 
-		<div class="tool-grid">
+				<p>
+					The machinery that keeps the league
+					history and economy from becoming a crime scene.
+				</p>
+
+			</div>
+
+		</header>
+
+
+		<div class="operations-grid">
 
 			<!-- DRAFT CAPITAL -->
 
 			<a
-				class="tool-card capital-card"
+				class="admin-card operation-card"
 				href="/admin/league/draft-capital"
 			>
-				<div class="tool-top">
-					<div class="card-icon">
+
+				<div class="card-top">
+
+					<div class="card-mark">
 						$
 					</div>
 
-					<div class="tool-arrow">
-						→
-					</div>
+					<span class="card-number">
+						03
+					</span>
+
 				</div>
 
-				<div class="tool-copy">
-					<div class="tool-label">
-						Economy
+
+				<div class="card-copy">
+
+					<div class="card-kicker">
+						League Economy
 					</div>
 
 					<h3>
@@ -155,36 +275,50 @@
 					</h3>
 
 					<p>
-						Manage capital transfers, trade reviews,
-						ledger entries, voids, and historical
-						draft-money movement.
+						Manage draft-capital transfers,
+						trade reviews, ledger entries,
+						voids, and historical money movement.
 					</p>
+
 				</div>
 
-				<div class="tool-footer">
-					Open Draft Capital
-				</div>
+
+				<footer>
+					<span>
+						Open Draft Capital
+					</span>
+
+					<strong>
+						→
+					</strong>
+				</footer>
+
 			</a>
 
 
 			<!-- BADGES -->
 
 			<a
-				class="tool-card badge-card"
+				class="admin-card operation-card"
 				href="/admin/league/badges"
 			>
-				<div class="tool-top">
-					<div class="card-icon">
+
+				<div class="card-top">
+
+					<div class="card-mark">
 						★
 					</div>
 
-					<div class="tool-arrow">
-						→
-					</div>
+					<span class="card-number">
+						04
+					</span>
+
 				</div>
 
-				<div class="tool-copy">
-					<div class="tool-label">
+
+				<div class="card-copy">
+
+					<div class="card-kicker">
 						League History
 					</div>
 
@@ -194,833 +328,1010 @@
 
 					<p>
 						Assign, review, and revoke weekly,
-						legacy, persona, and commissioner-awarded
-						league badges.
+						legacy, persona, stain, and
+						commissioner-awarded league badges.
 					</p>
+
 				</div>
 
-				<div class="tool-footer">
-					Open Badge Control
-				</div>
+
+				<footer>
+					<span>
+						Open Badge Control
+					</span>
+
+					<strong>
+						→
+					</strong>
+				</footer>
+
 			</a>
 
 		</div>
+
 	</section>
 
 
-	<!-- ======================================================
-	     QUICK LINKS
-	     ====================================================== -->
+	<!-- ==================================================
+	     QUICK ACCESS
+	     ================================================== -->
 
-	<section class="quick-links">
-		<div class="quick-label">
-			Quick Access
+	<nav
+		class="quick-access"
+		aria-label="League admin quick access"
+	>
+
+		<div class="quick-heading">
+
+			<span>
+				ICL
+			</span>
+
+			<div>
+				<small>
+					Quick Access
+				</small>
+
+				<strong>
+					Public League
+				</strong>
+			</div>
+
 		</div>
 
-		<div class="quick-list">
+
+		<div class="quick-links">
+
 			<a href="/league">
 				League Home
 			</a>
-
-			<span></span>
 
 			<a href="/league/weekly">
 				The Irving Weekly
 			</a>
 
-			<span></span>
-
 			<a href="/league/transactions">
 				Transactions
 			</a>
 
-			<span></span>
-
 			<a href="/league/standings">
 				Standings
 			</a>
+
+			<a href="/league/teams">
+				Franchises
+			</a>
+
 		</div>
-	</section>
+
+	</nav>
 
 </div>
 
 
 <style>
+	/* ==================================================
+	   CONTROL ROOM
+	   ================================================== */
+
 	.control-room {
-		display: grid;
-		gap: 34px;
+		width: 100%;
 		max-width: 1450px;
+
+		display: grid;
+		gap: 38px;
+
 		margin: 0 auto;
+
 		padding-bottom: 60px;
 	}
 
 
-	/* ======================================================
+	.eyebrow,
+	.section-kicker,
+	.card-kicker {
+		color:
+			var(--brand-gold);
+
+		font-size: .56rem;
+
+		font-weight: 800;
+
+		letter-spacing: .15em;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
 	   HERO
-	   ====================================================== */
+	   ================================================== */
 
 	.control-hero {
 		position: relative;
-		display: flex;
+
+		min-height: 230px;
+
+		display: grid;
+
+		grid-template-columns:
+			minmax(0, 1fr)
+			250px;
+
 		align-items: center;
-		justify-content: space-between;
-		gap: 30px;
+
+		gap: 38px;
+
 		overflow: hidden;
 
-		padding: 25px 28px;
+		padding:
+			clamp(
+				28px,
+				4vw,
+				42px
+			);
 
 		border:
-			2px solid #070808;
+			1px solid
+			var(--border-strong);
 
 		border-radius:
-			22px;
+			var(--radius-lg);
 
 		background:
-			radial-gradient(
-				circle at 0% 100%,
-				rgba(0, 190, 230, .17),
-				transparent 32%
-			),
 			linear-gradient(
-				180deg,
-				#48514e,
-				#222725 42%,
-				#111413
-			);
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.05
+				),
+				transparent 40%
+			),
+			var(--panel-strong);
 
 		box-shadow:
 			var(--shadow-panel);
 	}
 
-	.control-hero::after {
-		content:
-			'';
-
-		position:
-			absolute;
-
-		inset:
-			0;
-
-		pointer-events:
-			none;
-
-		background:
-			linear-gradient(
-				90deg,
-				transparent,
-				rgba(255,255,255,.025),
-				transparent
-			);
-	}
 
 	.hero-copy {
-		position:
-			relative;
+		position: relative;
 
-		z-index:
-			1;
+		z-index: 2;
+
+		min-width: 0;
 	}
 
-	.eyebrow,
-	.section-kicker,
-	.tool-label,
-	.quick-label {
-		color:
-			var(--bug-yellow);
-
-		font-family:
-			var(--font-score);
-
-		font-size:
-			.68rem;
-
-		font-weight:
-			950;
-
-		letter-spacing:
-			.14em;
-
-		text-transform:
-			uppercase;
-	}
 
 	.control-hero h1 {
 		margin:
-			7px 0 0;
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
 
 		font-family:
 			var(--font-display);
 
 		font-size:
 			clamp(
-				2.5rem,
-				5vw,
-				4rem
+				3.8rem,
+				6vw,
+				6.2rem
 			);
 
-		line-height:
-			.95;
+		font-weight: 400;
+
+		line-height: .86;
+
+		letter-spacing: -.02em;
+
+		text-transform: uppercase;
 	}
 
+
 	.control-hero p {
-		max-width:
-			680px;
+		max-width: 690px;
 
 		margin:
-			10px 0 0;
+			21px 0 0;
 
 		color:
 			var(--muted);
 
-		line-height:
-			1.5;
+		font-size: .97rem;
+
+		font-weight: 600;
+
+		line-height: 1.55;
 	}
 
-	.hero-status {
-		position:
-			relative;
 
-		z-index:
-			1;
+	/* ==================================================
+	   COMMAND IDENTITY
+	   ================================================== */
 
-		display:
-			flex;
+	.hero-command {
+		position: relative;
 
-		align-items:
-			center;
+		z-index: 2;
 
-		gap:
-			8px;
+		min-height: 155px;
 
+		display: flex;
+
+		align-items: center;
+
+		justify-content: center;
+
+		gap: 17px;
+
+		padding: 20px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.22
+			);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.4
+			);
+	}
+
+
+	.command-mark {
 		flex:
 			0 0 auto;
 
-		padding:
-			9px 12px;
+		width: 60px;
+		height: 60px;
+
+		display: grid;
+
+		place-items: center;
 
 		border:
 			1px solid
-			rgba(255,255,255,.16);
+			var(--brand-gold);
 
-		border-radius:
-			999px;
-
-		background:
-			rgba(0,0,0,.25);
+		color:
+			var(--brand-gold);
 
 		font-family:
-			var(--font-score);
+			var(--font-display);
+
+		font-size: 1.5rem;
+	}
+
+
+	.command-copy {
+		display: grid;
+		gap: 2px;
+	}
+
+
+	.command-copy > span {
+		color:
+			var(--brand-stone);
+
+		font-size: .49rem;
+
+		font-weight: 800;
+
+		letter-spacing: .14em;
+
+		text-transform: uppercase;
+	}
+
+
+	.command-copy > strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+
+		text-transform: uppercase;
+	}
+
+
+	.command-copy > small {
+		margin-top: 6px;
+
+		color:
+			var(--brand-gold);
+
+		font-size: .47rem;
+
+		font-weight: 800;
+
+		letter-spacing: .1em;
+
+		text-transform: uppercase;
+	}
+
+
+	.hero-watermark {
+		position: absolute;
+
+		right: -15px;
+		bottom: -40px;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.017
+			);
+
+		font-family:
+			var(--font-display);
 
 		font-size:
-			.66rem;
+			clamp(
+				8rem,
+				14vw,
+				13rem
+			);
 
-		font-weight:
-			900;
+		line-height: 1;
 
-		text-transform:
-			uppercase;
-	}
-
-	.status-dot {
-		width:
-			8px;
-
-		height:
-			8px;
-
-		border-radius:
-			999px;
-
-		background:
-			#57dd86;
-
-		box-shadow:
-			0 0 10px
-			rgba(87,221,134,.75);
+		pointer-events: none;
 	}
 
 
-	/* ======================================================
+	/* ==================================================
 	   SECTIONS
-	   ====================================================== */
+	   ================================================== */
 
-	.section {
-		display:
-			grid;
-
-		gap:
-			13px;
+	.admin-section {
+		display: grid;
+		gap: 15px;
 	}
+
 
 	.section-heading {
-		display:
-			flex;
+		display: flex;
 
-		align-items:
-			end;
+		align-items: end;
 
 		justify-content:
 			space-between;
 
-		gap:
-			20px;
+		gap: 30px;
 	}
+
 
 	.section-heading h2 {
 		margin:
-			3px 0 0;
+			4px 0 0;
+
+		color:
+			var(--brand-ivory);
 
 		font-family:
 			var(--font-display);
 
-		font-size:
-			1.65rem;
+		font-size: 2.2rem;
 
-		line-height:
-			1;
-	}
+		font-weight: 400;
 
-	.text-link {
-		color:
-			#67dbe8;
-
-		font-family:
-			var(--font-score);
-
-		font-size:
-			.68rem;
-
-		font-weight:
-			900;
-
-		text-decoration:
-			none;
-
-		text-transform:
-			uppercase;
-	}
-
-	.text-link:hover {
-		text-decoration:
-			underline;
+		line-height: 1;
 	}
 
 
-	/* ======================================================
-	   MEDIA CARD
-	   ====================================================== */
+	.section-heading p {
+		max-width: 620px;
 
-	.media-card {
-		display:
-			grid;
-
-		grid-template-columns:
-			minmax(0, 1.15fr)
-			minmax(400px, .85fr);
-
-		gap:
-			24px;
-
-		align-items:
-			center;
-
-		padding:
-			24px;
-
-		border:
-			2px solid #070808;
-
-		border-radius:
-			16px;
-
-		background:
-			linear-gradient(
-				135deg,
-				rgba(0, 210, 225, .09),
-				transparent 42%
-			),
-			linear-gradient(
-				180deg,
-				#333b39,
-				#171b1a
-			);
-
-		box-shadow:
-			inset 0 1px 0
-			rgba(255,255,255,.12),
-			var(--shadow-panel);
-	}
-
-	.media-copy {
-		display:
-			grid;
-
-		grid-template-columns:
-			auto 1fr;
-
-		gap:
-			18px;
-
-		align-items:
-			start;
-	}
-
-	.card-icon {
-		display:
-			flex;
-
-		align-items:
-			center;
-
-		justify-content:
-			center;
-
-		width:
-			52px;
-
-		height:
-			52px;
-
-		border:
-			2px solid #070808;
-
-		border-radius:
-			12px;
-
-		background:
-			linear-gradient(
-				180deg,
-				#f4d66a,
-				#c99122
-			);
-
-		color:
-			#080908;
-
-		font-family:
-			var(--font-score);
-
-		font-size:
-			1rem;
-
-		font-weight:
-			950;
-
-		box-shadow:
-			inset 0 1px 0
-			rgba(255,255,255,.35);
-	}
-
-	.media-icon {
-		background:
-			linear-gradient(
-				180deg,
-				#75e3ed,
-				#2394aa
-			);
-	}
-
-	.media-copy h3,
-	.tool-copy h3 {
 		margin:
-			0;
-
-		font-family:
-			var(--font-display);
-
-		font-size:
-			1.7rem;
-
-		line-height:
-			1.05;
-	}
-
-	.media-copy p,
-	.tool-copy p {
-		margin:
-			8px 0 0;
+			7px 0 0;
 
 		color:
 			var(--muted);
 
-		line-height:
-			1.55;
+		font-size: .76rem;
+
+		line-height: 1.5;
 	}
 
-	.media-actions {
-		display:
-			grid;
+
+	.public-link {
+		flex: 0 0 auto;
+
+		padding-bottom: 3px;
+
+		border-bottom:
+			1px solid
+			transparent;
+
+		color:
+			var(--brand-sand);
+
+		font-size: .56rem;
+
+		font-weight: 800;
+
+		letter-spacing: .06em;
+
+		text-decoration: none;
+
+		text-transform: uppercase;
+	}
+
+
+	.public-link:hover {
+		border-color:
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+	}
+
+
+	/* ==================================================
+	   CARD GRIDS
+	   ================================================== */
+
+	.newsroom-grid,
+	.operations-grid {
+		display: grid;
 
 		grid-template-columns:
 			repeat(
 				2,
-				minmax(0, 1fr)
+				minmax(0,1fr)
 			);
 
-		gap:
-			10px;
+		gap: 12px;
 	}
 
-	.action-button {
-		display:
-			grid;
 
-		gap:
-			4px;
+	/* ==================================================
+	   ADMIN CARDS
+	   ================================================== */
+
+	.admin-card {
+		position: relative;
+
+		min-height: 270px;
+
+		display: grid;
+
+		grid-template-rows:
+			auto
+			1fr
+			auto;
+
+		gap: 20px;
+
+		overflow: hidden;
 
 		padding:
-			14px 16px;
+			21px 21px 0;
 
 		border:
-			2px solid #070808;
+			1px solid
+			var(--border);
 
 		border-radius:
-			10px;
+			var(--radius-md);
 
-		color:
-			#080908;
+		background:
+			linear-gradient(
+				180deg,
+				rgba(
+					255,
+					255,
+					255,
+					.015
+				),
+				transparent
+			),
+			var(--panel);
 
-		text-decoration:
-			none;
+		color: inherit;
+
+		text-decoration: none;
 
 		box-shadow:
-			inset 0 1px 0
-			rgba(255,255,255,.3);
+			var(--shadow-panel);
 
 		transition:
-			transform .12s ease,
-			filter .12s ease;
+			transform 120ms ease,
+			border-color 120ms ease,
+			background 120ms ease;
 	}
 
-	.action-button:hover {
+
+	.admin-card::before {
+		content: '';
+
+		position: absolute;
+
+		top: 0;
+		bottom: 0;
+		left: 0;
+
+		width: 2px;
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				.45
+			);
+	}
+
+
+	.admin-card:hover {
 		transform:
 			translateY(-2px);
 
-		filter:
-			brightness(1.06);
-	}
-
-	.action-button.primary {
-		background:
-			linear-gradient(
-				180deg,
-				#f6c957,
-				#d69a20
-			);
-	}
-
-	.action-button.cyan {
-		background:
-			linear-gradient(
-				180deg,
-				#6adee8,
-				#2598ab
-			);
-	}
-
-	.button-label {
-		font-family:
-			var(--font-score);
-
-		font-size:
-			.78rem;
-
-		font-weight:
-			950;
-
-		text-transform:
-			uppercase;
-	}
-
-	.button-note {
-		font-size:
-			.72rem;
-
-		font-weight:
-			700;
-
-		opacity:
-			.75;
-	}
-
-
-	/* ======================================================
-	   OPERATION CARDS
-	   ====================================================== */
-
-	.tool-grid {
-		display:
-			grid;
-
-		grid-template-columns:
-			repeat(
-				2,
-				minmax(0, 1fr)
-			);
-
-		gap:
-			14px;
-	}
-
-	.tool-card {
-		display:
-			grid;
-
-		grid-template-rows:
-			auto 1fr auto;
-
-		gap:
-			18px;
-
-		min-height:
-			250px;
-
-		padding:
-			22px;
-
-		border:
-			2px solid #070808;
-
-		border-radius:
-			16px;
-
-		color:
-			inherit;
-
-		text-decoration:
-			none;
-
-		background:
-			linear-gradient(
-				180deg,
-				#313735,
-				#171a19
-			);
-
-		box-shadow:
-			inset 0 1px 0
-			rgba(255,255,255,.1);
-
-		transition:
-			transform .13s ease,
-			border-color .13s ease;
-	}
-
-	.tool-card:hover {
-		transform:
-			translateY(-3px);
-	}
-
-	.capital-card:hover {
 		border-color:
-			rgba(244,198,74,.65);
+			rgba(
+				191,
+				161,
+				106,
+				.42
+			);
+
+		background:
+			linear-gradient(
+				180deg,
+				rgba(
+					191,
+					161,
+					106,
+					.025
+				),
+				transparent
+			),
+			var(--panel);
 	}
 
-	.badge-card:hover {
-		border-color:
-			rgba(103,219,232,.6);
-	}
 
-	.tool-top {
-		display:
-			flex;
+	.card-top {
+		display: flex;
 
 		align-items:
-			start;
+			flex-start;
 
 		justify-content:
 			space-between;
 
-		gap:
-			15px;
-	}
-
-	.tool-arrow {
-		color:
-			var(--muted);
-
-		font-family:
-			var(--font-score);
-
-		font-size:
-			1.5rem;
-
-		font-weight:
-			900;
-	}
-
-	.badge-card .card-icon {
-		background:
-			linear-gradient(
-				180deg,
-				#70dae5,
-				#268fa3
-			);
-	}
-
-	.tool-label {
-		margin-bottom:
-			6px;
-	}
-
-	.tool-footer {
-		padding-top:
-			14px;
-
-		border-top:
-			1px solid
-			rgba(255,255,255,.1);
-
-		color:
-			var(--bug-yellow);
-
-		font-family:
-			var(--font-score);
-
-		font-size:
-			.7rem;
-
-		font-weight:
-			950;
-
-		text-transform:
-			uppercase;
+		gap: 20px;
 	}
 
 
-	/* ======================================================
-	   QUICK LINKS
-	   ====================================================== */
+	.card-mark {
+		width: 48px;
+		height: 48px;
 
-	.quick-links {
-		display:
-			flex;
+		display: grid;
 
-		align-items:
-			center;
-
-		gap:
-			20px;
-
-		padding:
-			14px 18px;
+		place-items: center;
 
 		border:
 			1px solid
-			rgba(255,255,255,.1);
+			var(--brand-gold);
 
-		border-radius:
-			10px;
+		color:
+			var(--brand-gold);
 
-		background:
-			rgba(255,255,255,.025);
+		font-family:
+			var(--font-display);
+
+		font-size: 1.2rem;
+
+		line-height: 1;
 	}
 
-	.quick-list {
-		display:
-			flex;
 
-		flex-wrap:
-			wrap;
+	.card-number {
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.36
+			);
 
-		align-items:
-			center;
+		font-family:
+			var(--font-display);
 
-		gap:
-			12px;
+		font-size: 1.35rem;
 	}
 
-	.quick-list a {
+
+	.card-copy {
+		align-self: start;
+	}
+
+
+	.card-copy h3 {
+		margin:
+			6px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.card-copy p {
+		max-width: 62ch;
+
+		margin:
+			12px 0 0;
+
 		color:
 			var(--muted);
 
-		font-family:
-			var(--font-score);
+		font-size: .84rem;
 
-		font-size:
-			.65rem;
-
-		font-weight:
-			900;
-
-		text-decoration:
-			none;
-
-		text-transform:
-			uppercase;
+		line-height: 1.6;
 	}
 
-	.quick-list a:hover {
-		color:
-			#67dbe8;
-	}
 
-	.quick-list span {
-		width:
-			3px;
+	.admin-card footer {
+		min-height: 49px;
 
-		height:
-			3px;
+		display: flex;
 
-		border-radius:
-			999px;
+		align-items: center;
+
+		justify-content:
+			space-between;
+
+		gap: 12px;
+
+		margin:
+			0 -21px;
+
+		padding:
+			11px 21px;
+
+		border-top:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.1
+			);
 
 		background:
-			rgba(255,255,255,.28);
+			rgba(
+				8,
+				11,
+				10,
+				.28
+			);
 	}
 
 
-	/* ======================================================
+	.admin-card footer span {
+		color:
+			var(--brand-sand);
+
+		font-size: .57rem;
+
+		font-weight: 800;
+
+		letter-spacing: .07em;
+
+		text-transform: uppercase;
+	}
+
+
+	.admin-card footer strong {
+		color:
+			var(--brand-gold);
+
+		font-size: 1rem;
+	}
+
+
+	.admin-card:hover footer span {
+		color:
+			var(--brand-gold);
+	}
+
+
+	/* ==================================================
+	   SUBTLE CARD DISTINCTION
+	   ================================================== */
+
+	.publication-card .card-mark {
+		color:
+			var(--brand-ivory);
+
+		border-color:
+			var(--brand-ivory);
+	}
+
+
+	.recap-card .card-mark {
+		color:
+			var(--brand-sand);
+
+		border-color:
+			var(--brand-sand);
+	}
+
+
+	/* ==================================================
+	   QUICK ACCESS
+	   ================================================== */
+
+	.quick-access {
+		display: flex;
+
+		align-items: center;
+
+		justify-content:
+			space-between;
+
+		gap: 30px;
+
+		padding:
+			13px 16px;
+
+		border-top:
+			1px solid
+			var(--border);
+
+		border-bottom:
+			1px solid
+			var(--border);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.28
+			);
+	}
+
+
+	.quick-heading {
+		flex: 0 0 auto;
+
+		display: flex;
+
+		align-items: center;
+
+		gap: 10px;
+	}
+
+
+	.quick-heading > span {
+		width: 32px;
+		height: 32px;
+
+		display: grid;
+
+		place-items: center;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: .82rem;
+	}
+
+
+	.quick-heading > div {
+		display: grid;
+		gap: 1px;
+	}
+
+
+	.quick-heading small {
+		color:
+			var(--brand-stone);
+
+		font-size: .46rem;
+
+		font-weight: 800;
+
+		letter-spacing: .12em;
+
+		text-transform: uppercase;
+	}
+
+
+	.quick-heading strong {
+		color:
+			var(--brand-ivory);
+
+		font-size: .61rem;
+
+		font-weight: 800;
+
+		text-transform: uppercase;
+	}
+
+
+	.quick-links {
+		display: flex;
+
+		align-items: center;
+
+		justify-content:
+			flex-end;
+
+		flex-wrap: wrap;
+
+		gap: 8px 18px;
+	}
+
+
+	.quick-links a {
+		position: relative;
+
+		color:
+			var(--brand-stone);
+
+		font-size: .55rem;
+
+		font-weight: 800;
+
+		letter-spacing: .06em;
+
+		text-decoration: none;
+
+		text-transform: uppercase;
+	}
+
+
+	.quick-links a::after {
+		content: '';
+
+		position: absolute;
+
+		left: 0;
+		right: 100%;
+		bottom: -4px;
+
+		height: 1px;
+
+		background:
+			var(--brand-gold);
+
+		transition:
+			right 120ms ease;
+	}
+
+
+	.quick-links a:hover {
+		color:
+			var(--brand-sand);
+	}
+
+
+	.quick-links a:hover::after {
+		right: 0;
+	}
+
+
+	/* ==================================================
 	   RESPONSIVE
-	   ====================================================== */
+	   ================================================== */
 
-	@media (
-		max-width: 950px
-	) {
-		.media-card {
+	@media (max-width: 900px) {
+
+		.control-hero {
+			grid-template-columns:
+				1fr
+				210px;
+		}
+
+
+		.newsroom-grid,
+		.operations-grid {
 			grid-template-columns:
 				1fr;
 		}
 
-		.tool-grid {
-			grid-template-columns:
-				1fr;
-		}
 	}
 
-	@media (
-		max-width: 680px
-	) {
-		.control-hero,
+
+	@media (max-width: 700px) {
+
+		.control-room {
+			gap: 28px;
+		}
+
+
+		.control-hero {
+			grid-template-columns:
+				1fr;
+
+			min-height: 0;
+
+			padding:
+				28px 22px;
+		}
+
+
+		.control-hero h1 {
+			font-size:
+				clamp(
+					3.4rem,
+					15vw,
+					5rem
+				);
+		}
+
+
+		.hero-command {
+			display: none;
+		}
+
+
 		.section-heading {
-			display:
-				grid;
+			align-items:
+				flex-start;
+
+			flex-direction:
+				column;
+
+			gap: 10px;
 		}
 
-		.hero-status {
-			width:
-				max-content;
+
+		.admin-card {
+			min-height: 240px;
 		}
 
-		.media-actions {
-			grid-template-columns:
-				1fr;
+
+		.quick-access {
+			align-items:
+				flex-start;
+
+			flex-direction:
+				column;
 		}
 
-		.media-copy {
-			grid-template-columns:
-				1fr;
-		}
 
 		.quick-links {
-			display:
-				grid;
+			justify-content:
+				flex-start;
 		}
 
-		.quick-list span {
-			display:
-				none;
-		}
 	}
 </style>

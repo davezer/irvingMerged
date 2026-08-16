@@ -2,76 +2,38 @@
 	export let data;
 
 
-	const initials = (
-		value = ''
-	) =>
-		String(
-			value
-		)
-			.split(
-				/\s+/
-			)
-			.filter(
-				Boolean
-			)
-			.slice(
-				0,
-				2
-			)
-			.map(
-				(part) =>
-					part[0]
-						?.toUpperCase()
-			)
+	const initials = (value = '') =>
+		String(value)
+			.split(/\s+/)
+			.filter(Boolean)
+			.slice(0, 2)
+			.map((part) => part[0]?.toUpperCase())
 			.join('') ||
 		'ICL';
 
 
-	const points = (
-		value
-	) =>
-		Number(
-			value ||
-			0
-		).toFixed(
-			2
-		);
+	const points = (value) =>
+		Number(value || 0).toFixed(2);
 
 
-	const fmtUnix = (
-		unix
-	) => {
-		if (!unix) {
-			return 'TBD';
-		}
+	const fmtUnix = (unix) => {
+		if (!unix) return 'TBD';
 
 		return new Date(
-			Number(
-				unix
-			) *
-				1000
+			Number(unix) * 1000
 		).toLocaleString(
 			'en-US',
 			{
-				month:
-					'short',
-
-				day:
-					'numeric',
-
-				hour:
-					'numeric',
-
-				minute:
-					'2-digit'
+				month: 'short',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit'
 			}
 		);
 	};
 
 
-	const postTypeLabel = (
-		post
-	) => {
+	const postTypeLabel = (post) => {
 		if (
 			post?.sourceType ===
 			'weekly_recap'
@@ -80,29 +42,16 @@
 		}
 
 		const labels = {
-			feature:
-				'Feature',
-
-			commissioner:
-				'Commissioner',
-
-			league_news:
-				'League News',
-
-			power_rankings:
-				'Power Rankings',
-
-			announcement:
-				'Announcement',
-
-			opinion:
-				'Opinion'
+			feature: 'Feature',
+			commissioner: 'Commissioner',
+			league_news: 'League News',
+			power_rankings: 'Power Rankings',
+			announcement: 'Announcement',
+			opinion: 'Opinion'
 		};
 
 		return (
-			labels[
-				post?.postType
-			] ||
+			labels[post?.postType] ||
 			post?.tag ||
 			'Irving Weekly'
 		);
@@ -110,9 +59,15 @@
 
 
 	$: who =
-		data?.user
-			?.displayName ||
+		data?.user?.displayName ||
 		'Member';
+
+
+	$: season =
+		Number(
+			data?.season ||
+			new Date().getFullYear()
+		);
 
 
 	$: topStandings =
@@ -120,10 +75,7 @@
 			data?.topBoard ||
 			data?.standings ||
 			[]
-		).slice(
-			0,
-			5
-		);
+		).slice(0, 5);
 
 
 	$: managers =
@@ -142,294 +94,516 @@
 
 
 	$: nextEvent =
-		collective
-			?.nextEvent ||
+		collective?.nextEvent ||
 		null;
 
 
 	$: latestPosts =
-		posts.slice(
-			0,
-			3
-		);
+		posts.slice(0, 3);
 </script>
-<svelte:head>
-	<title>Irving Champions League</title>
 
-	<meta name="description" content="The home of the Irving Champions League." />
+
+<svelte:head>
+	<title>
+		Irving Collective
+	</title>
+
+	<meta
+		name="description"
+		content="The clubhouse for the Irving Collective."
+	/>
 </svelte:head>
 
+
 <div class="home-page">
-	<!-- =================================================
+
+	<!-- ==================================================
 	     HERO
-	================================================== -->
+	     ================================================== -->
 
-	<section class="home-hero">
-		<div class="hero-watermark">
-			<img src="/badge.png" alt="" aria-hidden="true" />
-		</div>
+	<section class="clubhouse-hero">
 
-		<div class="hero-content">
-			<div class="hero-season">
-				<span>ICL</span>
-				<strong>2026 CLUBHOUSE</strong>
+		<div class="hero-copy">
+
+			<div class="hero-kicker">
+				<span class="hero-monogram">
+					ICL
+				</span>
+
+				<span>
+					Irving Collective
+				</span>
+
+				<small>
+					Est. 2003
+				</small>
 			</div>
 
-			<div class="eyebrow">Irving Champions League</div>
+
+			<div class="eyebrow">
+				2026 Clubhouse
+			</div>
+
 
 			<h1>
 				Welcome back,
-				{who}.
+				<span>{who}.</span>
 			</h1>
 
+
 			<p class="hero-lede">
-				Fourteen franchises. One increasingly questionable fantasy football league.
+				Fourteen franchises.
+				One increasingly questionable
+				fantasy football institution.
 			</p>
 
+
 			<div class="hero-actions">
-				<a class="home-button primary" href="/league"> Enter League </a>
 
-				<a class="home-button" href="/league/keepers"> Keeper Calculator </a>
+				<a
+					class="button button-primary"
+					href="/league"
+				>
+					Enter League
+				</a>
+
+				<a
+					class="button"
+					href={`/league/keepers?season=${season}`}
+				>
+					Keeper Calculator
+				</a>
+
 			</div>
+
 		</div>
-	</section>
 
-		<!-- =================================================
-     THE IRVING WEEKLY
-================================================== -->
 
-{#if latestPosts.length}
-	<section class="blog-section">
-		<div class="section-heading">
-			<div>
-				<span class="eyebrow">
-					From The Irving Weekly
+		<div
+			class="hero-brand"
+			aria-hidden="true"
+		>
+			<div class="brand-frame">
+				<div class="brand-mark">
+					ICL
+				</div>
+
+				<strong>
+					Irving
+				</strong>
+
+				<span>
+					Collective
 				</span>
 
+				<small>
+					Est. 2003
+				</small>
+			</div>
+		</div>
+
+
+		<div
+			class="hero-wordmark"
+			aria-hidden="true"
+		>
+			IRVING
+		</div>
+
+	</section>
+
+
+	<!-- ==================================================
+	     THE IRVING WEEKLY
+	     ================================================== -->
+
+	{#if latestPosts.length}
+
+		<section class="weekly-section">
+
+			<header class="section-heading">
+
+				<div>
+					<div class="eyebrow">
+						From The Irving Weekly
+					</div>
+
+					<h2>
+						Latest from Irving
+					</h2>
+				</div>
+
+
+				<a href="/league/weekly">
+					View The Irving Weekly →
+				</a>
+
+			</header>
+
+
+			<div
+				class:single={latestPosts.length === 1}
+				class="weekly-grid"
+			>
+
+				{#each latestPosts as post, index}
+
+					<a
+						class:lead={index === 0}
+						class="story-card"
+						href={`/league/weekly/${post.slug}`}
+					>
+
+						<div class="story-meta">
+
+							<span>
+								{postTypeLabel(post)}
+							</span>
+
+							{#if index === 0}
+								<em>
+									Latest
+								</em>
+							{/if}
+
+						</div>
+
+
+						<strong>
+							{post.title}
+						</strong>
+
+
+						<p>
+							{post.subtitle ||
+								post.excerpt ||
+								'Read the latest from The Irving Weekly.'}
+						</p>
+
+
+						<span class="story-link">
+							Read story →
+						</span>
+
+					</a>
+
+				{/each}
+
+			</div>
+
+		</section>
+
+	{/if}
+
+
+	<!-- ==================================================
+	     QUICK ACCESS
+	     ================================================== -->
+
+	<section class="quick-section">
+
+		<header class="section-heading">
+
+			<div>
+				<div class="eyebrow">
+					League HQ
+				</div>
+
 				<h2>
-					Latest from Irving
+					Quick Access
 				</h2>
 			</div>
 
-			<a href="/league/weekly">
-				View The Irving Weekly →
-			</a>
-		</div>
 
-		<div class="blog-grid">
-			{#each latestPosts as post}
-				<a
-					class="blog-card"
-					href={`/league/weekly/${post.slug}`}
-				>
-					<span>
-						{postTypeLabel(post)}
-					</span>
+			<p>
+				The four doors most likely
+				to ruin your afternoon.
+			</p>
 
-					<strong>
-						{post.title}
-					</strong>
+		</header>
 
-					<p>
-						{post.subtitle ||
-							post.excerpt ||
-							'Read the latest from The Irving Weekly.'}
-					</p>
-
-					<em>
-						Read story →
-					</em>
-				</a>
-			{/each}
-		</div>
-	</section>
-{/if}
-
-
-	<!-- =================================================
-	     QUICK ACCESS
-	================================================== -->
-
-	<section class="quick-section">
-		<div class="section-heading">
-			<div>
-				<span class="eyebrow"> League HQ </span>
-
-				<h2>Quick access</h2>
-			</div>
-
-			<p>Get where you're going. No pregame show required.</p>
-		</div>
 
 		<div class="quick-grid">
-			<a class="quick-card" href="/league/standings">
-				<span>01</span>
 
-				<strong> Standings </strong>
+			<a
+				class="quick-card"
+				href={`/league/standings?season=${season}`}
+			>
+				<span class="quick-number">
+					01
+				</span>
 
-				<small> Records, points and current league order. </small>
+				<div>
+					<strong>
+						Standings
+					</strong>
 
-				<em> Open standings → </em>
+					<small>
+						Records, points and
+						current league order.
+					</small>
+				</div>
+
+				<em>
+					Open standings →
+				</em>
 			</a>
 
-			<a class="quick-card" href="/league/rosters">
-				<span>02</span>
 
-				<strong> Rosters </strong>
+			<a
+				class="quick-card"
+				href={`/league/rosters?season=${season}`}
+			>
+				<span class="quick-number">
+					02
+				</span>
 
-				<small> Every franchise. Every player. </small>
+				<div>
+					<strong>
+						Rosters
+					</strong>
 
-				<em> View rosters → </em>
+					<small>
+						Every franchise.
+						Every player.
+					</small>
+				</div>
+
+				<em>
+					View rosters →
+				</em>
 			</a>
 
-			<a class="quick-card" href="/league/drafts">
-				<span>03</span>
 
-				<strong> Drafts </strong>
+			<a
+				class="quick-card"
+				href={`/league/drafts?season=${season}`}
+			>
+				<span class="quick-number">
+					03
+				</span>
 
-				<small> Auction results, prices and history. </small>
+				<div>
+					<strong>
+						Draft Room
+					</strong>
 
-				<em> Open draft room → </em>
+					<small>
+						Auction results,
+						prices and history.
+					</small>
+				</div>
+
+				<em>
+					Open draft room →
+				</em>
 			</a>
 
-			<a class="quick-card" href="/league/keepers">
-				<span>04</span>
 
-				<strong> Keeper Desk </strong>
+			<a
+				class="quick-card"
+				href={`/league/keepers?season=${season}`}
+			>
+				<span class="quick-number">
+					04
+				</span>
 
-				<small> Prices, tenure and eligibility. </small>
+				<div>
+					<strong>
+						Keeper Desk
+					</strong>
 
-				<em> Run the numbers → </em>
+					<small>
+						Prices, tenure
+						and eligibility.
+					</small>
+				</div>
+
+				<em>
+					Run the numbers →
+				</em>
 			</a>
+
 		</div>
+
 	</section>
 
-	<!-- =================================================
+
+	<!-- ==================================================
 	     LEAGUE PULSE
-	================================================== -->
+	     ================================================== -->
 
 	<section class="pulse-grid">
+
 		<!-- STANDINGS -->
 
-		<article class="home-panel standings-panel">
-	<header class="panel-head">
-		<div>
-			<span class="eyebrow">
-				League table
-			</span>
+		<article class="home-panel">
 
-			<h2>
-				Top of the board
-			</h2>
-		</div>
+			<header class="panel-head">
 
-		<a href={`/league/standings?season=${data.season}`}>
-			Full standings →
-		</a>
-	</header>
-
-	{#if topStandings.length}
-
-		<div class="standings-list">
-
-			{#each topStandings as row}
-
-				<a
-					class="standing-row"
-					href={
-						row.slug
-							? `/league/teams/${row.slug}?season=${data.season}`
-							: `/league/standings?season=${data.season}`
-					}
-				>
-
-					<div class="standing-rank">
-						#{row.rank}
+				<div>
+					<div class="eyebrow">
+						League Table
 					</div>
 
+					<h2>
+						Top of the Board
+					</h2>
+				</div>
 
-					<div class="standing-team">
 
-						{#if row.teamPhoto}
+				<a
+					href={`/league/standings?season=${season}`}
+				>
+					Full standings →
+				</a>
+
+			</header>
+
+
+			{#if topStandings.length}
+
+				<div class="standings-list">
+
+					{#each topStandings as row}
+
+						<a
+							class="standing-row"
+							href={
+								row.slug
+									? `/league/teams/${row.slug}?season=${season}`
+									: `/league/standings?season=${season}`
+							}
+						>
+
+							<div class="standing-rank">
+								#{row.rank}
+							</div>
+
+
+							<div class="standing-logo">
+
+								{#if row.teamPhoto}
+
+									<img
+										src={row.teamPhoto}
+										alt={row.teamName}
+										loading="lazy"
+									/>
+
+								{:else}
+
+									<span>
+										{row.initials ||
+											initials(
+												row.teamName
+											)}
+									</span>
+
+								{/if}
+
+							</div>
+
+
+							<div class="standing-copy">
+
+								<strong>
+									{row.teamName}
+								</strong>
+
+								<small>
+									{row.managerName}
+								</small>
+
+							</div>
+
+
+							<div class="standing-record">
+
+								<strong>
+									{row.recordLabel ||
+										`${row.wins}-${row.losses}`}
+								</strong>
+
+								<small>
+									{points(
+										row.points
+									)} PF
+								</small>
+
+							</div>
+
+						</a>
+
+					{/each}
+
+				</div>
+
+			{:else}
+
+				<div class="empty-state">
+					Standings will appear once
+					league data is available.
+				</div>
+
+			{/if}
+
+		</article>
+
+
+		<!-- NEXT EVENT -->
+
+		<article class="home-panel next-panel">
+
+			<header class="panel-head">
+
+				<div>
+					<div class="eyebrow">
+						Next Up
+					</div>
+
+					<h2>
+						Offseason Action
+					</h2>
+				</div>
+
+				<a href="/games">
+					Games floor →
+				</a>
+
+			</header>
+
+
+			{#if nextEvent}
+
+				<div class="next-event">
+
+					<div class="next-event-art">
+
+						{#if nextEvent.logo}
 
 							<img
-								src={row.teamPhoto}
-								alt={row.teamName}
+								src={nextEvent.logo}
+								alt=""
 								loading="lazy"
 							/>
 
 						{:else}
 
-							<div class="team-fallback">
-								{row.initials || initials(row.teamName)}
+							<div class="event-fallback">
+								ICL
 							</div>
 
 						{/if}
 
-
-						<div>
-							<strong>
-								{row.teamName}
-							</strong>
-
-							<small>
-								{row.managerName}
-							</small>
-						</div>
-
 					</div>
 
-
-					<div class="standing-record">
-
-						<strong>
-							{row.recordLabel || `${row.wins}-${row.losses}`}
-						</strong>
-
-						<small>
-							{points(row.points)} PF
-						</small>
-
-					</div>
-
-				</a>
-
-			{/each}
-
-		</div>
-
-	{:else}
-
-		<div class="empty-state">
-			Standings will appear once league data is available.
-		</div>
-
-	{/if}
-</article>
-
-		<!-- NEXT EVENT -->
-
-		<article class="home-panel next-panel">
-			<header class="panel-head">
-				<div>
-					<span class="eyebrow"> Next up </span>
-
-					<h2>Offseason action</h2>
-				</div>
-			</header>
-
-			{#if nextEvent}
-				<div class="next-event">
-					<div class="next-event-art">
-						{#if nextEvent.logo}
-							<img src={nextEvent.logo} alt="" loading="lazy" />
-						{:else}
-							<img src="/badge.png" alt="" />
-						{/if}
-					</div>
 
 					<div class="next-event-copy">
-						<span> Upcoming </span>
+
+						<span>
+							Upcoming
+						</span>
 
 						<strong>
 							{nextEvent.title}
@@ -440,102 +614,213 @@
 						</p>
 
 						<small>
-							{fmtUnix(nextEvent.start_at || nextEvent.lock_at)}
+							{fmtUnix(
+								nextEvent.start_at ||
+								nextEvent.lock_at
+							)}
 						</small>
 
-						<a class="home-button primary small" href={`/games/${nextEvent.slug}`}>
+						<a
+							class="button button-primary small"
+							href={`/games/${nextEvent.slug}`}
+						>
 							Make Your Pick
 						</a>
+
 					</div>
+
 				</div>
+
 			{:else}
+
 				<div class="quiet-state">
-					<img src="/badge.png" alt="" />
 
-					<strong> No event queued. </strong>
+					<div class="quiet-mark">
+						ICL
+					</div>
 
-					<p>The offseason lounge is quiet. Suspiciously quiet.</p>
+					<strong>
+						No event queued.
+					</strong>
 
-					<a href="/games"> Visit the games floor → </a>
+					<p>
+						The offseason lounge is quiet.
+						Suspiciously quiet.
+					</p>
+
+					<a href="/games">
+						Visit the games floor →
+					</a>
+
 				</div>
+
 			{/if}
+
 		</article>
+
 	</section>
 
 
-	<!-- =================================================
-	     FRANCHISE STRIP
-	================================================== -->
+	<!-- ==================================================
+	     FRANCHISES
+	     ================================================== -->
 
 	{#if managers.length}
-		<section class="franchise-section">
-			<div class="section-heading compact">
-				<div>
-					<span class="eyebrow"> The league </span>
 
-					<h2>14 franchises</h2>
+		<section class="franchise-section">
+
+			<header class="section-heading compact">
+
+				<div>
+					<div class="eyebrow">
+						The League
+					</div>
+
+					<h2>
+						14 Franchises
+					</h2>
 				</div>
 
-				<a href="/league/teams"> View all teams → </a>
-			</div>
 
-			<div class="franchise-strip">
+				<a
+					href={`/league/teams?season=${season}`}
+				>
+					View all teams →
+				</a>
+
+			</header>
+
+
+			<div class="franchise-grid">
+
 				{#each managers as manager}
+
 					<a
 						class="franchise-token"
-						href={`/league/teams/${manager.slug}`}
+						href={`/league/teams/${manager.slug}?season=${season}`}
 						title={manager.teamName}
 					>
-						<img src={manager.photo} alt={manager.teamName} loading="lazy" />
+
+						<div class="franchise-logo">
+							<img
+								src={manager.photo}
+								alt={manager.teamName}
+								loading="lazy"
+							/>
+						</div>
 
 						<span>
 							{manager.teamName}
 						</span>
+
 					</a>
+
 				{/each}
+
 			</div>
+
 		</section>
+
 	{/if}
+
 </div>
+
 
 <style>
 	/* ==================================================
-	   PAGE
-	================================================== */
+	   IRVING COLLECTIVE — CLUBHOUSE
+	   ================================================== */
 
 	.home-page {
+		width: 100%;
+		max-width: 1500px;
+
 		display: grid;
+		gap: 38px;
 
-		gap: 34px;
+		margin: 0 auto;
 
-		padding-top: 6px;
-		padding-bottom: 64px;
+		padding:
+			6px 0
+			64px;
 	}
+
+
+	.eyebrow {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-body);
+
+		font-size:
+			.61rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.16em;
+
+		text-transform:
+			uppercase;
+	}
+
 
 	/* ==================================================
 	   HERO
-	================================================== */
+	   ================================================== */
 
-	.home-hero {
+	.clubhouse-hero {
 		position: relative;
 
-		min-height: 370px;
+		min-height: 430px;
 
-		display: flex;
+		display: grid;
+
+		grid-template-columns:
+			minmax(0, 1fr)
+			340px;
+
 		align-items: center;
+
+		gap: 50px;
 
 		overflow: hidden;
 
-		border: 2px solid #050708;
+		padding:
+			clamp(
+				34px,
+				5vw,
+				64px
+			);
 
-		border-radius: 16px;
+		border:
+			1px solid
+			var(--border-strong);
 
-		background: linear-gradient(90deg, rgba(17, 133, 200, 0.14), transparent 44%), #111619;
+		border-radius:
+			var(--radius-lg);
 
-		box-shadow: var(--shadow-panel);
+		background:
+			linear-gradient(
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.055
+				),
+				transparent 36%
+			),
+			var(--panel-strong);
+
+		box-shadow:
+			var(--shadow-panel);
 	}
 
-	.home-hero::before {
+
+	.clubhouse-hero::before {
 		content: '';
 
 		position: absolute;
@@ -543,519 +828,1227 @@
 
 		pointer-events: none;
 
-		background: linear-gradient(90deg, rgba(199, 25, 47, 0.13), transparent 24%);
+		background:
+			radial-gradient(
+				circle at 0% 0%,
+				rgba(
+					96,
+					110,
+					121,
+					.09
+				),
+				transparent 36%
+			);
 	}
 
-	.hero-content {
+
+	.hero-copy,
+	.hero-brand {
 		position: relative;
-
 		z-index: 2;
-
-		width: min(760px, 72%);
-
-		padding: clamp(32px, 5vw, 64px);
 	}
 
-	.hero-season {
-		display: inline-flex;
 
-		align-items: stretch;
-
-		margin-bottom: 18px;
-
-		border: 1px solid #040505;
-
-		border-radius: 5px;
-
-		overflow: hidden;
-
-		font-family: var(--font-score);
-
-		font-size: 0.7rem;
-
-		text-transform: uppercase;
-
-		letter-spacing: 0.1em;
+	.hero-copy {
+		max-width: 760px;
 	}
 
-	.hero-season span {
-		padding: 7px 9px;
 
-		background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
+	.hero-kicker {
+		width: fit-content;
 
-		color: white;
+		display: flex;
+		align-items: center;
+
+		gap: 9px;
+
+		margin-bottom: 27px;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			.64rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.09em;
+
+		text-transform:
+			uppercase;
 	}
 
-	.hero-season strong {
-		padding: 7px 11px;
 
-		background: #080a0c;
+	.hero-kicker small {
+		padding-left: 9px;
 
-		color: var(--bug-yellow);
+		border-left:
+			1px solid
+			var(--border-strong);
+
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.52rem;
+
+		letter-spacing:
+			.15em;
 	}
 
-	.hero-content h1 {
-		max-width: 12ch;
 
-		margin: 5px 0 12px;
+	.hero-monogram {
+		display: grid;
+		place-items: center;
 
-		font-family: var(--font-display);
+		width: 34px;
+		height: 34px;
 
-		font-size: clamp(3.1rem, 6.4vw, 6rem);
+		border:
+			1px solid
+			var(--brand-gold);
 
-		line-height: 0.89;
+		color:
+			var(--brand-gold);
 
-		letter-spacing: -0.055em;
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1rem;
 	}
+
+
+	.hero-copy h1 {
+		max-width: 10ch;
+
+		margin:
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				4.4rem,
+				7.4vw,
+				8rem
+			);
+
+		font-weight: 400;
+
+		line-height:
+			.82;
+
+		letter-spacing:
+			-.02em;
+
+		text-transform:
+			uppercase;
+
+		text-shadow:
+			none;
+	}
+
+
+	.hero-copy h1 span {
+		color:
+			var(--brand-sand);
+	}
+
 
 	.hero-lede {
-		max-width: 48ch;
+		max-width: 50ch;
 
-		margin: 0;
+		margin:
+			24px 0 0;
 
-		color: rgba(255, 255, 255, 0.75);
+		color:
+			var(--muted);
 
-		font-size: 1rem;
+		font-size:
+			1rem;
 
-		font-weight: 700;
+		font-weight:
+			650;
 
-		line-height: 1.55;
+		line-height:
+			1.55;
 	}
+
 
 	.hero-actions {
 		display: flex;
-
 		flex-wrap: wrap;
 
-		gap: 10px;
+		gap: 8px;
 
-		margin-top: 26px;
+		margin-top:
+			28px;
 	}
 
-	.hero-watermark {
+
+	/* ==================================================
+	   HERO BRAND MARK
+	   ================================================== */
+
+	.hero-brand {
+		display: grid;
+		place-items: center;
+	}
+
+
+	.brand-frame {
+		width:
+			min(
+				280px,
+				100%
+			);
+
+		aspect-ratio:
+			.9;
+
+		display: grid;
+		place-items: center;
+		align-content: center;
+
+		gap: 4px;
+
+		padding: 28px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.28
+			);
+
+		color:
+			var(--brand-gold);
+
+		text-align: center;
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.36
+			);
+	}
+
+
+	.brand-mark {
+		display: grid;
+		place-items: center;
+
+		width: 86px;
+		height: 86px;
+
+		margin-bottom: 18px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			2.5rem;
+	}
+
+
+	.brand-frame strong,
+	.brand-frame > span {
+		font-family:
+			var(--font-display);
+
+		font-weight: 400;
+
+		line-height:
+			.85;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.brand-frame strong {
+		color:
+			var(--brand-sand);
+
+		font-size:
+			3rem;
+	}
+
+
+	.brand-frame > span {
+		font-size:
+			2rem;
+	}
+
+
+	.brand-frame small {
+		margin-top: 15px;
+
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.56rem;
+
+		font-weight:
+			750;
+
+		letter-spacing:
+			.19em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.hero-wordmark {
 		position: absolute;
 
-		right: 4%;
-		top: 50%;
+		right: -25px;
+		bottom: -52px;
 
-		width: min(330px, 29vw);
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.018
+			);
 
-		transform: translateY(-50%);
+		font-family:
+			var(--font-display);
 
-		opacity: 0.1;
+		font-size:
+			clamp(
+				10rem,
+				17vw,
+				17rem
+			);
 
-		filter: grayscale(0.15);
+		line-height: 1;
 
 		pointer-events: none;
 	}
 
-	.hero-watermark img {
-		width: 100%;
-		display: block;
-	}
 
 	/* ==================================================
 	   BUTTONS
-	================================================== */
+	   ================================================== */
 
-	.home-button {
+	.button {
+		min-height: 38px;
+
 		display: inline-flex;
-
 		align-items: center;
 		justify-content: center;
 
-		min-height: 40px;
+		padding:
+			8px 13px;
 
-		padding: 9px 14px;
+		border:
+			1px solid
+			var(--border-strong);
 
-		border: 1px solid #050606;
+		border-radius:
+			3px;
 
-		border-radius: 5px;
+		background:
+			transparent;
 
-		background: linear-gradient(180deg, #f5f4ea, #b9bcb5 52%, #6d7470);
+		color:
+			var(--brand-sand);
 
-		color: #101111;
+		font-family:
+			var(--font-body);
 
-		font-family: var(--font-score);
+		font-size:
+			.65rem;
 
-		font-size: 0.76rem;
+		font-weight:
+			800;
 
-		font-weight: 950;
+		letter-spacing:
+			.06em;
 
-		text-transform: uppercase;
+		text-decoration:
+			none;
 
-		text-decoration: none;
+		text-transform:
+			uppercase;
 
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.75),
-			inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+		transition:
+			border-color
+			120ms ease,
+			color
+			120ms ease,
+			background
+			120ms ease;
 	}
 
-	.home-button:hover {
-		color: #111;
+
+	.button:hover {
+		border-color:
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
 	}
 
-	.home-button.primary {
-		background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
 
-		color: white;
+	.button-primary {
+		border-color:
+			var(--brand-gold);
+
+		background:
+			var(--brand-gold);
+
+		color:
+			var(--brand-charcoal);
 	}
 
-	.home-button.primary:hover {
-		color: white;
 
-		filter: brightness(1.08);
+	.button-primary:hover {
+		background:
+			var(--brand-sand);
+
+		color:
+			var(--brand-charcoal);
 	}
 
-	.home-button.small {
+
+	.button.small {
 		width: fit-content;
 
-		margin-top: 12px;
+		min-height: 34px;
+
+		margin-top: 10px;
+
+		padding:
+			7px 10px;
 	}
+
 
 	/* ==================================================
 	   SECTION HEADINGS
-	================================================== */
+	   ================================================== */
 
 	.section-heading,
 	.panel-head {
 		display: flex;
 
 		align-items: flex-end;
-		justify-content: space-between;
+
+		justify-content:
+			space-between;
 
 		gap: 18px;
 	}
+
 
 	.section-heading {
 		margin-bottom: 16px;
 	}
 
+
 	.section-heading h2,
 	.panel-head h2 {
-		margin: 4px 0 0;
+		margin:
+			4px 0 0;
 
-		font-size: clamp(1.45rem, 2.3vw, 2rem);
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				1.8rem,
+				3vw,
+				2.5rem
+			);
+
+		font-weight:
+			400;
+
+		line-height:
+			.95;
 	}
 
+
 	.section-heading > p {
-		max-width: 34ch;
+		max-width: 36ch;
 
 		margin: 0;
 
-		color: var(--muted);
+		color:
+			var(--muted);
+
+		font-size:
+			.8rem;
 
 		text-align: right;
 
-		line-height: 1.45;
+		line-height:
+			1.45;
 	}
+
 
 	.section-heading > a,
 	.panel-head > a {
-		color: var(--icl-blue);
+		color:
+			var(--brand-sand);
 
-		font-size: 0.8rem;
+		font-size:
+			.69rem;
 
-		font-weight: 900;
+		font-weight:
+			800;
 
-		text-decoration: none;
+		text-decoration:
+			none;
 	}
+
 
 	.section-heading > a:hover,
 	.panel-head > a:hover {
-		color: white;
+		color:
+			var(--brand-gold);
 	}
 
-	/* ==================================================
-	   QUICK ACCESS
-	================================================== */
 
-	.quick-grid {
+	/* ==================================================
+	   IRVING WEEKLY
+	   ================================================== */
+
+	.weekly-grid {
 		display: grid;
 
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-template-columns:
+			minmax(0,1.55fr)
+			repeat(
+				2,
+				minmax(0,.72fr)
+			);
 
 		gap: 12px;
 	}
 
-	.quick-card {
-		min-height: 165px;
+
+	.weekly-grid.single {
+		grid-template-columns:
+			minmax(
+				0,
+				1fr
+			);
+	}
+
+
+	.story-card {
+		position: relative;
+
+		min-height: 210px;
 
 		display: grid;
 
-		grid-template-rows: auto auto 1fr auto;
+		grid-template-rows:
+			auto
+			auto
+			1fr
+			auto;
 
-		gap: 7px;
+		gap: 10px;
 
-		padding: 17px;
+		padding: 19px;
 
-		border: 1px solid #050708;
+		overflow: hidden;
 
-		border-radius: 10px;
+		border:
+			1px solid
+			var(--border);
 
-		background: #151a1d;
+		border-radius:
+			var(--radius-sm);
+
+		background:
+			linear-gradient(
+				180deg,
+				rgba(
+					255,
+					255,
+					255,
+					.018
+				),
+				transparent
+			),
+			var(--panel);
 
 		color: inherit;
 
-		text-decoration: none;
-
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+		text-decoration:
+			none;
 
 		transition:
-			transform 140ms ease,
-			border-color 140ms ease,
-			background 140ms ease;
+			transform
+			120ms ease,
+			border-color
+			120ms ease;
 	}
+
+
+	.story-card:hover {
+		transform:
+			translateY(-2px);
+
+		border-color:
+			rgba(
+				191,
+				161,
+				106,
+				.45
+			);
+	}
+
+
+	.story-card.lead {
+		min-height:
+			240px;
+
+		padding:
+			24px;
+
+		background:
+			linear-gradient(
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.045
+				),
+				transparent 60%
+			),
+			var(--panel);
+	}
+
+
+	.story-card.lead::after {
+		content:
+			'WEEKLY';
+
+		position:
+			absolute;
+
+		right:
+			-14px;
+
+		bottom:
+			-18px;
+
+		color:
+			rgba(
+				191,
+					161,
+					106,
+					.024
+				);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			5.5rem;
+
+		pointer-events:
+			none;
+	}
+
+
+	.story-meta {
+		position: relative;
+		z-index: 1;
+
+		display: flex;
+		align-items: center;
+		justify-content:
+			space-between;
+
+		gap: 10px;
+	}
+
+
+	.story-meta span {
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.57rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.12em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.story-meta em {
+		padding:
+			3px 6px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.32
+			);
+
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.49rem;
+
+		font-style:
+			normal;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.1em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.story-card > strong {
+		position: relative;
+		z-index: 1;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			1.05rem;
+
+		line-height:
+			1.2;
+	}
+
+
+	.story-card.lead > strong {
+		max-width: 22ch;
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				1.8rem,
+				3vw,
+				2.7rem
+			);
+
+		font-weight: 400;
+
+		line-height:
+			.95;
+	}
+
+
+	.story-card p {
+		position: relative;
+		z-index: 1;
+
+		max-width: 62ch;
+
+		margin: 0;
+
+		color:
+			var(--muted);
+
+		line-height:
+			1.5;
+	}
+
+
+	.story-link {
+		position: relative;
+		z-index: 1;
+
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.61rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.06em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	/* ==================================================
+	   QUICK ACCESS
+	   ================================================== */
+
+	.quick-grid {
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				4,
+				minmax(0,1fr)
+			);
+
+		gap: 10px;
+	}
+
+
+	.quick-card {
+		position: relative;
+
+		min-height: 160px;
+
+		display: grid;
+
+		grid-template-rows:
+			auto
+			1fr
+			auto;
+
+		gap: 14px;
+
+		padding:
+			16px;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-sm);
+
+		background:
+			var(--panel);
+
+		color: inherit;
+
+		text-decoration:
+			none;
+
+		transition:
+			transform
+			120ms ease,
+			border-color
+			120ms ease,
+			background
+			120ms ease;
+	}
+
 
 	.quick-card:hover {
-		transform: translateY(-2px);
+		transform:
+			translateY(-2px);
 
-		border-color: var(--icl-blue);
+		border-color:
+			var(--brand-gold);
 
-		background: #192127;
+		background:
+			var(--panel-strong);
 	}
 
-	.quick-card > span {
-		color: var(--bug-yellow);
 
-		font-family: var(--font-score);
+	.quick-number {
+		color:
+			var(--brand-gold);
 
-		font-size: 0.66rem;
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.15rem;
 	}
 
-	.quick-card > strong {
-		font-family: var(--font-score);
 
-		font-size: 1.2rem;
-
-		text-transform: uppercase;
+	.quick-card div {
+		display: grid;
+		align-content: start;
+		gap: 6px;
 	}
 
-	.quick-card > small {
-		color: var(--muted);
 
-		line-height: 1.4;
+	.quick-card strong {
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.55rem;
+
+		font-weight: 400;
 	}
 
-	.quick-card > em {
-		color: var(--icl-blue);
 
-		font-size: 0.72rem;
+	.quick-card small {
+		max-width: 30ch;
 
-		font-style: normal;
+		color:
+			var(--muted);
 
-		font-weight: 900;
-
-		text-transform: uppercase;
+		line-height:
+			1.4;
 	}
+
+
+	.quick-card em {
+		color:
+			var(--brand-sand);
+
+		font-size:
+			.59rem;
+
+		font-style:
+			normal;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.06em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.quick-card:hover em {
+		color:
+			var(--brand-gold);
+	}
+
 
 	/* ==================================================
 	   LEAGUE PULSE
-	================================================== */
+	   ================================================== */
 
 	.pulse-grid {
 		display: grid;
 
 		grid-template-columns:
-			minmax(0, 1.35fr)
-			minmax(300px, 0.65fr);
+			minmax(0,1.3fr)
+			minmax(330px,.7fr);
 
 		gap: 16px;
 	}
 
+
 	.home-panel {
-		border: 2px solid #050708;
-
-		border-radius: 13px;
-
-		background: #111617;
-
-		box-shadow: var(--shadow-panel);
-
 		overflow: hidden;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-md);
+
+		background:
+			var(--panel);
+
+		box-shadow:
+			var(--shadow-panel);
 	}
 
-	.home-panel .panel-head {
-		padding: 17px 18px;
 
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	.panel-head {
+		padding:
+			18px;
 
-		background: #181e1e;
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.11
+			);
 	}
+
 
 	/* ==================================================
 	   STANDINGS
-	================================================== */
+	   ================================================== */
 
 	.standings-list {
 		display: grid;
 	}
 
+
 	.standing-row {
 		display: grid;
 
 		grid-template-columns:
-			56px
-			minmax(0, 1fr)
+			38px
+			46px
+			minmax(0,1fr)
 			auto;
 
 		align-items: center;
 
-		gap: 12px;
+		gap: 11px;
 
 		min-height: 70px;
 
-		padding: 8px 15px;
+		padding:
+			9px 15px;
 
-		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.09
+			);
 
 		color: inherit;
 
-		text-decoration: none;
+		text-decoration:
+			none;
 
-		transition: background 120ms ease;
+		transition:
+			background
+			120ms ease;
 	}
+
 
 	.standing-row:last-child {
 		border-bottom: 0;
 	}
 
+
 	.standing-row:hover {
-		background: rgba(17, 133, 200, 0.08);
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				.025
+			);
 	}
+
 
 	.standing-rank {
-		display: grid;
+		color:
+			var(--brand-gold);
 
-		place-items: center;
+		font-family:
+			var(--font-display);
 
-		width: 42px;
-		height: 34px;
+		font-size:
+			1.12rem;
 
-		border: 1px solid #050606;
-
-		border-radius: 5px;
-
-		background: linear-gradient(180deg, #f5f4ea, #aeb2ac);
-
-		color: #111;
-
-		font-family: var(--font-score);
-
-		font-size: 0.74rem;
+		text-align:
+			center;
 	}
 
-	.standing-team {
-		min-width: 0;
 
-		display: flex;
-
-		align-items: center;
-
-		gap: 11px;
-	}
-
-	.standing-team img,
-	.team-fallback {
+	.standing-logo {
 		width: 46px;
 		height: 46px;
 
-		flex: 0 0 auto;
-
-		border-radius: 8px;
-
-		object-fit: cover;
-
-		border: 1px solid #050606;
-	}
-
-	.team-fallback {
 		display: grid;
-
 		place-items: center;
 
-		background: var(--bug-silver);
+		overflow: hidden;
 
-		color: #111;
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.18
+			);
 
-		font-family: var(--font-score);
+		border-radius:
+			4px;
+
+		background:
+			var(--brand-ivory);
 	}
 
-	.standing-team > div:last-child {
+
+	.standing-logo img {
+		width: 100%;
+		height: 100%;
+
+		object-fit: cover;
+	}
+
+
+	.standing-logo span {
+		color:
+			var(--brand-charcoal);
+
+		font-size:
+			.57rem;
+
+		font-weight:
+			900;
+	}
+
+
+	.standing-copy {
 		min-width: 0;
 
 		display: grid;
 
-		gap: 2px;
+		gap: 3px;
 	}
 
-	.standing-team strong {
+
+	.standing-copy strong {
 		overflow: hidden;
 
-		text-overflow: ellipsis;
+		color:
+			var(--brand-ivory);
 
-		white-space: nowrap;
+		font-size:
+			.8rem;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
 	}
 
-	.standing-team small {
-		color: var(--muted);
+
+	.standing-copy small {
+		color:
+			var(--muted);
+
+		font-size:
+			.67rem;
 	}
+
 
 	.standing-record {
 		text-align: right;
 	}
 
+
 	.standing-record strong {
 		display: block;
 
-		color: var(--bug-yellow);
+		color:
+			var(--brand-ivory);
 
-		font-family: var(--font-score);
+		font-family:
+			var(--font-display);
 
-		font-size: 1rem;
+		font-size:
+			1.2rem;
+
+		font-weight: 400;
+
+		font-variant-numeric:
+			tabular-nums;
 	}
+
 
 	.standing-record small {
-		color: var(--muted);
+		display: block;
+
+		margin-top: 2px;
+
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.61rem;
 	}
+
 
 	/* ==================================================
 	   NEXT EVENT
-	================================================== */
+	   ================================================== */
 
 	.next-panel {
 		min-height: 100%;
 	}
 
+
 	.next-event {
 		display: grid;
 
 		grid-template-columns:
-			130px
-			1fr;
+			120px
+			minmax(0,1fr);
 
 		align-items: center;
 
-		gap: 18px;
+		gap: 19px;
 
-		padding: 22px;
+		padding:
+			23px;
 	}
+
 
 	.next-event-art {
-		display: grid;
-
-		place-items: center;
-
 		aspect-ratio: 1;
 
-		padding: 14px;
+		display: grid;
+		place-items: center;
 
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		overflow: hidden;
 
-		border-radius: 12px;
+		padding: 12px;
 
-		background: #090d10;
+		border:
+			1px solid
+			var(--border);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.7
+			);
 	}
+
 
 	.next-event-art img {
 		width: 100%;
@@ -1064,331 +2057,503 @@
 		object-fit: contain;
 	}
 
-	.next-event-copy {
-		display: grid;
 
-		gap: 5px;
+	.event-fallback,
+	.quiet-mark {
+		display: grid;
+		place-items: center;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
 	}
+
+
+	.event-fallback {
+		width: 68px;
+		height: 68px;
+
+		font-size:
+			1.6rem;
+	}
+
+
+	.next-event-copy {
+		min-width: 0;
+
+		display: grid;
+		gap: 6px;
+	}
+
 
 	.next-event-copy > span {
-		color: var(--bug-yellow);
+		color:
+			var(--brand-gold);
 
-		font-family: var(--font-score);
+		font-size:
+			.56rem;
 
-		font-size: 0.62rem;
+		font-weight:
+			800;
 
-		text-transform: uppercase;
+		letter-spacing:
+			.12em;
 
-		letter-spacing: 0.12em;
+		text-transform:
+			uppercase;
 	}
+
 
 	.next-event-copy > strong {
-		font-family: var(--font-score);
+		color:
+			var(--brand-ivory);
 
-		font-size: 1.25rem;
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.65rem;
+
+		font-weight: 400;
+
+		line-height: 1;
 	}
+
 
 	.next-event-copy p {
 		margin: 0;
 
-		color: var(--muted);
+		color:
+			var(--muted);
 
-		line-height: 1.4;
+		line-height:
+			1.45;
 	}
+
 
 	.next-event-copy small {
-		color: var(--icl-blue);
+		color:
+			var(--brand-sand);
 
-		font-weight: 900;
+		font-size:
+			.65rem;
+
+		font-weight:
+			750;
 	}
 
+
 	.quiet-state {
-		min-height: 270px;
+		min-height: 265px;
 
 		display: grid;
-
 		place-items: center;
-
 		align-content: center;
 
-		gap: 7px;
+		gap: 9px;
 
 		padding: 28px;
 
 		text-align: center;
 	}
 
-	.quiet-state img {
-		width: 78px;
 
-		margin-bottom: 7px;
+	.quiet-mark {
+		width: 70px;
+		height: 70px;
 
-		opacity: 0.7;
+		margin-bottom: 8px;
+
+		font-size:
+			1.6rem;
 	}
+
+
+	.quiet-state strong {
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.45rem;
+
+		font-weight: 400;
+	}
+
 
 	.quiet-state p {
-		max-width: 28ch;
+		max-width: 30ch;
 
 		margin: 0;
 
-		color: var(--muted);
+		color:
+			var(--muted);
 	}
+
 
 	.quiet-state a {
-		margin-top: 7px;
+		margin-top: 4px;
 
-		font-weight: 900;
+		color:
+			var(--brand-gold);
 
-		text-decoration: none;
+		font-size:
+			.67rem;
+
+		font-weight:
+			800;
+
+		text-decoration:
+			none;
 	}
+
 
 	/* ==================================================
-	   BLOG
-	================================================== */
-
-	.blog-grid {
-		display: grid;
-
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-
-		gap: 12px;
-	}
-
-	.blog-card {
-		min-height: 190px;
-
-		display: grid;
-
-		grid-template-rows: auto auto 1fr auto;
-
-		gap: 9px;
-
-		padding: 18px;
-
-		border: 1px solid #050708;
-
-		border-radius: 10px;
-
-		background: #13181b;
-
-		color: inherit;
-
-		text-decoration: none;
-
-		transition:
-			border-color 140ms ease,
-			transform 140ms ease;
-	}
-
-	.blog-card:hover {
-		transform: translateY(-2px);
-
-		border-color: var(--icl-blue);
-	}
-
-	.blog-card > span {
-		color: var(--bug-yellow);
-
-		font-family: var(--font-score);
-
-		font-size: 0.62rem;
-
-		text-transform: uppercase;
-
-		letter-spacing: 0.11em;
-	}
-
-	.blog-card > strong {
-		font-size: 1.05rem;
-	}
-
-	.blog-card p {
-		margin: 0;
-
-		color: var(--muted);
-
-		line-height: 1.45;
-	}
-
-	.blog-card em {
-		color: var(--icl-blue);
-
-		font-size: 0.72rem;
-
-		font-style: normal;
-
-		font-weight: 900;
-
-		text-transform: uppercase;
-	}
-
-	/* ==================================================
-	   FRANCHISE STRIP
-	================================================== */
+	   FRANCHISES
+	   ================================================== */
 
 	.franchise-section {
-		padding-top: 4px;
+		padding-top: 2px;
 	}
+
 
 	.section-heading.compact {
-		margin-bottom: 12px;
+		margin-bottom: 13px;
 	}
 
-	.franchise-strip {
+
+	.franchise-grid {
 		display: grid;
 
-		grid-template-columns: repeat(14, minmax(58px, 1fr));
+		grid-template-columns:
+			repeat(
+				7,
+				minmax(0,1fr)
+			);
 
-		gap: 7px;
-
-		overflow-x: auto;
-
-		padding-bottom: 6px;
+		gap: 8px;
 	}
+
 
 	.franchise-token {
-		min-width: 66px;
+		min-width: 0;
 
 		display: grid;
-
 		justify-items: center;
 
-		gap: 6px;
+		gap: 8px;
 
-		padding: 8px 4px;
+		padding:
+			13px 7px;
 
-		border: 1px solid transparent;
+		border:
+			1px solid
+			var(--border);
 
-		border-radius: 8px;
+		border-radius:
+			var(--radius-sm);
+
+		background:
+			var(--panel);
 
 		color: inherit;
 
-		text-align: center;
+		text-align:
+			center;
 
-		text-decoration: none;
+		text-decoration:
+			none;
+
+		transition:
+			transform
+			120ms ease,
+			border-color
+			120ms ease;
 	}
+
 
 	.franchise-token:hover {
-		border-color: rgba(17, 133, 200, 0.45);
+		transform:
+			translateY(-2px);
 
-		background: rgba(17, 133, 200, 0.06);
+		border-color:
+			var(--brand-gold);
 	}
 
-	.franchise-token img {
-		width: 48px;
-		height: 48px;
 
-		object-fit: cover;
+	.franchise-logo {
+		width: 62px;
+		height: 62px;
 
-		border: 1px solid #050606;
-
-		border-radius: 50%;
-	}
-
-	.franchise-token span {
-		max-width: 88px;
+		display: grid;
+		place-items: center;
 
 		overflow: hidden;
 
-		color: var(--muted);
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.17
+			);
 
-		font-size: 0.61rem;
+		border-radius:
+			4px;
 
-		text-overflow: ellipsis;
-
-		white-space: nowrap;
+		background:
+			var(--brand-ivory);
 	}
+
+
+	.franchise-logo img {
+		width: 100%;
+		height: 100%;
+
+		object-fit: cover;
+	}
+
+
+	.franchise-token span {
+		max-width: 100%;
+
+		overflow: hidden;
+
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.57rem;
+
+		font-weight:
+			700;
+
+		line-height:
+			1.15;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
+	}
+
 
 	/* ==================================================
 	   EMPTY
-	================================================== */
+	   ================================================== */
 
 	.empty-state {
 		padding: 28px;
 
-		color: var(--muted);
+		color:
+			var(--muted);
 	}
+
 
 	/* ==================================================
 	   RESPONSIVE
-	================================================== */
+	   ================================================== */
 
-	@media (max-width: 1050px) {
-		.quick-grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+	@media (max-width: 1100px) {
+
+		.clubhouse-hero {
+			grid-template-columns:
+				minmax(0,1fr)
+				260px;
 		}
+
+
+		.brand-frame strong {
+			font-size:
+				2.4rem;
+		}
+
+
+		.brand-frame > span {
+			font-size:
+				1.6rem;
+		}
+
+
+		.weekly-grid {
+			grid-template-columns:
+				1fr
+				1fr;
+		}
+
+
+		.story-card.lead {
+			grid-column:
+				1 / -1;
+		}
+
+
+		.quick-grid {
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(0,1fr)
+				);
+		}
+
 
 		.pulse-grid {
-			grid-template-columns: 1fr;
+			grid-template-columns:
+				1fr;
 		}
 
-		.blog-grid {
-			grid-template-columns: 1fr 1fr;
+
+		.franchise-grid {
+			grid-template-columns:
+				repeat(
+					4,
+					minmax(0,1fr)
+				);
 		}
+
 	}
 
-	@media (max-width: 700px) {
+
+	@media (max-width: 760px) {
+
 		.home-page {
-			gap: 26px;
+			gap: 30px;
 		}
 
-		.home-hero {
-			min-height: 390px;
+
+		.clubhouse-hero {
+			grid-template-columns:
+				1fr;
+
+			min-height: 0;
+
+			padding:
+				28px 22px;
 		}
 
-		.hero-content {
-			width: 100%;
 
-			padding: 28px 22px;
+		.hero-brand {
+			display: none;
 		}
 
-		.hero-watermark {
-			right: -40px;
 
-			width: 260px;
+		.hero-wordmark {
+			right: -45px;
 
-			opacity: 0.055;
+			opacity: .8;
 		}
 
-		.hero-content h1 {
-			font-size: clamp(3rem, 15vw, 4.8rem);
+
+		.hero-copy h1 {
+			font-size:
+				clamp(
+					3.8rem,
+					16vw,
+					6rem
+				);
 		}
+
 
 		.section-heading {
-			align-items: flex-start;
+			align-items:
+				flex-start;
 
-			flex-direction: column;
+			flex-direction:
+				column;
 		}
+
 
 		.section-heading > p {
 			text-align: left;
 		}
 
-		.quick-grid,
-		.blog-grid {
-			grid-template-columns: 1fr;
+
+		.weekly-grid,
+		.quick-grid {
+			grid-template-columns:
+				1fr;
 		}
 
-		.quick-card {
-			min-height: 140px;
+
+		.story-card.lead {
+			grid-column:
+				auto;
 		}
+
+
+		.franchise-grid {
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(0,1fr)
+				);
+		}
+
+	}
+
+
+	@media (max-width: 520px) {
+
+		.hero-kicker {
+			flex-wrap: wrap;
+		}
+
+
+		.hero-kicker small {
+			flex-basis: 100%;
+
+			padding:
+				4px 0 0 43px;
+
+			border-left: 0;
+		}
+
+
+		.standing-row {
+			grid-template-columns:
+				32px
+				40px
+				minmax(0,1fr);
+		}
+
+
+		.standing-logo {
+			width: 40px;
+			height: 40px;
+		}
+
+
+		.standing-record {
+			grid-column: 3;
+
+			text-align: left;
+		}
+
 
 		.next-event {
-			grid-template-columns: 95px 1fr;
+			grid-template-columns:
+				90px
+				minmax(0,1fr);
 
 			padding: 16px;
 		}
 
-		.standing-row {
+
+		.franchise-grid {
 			grid-template-columns:
-				48px
-				minmax(0, 1fr);
+				1fr
+				1fr;
 		}
 
-		.standing-record {
-			grid-column: 2;
-
-			text-align: left;
-		}
 	}
 </style>

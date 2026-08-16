@@ -130,1167 +130,1797 @@
       }
     : null;
 </script>
+{#if locked}
 
-{#if event?.type === 'masters'}
-  <MastersPicksBoard {data} />
+	<div class="daytona-shell">
+
+		<header class="entry-hero locked-hero">
+
+			<div class="hero-copy">
+
+				<div class="eyebrow">
+					Daytona 500 · Final Entry
+				</div>
+
+				<h1>
+					Race Card Locked
+				</h1>
+
+				<p>
+					The green flag has dropped. Your picks are official,
+					your Chaos Car is committed, and there are no take-backs.
+				</p>
+
+			</div>
+
+
+			<div class="lock-stamp">
+				<span>
+					Entry Status
+				</span>
+
+				<strong>
+					Final
+				</strong>
+
+				<small>
+					No Edits
+				</small>
+			</div>
+
+
+			<div
+				class="hero-watermark"
+				aria-hidden="true"
+			>
+				DAYTONA
+			</div>
+
+		</header>
+
+
+		{#if entry?.payload?.top10Ids?.length}
+
+			<section class="final-board">
+
+				<div class="section-heading">
+
+					<div>
+						<div class="eyebrow">
+							Official Forecast
+						</div>
+
+						<h2>
+							Your Top 10
+						</h2>
+					</div>
+
+					<span>
+						10 Drivers
+					</span>
+
+				</div>
+
+
+				<div class="final-grid">
+
+					{#if entry?.payload?.top10Snapshot?.length}
+
+						{#each entry.payload.top10Snapshot as row, index}
+
+							<div class="final-driver">
+
+								<span class="final-rank">
+									#{index + 1}
+								</span>
+
+								<div class="final-driver-name">
+
+									<strong>
+										{row?.name || row?.id}
+									</strong>
+
+									{#if row?.carNumber}
+										<small>
+											Car #{row.carNumber}
+										</small>
+									{/if}
+
+								</div>
+
+							</div>
+
+						{/each}
+
+					{:else}
+
+						{#each entry.payload.top10Ids as id, index}
+
+							<div class="final-driver">
+
+								<span class="final-rank">
+									#{index + 1}
+								</span>
+
+								<div class="final-driver-name">
+									<strong>
+										{id}
+									</strong>
+								</div>
+
+							</div>
+
+						{/each}
+
+					{/if}
+
+				</div>
+
+			</section>
+
+
+			<section class="locked-chaos">
+
+				<div>
+
+					<div class="eyebrow">
+						Chaos Selection
+					</div>
+
+					<h2>
+						Chaos Car
+					</h2>
+
+					<p>
+						The driver you trusted to create a little unnecessary danger
+						outside your projected Top 10.
+					</p>
+
+				</div>
+
+
+				<div class="locked-chaos-pick">
+
+					{#if entry?.payload?.chaosCarId}
+
+						<span>
+							Locked
+						</span>
+
+						<strong>
+							{#if entry?.payload?.chaosCarSnapshot?.carNumber}
+								#{entry.payload.chaosCarSnapshot.carNumber}
+							{/if}
+
+							{entry?.payload?.chaosCarSnapshot?.name ||
+								entry?.payload?.chaosCarSnapshot?.id ||
+								entry.payload.chaosCarId}
+						</strong>
+
+					{:else}
+
+						<span>
+							No Selection
+						</span>
+
+						<strong>
+							—
+						</strong>
+
+					{/if}
+
+				</div>
+
+			</section>
+
+		{:else}
+
+			<section class="state-message">
+
+				<div class="eyebrow">
+					No Entry
+				</div>
+
+				<h2>
+					You sat this one out.
+				</h2>
+
+				<p>
+					No Daytona entry was submitted before the event locked.
+				</p>
+
+			</section>
+
+		{/if}
+
+	</div>
+
+
+{:else if loading}
+
+	<div class="daytona-shell">
+
+		<section class="state-message">
+
+			<div class="eyebrow">
+				Daytona Entry Desk
+			</div>
+
+			<h2>
+				Loading the Grid
+			</h2>
+
+			<p>
+				Fetching the driver pool…
+			</p>
+
+		</section>
+
+	</div>
+
+
+{:else if loadError}
+
+	<div class="daytona-shell">
+
+		<section class="state-message error-state">
+
+			<div class="eyebrow">
+				Entry Desk Error
+			</div>
+
+			<h2>
+				Couldn't Load the Grid
+			</h2>
+
+			<p>
+				{loadError}
+			</p>
+
+			<button
+				class="secondary-btn"
+				type="button"
+				on:click={onRetryOptions}
+			>
+				Try Again
+			</button>
+
+		</section>
+
+	</div>
+
+
 {:else}
-<div class="page-wide">
-  <div class="warroom card card--glow">
-    <div class="warroom__top">
-      <div class="warroom__titlewrap">
-        <div class="kicker">Tournament War Room</div>
 
-        <div class="warroom__titleline">
-          {#if names.logo}
-            <img class="warroom__logo" src={names.logo} alt={`${names.title} logo`} loading="lazy" />
-          {/if}
-          <h1 class="warroom__title">{names.title} Picks Board</h1>
-        </div>
+	<form
+		method="POST"
+		action="?/save"
+		use:enhance={() => {
+			saving = true;
+			saveError = '';
+			savedPulse = false;
 
-        <div class="warroom__subtitle">
-          Every pick. Every sweat. Every busted Cinderella and beautiful longshot.
-        </div>
-      </div>
+			const savedIdsNow = [...currentIds];
+			const savedChaosNow = currentChaosId
+				? String(currentChaosId)
+				: '';
 
-      <div class="warroom__actions">
-        <span class={locked ? 'pill pill--red' : 'pill pill--green'}>
-          {locked ? 'Locked' : 'Open'}
-        </span>
-        <span class="pill pill--gold">{enrichedEntries.length} entries</span>
-        <a class="btn btn--ghost" href={resolve('/games/[slug]', { slug: event.slug })}>Back to event</a>
-      </div>
-    </div>
+			return async ({ result, update }) => {
 
-    <div class="warroom__meta">
-      <span class="pill">Lock time: {prettyLock(event?.lock_at)}</span>
-      <span class="pill">Current stage: {completedRoundLabel}</span>
-    </div>
-  </div>
-</div>
+				if (result.type === 'success') {
 
-<div class="page-wide">
-  {#if !locked}
-    <div class="card notice">
-      <div class="section-head">
-        <h2 class="h2">Board is armed but not public yet</h2>
-        <span class="pill">Waiting for lock</span>
-      </div>
+					await update({
+						reset: false
+					});
 
-      <p class="subtle" style="margin-top: 8px;">
-        Once the event locks, this page becomes the full league-wide picks and progress board.
-      </p>
-    </div>
-  {:else if !enrichedEntries.length}
-    <div class="card notice">
-      <div class="section-head">
-        <h2 class="h2">No entries yet</h2>
-        <span class="pill">Empty board</span>
-      </div>
+					hydratedEntryRowId = null;
 
-      <p class="subtle" style="margin-top: 8px;">
-        Nobody has submitted teams for this event.
-      </p>
-    </div>
-  {:else}
-    <section class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Most picked</div>
-        {#if mostPickedTeams[0]}
-          <div class="stat-value">{fmtTeamName(mostPickedTeams[0].team)}</div>
-          <div class="stat-sub">
-            {mostPickedTeams[0].count} entries
-            {#if Number.isFinite(mostPickedTeams[0].seed)}
-              • {mostPickedTeams[0].seed} seed
-            {/if}
-          </div>
-        {:else}
-          <div class="stat-value">—</div>
-        {/if}
-      </div>
+					lastSavedIds =
+						savedIdsNow;
 
-      <div class="stat-card">
-        <div class="stat-label">Highest seed picked</div>
-        {#if highestSeedPicked}
-          <div class="stat-value">{highestSeedPicked.seed} seed</div>
-          <div class="stat-sub">
-            {fmtTeamName(highestSeedPicked.team)} • {highestSeedPicked.owners.join(', ')}
-          </div>
-        {:else}
-          <div class="stat-value">—</div>
-        {/if}
-      </div>
+					lastSavedChaosId =
+						savedChaosNow;
 
-      <div class="stat-card">
-        <div class="stat-label">Most alive</div>
-        {#if displayMostAliveEntry}
-          <div class="stat-value">{displayMostAliveEntry.display_name}</div>
-          <div class="stat-sub">{displayAliveCount(displayMostAliveEntry)} alive</div>
-        {:else}
-          <div class="stat-value">—</div>
-        {/if}
-      </div>
+					savedPulse = true;
 
-      <div class="stat-card">
-        <div class="stat-label">Boldest card</div>
-        {#if boldestEntry}
-          <div class="stat-value">{boldestEntry.display_name}</div>
-          <div class="stat-sub">Avg seed {fmtAvgSeed(boldestEntry.avgSeed)}</div>
-        {:else}
-          <div class="stat-value">—</div>
-        {/if}
-      </div>
+					setTimeout(
+						() =>
+							(savedPulse = false),
+						1200
+					);
 
-      <div class="stat-card">
-        <div class="stat-label">Chalk king</div>
-        {#if chalkiestEntry}
-          <div class="stat-value">{chalkiestEntry.display_name}</div>
-          <div class="stat-sub">Avg seed {fmtAvgSeed(chalkiestEntry.avgSeed)}</div>
-        {:else}
-          <div class="stat-value">—</div>
-        {/if}
-      </div>
+				} else if (result.type === 'failure') {
 
-      <div class="stat-card">
-        <div class="stat-label">Graveyard team</div>
-        {#if graveyardTeam}
-          <div class="stat-value">{fmtTeamName(graveyardTeam.team)}</div>
-          <div class="stat-sub">
-            {graveyardTeam.count} {graveyardTeam.count === 1 ? 'entry' : 'entries'} • eliminated
-          </div>
-        {:else}
-          <div class="stat-value">No graveyard yet</div>
-          <div class="stat-sub">Nobody popular has died yet</div>
-        {/if}
-      </div>
-    </section>
-    <div class="war-room-grid">
-    
-      <section class="panel card">
-        <div class="panel-head">
-          <h2 class="h2">Most Picked Teams</h2>
-          <span class="pill pill--gold">{teamStats.length} unique picked teams</span>
-        </div>
+					saveError =
+						result.data?.message ||
+						'Could not save entry.';
 
-        <div class="popular-list">
-          {#each displayMostPickedTeams as row (row.id)}
-            <button
-              type="button"
-              class:selected={selectedImpactTeamId === row.id}
-              class="popular-row popular-row--button"
-              on:click={() => (selectedImpactTeamId = row.id)}
-            >
-              <div class="popular-main">
-                {#if row.team?.logoUrl}
-                  <img class="popular-logo" src={row.team.logoUrl} alt="" />
-                {/if}
+				} else {
 
-                <div>
-                  <div class="popular-name">
-                    {#if Number.isFinite(row.seed)}
-                      <span class="seed-tag">{row.seed}</span>
-                    {/if}
-                    {fmtTeamName(row.team)}
-                  </div>
-                  <div class="popular-sub">
-                    {row.count} picks • {row.stage}
-                    {#if row.isLoneWolf}
-                      • lone wolf
-                    {/if}
-                  </div>
-                </div>
-              </div>
-              
-              <div class="popular-side">
-                <span class={row.status === 'eliminated' ? 'pill pill--red' : 'pill pill--green'}>
-                  {row.status === 'eliminated' ? 'Out' : row.status === 'champion' ? 'Champion' : 'Alive'}
-                </span>
-              </div>
-            </button>
-          {/each}
-        </div>
+					saveError =
+						'Something went wrong saving your entry.';
 
-       
-     
-    </section>
-      <section>
-        <TeamImpactPanel teamImpact={selectedTeamImpact} teamName={fmtTeamName} />
-      </section>
-     <section>
-      <div class="panel card">
-        <div class="panel-head">
-        
-          <h2 class="h2">Cinderella Watch</h2>
-          <span class="pill">Longshots still breathing</span>
-          
-        </div>
-        
-        {#if displaySurvivingLongshots.length}
-          <div class="chips-wrap">
-            {#each displaySurvivingLongshots as row (row.id)}
-              <div class="story-chip story-chip--gold">
-                <div class="story-chip__title">{row.seed} seed {fmtTeamName(row.team)}</div>
-                <div class="story-chip__sub">
-                  {row.count} owner{row.count === 1 ? '' : 's'} • {row.stage}
-                </div>
-              </div>
-            {/each}
-          </div>
-        {:else}
-          <div class="empty-copy">No living longshots right now.</div>
-        {/if}
+				}
 
-        <div class="panel-divider"></div>
-        </div>  
-     </section>
-      
+				saving = false;
+			};
+		}}
+	>
 
- 
-  </div>  
-    <section class="entries-grid">
-      {#each enrichedEntries as entry, i (entry.user_id)}
-        <details class="entry-card" open={i < 3}>
-          <summary class="entry-summary">
-  <div class="entry-summary__left">
-    <div class="rank-badge">#{i + 1}</div>
+		<div class="daytona-shell">
 
-    <div class="entry-identity">
-      <div class="entry-name-row">
-        <div class="entry-name">{entry.display_name}</div>
+			<header class="entry-hero">
 
-        <div class="badge-row">
-          {#each badgeList(entry) as badge}
-            <span class={`mini-badge mini-badge--${badge.tone}`}>{badge.label}</span>
-          {/each}
-        </div>
-      </div>
+				<div class="hero-copy">
 
-      <div class="entry-meta-stack">
-        <div class="entry-meta entry-meta--top">
-          <span>{entry.scoreTotal} pts</span>
-          <span>•</span>
-          <span>{displayAliveCount(entry)} alive</span>
-          <span>•</span>
-          <span>avg {fmtAvgSeed(entry.avgSeed)}</span>
-        </div>
+					<div class="eyebrow">
+						Race, Crash, Cash · Daytona 500
+					</div>
 
-        <div class="entry-meta entry-meta--bottom">
-          <span>ceiling {entry.futurePoints.maxLeft}</span>
-          <span>•</span>
-          <span>deepest {entry.deepest}W</span>
-        </div>
-      </div>
-    </div>
-  </div>
+					<h1>
+						Build Your Race Card
+					</h1>
 
-  <div class="entry-summary__right">
-    <span class="pill pill--gold">{entry.selectedTeams.length}/4</span>
-    <span class="panel-collapse__hint">Tap to {i < 3 ? 'collapse' : 'expand'}</span>
-  </div>
-</summary>
+					<p>
+						Predict the Top 10 in exact order, then choose one driver
+						outside your board as the Chaos Car. Ten calculated calls
+						and one terrible idea.
+					</p>
 
-          <div class="entry-body">
-          <div class="team-strip">
-              {#each entry.selectedTeams as team (team.id)}
-                {@const status = displayTeamStatus(team)}
-                <div class={`team-chip team-chip--${status}`}>
-                  <div class="team-chip__top">
-                    <div class="team-chip__identity">
-                      {#if team.logoUrl}
-                        <img class="team-chip__logo" src={team.logoUrl} alt="" />
-                      {/if}
-                      <div>
-                        <div class="team-chip__name">
-                          {#if Number.isFinite(seedOf(team))}
-                            <span class="seed-tag">{seedOf(team)}</span>
-                          {/if}
-                          {fmtTeamName(team)}
-                        </div>
-                        <div class="team-chip__meta">
-                          {#if team.region}{team.region} • {/if}{displayStageLabel(team)}
-                        </div>
-                      </div>
-                    </div>
 
-                    <div class="team-chip__pills">
-                      <span class="pill pill--gold">{pointsSoFar(team)} pts</span>
-                    </div>
-                  </div>
+					<div class="entry-specs">
 
-                  <div class="team-chip__bottom">
-                    <span class={status === 'eliminated' ? 'pill pill--red' : 'pill pill--green'}>
-                      {status === 'eliminated' ? 'Eliminated' : status === 'champion' ? 'Champion' : 'Alive'}
-                    </span>
+						<span>
+							<strong>
+								10
+							</strong>
 
-                    {#if teamOwners(team).length === 1}
-                      <span class="pill">Lone wolf</span>
-                    {:else}
-                      <span class="pill">{teamOwners(team).length} owners</span>
-                    {/if}
-                  </div>
-                </div>
-              {/each}
-            </div>
-            <div class="entry-overview">
-            
-              <div class="entry-hero-card entry-hero-card--gold">
-                <div class="entry-hero-card__eyebrow">War room read</div>
-                <div class="entry-hero-card__title">{entry.fatePath.summary}</div>
-                
-                <div class="entry-hero-card__meta">
-                
-                  <span>Best pick:</span>
-                  <strong>
-                    {#if entry.bestPick}
-                      {#if Number.isFinite(seedOf(entry.bestPick))}{seedOf(entry.bestPick)} seed {/if}{fmtTeamName(entry.bestPick)}
-                    {:else}
-                      —
-                    {/if}
-                  </strong>
-                  <span>•</span>
-                  <span>Toughest loss:</span>
-                  <strong>
-                    {#if entry.worstBeat}
-                      {#if Number.isFinite(seedOf(entry.worstBeat))}{seedOf(entry.worstBeat)} seed {/if}{fmtTeamName(entry.worstBeat)}
-                    {:else}
-                      None yet
-                    {/if}
-                  </strong>
-                </div>
-              </div>
-            
-              
-              <div class="entry-snapshot-grid">
-              
-            
-                <div class="story-chip story-chip--compact">
-                  <div class="story-chip__title">Ceiling</div>
-                  <div class="story-chip__value">{entry.futurePoints.maxLeft}</div>
-                  <div class="story-chip__sub">best-case from here</div>
-                </div>
+							Ranked Picks
+						</span>
 
-                <div class="story-chip story-chip--compact story-chip--danger">
-                  <div class="story-chip__title">Burned</div>
-                  <div class="story-chip__value">{entry.futurePoints.deadValueLost}</div>
-                  <div class="story-chip__sub">already burned off the card</div>
-                </div>
+						<span>
+							<strong>
+								1
+							</strong>
 
-              </div>
-            </div>
-            
-           
-            <FatePathCard fatePath={entry.fatePath} />
-            <!-- <FuturePointsPanel futurePoints={entry.futurePoints} compact={true} /> -->
+							Chaos Car
+						</span>
 
-            
-            
-            <div class="entry-safe-block">
-              <RoundTracker selectedTeams={entry.selectedTeams} {resultsPayload} dense={true} />
-            </div>
-          </div>
-        </details>
-      {/each}
-    </section>
-  {/if}
-</div>
+						<span>
+							<strong>
+								41
+							</strong>
+
+							Make the Race
+						</span>
+
+					</div>
+
+				</div>
+
+
+				<div class="rules-desk">
+
+					<div class="rules-label">
+						Event Rules
+					</div>
+
+					<div class="sectionHead">
+						<SectionHead
+							rules={DAYTONA_RULES}
+						/>
+					</div>
+
+					<p>
+						45 cars are in the pool. Only 41 make the field.
+						If your driver misses the race, that's your problem.
+					</p>
+
+				</div>
+
+
+				<div
+					class="hero-watermark"
+					aria-hidden="true"
+				>
+					DAYTONA
+				</div>
+
+			</header>
+
+
+			<section class="entry-workspace">
+
+				<div class="section-heading workspace-heading">
+
+					<div>
+
+						<div class="eyebrow">
+							Race Forecast
+						</div>
+
+						<h2>
+							Your Top 10
+						</h2>
+
+						<p>
+							Order matters. Build the finish exactly how you think
+							the checkered flag falls.
+						</p>
+
+					</div>
+
+
+					<div class="selection-count">
+
+						<strong>
+							{top10.length}
+						</strong>
+
+						<span>
+							/ 10 Selected
+						</span>
+
+					</div>
+
+				</div>
+
+
+				<div class="picker-stage">
+
+					<PodiumPicker
+						{options}
+						bind:value={top10}
+						{locked}
+						max={10}
+					>
+
+						<button
+							slot="podiumActions"
+							class="save-entry-btn"
+							type="submit"
+							disabled={
+								locked ||
+								saving ||
+								top10.length !== 10 ||
+								!chaosCarId ||
+								!dirty
+							}
+							title={
+								locked
+									? 'Event is locked'
+									: top10.length !== 10
+										? 'Pick exactly 10 to save'
+										: !chaosCarId
+											? 'Choose a Chaos Car'
+											: !dirty
+												? 'No changes to save'
+												: 'Save entry'
+							}
+						>
+							{saveLabel}
+						</button>
+
+
+						<div
+							slot="sidePanel"
+							class="chaos-desk"
+						>
+
+							<div class="chaos-heading">
+
+								<div>
+
+									<div class="eyebrow">
+										Wild Card
+									</div>
+
+									<h3>
+										Chaos Car
+									</h3>
+
+								</div>
+
+
+								<span
+									class:chosen={Boolean(
+										chaosCarId
+									)}
+									class="chaos-status"
+								>
+									{chaosCarId
+										? 'Chosen'
+										: 'Required'}
+								</span>
+
+							</div>
+
+
+							<p>
+								Pick one driver outside your Top 10.
+								Someone capable of turning a perfectly normal
+								Sunday into complete bullshit.
+							</p>
+
+
+							<label for="chaos">
+								Chaos Driver
+							</label>
+
+							<select
+								id="chaos"
+								class="chaos-select"
+								bind:value={chaosCarId}
+								disabled={locked}
+								on:change={() =>
+									(chaosTouched = true)}
+							>
+
+								<option value="">
+									— Choose a Chaos Car —
+								</option>
+
+								{#each chaosOptions as opt}
+
+									<option
+										value={String(
+											opt.id
+										)}
+									>
+										{opt.carNumber
+											? `#${opt.carNumber} `
+											: ''}{opt.name}
+									</option>
+
+								{/each}
+
+							</select>
+
+
+							{#if chaosCarId}
+
+								<div class="chaos-selection">
+
+									<span>
+										Your Chaos Car
+									</span>
+
+									<strong>
+										{chaosLabel}
+									</strong>
+
+									<button
+										class="clear-btn"
+										type="button"
+										on:click={() => {
+											chaosCarId = '';
+											chaosTouched = true;
+										}}
+									>
+										Clear Selection
+									</button>
+
+								</div>
+
+							{:else}
+
+								<div class="chaos-tip">
+
+									<strong>
+										Strategy?
+									</strong>
+
+									<span>
+										Volatile is good. That's the point.
+									</span>
+
+								</div>
+
+							{/if}
+
+
+							<div class="chaos-rule">
+								Chaos Car cannot appear in your Top 10.
+							</div>
+
+						</div>
+
+
+						<div
+							slot="statusLine"
+							class:error={Boolean(
+								saveError
+							)}
+							class:success={
+								savedPulse ||
+								(!dirty &&
+									top10.length ===
+										10 &&
+									Boolean(
+										chaosCarId
+									))
+							}
+							class="entry-status"
+							aria-live="polite"
+						>
+
+							{#if saveError}
+
+								{saveError}
+
+							{:else if saving}
+
+								Saving your race card…
+
+							{:else if savedPulse}
+
+								✓ Entry saved.
+
+							{:else if top10.length !== 10}
+
+								{10 - top10.length}
+								more
+								{10 - top10.length === 1
+									? 'pick'
+									: 'picks'}
+								needed.
+
+							{:else if !chaosCarId}
+
+								Top 10 complete. Choose your Chaos Car.
+
+							{:else if !dirty}
+
+								✓ Entry saved.
+
+							{:else}
+
+								Changes ready to save.
+
+							{/if}
+
+						</div>
+
+					</PodiumPicker>
+
+				</div>
+
+			</section>
+
+
+			<input
+				type="hidden"
+				name="top10Ids"
+				value={top10IdsJson}
+			/>
+
+			<input
+				type="hidden"
+				name="top10Snapshot"
+				value={top10SnapshotJson}
+			/>
+
+			<input
+				type="hidden"
+				name="chaosCarId"
+				value={chaosCarId}
+			/>
+
+			<input
+				type="hidden"
+				name="chaosCarName"
+				value={chaosCarName}
+			/>
+
+			<input
+				type="hidden"
+				name="chaosCarNumber"
+				value={chaosCarNumber}
+			/>
+
+		</div>
+
+	</form>
+
 {/if}
 
+
 <style>
-.page-wide {
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 24px 24px;
-  box-sizing: border-box;
-}
-
-.warroom {
-  margin-bottom: 18px;
-}
-
-.warroom__top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.warroom__titlewrap {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-}
-
-.warroom__titleline {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.warroom__logo {
-  width: 42px;
-  height: 42px;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.22);
-  flex: 0 0 auto;
-}
-
-.warroom__title {
-  margin: 0;
-  font-family: ui-serif, 'Iowan Old Style', 'Palatino Linotype', Palatino, Garamond, Georgia, serif;
-  font-size: 1.9rem;
-  line-height: 1.1;
-  letter-spacing: 0.2px;
-}
-
-.warroom__subtitle {
-  opacity: 0.74;
-  font-size: 0.98rem;
-}
-
-.warroom__actions,
-.warroom__meta,
-.badge-row,
-.team-chip__bottom,
-.team-chip__pills,
-.entry-summary__right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.warroom__meta {
-  margin-top: 14px;
-}
-
-.notice {
-  margin-bottom: 18px;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.war-room-grid {
-  display: grid;
-  grid-template-columns: 1.25fr 1fr 1fr;
-  gap: 20px;
-  align-items: start;
-  padding-bottom: inherit;
-}
-
-.stat-card,
-.ownership-card {
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.22);
-  border-radius: 18px;
-  padding: 14px;
-  min-width: 0;
-}
-
-.stat-label,
-.ownership-label {
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.66;
-}
-
-.stat-value,
-.ownership-value {
-  margin-top: 6px;
-  font-size: 1.12rem;
-  font-weight: 900;
-  line-height: 1.15;
-}
-
-.stat-sub,
-.ownership-sub,
-.popular-sub,
-.entry-meta,
-.story-chip__sub,
-.team-chip__meta,
-.empty-copy {
-  opacity: 0.72;
-  font-size: 0.92rem;
-}
-
-.summary-panels {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.summary-panels--triple {
-  grid-template-columns: 1.2fr 0.9fr;
-}
-
-.panel {
-  display: grid;
-  gap: 14px;
-}
-
-.panel-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.panel-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 999px;
-}
-
-.popular-list {
-  display: grid;
-  gap: 10px;
-}
-
-.popular-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-  min-width: 0;
-}
-
-.popular-row--button {
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  color: inherit;
-}
-
-.popular-row--button.selected {
-  border-color: rgba(214,177,94,0.28);
-  background: rgba(214,177,94,0.09);
-}
-
-.popular-main {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-  flex: 1 1 auto;
-}
-
-.popular-side {
-  flex: 0 0 auto;
-}
-
-.popular-logo,
-.team-chip__logo {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  object-fit: contain;
-  flex: 0 0 auto;
-}
-
-.popular-name,
-.team-chip__name,
-.entry-name {
-  font-weight: 900;
-  line-height: 1.15;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.seed-tag {
-  display: inline-flex;
-  min-width: 20px;
-  justify-content: center;
-  padding: 2px 6px;
-  margin-right: 6px;
-  border-radius: 999px;
-  border: 1px solid rgba(214,177,94,0.28);
-  background: rgba(214,177,94,0.10);
-  font-size: 0.78rem;
-  font-weight: 900;
-  vertical-align: middle;
-}
-
-.chips-wrap,
-.entry-story-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.entry-story-grid--triple {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.story-chip {
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-  border-radius: 14px;
-  padding: 12px;
-  min-width: 0;
-}
-
-.story-chip--gold {
-  border-color: rgba(214,177,94,0.22);
-  background: rgba(214,177,94,0.08);
-}
-
-.story-chip__title {
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.66;
-  margin-bottom: 6px;
-}
-
-.story-chip__value {
-  font-size: 1.35rem;
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 6px;
-}
-
-.story-chip--compact {
-  padding: 13px;
-}
-
-.story-chip--danger {
-  border-color: rgba(191, 78, 78, 0.22);
-  background: rgba(191, 78, 78, 0.07);
-}
-
-.entry-overview {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 12px;
-  align-items: stretch;
-}
-
-.entry-hero-card {
-  border: 1px solid rgba(255,255,255,0.08);
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.025));
-  border-radius: 16px;
-  padding: 14px;
-  display: grid;
-  gap: 8px;
-  min-width: 0;
-}
-
-.entry-hero-card--gold {
-  border-color: rgba(214,177,94,0.24);
-  background: linear-gradient(180deg, rgba(214,177,94,0.12), rgba(214,177,94,0.06));
-  box-shadow: 0 12px 28px rgba(214,177,94,0.07);
-}
-
-.entry-hero-card__eyebrow {
-  font-size: 0.76rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  opacity: 0.66;
-}
-
-.entry-hero-card__title {
-  font-size: 1.08rem;
-  font-weight: 900;
-  line-height: 1.25;
-}
-
-.entry-hero-card__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  font-size: 0.92rem;
-  opacity: 0.78;
-}
-
-.entry-snapshot-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.mini-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.05);
-  font-size: 0.8rem;
-  font-weight: 800;
-  line-height: 1;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-}
-
-.mini-badge--gold {
-  border-color: rgba(214,177,94,0.32);
-  background: rgba(214,177,94,0.12);
-  box-shadow: 0 0 0 1px rgba(214,177,94,0.06), 0 8px 18px rgba(214,177,94,0.10);
-}
-
-.mini-badge--green {
-  border-color: rgba(49, 163, 112, 0.30);
-  background: rgba(49, 163, 112, 0.11);
-  box-shadow: 0 8px 18px rgba(49, 163, 112, 0.09);
-}
-
-.mini-badge--red {
-  border-color: rgba(191, 78, 78, 0.28);
-  background: rgba(191, 78, 78, 0.11);
-  box-shadow: 0 8px 18px rgba(191, 78, 78, 0.08);
-}
-
-.mini-badge--muted {
-  border-color: rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.06);
-}
-
-.ownership-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.entries-grid {
-  display: grid;
-  gap: 16px;
-}
-
-.entry-card {
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.22);
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.entry-card[open] {
-  box-shadow: 0 12px 32px rgba(0,0,0,0.18);
-}
-
-.entry-summary {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 16px;
-  cursor: pointer;
-}
-
-.entry-summary::-webkit-details-marker {
-  display: none;
-}
-
-.entry-summary__left {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  min-width: 0;
-  flex: 1 1 auto;
-}
-
-.entry-summary__right {
-  flex: 0 0 auto;
-  justify-content: flex-end;
-}
-
-.entry-identity {
-  min-width: 0;
-  display: grid;
-  gap: 6px;
-  flex: 1 1 auto;
-}
-
-.entry-name-row {
-  display: grid;
-  gap: 6px;
-}
-
-.entry-meta-stack {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.entry-meta {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  line-height: 1.2;
-}
-
-.entry-meta--top,
-.entry-meta--bottom {
-  font-size: 0.92rem;
-}
-
-.rank-badge {
-  min-width: 48px;
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  font-weight: 900;
-  border: 1px solid rgba(214,177,94,0.28);
-  background: rgba(214,177,94,0.10);
-  flex: 0 0 auto;
-}
-
-.entry-body {
-  display: grid;
-  gap: 14px;
-  padding: 0 16px 16px;
-}
-
-.team-strip {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.team-chip {
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.03);
-  border-radius: 16px;
-  padding: 12px;
-  display: grid;
-  gap: 10px;
-  min-width: 0;
-}
-
-.team-chip--alive,
-.team-chip--champion {
-  border-color: rgba(49, 163, 112, 0.24);
-}
-
-.team-chip--eliminated {
-  border-color: rgba(191, 78, 78, 0.22);
-  background: rgba(191, 78, 78, 0.06);
-}
-
-.team-chip__top,
-.team-chip__identity {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  align-items: flex-start;
-  min-width: 0;
-}
-
-.team-chip__identity {
-  justify-content: flex-start;
-}
-.entry-safe-block {
-  min-width: 0;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-.panel-collapse {
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 12px;
-  background: rgba(255,255,255,0.03);
-}
-
-.panel-collapse__summary {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.panel-collapse__summary::-webkit-details-marker {
-  display: none;
-}
-
-.panel-collapse__hint {
-  opacity: 0.56;
-  font-size: 0.88rem;
-  white-space: nowrap;
-}
-
-@media (max-width: 1180px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .war-room-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .summary-panels,
-  .summary-panels--triple {
-    grid-template-columns: 1fr;
-  }
-
-  .entry-overview,
-  .entry-story-grid--triple {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .team-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .page-wide {
-    padding: 0 16px 16px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: -12px;
-  }
-
-  .chips-wrap {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .entry-overview {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .entry-snapshot-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .entry-story-grid,
-  .entry-story-grid--triple,
-  .ownership-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .team-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .entry-summary {
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .entry-summary__right {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 8px;
-  }
-
-  .entry-body {
-    gap: 12px;
-    padding: 0 14px 14px;
-  }
-
-  .entry-hero-card {
-    padding: 12px;
-    gap: 6px;
-  }
-
-  .entry-hero-card__title {
-    font-size: 1rem;
-    line-height: 1.2;
-  }
-
-  .entry-hero-card__meta {
-    font-size: 0.86rem;
-    gap: 6px;
-  }
-
-  .story-chip {
-    padding: 12px;
-  }
-
-  .story-chip__title {
-    font-size: 0.74rem;
-    margin-bottom: 5px;
-  }
-
-  .story-chip__value {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-  }
-
-  .story-chip__sub {
-    font-size: 0.84rem;
-    line-height: 1.2;
-  }
-
-  .team-chip {
-    padding: 11px;
-    gap: 8px;
-  }
-
-  .team-chip__meta,
-  .popular-sub {
-    font-size: 0.86rem;
-    line-height: 1.2;
-  }
-
-  .mini-badge {
-    min-height: 26px;
-    padding: 4px 9px;
-    font-size: 0.74rem;
-  }
-
-  .rank-badge {
-    min-width: 42px;
-    width: 42px;
-    height: 42px;
-    font-size: 0.92rem;
-  }
-
-  .panel-collapse__hint {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 520px) {
-  .warroom__title {
-    font-size: 1.45rem;
-  }
-
-  .warroom__subtitle {
-    font-size: 0.92rem;
-  }
-
-  .warroom__actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .warroom__meta {
-    gap: 8px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .stat-card {
-    padding: 12px;
-    border-radius: 16px;
-  }
-
-  .stat-label {
-    font-size: 0.7rem;
-  }
-
-  .stat-value {
-    font-size: 1rem;
-    line-height: 1.1;
-  }
-
-  .stat-sub {
-    font-size: 0.84rem;
-    line-height: 1.2;
-  }
-
-  .entry-summary {
-    flex-direction: column;
-    padding: 14px;
-  }
-
-  .entry-summary__left {
-    gap: 12px;
-  }
-
-  .entry-name-row {
-    gap: 5px;
-  }
-
-  .entry-meta-stack {
-    gap: 3px;
-  }
-
-  .entry-meta {
-    gap: 6px;
-    font-size: 0.84rem;
-  }
-
-  .entry-meta--top,
-  .entry-meta--bottom {
-    font-size: 0.84rem;
-  }
-
-  .entry-summary__right {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .entry-hero-card__meta {
-    display: grid;
-    gap: 4px;
-  }
-
-  .entry-snapshot-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-   .team-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px;
-  }
-
-  .chips-wrap {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .story-chip,
-  .story-chip--compact {
-    border-radius: 13px;
-  }
-
-   .team-chip {
-    padding: 10px;
-  }
-
-  .team-chip__top {
-    align-items: flex-start;
-  }
-
-  .team-chip__pills {
-    justify-content: flex-end;
-  }
-
-  .team-chip__name {
-    font-size: 0.98rem;
-    line-height: 1.1;
-  }
-
-  .team-chip__meta {
-    font-size: 0.82rem;
-    line-height: 1.15;
-  }
-
-  .team-chip__bottom {
-    gap: 6px;
-  }
-
-}
+	/* ==================================================
+	   PAGE
+	   ================================================== */
 
+	.daytona-shell {
+		width: 100%;
+		max-width: 1450px;
 
+		display: grid;
+		gap: 30px;
+
+		margin: 0 auto;
+
+		padding-bottom: 64px;
+	}
+
+
+	.eyebrow {
+		color:
+			var(--brand-gold);
+
+		font-size: .64rem;
+		font-weight: 850;
+
+		letter-spacing: .12em;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   HERO
+	   ================================================== */
+
+	.entry-hero {
+		position: relative;
+
+		display: grid;
+
+		grid-template-columns:
+			minmax(0, 1fr)
+			360px;
+
+		align-items: center;
+
+		gap: 50px;
+
+		overflow: hidden;
+
+		padding:
+			38px
+			clamp(30px, 4vw, 54px);
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius:
+			var(--radius-lg);
+
+		background:
+			linear-gradient(
+				120deg,
+				rgba(191,161,106,.045),
+				transparent 45%
+			),
+			var(--panel-strong);
+
+		box-shadow:
+			var(--shadow-panel);
+	}
+
+
+	.hero-copy {
+		position: relative;
+		z-index: 2;
+	}
+
+
+	.entry-hero h1 {
+		max-width: 850px;
+
+		margin:
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				4rem,
+				7vw,
+				6.5rem
+			);
+
+		font-weight: 400;
+
+		line-height: .86;
+
+		letter-spacing: -.025em;
+
+		text-transform: uppercase;
+	}
+
+
+	.hero-copy > p {
+		max-width: 720px;
+
+		margin:
+			20px 0 0;
+
+		color:
+			var(--muted);
+
+		font-size: .94rem;
+		font-weight: 600;
+
+		line-height: 1.6;
+	}
+
+
+	.entry-specs {
+		display: inline-flex;
+
+		width: fit-content;
+
+		margin-top: 25px;
+
+		border:
+			1px solid
+			var(--border);
+	}
+
+
+	.entry-specs span {
+		min-width: 110px;
+
+		display: grid;
+		gap: 2px;
+
+		padding:
+			9px 12px;
+
+		border-right:
+			1px solid
+			var(--border);
+
+		background:
+			#090d0c;
+
+		color:
+			var(--brand-stone);
+
+		font-size: .56rem;
+		font-weight: 750;
+
+		letter-spacing: .05em;
+
+		text-transform: uppercase;
+	}
+
+
+	.entry-specs span:last-child {
+		border-right: 0;
+	}
+
+
+	.entry-specs strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.35rem;
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.hero-watermark {
+		position: absolute;
+
+		right: -24px;
+		bottom: -52px;
+
+		color:
+			rgba(191,161,106,.017);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				9rem,
+				17vw,
+				15rem
+			);
+
+		line-height: 1;
+
+		pointer-events: none;
+	}
+
+
+	/* ==================================================
+	   RULES
+	   ================================================== */
+
+	.rules-desk {
+		position: relative;
+		z-index: 2;
+
+		display: grid;
+		gap: 12px;
+
+		padding: 20px;
+
+		border:
+			1px solid
+			rgba(191,161,106,.27);
+
+		background:
+			rgba(6,9,8,.55);
+	}
+
+
+	.rules-label {
+		color:
+			var(--brand-gold);
+
+		font-size: .61rem;
+		font-weight: 850;
+
+		letter-spacing: .1em;
+
+		text-transform: uppercase;
+	}
+
+
+	.rules-desk p {
+		margin: 0;
+
+		color:
+			var(--muted);
+
+		font-size: .76rem;
+
+		line-height: 1.55;
+	}
+
+
+	.sectionHead {
+		min-width: 0;
+	}
+
+
+	/* ==================================================
+	   WORKSPACE
+	   ================================================== */
+
+	.entry-workspace {
+		display: grid;
+		gap: 18px;
+	}
+
+
+	.section-heading {
+		display: flex;
+
+		justify-content: space-between;
+
+		align-items: end;
+
+		gap: 20px;
+
+		padding-bottom: 15px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.section-heading h2 {
+		margin:
+			5px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				2.6rem,
+				4vw,
+				3.7rem
+			);
+
+		font-weight: 400;
+
+		line-height: .95;
+
+		text-transform: uppercase;
+	}
+
+
+	.section-heading p {
+		max-width: 720px;
+
+		margin:
+			9px 0 0;
+
+		color:
+			var(--muted);
+
+		font-size: .8rem;
+
+		line-height: 1.5;
+	}
+
+
+	.selection-count {
+		display: flex;
+
+		align-items: baseline;
+
+		gap: 5px;
+
+		padding-bottom: 3px;
+	}
+
+
+	.selection-count strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.selection-count span {
+		color:
+			var(--brand-stone);
+
+		font-size: .61rem;
+		font-weight: 800;
+
+		letter-spacing: .05em;
+
+		text-transform: uppercase;
+	}
+
+
+	.picker-stage {
+		min-width: 0;
+	}
+
+
+	/* ==================================================
+	   SAVE BUTTON
+	   ================================================== */
+
+	.save-entry-btn,
+	.secondary-btn {
+		min-height: 42px;
+
+		cursor: pointer;
+
+		padding:
+			0 18px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		border-radius: 2px;
+
+		background:
+			var(--brand-gold);
+
+		color:
+			var(--brand-charcoal);
+
+		font: inherit;
+
+		font-size: .63rem;
+		font-weight: 900;
+
+		letter-spacing: .05em;
+
+		text-transform: uppercase;
+	}
+
+
+	.save-entry-btn:hover:not(:disabled),
+	.secondary-btn:hover {
+		background:
+			var(--brand-sand);
+
+		border-color:
+			var(--brand-sand);
+	}
+
+
+	.save-entry-btn:disabled {
+		opacity: .35;
+
+		cursor: not-allowed;
+	}
+
+
+	/* ==================================================
+	   CHAOS DESK
+	   ================================================== */
+
+	.chaos-desk {
+		min-width: 0;
+
+		display: grid;
+		align-content: start;
+
+		gap: 15px;
+
+		padding:
+			20px;
+
+		border-left:
+			2px solid
+			var(--brand-gold);
+
+		background:
+			rgba(191,161,106,.028);
+	}
+
+
+	.chaos-heading {
+		display: flex;
+
+		justify-content: space-between;
+
+		align-items: start;
+
+		gap: 16px;
+	}
+
+
+	.chaos-heading h3 {
+		margin:
+			4px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2rem;
+		font-weight: 400;
+
+		line-height: .95;
+
+		text-transform: uppercase;
+	}
+
+
+	.chaos-status {
+		padding:
+			5px 7px;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		color:
+			var(--brand-stone);
+
+		font-size: .55rem;
+		font-weight: 850;
+
+		letter-spacing: .06em;
+
+		text-transform: uppercase;
+	}
+
+
+	.chaos-status.chosen {
+		border-color:
+			rgba(145,184,155,.42);
+
+		color:
+			#91b89b;
+	}
+
+
+	.chaos-desk > p {
+		margin: 0;
+
+		color:
+			var(--muted);
+
+		font-size: .76rem;
+
+		line-height: 1.55;
+	}
+
+
+	.chaos-desk label {
+		color:
+			var(--brand-stone);
+
+		font-size: .61rem;
+		font-weight: 850;
+
+		letter-spacing: .08em;
+
+		text-transform: uppercase;
+	}
+
+
+	.chaos-select {
+		width: 100%;
+
+		min-height: 44px;
+
+		box-sizing: border-box;
+
+		outline: 0;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius: 2px;
+
+		padding:
+			9px 11px;
+
+		background:
+			#090d0c;
+
+		color:
+			var(--brand-ivory);
+
+		font: inherit;
+
+		font-size: .82rem;
+	}
+
+
+	.chaos-select:focus {
+		border-color:
+			var(--brand-gold);
+	}
+
+
+	.chaos-select option {
+		background: #fff;
+
+		color: #111;
+	}
+
+
+	.chaos-selection {
+		display: grid;
+		gap: 5px;
+
+		padding:
+			14px 0;
+
+		border-top:
+			1px solid
+			var(--border);
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.chaos-selection > span {
+		color:
+			var(--brand-gold);
+
+		font-size: .57rem;
+		font-weight: 850;
+
+		letter-spacing: .08em;
+
+		text-transform: uppercase;
+	}
+
+
+	.chaos-selection strong {
+		color:
+			var(--brand-ivory);
+
+		font-size: .9rem;
+	}
+
+
+	.clear-btn {
+		width: fit-content;
+
+		margin-top: 6px;
+
+		cursor: pointer;
+
+		padding: 0;
+
+		border: 0;
+
+		background: transparent;
+
+		color:
+			var(--brand-gold);
+
+		font: inherit;
+
+		font-size: .63rem;
+		font-weight: 800;
+	}
+
+
+	.clear-btn:hover {
+		color:
+			var(--brand-sand);
+	}
+
+
+	.chaos-tip {
+		display: grid;
+		gap: 3px;
+
+		padding:
+			13px 0;
+
+		border-top:
+			1px solid
+			var(--border);
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.chaos-tip strong {
+		color:
+			var(--brand-gold);
+
+		font-size: .66rem;
+	}
+
+
+	.chaos-tip span,
+	.chaos-rule {
+		color:
+			var(--brand-stone);
+
+		font-size: .66rem;
+
+		line-height: 1.45;
+	}
+
+
+	/* ==================================================
+	   STATUS
+	   ================================================== */
+
+	.entry-status {
+		min-height: 32px;
+
+		display: flex;
+		align-items: center;
+
+		padding-left: 12px;
+
+		border-left:
+			2px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-stone);
+
+		font-size: .7rem;
+	}
+
+
+	.entry-status.success {
+		border-color:
+			#91b89b;
+
+		color:
+			#91b89b;
+	}
+
+
+	.entry-status.error {
+		border-color:
+			#c77d72;
+
+		color:
+			#c77d72;
+	}
+
+
+	/* ==================================================
+	   LOCKED ENTRY
+	   ================================================== */
+
+	.lock-stamp {
+		position: relative;
+		z-index: 2;
+
+		display: grid;
+		gap: 4px;
+
+		justify-self: end;
+
+		min-width: 190px;
+
+		padding: 20px;
+
+		border:
+			1px solid
+			rgba(191,161,106,.34);
+
+		text-align: center;
+	}
+
+
+	.lock-stamp span,
+	.lock-stamp small {
+		color:
+			var(--brand-stone);
+
+		font-size: .57rem;
+		font-weight: 800;
+
+		letter-spacing: .09em;
+
+		text-transform: uppercase;
+	}
+
+
+	.lock-stamp strong {
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2.8rem;
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.final-board {
+		display: grid;
+		gap: 0;
+	}
+
+
+	.final-grid {
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				2,
+				minmax(0,1fr)
+			);
+	}
+
+
+	.final-driver {
+		display: grid;
+
+		grid-template-columns:
+			50px
+			minmax(0,1fr);
+
+		gap: 14px;
+
+		align-items: center;
+
+		min-height: 62px;
+
+		padding:
+			0 12px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.final-driver:nth-child(odd) {
+		border-right:
+			1px solid
+			var(--border);
+	}
+
+
+	.final-rank {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.25rem;
+	}
+
+
+	.final-driver-name {
+		display: grid;
+		gap: 2px;
+	}
+
+
+	.final-driver-name strong {
+		color:
+			var(--brand-ivory);
+
+		font-size: .83rem;
+	}
+
+
+	.final-driver-name small {
+		color:
+			var(--brand-stone);
+
+		font-size: .63rem;
+	}
+
+
+	.locked-chaos {
+		display: grid;
+
+		grid-template-columns:
+			minmax(0,1fr)
+			320px;
+
+		align-items: center;
+
+		gap: 40px;
+
+		padding:
+			24px 0;
+
+		border-top:
+			1px solid
+			var(--border);
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.locked-chaos h2 {
+		margin:
+			4px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2.5rem;
+		font-weight: 400;
+
+		text-transform: uppercase;
+	}
+
+
+	.locked-chaos p {
+		max-width: 650px;
+
+		margin:
+			8px 0 0;
+
+		color:
+			var(--muted);
+
+		font-size: .78rem;
+
+		line-height: 1.5;
+	}
+
+
+	.locked-chaos-pick {
+		display: grid;
+		gap: 4px;
+
+		padding-left: 18px;
+
+		border-left:
+			2px solid
+			var(--brand-gold);
+	}
+
+
+	.locked-chaos-pick span {
+		color:
+			var(--brand-gold);
+
+		font-size: .58rem;
+		font-weight: 850;
+
+		text-transform: uppercase;
+	}
+
+
+	.locked-chaos-pick strong {
+		color:
+			var(--brand-sand);
+
+		font-size: 1rem;
+	}
+
+
+	/* ==================================================
+	   EMPTY / LOADING / ERROR
+	   ================================================== */
+
+	.state-message {
+		padding:
+			50px 0;
+
+		border-top:
+			1px solid
+			var(--border);
+
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.state-message h2 {
+		margin:
+			5px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				2.5rem,
+				5vw,
+				4rem
+			);
+
+		font-weight: 400;
+
+		text-transform: uppercase;
+	}
+
+
+	.state-message p {
+		margin:
+			12px 0 0;
+
+		color:
+			var(--muted);
+
+		font-size: .84rem;
+	}
+
+
+	.state-message .secondary-btn {
+		margin-top: 20px;
+	}
+
+
+	.error-state {
+		border-left:
+			2px solid
+			#c77d72;
+
+		padding-left: 20px;
+	}
+
+
+	/* ==================================================
+	   RESPONSIVE
+	   ================================================== */
+
+	@media (max-width: 1000px) {
+
+		.entry-hero {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.rules-desk {
+			max-width: 600px;
+		}
+
+
+		.lock-stamp {
+			justify-self: start;
+		}
+
+
+		.locked-chaos {
+			grid-template-columns:
+				1fr;
+		}
+
+	}
+
+
+	@media (max-width: 650px) {
+
+		.daytona-shell {
+			gap: 22px;
+		}
+
+
+		.entry-hero {
+			padding:
+				28px 21px;
+		}
+
+
+		.entry-hero h1 {
+			font-size:
+				clamp(
+					3.8rem,
+					18vw,
+					5rem
+				);
+		}
+
+
+		.entry-specs {
+			display: grid;
+
+			grid-template-columns:
+				repeat(
+					3,
+					1fr
+				);
+
+			width: 100%;
+		}
+
+
+		.entry-specs span {
+			min-width: 0;
+		}
+
+
+		.section-heading {
+			display: grid;
+		}
+
+
+		.selection-count {
+			justify-self: start;
+		}
+
+
+		.final-grid {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.final-driver:nth-child(odd) {
+			border-right: 0;
+		}
+
+	}
 </style>

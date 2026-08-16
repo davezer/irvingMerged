@@ -216,210 +216,717 @@
 </div>
 
 <style>
-  /* === GRID LAYOUT === */
-  .grid {
-    display: grid;
-    gap: 16px;
-    margin-top: 14px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
-    width: 100%;
-  }
+	/* ==================================================
+	   WORKSPACE GRID
+	   ================================================== */
 
-  .grid.has-side {
-    grid-template-columns: 1.1fr 1.1fr 0.9fr;
-  }
+	.grid {
+		display: grid;
+		grid-template-columns:
+			repeat(2, minmax(0, 1fr));
 
-  .grid > section {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 560px;
-  }
+		gap: 20px;
 
-  /* === HEADER === */
-  .head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 12px;
-    min-width: 0;
-    flex: 0 0 auto;
-  }
+		width: 100%;
+		margin-top: 14px;
 
-  .head-left {
-    min-width: 0;
-  }
+		align-items: stretch;
+	}
 
-  .title {
-    margin: 2px 0 0 0;
-    font-family: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Garamond, Georgia, serif;
-    letter-spacing: 0.3px;
-    font-size: 18px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  .head-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    flex: 0 0 auto;
-  }
+	.grid.has-side {
+		grid-template-columns:
+			1fr 1fr .82fr;
+	}
 
-  .actions-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
 
-  /* === PANEL === */
-  .panel {
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: 14px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.22);
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-.panel--scroll {
-  overflow-y: auto;
-}
+	.grid > section {
+		min-width: 0;
 
-/* About ~15 rows tall (tweak the number if you want) */
-.panel--scroll {
-  max-height: calc(15 * 52px); /* ~52px per row incl border */
-}
+		display: flex;
+		flex-direction: column;
 
-/* Smooth scrolling + looks nicer */
-.panel--scroll {
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable both-edges;
-}
+		min-height: 600px;
 
-.panel--scroll::-webkit-scrollbar {
-  width: 10px;
-}
-.panel--scroll::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.12);
-  border-radius: 999px;
-}
-.panel--scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
+		padding: 0 !important;
 
-section:nth-of-type(2) .panel--scroll {
-  max-height: calc(15 * 52px);
-}
-  /* === ROWS === */
-  .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    min-width: 0;
-  }
-  .row:last-child { border-bottom: none; }
+		border: 0 !important;
+		border-radius: 0 !important;
 
-  .row--selected {
-    background: linear-gradient(180deg, rgba(214,177,94,0.10), rgba(255,255,255,0.02));
-  }
+		background: transparent !important;
 
-  .row-left {
-    min-width: 0;
-    display: grid;
-    gap: 2px;
-  }
+		box-shadow: none !important;
+	}
 
-  .name {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  .rank {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 999px;
-    border: 1px solid rgba(214,177,94,0.35);
-    background: rgba(214,177,94,0.10);
-    color: #f5d58a;
-    font-weight: 800;
-    flex: 0 0 auto;
-  }
+	/*
+		Separate the three desks without turning
+		each one into another giant card.
+	*/
 
-  .meta {
-    font-size: 12px;
-    opacity: 0.65;
-  }
+	.grid > section + section {
+		padding-left: 20px !important;
 
-  .controls {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex: 0 0 auto;
-  }
+		border-left:
+			1px solid
+			var(--border) !important;
+	}
 
-  .empty {
-    padding: 14px;
-    opacity: 0.65;
-  }
 
-  .foot {
-    flex: 0 0 auto;
-    padding-bottom: 9px;
-  }
+	/* ==================================================
+	   HEADERS
+	   ================================================== */
 
-  .statusline {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    opacity: 0.9;
-    flex: 0 0 auto;
-  }
+	.head {
+		display: flex;
 
-  .input {
-    margin-bottom: 12px;
-  }
+		justify-content: space-between;
+		align-items: flex-start;
 
-  :global(.btn) {
-    padding: 10px 12px;
-    border-radius: 12px;
-    min-width: 42px;
-    line-height: 1;
-  }
+		gap: 18px;
 
-  :global(.pill) {
-    height: 30px;
-    display: inline-flex;
-    align-items: center;
-    flex: 0 0 auto;
-  }
+		min-width: 0;
 
-  @media (max-width: 1100px) {
-    .grid.has-side {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
+		margin-bottom: 16px;
+		padding-bottom: 14px;
 
-  @media (max-width: 780px) {
-    .grid,
-    .grid.has-side {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
+		border-bottom:
+			1px solid
+			var(--border);
+	}
+
+
+	.head-left {
+		min-width: 0;
+	}
+
+
+	.kicker {
+		color:
+			var(--brand-gold);
+
+		font-size: .62rem;
+		font-weight: 850;
+
+		letter-spacing: .11em;
+
+		text-transform: uppercase;
+	}
+
+
+	.title {
+		margin: 5px 0 0;
+
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				2rem,
+				2.7vw,
+				2.8rem
+			);
+
+		font-weight: 400;
+
+		line-height: .94;
+
+		letter-spacing: -.01em;
+
+		text-overflow: ellipsis;
+
+		text-transform: uppercase;
+
+		white-space: nowrap;
+	}
+
+
+	.head-right {
+		display: flex;
+		flex-direction: column;
+
+		align-items: flex-end;
+
+		gap: 10px;
+
+		flex: 0 0 auto;
+	}
+
+
+	.actions-row {
+		display: flex;
+
+		align-items: center;
+		justify-content: flex-end;
+
+		gap: 7px;
+
+		flex-wrap: wrap;
+	}
+
+
+	/* ==================================================
+	   STATUS / COUNT PILLS
+	   ================================================== */
+
+	:global(.pill) {
+		height: auto !important;
+		min-height: 27px;
+
+		display: inline-flex;
+		align-items: center;
+
+		padding:
+			4px 8px !important;
+
+		border:
+			1px solid
+			var(--border-strong) !important;
+
+		border-radius: 2px !important;
+
+		background:
+			#090d0c !important;
+
+		color:
+			var(--brand-stone) !important;
+
+		font-size: .58rem !important;
+		font-weight: 850 !important;
+
+		letter-spacing: .05em;
+
+		text-transform: uppercase;
+
+		box-shadow: none !important;
+	}
+
+
+	:global(.pill--gold) {
+		border-color:
+			rgba(191,161,106,.52) !important;
+
+		color:
+			var(--brand-gold) !important;
+
+		background:
+			rgba(191,161,106,.045) !important;
+	}
+
+
+	/* ==================================================
+	   SEARCH
+	   ================================================== */
+
+	.input {
+		width: 100%;
+		min-height: 43px;
+
+		box-sizing: border-box;
+
+		margin-bottom: 9px;
+		padding:
+			9px 11px;
+
+		outline: 0;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius: 2px;
+
+		background:
+			#090d0c;
+
+		color:
+			var(--brand-ivory);
+
+		font: inherit;
+		font-size: .82rem;
+	}
+
+
+	.input::placeholder {
+		color:
+			rgba(157,155,145,.66);
+	}
+
+
+	.input:focus {
+		border-color:
+			var(--brand-gold);
+	}
+
+
+	.foot {
+		flex: 0 0 auto;
+
+		padding-bottom: 12px;
+
+		color:
+			var(--brand-stone);
+
+		font-size: .68rem;
+
+		line-height: 1.45;
+	}
+
+
+	/* ==================================================
+	   DRIVER LIST
+	   ================================================== */
+
+	.panel {
+		flex: 1 1 auto;
+
+		min-height: 0;
+
+		overflow: hidden;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius: 0;
+
+		background:
+			rgba(7,10,9,.38);
+	}
+
+
+	.panel--scroll {
+		overflow-y: auto;
+
+		max-height:
+			calc(15 * 54px);
+
+		overscroll-behavior: contain;
+
+		scrollbar-gutter: stable;
+	}
+
+
+	.panel--scroll::-webkit-scrollbar {
+		width: 7px;
+	}
+
+
+	.panel--scroll::-webkit-scrollbar-thumb {
+		background:
+			rgba(191,161,106,.22);
+
+		border-radius: 0;
+	}
+
+
+	.panel--scroll::-webkit-scrollbar-track {
+		background:
+			transparent;
+	}
+
+
+	.row {
+		min-width: 0;
+		min-height: 54px;
+
+		display: flex;
+
+		justify-content: space-between;
+		align-items: center;
+
+		gap: 14px;
+
+		box-sizing: border-box;
+
+		padding:
+			8px 10px;
+
+		border-bottom:
+			1px solid
+			var(--border);
+
+		transition:
+			background 100ms ease,
+			border-color 100ms ease;
+	}
+
+
+	.row:last-child {
+		border-bottom: 0;
+	}
+
+
+	.row:hover {
+		background:
+			rgba(191,161,106,.028);
+	}
+
+
+	.row--selected {
+		position: relative;
+
+		background:
+			linear-gradient(
+				90deg,
+				rgba(191,161,106,.065),
+				transparent 65%
+			);
+	}
+
+
+	.row--selected::before {
+		content: '';
+
+		position: absolute;
+
+		top: 0;
+		bottom: 0;
+		left: 0;
+
+		width: 2px;
+
+		background:
+			var(--brand-gold);
+	}
+
+
+	.row-left {
+		min-width: 0;
+
+		display: grid;
+
+		gap: 3px;
+	}
+
+
+	.name {
+		min-width: 0;
+
+		display: flex;
+
+		align-items: center;
+
+		gap: 10px;
+
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-size: .79rem;
+		font-weight: 750;
+
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+	}
+
+
+	.meta {
+		color:
+			var(--brand-stone);
+
+		font-size: .63rem;
+
+		opacity: 1;
+	}
+
+
+	/* ==================================================
+	   RANK
+	   ================================================== */
+
+	.rank {
+		width: 28px;
+		height: 28px;
+
+		display: inline-grid;
+		place-items: center;
+
+		flex: 0 0 auto;
+
+		border:
+			1px solid
+			rgba(191,161,106,.40);
+
+		border-radius: 0;
+
+		background:
+			#090d0c;
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1rem;
+		font-weight: 400;
+	}
+
+
+	/* Make the top three read slightly differently */
+
+	.row--selected:nth-child(1) .rank,
+	.row--selected:nth-child(2) .rank,
+	.row--selected:nth-child(3) .rank {
+		background:
+			var(--brand-gold);
+
+		color:
+			var(--brand-charcoal);
+	}
+
+
+	/* ==================================================
+	   BUTTONS
+	   ================================================== */
+
+	:global(.btn) {
+		min-width: 36px !important;
+		min-height: 36px !important;
+
+		cursor: pointer;
+
+		padding:
+			0 10px !important;
+
+		border:
+			1px solid
+			var(--border-strong) !important;
+
+		border-radius: 2px !important;
+
+		background:
+			#0a0e0d !important;
+
+		color:
+			var(--brand-stone) !important;
+
+		font: inherit;
+
+		font-size: .68rem !important;
+		font-weight: 850 !important;
+
+		line-height: 1 !important;
+
+		box-shadow: none !important;
+
+		transition:
+			border-color 100ms ease,
+			color 100ms ease,
+			background 100ms ease;
+	}
+
+
+	:global(.btn:hover:not(:disabled)) {
+		border-color:
+			var(--brand-gold) !important;
+
+		color:
+			var(--brand-sand) !important;
+	}
+
+
+	:global(.btn:disabled) {
+		opacity: .3 !important;
+
+		cursor: not-allowed;
+	}
+
+
+	:global(.btn--ghost) {
+		background:
+			transparent !important;
+	}
+
+
+	:global(.btn--danger) {
+		color:
+			#c98b81 !important;
+
+		border-color:
+			rgba(201,139,129,.27) !important;
+	}
+
+
+	:global(.btn--danger:hover:not(:disabled)) {
+		background:
+			rgba(201,139,129,.08) !important;
+
+		border-color:
+			#c98b81 !important;
+	}
+
+
+	/*
+		This catches the Save Entry button
+		passed into the podiumActions slot.
+	*/
+
+	:global(.save-entry-btn),
+	:global(.btn--vip) {
+		min-width: 120px !important;
+
+		border-color:
+			var(--brand-gold) !important;
+
+		background:
+			var(--brand-gold) !important;
+
+		color:
+			var(--brand-charcoal) !important;
+	}
+
+
+	:global(.save-entry-btn:hover:not(:disabled)),
+	:global(.btn--vip:hover:not(:disabled)) {
+		border-color:
+			var(--brand-sand) !important;
+
+		background:
+			var(--brand-sand) !important;
+
+		color:
+			var(--brand-charcoal) !important;
+	}
+
+
+	/* ==================================================
+	   CONTROLS
+	   ================================================== */
+
+	.controls {
+		display: flex;
+
+		align-items: center;
+
+		gap: 5px;
+
+		flex: 0 0 auto;
+	}
+
+
+	.empty {
+		padding:
+			18px 14px;
+
+		color:
+			var(--brand-stone);
+
+		font-size: .72rem;
+
+		opacity: 1;
+	}
+
+
+	.statusline {
+		flex: 0 0 auto;
+
+		margin-top: 11px;
+		padding-top: 11px;
+
+		border-top:
+			1px solid
+			var(--border);
+	}
+
+
+	/* ==================================================
+	   SIDE PANEL SLOT
+	   ================================================== */
+
+	/*
+		VERY important:
+		the parent Daytona component supplies its
+		own .chaos-desk design.
+
+		Don't wrap that in another visible card.
+	*/
+
+	.grid.has-side > section:last-child {
+		background:
+			transparent !important;
+	}
+
+
+	/* ==================================================
+	   RESPONSIVE
+	   ================================================== */
+
+	@media (max-width: 1100px) {
+
+		.grid.has-side {
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(0,1fr)
+				);
+		}
+
+
+		.grid.has-side > section:last-child {
+			grid-column:
+				1 / -1;
+
+			min-height: auto;
+
+			padding:
+				20px 0 0 !important;
+
+			border-left: 0 !important;
+
+			border-top:
+				1px solid
+				var(--border) !important;
+		}
+
+	}
+
+
+	@media (max-width: 780px) {
+
+		.grid,
+		.grid.has-side {
+			grid-template-columns:
+				minmax(0,1fr);
+		}
+
+
+		.grid > section {
+			min-height: auto;
+		}
+
+
+		.grid > section + section,
+		.grid.has-side > section:last-child {
+			grid-column: auto;
+
+			padding:
+				20px 0 0 !important;
+
+			border-left: 0 !important;
+
+			border-top:
+				1px solid
+				var(--border) !important;
+		}
+
+
+		.panel--scroll {
+			max-height: 500px;
+		}
+
+
+		.title {
+			font-size: 2.15rem;
+		}
+
+	}
 </style>

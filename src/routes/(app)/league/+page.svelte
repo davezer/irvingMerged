@@ -1,26 +1,39 @@
 <script>
 	import LeagueSubnav from '$lib/components/league/LeagueSubnav.svelte';
+
 	export let data;
 
-	function moveTypeClass(type) {
-		const value = String(type || '').toLowerCase();
 
-		if (value.includes('trade')) return 'trade';
-		if (value.includes('waiver')) return 'waiver';
-		if (value.includes('free')) return 'free-agent';
+	function moveTypeClass(type) {
+		const value =
+			String(type || '')
+				.toLowerCase();
+
+		if (value.includes('trade'))
+			return 'trade';
+
+		if (value.includes('waiver'))
+			return 'waiver';
+
+		if (value.includes('free'))
+			return 'free-agent';
 
 		return 'other';
 	}
 
-	function moveTypeLabel(type) {
-		const value = String(type || '')
-			.replace(/_/g, ' ')
-			.trim();
 
-		if (!value) return 'TRANSACTION';
+	function moveTypeLabel(type) {
+		const value =
+			String(type || '')
+				.replace(/_/g, ' ')
+				.trim();
+
+		if (!value)
+			return 'TRANSACTION';
 
 		return value.toUpperCase();
 	}
+
 
 	function teamInitials(name) {
 		return String(name || '')
@@ -32,6 +45,7 @@
 			.toUpperCase();
 	}
 
+
 	function findMoveTeam(name) {
 		const pool = [
 			...(data.topBoard || []),
@@ -41,1053 +55,2197 @@
 
 		return pool.find(
 			(team) =>
-				String(team.teamName || '').toLowerCase() ===
+				String(
+					team.teamName || ''
+				).toLowerCase() ===
 				String(name || '')
 					.trim()
 					.toLowerCase()
 		);
 	}
 
+
 	function moveTeams(move) {
-		const names = String(move.summary || '')
-			.split(/\s*↔\s*/)
-			.map((name) => name.trim())
-			.filter(Boolean);
+		const names =
+			String(move.summary || '')
+				.split(/\s*↔\s*/)
+				.map((name) => name.trim())
+				.filter(Boolean);
 
-		return names.map((name) => {
-			const team = findMoveTeam(name);
+		return names.map(
+			(name) => {
+				const team =
+					findMoveTeam(name);
 
-			return {
-				name,
-				photo: team?.teamPhoto || null,
-				initials: team?.initials || teamInitials(name)
-			};
-		});
+				return {
+					name,
+					photo:
+						team?.teamPhoto ||
+						null,
+					initials:
+						team?.initials ||
+						teamInitials(
+							name
+						)
+				};
+			}
+		);
 	}
+
+
+	$: season =
+		Number(
+			data.season ||
+				new Date().getFullYear()
+		);
+
+	$: availableWeeks =
+		Array.isArray(
+			data.availableWeeks
+		)
+			? data.availableWeeks
+			: [];
+
+	$: recentWeekQuery =
+		availableWeeks
+			.slice(-4)
+			.join(',');
+
+	$: wireRoomHref =
+		recentWeekQuery
+			? `/league/transactions?season=${season}&weeks=${recentWeekQuery}`
+			: `/league/transactions?season=${season}`;
+
+	$: topBoard =
+		data.topBoard || [];
+
+	$: activityLeaders =
+		data.activityLeaders || [];
+
+	$: recentMoves =
+		data.recentMoves || [];
 </script>
 
+
 <div class="page-stack">
-	<LeagueSubnav season={data.season || new Date().getFullYear()} active="league" />
-	<section class="league-hero ">
-		
 
-		<div class="league-hero-body icl-hero-shell pad-md">
-			<div class="league-hero-copy">
-				<div class="eyebrow">Irving Champions League</div>
-				<h1>{data.leagueName}</h1>
+	<LeagueSubnav
+		season={season}
+		active="league"
+	/>
 
-				<div class="league-manifesto">
-					<strong>Fourteen franchises. One trophy. Zero sympathy.</strong>
-					<p>Every week leaves receipts. Wins, losses, bad beats, and worse decisions.</p>
-				</div>
+
+	<!-- ==================================================
+	     LEAGUE HERO
+	     ================================================== -->
+
+	<section class="league-hero">
+
+		<div class="hero-copy">
+
+			<div class="eyebrow">
+				League headquarters
 			</div>
 
-			<div class="league-hero-stats" aria-label="League pulse">
-				<div class="league-hero-stat">
-					<span>Top seed</span>
-					<strong>{data.pulse?.topSeed?.teamName || '—'}</strong>
-					<small>{data.pulse?.topSeed?.recordLabel || 'No record yet'}</small>
-				</div>
+			<h1>
+				{data.leagueName}
+			</h1>
 
-				<div class="league-hero-stat">
-					<span>Hottest offense</span>
-					<strong>{data.pulse?.hottest?.teamName || '—'}</strong>
-					<small
-						>{data.pulse?.hottest?.points != null
-							? `${Number(data.pulse.hottest.points).toFixed(2)} PF`
-							: 'No data yet'}</small
-					>
-				</div>
+			<div class="manifesto">
+				<strong>
+					Fourteen franchises.
+					One trophy.
+					Zero sympathy.
+				</strong>
 
-				<div class="league-hero-stat">
-					<span>Most active</span>
-					<strong>{data.activityLeaders[0]?.teamName || '—'}</strong>
-					<small
-						>{data.activityLeaders[0]
-							? `${data.activityLeaders[0].activityCount} logged moves`
-							: 'No movement yet'}</small
-					>
-				</div>
-
-				<div class="league-hero-stat">
-					<span>Draft room</span>
-					<strong>{data.draft ? `${data.draft.teams} teams` : 'Archive ready'}</strong>
-					<small
-						>{data.draft
-							? `${data.draft.rounds} rounds • ${String(data.draft.status || '').replace(/_/g, ' ')}`
-							: 'Sleeper-powered archive'}</small
-					>
-				</div>
+				<p>
+					Every week leaves receipts.
+					Wins, losses, bad beats,
+					and worse decisions.
+				</p>
 			</div>
+
 		</div>
+
+
+		<div
+			class="league-pulse"
+			aria-label="League pulse"
+		>
+
+			<article class="pulse-card">
+				<span>
+					Top seed
+				</span>
+
+				<strong>
+					{data.pulse?.topSeed
+						?.teamName ||
+						'—'}
+				</strong>
+
+				<small>
+					{data.pulse?.topSeed
+						?.recordLabel ||
+						'No record yet'}
+				</small>
+			</article>
+
+
+			<article class="pulse-card">
+				<span>
+					Hottest offense
+				</span>
+
+				<strong>
+					{data.pulse?.hottest
+						?.teamName ||
+						'—'}
+				</strong>
+
+				<small>
+					{data.pulse?.hottest
+						?.points != null
+						? `${Number(
+								data.pulse
+									.hottest
+									.points
+							).toFixed(
+								2
+							)} PF`
+						: 'No data yet'}
+				</small>
+			</article>
+
+
+			<article class="pulse-card">
+				<span>
+					Most active
+				</span>
+
+				<strong>
+					{activityLeaders[0]
+						?.teamName ||
+						'—'}
+				</strong>
+
+				<small>
+					{activityLeaders[0]
+						? `${activityLeaders[0].activityCount} logged moves`
+						: 'No movement yet'}
+				</small>
+			</article>
+
+
+			<article class="pulse-card">
+				<span>
+					Draft room
+				</span>
+
+				<strong>
+					{data.draft
+						? `${data.draft.teams} teams`
+						: 'Archive ready'}
+				</strong>
+
+				<small>
+					{data.draft
+						? `${data.draft.rounds} rounds · ${String(
+								data.draft
+									.status ||
+									''
+							).replace(
+								/_/g,
+								' '
+							)}`
+						: 'Sleeper-powered archive'}
+				</small>
+			</article>
+
+		</div>
+
 	</section>
 
-	<section class="grid two-up">
-		<div class="card">
-			<div class="section-head">
-				<h2>Top of the board</h2>
-				<a href={`/league/standings?season=${data.season}`}>Full standings</a>
-			</div>
-			<div class="stack">
-				{#each data.topBoard as row}
-					<a
-						class="row"
-						href={row.slug
-							? `/league/teams/${row.slug}?season=${data.season}`
-							: `/league/standings?season=${data.season}`}
-					>
-						<span class="rank">#{row.rank}</span>
-						<div class="identity">
-							<div class="photo">
-								{#if row.teamPhoto}
-									<img src={row.teamPhoto} alt={row.teamName} />
-								{:else}
-									<span> {row.initials}</span>
-								{/if}
-							</div>
-							<div><strong>{row.teamName}</strong><small> {row.managerName}</small></div>
-						</div>
-						<span>{row.recordLabel}</span>
-					</a>
-				{/each}
-			</div>
-		</div>
 
-		<div class="card">
-			<div class="section-head">
-				<h2>Week {data.selectedWeek} spotlight</h2>
-				<a href={`/league/matchups?season=${data.season}&week=${data.selectedWeek}`}
-					>Open matchups</a
+	<!-- ==================================================
+	     STANDINGS + MATCHUP SPOTLIGHT
+	     ================================================== -->
+
+	<section class="primary-grid">
+
+		<article class="panel standings-panel">
+
+			<header class="section-head">
+
+				<div>
+					<div class="eyebrow">
+						League table
+					</div>
+
+					<h2>
+						Top of the Board
+					</h2>
+				</div>
+
+				<a
+					href={`/league/standings?season=${season}`}
 				>
+					Full standings →
+				</a>
+
+			</header>
+
+
+			<div class="standings-list">
+
+				{#each topBoard as row}
+
+					<a
+						class="standing-row"
+						href={row.slug
+							? `/league/teams/${row.slug}?season=${season}`
+							: `/league/standings?season=${season}`}
+					>
+
+						<span class="rank">
+							#{row.rank}
+						</span>
+
+
+						<div class="team-logo">
+
+							{#if row.teamPhoto}
+
+								<img
+									src={row.teamPhoto}
+									alt={row.teamName}
+								/>
+
+							{:else}
+
+								<span>
+									{row.initials}
+								</span>
+
+							{/if}
+
+						</div>
+
+
+						<div class="standing-identity">
+
+							<strong>
+								{row.teamName}
+							</strong>
+
+							<small>
+								{row.managerName}
+							</small>
+
+						</div>
+
+
+						<strong class="record">
+							{row.recordLabel}
+						</strong>
+
+					</a>
+
+				{/each}
+
 			</div>
+
+		</article>
+
+
+		<article class="panel spotlight-panel">
+
+			<header class="section-head">
+
+				<div>
+					<div class="eyebrow">
+						Matchup desk
+					</div>
+
+					<h2>
+						Week {data.selectedWeek}
+						Spotlight
+					</h2>
+				</div>
+
+				<a
+					href={`/league/matchups?season=${season}&week=${data.selectedWeek}`}
+				>
+					Open matchups →
+				</a>
+
+			</header>
+
+
 			{#if data.spotlightMatchup}
-				<div class="spotlight-card">
-					<div class="matchup-team">
-						<div class="photo">
-							{#if data.spotlightMatchup.left.teamPhoto}<img
+
+				<div class="spotlight">
+
+					<div class="spotlight-team">
+
+						<div class="spotlight-logo">
+
+							{#if data.spotlightMatchup.left.teamPhoto}
+
+								<img
 									src={data.spotlightMatchup.left.teamPhoto}
 									alt={data.spotlightMatchup.left.teamName}
-								/>{:else}<span> {data.spotlightMatchup.left.initials}</span>{/if}
+								/>
+
+							{:else}
+
+								<span>
+									{data.spotlightMatchup.left.initials}
+								</span>
+
+							{/if}
+
 						</div>
-						<div>
-							<strong>{data.spotlightMatchup.left.teamName}</strong><small>
-								{data.spotlightMatchup.left.managerName}</small
-							>
+
+
+						<div class="spotlight-team-copy">
+
+							<strong>
+								{data.spotlightMatchup.left.teamName}
+							</strong>
+
+							<small>
+								{data.spotlightMatchup.left.managerName}
+							</small>
+
 						</div>
-						<span>{data.spotlightMatchup.leftScore.toFixed(2)}</span>
+
+
+						<span class="spotlight-score">
+							{data.spotlightMatchup.leftScore.toFixed(
+								2
+							)}
+						</span>
+
 					</div>
-					<div class="matchup-team">
-						<div class="photo">
-							{#if data.spotlightMatchup.right.teamPhoto}<img
+
+
+					<div class="versus">
+						VS
+					</div>
+
+
+					<div class="spotlight-team">
+
+						<div class="spotlight-logo">
+
+							{#if data.spotlightMatchup.right.teamPhoto}
+
+								<img
 									src={data.spotlightMatchup.right.teamPhoto}
 									alt={data.spotlightMatchup.right.teamName}
-								/>{:else}<span>{data.spotlightMatchup.right.initials}</span>{/if}
+								/>
+
+							{:else}
+
+								<span>
+									{data.spotlightMatchup.right.initials}
+								</span>
+
+							{/if}
+
 						</div>
+
+
+						<div class="spotlight-team-copy">
+
+							<strong>
+								{data.spotlightMatchup.right.teamName}
+							</strong>
+
+							<small>
+								{data.spotlightMatchup.right.managerName}
+							</small>
+
+						</div>
+
+
+						<span class="spotlight-score">
+							{data.spotlightMatchup.rightScore.toFixed(
+								2
+							)}
+						</span>
+
+					</div>
+
+
+					<div class="spotlight-footer">
+
 						<div>
-							<strong>{data.spotlightMatchup.right.teamName}</strong><small
-								>{data.spotlightMatchup.right.managerName}</small
-							>
-						</div>
-						<span>{data.spotlightMatchup.rightScore.toFixed(2)}</span>
-					</div>
-					<div class="spotlight-meta">
-						<span>{data.spotlightMatchup.totalScore.toFixed(2)} combined</span>
-						<span>{data.spotlightMatchup.margin.toFixed(2)} margin</span>
-						<strong>{data.spotlightMatchup.winnerName}</strong>
-					</div>
-				</div>
-			{:else}
-				<div class="story">
-					<strong>No featured matchup yet</strong>
-					<p>Once current-week matchup data lands, this panel highlights the juiciest board.</p>
-				</div>
-			{/if}
-		</div>
-	</section>
-
-	<section class="grid two-up">
-		<div class="card movement-card">
-			<div class="section-head">
-				<h2>Recent movement</h2>
-
-				<a
-					href={`/league/transactions?season=${data.season}&weeks=${data.availableWeeks.slice(-4).join(',')}`}
-				>
-					Full wire room
-				</a>
-			</div>
-
-			<div class="movement-stack">
-				{#each data.recentMoves as move}
-					<a
-						class="movement-row"
-						href={`/league/transactions?season=${data.season}&weeks=${move.week}`}
-					>
-						<div class="movement-meta">
-							<span class={`movement-type ${moveTypeClass(move.type)}`}>
-								{moveTypeLabel(move.type)}
+							<span>
+								Combined
 							</span>
 
-							<span class="movement-week">WEEK {move.week}</span>
+							<strong>
+								{data.spotlightMatchup.totalScore.toFixed(
+									2
+								)}
+							</strong>
 						</div>
+
+						<div>
+							<span>
+								Margin
+							</span>
+
+							<strong>
+								{data.spotlightMatchup.margin.toFixed(
+									2
+								)}
+							</strong>
+						</div>
+
+						<div>
+							<span>
+								Winner
+							</span>
+
+							<strong>
+								{data.spotlightMatchup.winnerName ||
+									'Draw'}
+							</strong>
+						</div>
+
+					</div>
+
+				</div>
+
+			{:else}
+
+				<div class="empty-state matchup-empty">
+
+					<div class="empty-mark">
+						W{data.selectedWeek}
+					</div>
+
+					<div>
+						<strong>
+							No featured matchup yet
+						</strong>
+
+						<p>
+							Once current-week matchup
+							data lands, the juiciest
+							game on the board shows
+							up here.
+						</p>
+					</div>
+
+				</div>
+
+			{/if}
+
+		</article>
+
+	</section>
+
+
+	<!-- ==================================================
+	     TRANSACTIONS + ACTIVITY
+	     ================================================== -->
+
+	<section class="market-grid">
+
+		<article class="panel movement-panel">
+
+			<header class="section-head">
+
+				<div>
+					<div class="eyebrow">
+						Transaction wire
+					</div>
+
+					<h2>
+						Recent Movement
+					</h2>
+				</div>
+
+				<a href={wireRoomHref}>
+					Full wire room →
+				</a>
+
+			</header>
+
+
+			<div class="movement-stack">
+
+				{#each recentMoves as move}
+
+					<a
+						class="movement-row"
+						href={`/league/transactions?season=${season}&weeks=${move.week}`}
+					>
+
+						<div class="movement-meta">
+
+							<span
+								class={`movement-type ${moveTypeClass(
+									move.type
+								)}`}
+							>
+								{moveTypeLabel(
+									move.type
+								)}
+							</span>
+
+							<span class="movement-week">
+								WEEK {move.week}
+							</span>
+
+						</div>
+
 
 						<div class="movement-teams">
+
 							{#each moveTeams(move) as team, index}
+
 								{#if index > 0}
-									<span class="movement-swap">↔</span>
+
+									<span class="movement-swap">
+										↔
+									</span>
+
 								{/if}
 
+
 								<div class="movement-team">
+
 									<div class="movement-logo">
+
 										{#if team.photo}
-											<img src={team.photo} alt={team.name} />
+
+											<img
+												src={team.photo}
+												alt={team.name}
+											/>
+
 										{:else}
-											<span>{team.initials}</span>
+
+											<span>
+												{team.initials}
+											</span>
+
 										{/if}
+
 									</div>
 
-									<strong>{team.name}</strong>
+									<strong>
+										{team.name}
+									</strong>
+
 								</div>
+
 							{/each}
+
 						</div>
 
-						<span class="movement-arrow">›</span>
+
+						<span class="movement-arrow">
+							›
+						</span>
+
 					</a>
+
 				{/each}
 
-				{#if !data.recentMoves.length}
-					<div class="movement-empty">
-						<strong>No movement yet</strong>
-						<p>The league wire room will populate here as Sleeper transactions roll in.</p>
-					</div>
-				{/if}
-			</div>
-		</div>
 
-		<div class="card">
-			<div class="section-head">
-				<h2>Front-office heat check</h2>
-				<a
-					href={`/league/transactions?season=${data.season}&weeks=${data.availableWeeks.slice(-4).join(',')}`}
-					>Activity log</a
-				>
+				{#if !recentMoves.length}
+
+					<div class="empty-state">
+
+						<div>
+							<strong>
+								Quiet wire room
+							</strong>
+
+							<p>
+								Trades, waiver claims,
+								and free-agent moves
+								will appear here as
+								they happen.
+							</p>
+						</div>
+
+					</div>
+
+				{/if}
+
 			</div>
-			<div class="stack">
-				{#each data.activityLeaders as row}
+
+		</article>
+
+
+		<article class="panel activity-panel">
+
+			<header class="section-head">
+
+				<div>
+					<div class="eyebrow">
+						Front offices
+					</div>
+
+					<h2>
+						Heat Check
+					</h2>
+				</div>
+
+				<a href={wireRoomHref}>
+					Activity log →
+				</a>
+
+			</header>
+
+
+			<div class="activity-list">
+
+				{#each activityLeaders as row, index}
+
 					<a
 						class="activity-row"
 						href={row.slug
-							? `/league/transactions?season=${data.season}&team=${row.slug}`
-							: `/league/transactions?season=${data.season}&rosterId=${row.rosterId}`}
+							? `/league/transactions?season=${season}&team=${row.slug}`
+							: `/league/transactions?season=${season}&rosterId=${row.rosterId}`}
 					>
-						<div class="activity-identity">
-							<div class="activity-logo">
-								{#if row.teamPhoto}
-									<img src={row.teamPhoto} alt={row.teamName} />
-								{:else}
-									<span>{row.initials}</span>
-								{/if}
-							</div>
 
-							<div class="activity-copy">
-								<strong>{row.teamName}</strong>
-								<small>{row.managerName}</small>
-							</div>
+						<span class="activity-rank">
+							{index + 1}
+						</span>
+
+
+						<div class="activity-logo">
+
+							{#if row.teamPhoto}
+
+								<img
+									src={row.teamPhoto}
+									alt={row.teamName}
+								/>
+
+							{:else}
+
+								<span>
+									{row.initials}
+								</span>
+
+							{/if}
+
 						</div>
 
-						<span class="activity-count">{row.activityCount} moves</span>
+
+						<div class="activity-copy">
+
+							<strong>
+								{row.teamName}
+							</strong>
+
+							<small>
+								{row.managerName}
+							</small>
+
+						</div>
+
+
+						<span class="activity-count">
+							{row.activityCount}
+						</span>
+
 					</a>
+
 				{/each}
-				{#if !data.activityLeaders.length}
-					<div class="story">
-						<strong>Quiet room so far</strong>
-						<p>As soon as trades and wire pickups hit, this turns into a live activity ladder.</p>
+
+
+				{#if !activityLeaders.length}
+
+					<div class="empty-state">
+
+						<div>
+							<strong>
+								Quiet room so far
+							</strong>
+
+							<p>
+								Once the front offices
+								start making moves,
+								the activity ladder
+								will populate here.
+							</p>
+						</div>
+
 					</div>
+
 				{/if}
+
 			</div>
-		</div>
+
+		</article>
+
 	</section>
 
-	<!-- <section class="card">
-		<div class="section-head">
-			<h2>Featured dossiers</h2>
-			<a href={`/league/teams?season=${data.season}`}>All teams</a>
-		</div>
-		<div class="featured-grid">
-			{#each data.featuredManagers as manager}
-				<article class="featured-card">
-					<div class="identity">
-						<div class="photo large">
-							{#if manager.teamPhoto}<img
-									src={manager.teamPhoto}
-									alt={manager.teamName}
-								/>{:else}<span>{manager.initials}</span>{/if}
-						</div>
-						<div>
-							<strong>{manager.teamName}</strong>
-							<small>{manager.managerName} · {manager.recordLabel}</small>
-						</div>
-					</div>
-					<p>{manager.bio}</p>
-					<div class="chip-row">
-						<span>#{manager.rank}</span>
-						<span>{manager.points.toFixed(2)} PF</span>
-						<span>{manager.pointDiff.toFixed(2)} diff</span>
-					</div>
-					<div class="link-row">
-						<a href={manager.dossierHref}>Franchise</a>
-						<a href={manager.gamesHref}>Games</a>
-						<a href={manager.movesHref}>Moves</a>
-					</div>
-				</article>
-			{/each}
-		</div>
-	</section> -->
 </div>
 
+
 <style>
+	/* =====================================================
+	   PAGE
+	   ===================================================== */
+
 	.page-stack {
+		width: 100%;
+		max-width: 1500px;
 		display: grid;
-		gap: 24px;
+		gap: 20px;
+		margin: 0 auto;
+		padding-bottom: 48px;
 	}
-	.card {
-		background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 24px;
-		padding: 24px;
-	}
-	.hero {
-		display: grid;
-		grid-template-columns: 1.1fr 0.9fr;
-		gap: 24px;
-		align-items: start;
-	}
-	.hero-stats,
-	.action-grid,
-	.stack,
-	.featured-grid {
-		display: grid;
-		gap: 12px;
-	}
-	.hero-stats {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-	.mini,
-	.story,
-	.row,
-	.featured-card,
-	.spotlight-card,
-	.action {
-		background: rgba(255, 255, 255, 0.03);
-		border-radius: 16px;
-		padding: 14px;
-		text-decoration: none;
-		color: inherit;
-	}
-	.mini.stat {
-		display: grid;
-		gap: 6px;
-	}
-	.mini.stat span,
+
+
 	.eyebrow {
-		color: #d6b15e;
-		text-transform: uppercase;
-		letter-spacing: 0.18em;
-		font-size: 11px;
-	}
-	.action-grid {
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-	}
-	.action {
-		display: grid;
-		gap: 6px;
-	}
-	.grid.two-up {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 24px;
-	}
-	.section-head {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 16px;
-	}
-	.section-head a,
-	.link-row a {
-		color: #d6b15e;
-		text-decoration: none;
-	}
-	.story p,
-	.source,
-	.row small,
-	.featured-card p {
-		margin: 0.45rem 0 0;
-		color: rgba(255, 255, 255, 0.7);
-	}
-	.row {
-		display: grid;
-		grid-template-columns: 52px 1fr auto;
-		align-items: center;
-		gap: 12px;
-	}
-	.rank {
-		font-weight: 700;
-		color: #d6b15e;
-	}
-	.identity {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-	}
-	.photo {
-		width: 42px;
-		height: 42px;
-		border-radius: 50%;
-		overflow: hidden;
-		display: grid;
-		place-items: center;
-		background: rgba(255, 255, 255, 0.06);
-		font-weight: 800;
-	}
-	.photo.large {
-		width: 56px;
-		height: 56px;
-	}
-	.photo img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-	.spotlight-card {
-		display: grid;
-		gap: 12px;
-	}
-	.matchup-team {
-		display: grid;
-		grid-template-columns: 42px 1fr auto;
-		gap: 12px;
-		align-items: center;
-		padding: 12px;
-		border-radius: 14px;
-		background: rgba(255, 255, 255, 0.04);
-	}
-	.spotlight-meta {
-		display: flex;
-		justify-content: space-between;
-		gap: 12px;
-		color: rgba(255, 255, 255, 0.72);
-	}
-	.featured-grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-	.featured-card {
-		display: grid;
-		gap: 12px;
-	}
-	.chip-row,
-	.link-row {
-		display: flex;
-		gap: 8px;
-		flex-wrap: wrap;
-	}
-	.chip-row span {
-		padding: 7px 10px;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.06);
-		color: rgba(255, 255, 255, 0.84);
-	}
-	.source {
-		margin-top: 12px;
-	}
-	.move-card strong {
-		display: block;
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-body);
+
+		font-size:
+			.61rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.16em;
+
+		text-transform:
+			uppercase;
 	}
 
-	.activity-row {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-		align-items: center;
-		gap: 18px;
 
-		min-height: 74px;
-		padding: 10px 16px;
+	/* =====================================================
+	   LEAGUE HERO
+	   ===================================================== */
 
-		border: 1px solid #070808;
-		border-radius: 16px;
-
-		background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015));
-
-		color: var(--bug-white);
-		text-decoration: none;
-
-		transition:
-			background 0.15s ease,
-			transform 0.15s ease;
-	}
-
-	.activity-row:hover {
-		background:
-			linear-gradient(90deg, rgba(199, 25, 47, 0.18), transparent 45%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025));
-
-		transform: translateY(-1px);
-	}
-
-	.activity-identity {
-		display: grid;
-		grid-template-columns: 46px minmax(0, 1fr);
-		align-items: center;
-		gap: 12px;
-		min-width: 0;
-	}
-
-	.activity-logo {
-		width: 46px;
-		height: 46px;
-
-		display: grid;
-		place-items: center;
-
-		overflow: hidden;
-		flex-shrink: 0;
-
-		border: 2px solid #070808;
-		border-radius: 50%;
-
-		background: #e8e2d4;
-		color: #111;
-
-		font-family: var(--font-score);
-		font-size: 0.7rem;
-		font-weight: 900;
-	}
-
-	.activity-logo img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		display: block;
-	}
-
-	.activity-copy {
-		display: grid;
-		gap: 3px;
-		min-width: 0;
-	}
-
-	.activity-copy strong {
-		display: block;
-
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-
-		font-family: var(--font-score);
-		font-size: 1rem;
-		line-height: 1.1;
-		color: var(--bug-white);
-	}
-
-	.activity-copy small {
-		display: block;
-
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-
-		color: var(--muted);
-		font-size: 0.78rem;
-	}
-
-	.activity-count {
-		white-space: nowrap;
-
-		color: var(--bug-yellow);
-		font-family: var(--font-score);
-		font-size: 0.82rem;
-		font-weight: 950;
-		text-transform: uppercase;
-	}
-
-	.movement-stack {
-		display: grid;
-		gap: 12px;
-	}
-
-	.movement-row {
-		position: relative;
-		display: grid;
-		grid-template-columns: 128px minmax(0, 1fr) 20px;
-		align-items: center;
-		gap: 14px;
-
-		min-height: 74px;
-		padding: 10px 14px;
-
-		overflow: hidden;
-
-		border: 1px solid #070808;
-		border-radius: 16px;
-
-		background:
-			repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 4px),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.015));
-
-		color: var(--bug-white);
-		text-decoration: none;
-
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.08),
-			inset 0 -1px 0 rgba(0, 0, 0, 0.4);
-
-		transition:
-			transform 0.15s ease,
-			background 0.15s ease;
-	}
-
-	.movement-row:hover {
-		transform: translateY(-1px);
-
-		background:
-			linear-gradient(90deg, rgba(199, 25, 47, 0.16), transparent 45%),
-			linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025));
-	}
-
-	/* LEFT-SIDE TRANSACTION INFO */
-
-	.movement-meta {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 6px;
-	}
-
-	.movement-type {
-		display: inline-flex;
-		align-items: center;
-
-		min-height: 23px;
-		padding: 4px 8px;
-
-		border: 1px solid #070808;
-		border-radius: 5px;
-
-		font-family: var(--font-score);
-		font-size: 0.66rem;
-		font-weight: 950;
-		line-height: 1;
-		letter-spacing: 0.05em;
-
-		text-transform: uppercase;
-
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.22),
-			0 2px 3px rgba(0, 0, 0, 0.25);
-	}
-
-	.movement-type.trade {
-		background: linear-gradient(180deg, #e4bd43, #8b6412);
-		color: #090909;
-	}
-
-	.movement-type.waiver {
-		background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-		color: #fff;
-	}
-
-	.movement-type.free-agent {
-		background: linear-gradient(180deg, #d8ddd9, #777d79);
-		color: #090909;
-	}
-
-	.movement-type.other {
-		background: linear-gradient(180deg, #6c7470, #282d2b);
-		color: #fff;
-	}
-
-	.movement-week {
-		padding-left: 2px;
-
-		color: var(--muted);
-		font-family: var(--font-score);
-		font-size: 0.68rem;
-		font-weight: 900;
-		letter-spacing: 0.12em;
-	}
-
-	/* TEAM AREA */
-
-	.movement-teams {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		min-width: 0;
-	}
-
-	.movement-team {
-		display: flex;
-		align-items: center;
-		gap: 9px;
-		min-width: 0;
-	}
-
-	.movement-logo {
-		width: 42px;
-		height: 42px;
-		flex: 0 0 42px;
-
-		display: grid;
-		place-items: center;
-
-		overflow: hidden;
-
-		border: 2px solid #070808;
-		border-radius: 50%;
-
-		background: #e8e2d4;
-		color: #111;
-
-		font-family: var(--font-score);
-		font-size: 0.62rem;
-		font-weight: 950;
-
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.4),
-			0 3px 6px rgba(0, 0, 0, 0.3);
-	}
-
-	.movement-logo img {
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.movement-team strong {
-		overflow: hidden;
-		text-overflow: ellipsis;
-
-		color: var(--bug-white);
-		font-family: var(--font-score);
-		font-size: 0.92rem;
-		font-weight: 950;
-		line-height: 1.05;
-	}
-
-	.movement-swap {
-		flex: 0 0 auto;
-
-		color: var(--bug-yellow);
-		font-family: var(--font-score);
-		font-size: 1.3rem;
-		font-weight: 950;
-
-		text-shadow: 0 2px 0 #000;
-	}
-
-	.movement-arrow {
-		justify-self: end;
-
-		color: var(--bug-yellow);
-		font-family: var(--font-score);
-		font-size: 1.65rem;
-		font-weight: 950;
-
-		opacity: 0.65;
-
-		transition:
-			transform 0.15s ease,
-			opacity 0.15s ease;
-	}
-
-	.movement-row:hover .movement-arrow {
-		transform: translateX(3px);
-		opacity: 1;
-	}
-
-	/* EMPTY STATE */
-
-	.movement-empty {
-		padding: 18px;
-
-		border: 1px solid #070808;
-		border-radius: 14px;
-
-		background: rgba(0, 0, 0, 0.18);
-	}
-
-	.movement-empty strong {
-		font-family: var(--font-score);
-	}
-
-	.movement-empty p {
-		margin: 5px 0 0;
-		color: var(--muted);
-	}
-
-	/* LEAGUE HERO */
 	.league-hero {
 		position: relative;
+
+		display: grid;
+
+		grid-template-columns:
+			minmax(0,1.1fr)
+			minmax(420px,.9fr);
+
+		gap: 44px;
+
+		align-items: center;
+
 		overflow: hidden;
-		border: 2px solid #070808;
-		border-radius: 20px;
+
+		min-height: 280px;
+
+		padding: 34px;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius:
+			var(--radius-lg);
+
+		background:
+			linear-gradient(
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.06
+				),
+				transparent 38%
+			),
+			var(--panel-strong);
+
+		box-shadow:
+			var(--shadow-panel);
 	}
 
-	.league-hero-bar {
-		display: grid;
-		grid-template-columns: auto 1fr auto;
-		align-items: stretch;
-		min-height: 42px;
-		border-bottom: 2px solid #070808;
-		background: linear-gradient(180deg, #191c1b, #060707);
-		font-family: var(--font-score);
-		text-transform: uppercase;
-	}
 
-	.hero-network {
-		display: grid;
-		place-items: center;
-		padding: 8px 14px;
-		border-right: 2px solid #070808;
-		background: linear-gradient(180deg, var(--bug-red), var(--bug-red-dark));
-		color: #fff;
-		font-weight: 950;
-		letter-spacing: 0.04em;
-	}
+	.league-hero::after {
+		content:
+			'IRVING';
 
-	.league-hero-bar > strong {
-		display: flex;
-		align-items: center;
-		padding: 8px 14px;
-		color: var(--bug-yellow);
-		font-size: 0.78rem;
-		font-weight: 950;
-		letter-spacing: 0.15em;
-	}
-
-	.hero-season {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		padding: 8px 14px;
-		border-left: 2px solid #070808;
-		background: linear-gradient(180deg, #dadbd3, #7f8581 52%, #363b39);
-		color: #111;
-		font-size: 0.68rem;
-		font-weight: 950;
-		letter-spacing: 0.1em;
-		white-space: nowrap;
-	}
-
-	.live-dot {
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		background: #24d36b;
-		box-shadow: 0 0 8px rgba(36, 211, 107, 0.75);
-	}
-
-	.league-hero-body {
-		position: relative;
-		display: grid;
-		grid-template-columns: minmax(0, 1.12fr) minmax(420px, 0.88fr);
-		gap: 28px;
-		align-items: center;
-		min-height: 235px;
-		padding: 24px;
-	}
-
-	.league-hero-body::before {
-		content: '';
 		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		background: radial-gradient(circle at 8% 50%, rgba(199, 25, 47, 0.2), transparent 34%);
+
+		left: 22px;
+
+		bottom: -30px;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.025
+			);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				7rem,
+				14vw,
+				13rem
+			);
+
+		line-height: 1;
+
+		pointer-events:
+			none;
 	}
 
-	.league-hero-copy,
-	.league-hero-stats {
+
+	.hero-copy,
+	.league-pulse {
 		position: relative;
 		z-index: 1;
 	}
 
-	.league-hero-copy {
-		display: grid;
-		align-content: center;
-		gap: 8px;
-		min-width: 0;
-	}
 
-	.league-hero h1 {
-		margin: 0;
-		max-width: 760px;
-		color: var(--bug-white);
-		font-family: var(--font-display);
-		font-size: clamp(2.8rem, 5vw, 5.2rem);
-		font-weight: 950;
-		line-height: 0.9;
-		letter-spacing: -0.045em;
+	.hero-copy h1 {
+		max-width: 850px;
+
+		margin:
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				4rem,
+				6.7vw,
+				7.6rem
+			);
+
+		font-weight: 400;
+
+		line-height:
+			.82;
+
+		letter-spacing:
+			-.02em;
+
 		text-shadow:
-			0 3px 0 #000,
-			0 8px 18px rgba(0, 0, 0, 0.42);
+			none;
 	}
 
-	.league-manifesto {
-		margin-top: 14px;
-		padding: 4px 0 4px 14px;
-		border-left: 4px solid var(--bug-yellow);
+
+	.manifesto {
+		max-width: 720px;
+
+		margin-top: 26px;
+
+		padding-left: 16px;
+
+		border-left:
+			2px solid
+			var(--brand-gold);
 	}
 
-	.league-manifesto strong {
+
+	.manifesto strong {
 		display: block;
-		color: #fff;
-		font-family: var(--font-score);
-		font-size: clamp(0.95rem, 1.35vw, 1.16rem);
-		font-weight: 950;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			clamp(
+				1rem,
+				1.6vw,
+				1.25rem
+			);
+
+		font-weight: 850;
 	}
 
-	.league-manifesto p {
-		margin: 5px 0 0;
-		max-width: 660px;
-		color: rgba(247, 245, 235, 0.72);
-		font-size: 0.88rem;
-		line-height: 1.4;
+
+	.manifesto p {
+		margin:
+			5px 0 0;
+
+		color:
+			var(--muted);
+
+		line-height: 1.5;
 	}
 
-	.league-hero-stats {
+
+	/* =====================================================
+	   LEAGUE PULSE
+	   ===================================================== */
+
+	.league-pulse {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 12px;
+
+		grid-template-columns:
+			repeat(
+				2,
+				minmax(0,1fr)
+			);
+
+		gap: 10px;
 	}
 
-	.league-hero-stat {
+
+	.pulse-card {
 		position: relative;
+
+		min-width: 0;
+
 		display: grid;
+
 		align-content: center;
-		gap: 4px;
-		min-height: 86px;
-		padding: 13px 15px 13px 18px;
-		overflow: hidden;
-		border: 1px solid rgba(0, 0, 0, 0.78);
-		border-radius: 15px;
-		background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.18));
-		box-shadow:
-			inset 0 1px 0 rgba(255, 255, 255, 0.09),
-			0 3px 8px rgba(0, 0, 0, 0.2);
+
+		gap: 5px;
+
+		min-height: 98px;
+
+		padding:
+			15px 16px;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-sm);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.74
+			);
 	}
 
-	.league-hero-stat::before {
+
+	.pulse-card::before {
 		content: '';
+
 		position: absolute;
-		inset: 0 auto 0 0;
-		width: 4px;
-		background: linear-gradient(180deg, #f5dc69, #b88419);
+
+		top: 13px;
+		bottom: 13px;
+		left: 0;
+
+		width: 2px;
+
+		background:
+			var(--brand-gold);
 	}
 
-	.league-hero-stat > span {
-		color: var(--bug-yellow);
-		font-family: var(--font-score);
-		font-size: 0.63rem;
-		font-weight: 950;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
+
+	.pulse-card > span {
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.57rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.14em;
+
+		text-transform:
+			uppercase;
 	}
 
-	.league-hero-stat strong {
-		display: block;
+
+	.pulse-card strong {
 		overflow: hidden;
-		color: #fff;
-		font-family: var(--font-score);
-		font-size: 0.98rem;
-		font-weight: 950;
-		line-height: 1.1;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		text-shadow: 0 2px 0 #000;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			.9rem;
+
+		font-weight:
+			800;
+
+		line-height: 1.2;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
 	}
 
-	.league-hero-stat small {
+
+	.pulse-card small {
 		overflow: hidden;
-		color: rgba(247, 245, 235, 0.68);
-		font-size: 0.76rem;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+
+		color:
+			var(--muted);
+
+		font-size:
+			.68rem;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
 	}
 
-	/* MOBILE */
-	@media (max-width: 1000px) {
-		.league-hero-body {
-			grid-template-columns: 1fr;
+
+	/* =====================================================
+	   PANELS
+	   ===================================================== */
+
+	.primary-grid,
+	.market-grid {
+		display: grid;
+		gap: 18px;
+	}
+
+
+	.primary-grid {
+		grid-template-columns:
+			minmax(0,1fr)
+			minmax(0,.95fr);
+	}
+
+
+	.market-grid {
+		grid-template-columns:
+			minmax(0,1.35fr)
+			minmax(340px,.65fr);
+	}
+
+
+	.panel {
+		min-width: 0;
+
+		padding: 20px;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-md);
+
+		background:
+			linear-gradient(
+				180deg,
+				rgba(
+					255,
+					255,
+					255,
+					.018
+				),
+				transparent
+			),
+			var(--panel);
+
+		box-shadow:
+			var(--shadow-panel);
+	}
+
+
+	.section-head {
+		display: flex;
+
+		align-items: flex-end;
+
+		justify-content:
+			space-between;
+
+		gap: 18px;
+
+		margin-bottom: 17px;
+
+		padding-bottom: 13px;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.11
+			);
+	}
+
+
+	.section-head h2 {
+		margin:
+			4px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				1.7rem,
+				3vw,
+				2.25rem
+			);
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	.section-head a {
+		flex: 0 0 auto;
+
+		color:
+			var(--brand-sand);
+
+		font-size:
+			.69rem;
+
+		font-weight:
+			800;
+
+		text-decoration:
+			none;
+	}
+
+
+	.section-head a:hover {
+		color:
+			var(--brand-gold);
+	}
+
+
+	/* =====================================================
+	   STANDINGS
+	   ===================================================== */
+
+	.standings-list {
+		display: grid;
+		gap: 7px;
+	}
+
+
+	.standing-row {
+		display: grid;
+
+		grid-template-columns:
+			42px
+			42px
+			minmax(0,1fr)
+			auto;
+
+		align-items: center;
+
+		gap: 11px;
+
+		min-height: 66px;
+
+		padding:
+			8px 11px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.10
+			);
+
+		border-radius:
+			4px;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				.012
+			);
+
+		color: inherit;
+
+		text-decoration:
+			none;
+	}
+
+
+	.standing-row:hover {
+		border-color:
+			rgba(
+				191,
+				161,
+				106,
+				.38
+			);
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				.025
+			);
+	}
+
+
+	.rank {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.2rem;
+
+		text-align:
+			center;
+	}
+
+
+	.team-logo,
+	.activity-logo,
+	.spotlight-logo,
+	.movement-logo {
+		display: grid;
+
+		place-items: center;
+
+		overflow: hidden;
+
+		background:
+			var(--brand-ivory);
+	}
+
+
+	.team-logo {
+		width: 42px;
+		height: 42px;
+
+		border-radius:
+			4px;
+	}
+
+
+	.team-logo img,
+	.activity-logo img,
+	.spotlight-logo img,
+	.movement-logo img {
+		width: 100%;
+		height: 100%;
+
+		object-fit:
+			cover;
+	}
+
+
+	.team-logo > span,
+	.activity-logo > span,
+	.spotlight-logo > span,
+	.movement-logo > span {
+		color:
+			var(--brand-charcoal);
+
+		font-size:
+			.57rem;
+
+		font-weight:
+			900;
+	}
+
+
+	.standing-identity {
+		min-width: 0;
+
+		display: grid;
+
+		gap: 3px;
+	}
+
+
+	.standing-identity strong {
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			.81rem;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
+	}
+
+
+	.standing-identity small {
+		color:
+			var(--muted);
+
+		font-size:
+			.67rem;
+	}
+
+
+	.record {
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.12rem;
+
+		font-weight: 400;
+
+		font-variant-numeric:
+			tabular-nums;
+	}
+
+
+	/* =====================================================
+	   MATCHUP SPOTLIGHT
+	   ===================================================== */
+
+	.spotlight {
+		display: grid;
+		gap: 9px;
+	}
+
+
+	.spotlight-team {
+		display: grid;
+
+		grid-template-columns:
+			60px
+			minmax(0,1fr)
+			auto;
+
+		align-items: center;
+
+		gap: 14px;
+
+		min-height: 84px;
+
+		padding:
+			11px 13px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.13
+			);
+
+		border-radius:
+			5px;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				.012
+			);
+	}
+
+
+	.spotlight-logo {
+		width: 60px;
+		height: 60px;
+
+		border-radius:
+			4px;
+	}
+
+
+	.spotlight-team-copy {
+		min-width: 0;
+
+		display: grid;
+		gap: 4px;
+	}
+
+
+	.spotlight-team-copy strong {
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			.86rem;
+	}
+
+
+	.spotlight-team-copy small {
+		color:
+			var(--muted);
+
+		font-size:
+			.68rem;
+	}
+
+
+	.spotlight-score {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			2rem;
+
+		font-variant-numeric:
+			tabular-nums;
+	}
+
+
+	.versus {
+		justify-self: center;
+
+		margin:
+			-3px 0;
+
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.57rem;
+
+		font-weight:
+			850;
+
+		letter-spacing:
+			.15em;
+	}
+
+
+	.spotlight-footer {
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				3,
+				minmax(0,1fr)
+			);
+
+		gap: 1px;
+
+		margin-top: 7px;
+
+		overflow: hidden;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			4px;
+
+		background:
+			var(--border);
+	}
+
+
+	.spotlight-footer div {
+		display: grid;
+
+		gap: 4px;
+
+		padding:
+			10px 11px;
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.94
+			);
+	}
+
+
+	.spotlight-footer span {
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.53rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.1em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.spotlight-footer strong {
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			.72rem;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
+	}
+
+
+	/* =====================================================
+	   EMPTY STATES
+	   ===================================================== */
+
+	.empty-state {
+		min-height: 120px;
+
+		display: flex;
+
+		align-items: center;
+
+		gap: 16px;
+
+		padding: 18px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.11
+			);
+
+		border-radius:
+			5px;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				.012
+			);
+	}
+
+
+	.matchup-empty {
+		min-height: 230px;
+	}
+
+
+	.empty-mark {
+		flex: 0 0 auto;
+
+		display: grid;
+		place-items: center;
+
+		width: 62px;
+		height: 62px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.5rem;
+	}
+
+
+	.empty-state strong {
+		color:
+			var(--brand-ivory);
+	}
+
+
+	.empty-state p {
+		max-width: 50ch;
+
+		margin:
+			4px 0 0;
+
+		color:
+			var(--muted);
+
+		line-height: 1.45;
+	}
+
+
+	/* =====================================================
+	   MOVEMENT
+	   ===================================================== */
+
+	.movement-stack {
+		display: grid;
+		gap: 8px;
+	}
+
+
+	.movement-row {
+		display: grid;
+
+		grid-template-columns:
+			105px
+			minmax(0,1fr)
+			22px;
+
+		align-items: center;
+
+		gap: 13px;
+
+		min-height: 67px;
+
+		padding:
+			9px 11px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.10
+			);
+
+		border-radius:
+			4px;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				.012
+			);
+
+		color: inherit;
+
+		text-decoration:
+			none;
+	}
+
+
+	.movement-row:hover {
+		border-color:
+			rgba(
+				191,
+				161,
+				106,
+				.38
+			);
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				.025
+			);
+	}
+
+
+	.movement-meta {
+		display: grid;
+		gap: 4px;
+	}
+
+
+	.movement-type {
+		width: fit-content;
+
+		padding:
+			4px 6px;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			2px;
+
+		color:
+			var(--brand-sand);
+
+		font-size:
+			.51rem;
+
+		font-weight:
+			850;
+
+		letter-spacing:
+			.08em;
+	}
+
+
+	.movement-type.trade {
+		border-color:
+			rgba(
+				191,
+				161,
+				106,
+				.45
+			);
+
+		color:
+			var(--brand-gold);
+	}
+
+
+	.movement-type.waiver {
+		border-color:
+			rgba(
+				96,
+				110,
+				121,
+				.6
+			);
+	}
+
+
+	.movement-type.free-agent {
+		color:
+			var(--brand-stone);
+	}
+
+
+	.movement-week {
+		color:
+			var(--muted);
+
+		font-size:
+			.55rem;
+
+		font-weight:
+			750;
+
+		letter-spacing:
+			.08em;
+	}
+
+
+	.movement-teams {
+		min-width: 0;
+
+		display: flex;
+
+		align-items: center;
+
+		flex-wrap: wrap;
+
+		gap: 9px;
+	}
+
+
+	.movement-team {
+		min-width: 0;
+
+		display: flex;
+
+		align-items: center;
+
+		gap: 8px;
+	}
+
+
+	.movement-logo {
+		flex: 0 0 34px;
+
+		width: 34px;
+		height: 34px;
+
+		border-radius:
+			3px;
+	}
+
+
+	.movement-team strong {
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			.72rem;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
+	}
+
+
+	.movement-swap {
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.9rem;
+	}
+
+
+	.movement-arrow {
+		justify-self: end;
+
+		color:
+			var(--brand-gold);
+
+		font-size:
+			1.25rem;
+
+		transition:
+			transform
+			120ms ease;
+	}
+
+
+	.movement-row:hover
+	.movement-arrow {
+		transform:
+			translateX(2px);
+	}
+
+
+	/* =====================================================
+	   HEAT CHECK
+	   ===================================================== */
+
+	.activity-list {
+		display: grid;
+		gap: 7px;
+	}
+
+
+	.activity-row {
+		display: grid;
+
+		grid-template-columns:
+			24px
+			38px
+			minmax(0,1fr)
+			auto;
+
+		align-items: center;
+
+		gap: 9px;
+
+		min-height: 61px;
+
+		padding:
+			8px 10px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.10
+			);
+
+		border-radius:
+			4px;
+
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				.012
+			);
+
+		color: inherit;
+
+		text-decoration:
+			none;
+	}
+
+
+	.activity-row:hover {
+		border-color:
+			rgba(
+				191,
+				161,
+				106,
+				.36
+			);
+	}
+
+
+	.activity-rank {
+		color:
+			var(--brand-stone);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1rem;
+
+		text-align:
+			center;
+	}
+
+
+	.activity-logo {
+		width: 38px;
+		height: 38px;
+
+		border-radius:
+			4px;
+	}
+
+
+	.activity-copy {
+		min-width: 0;
+
+		display: grid;
+		gap: 2px;
+	}
+
+
+	.activity-copy strong {
+		overflow: hidden;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			.72rem;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
+	}
+
+
+	.activity-copy small {
+		overflow: hidden;
+
+		color:
+			var(--muted);
+
+		font-size:
+			.61rem;
+
+		text-overflow:
+			ellipsis;
+
+		white-space:
+			nowrap;
+	}
+
+
+	.activity-count {
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.25rem;
+
+		font-variant-numeric:
+			tabular-nums;
+	}
+
+
+	/* =====================================================
+	   RESPONSIVE
+	   ===================================================== */
+
+	@media (max-width: 1050px) {
+
+		.league-hero,
+		.primary-grid,
+		.market-grid {
+			grid-template-columns:
+				1fr;
 		}
+
+
+		.league-pulse {
+			max-width: none;
+		}
+
 	}
 
-	@media (max-width: 720px) {
+
+	@media (max-width: 680px) {
+
+		.league-hero {
+			padding: 20px;
+		}
+
+
+		.league-hero::after {
+			display: none;
+		}
+
+
+		.league-pulse {
+			grid-template-columns:
+				1fr;
+		}
+
+
+		.panel {
+			padding: 15px;
+		}
+
+
+		.section-head {
+			align-items:
+				flex-start;
+
+			flex-direction:
+				column;
+		}
+
+
+		.standing-row {
+			grid-template-columns:
+				34px
+				38px
+				minmax(0,1fr)
+				auto;
+		}
+
+
+		.team-logo {
+			width: 38px;
+			height: 38px;
+		}
+
+
+		.spotlight-team {
+			grid-template-columns:
+				48px
+				minmax(0,1fr)
+				auto;
+		}
+
+
+		.spotlight-logo {
+			width: 48px;
+			height: 48px;
+		}
+
+
+		.spotlight-score {
+			font-size: 1.5rem;
+		}
+
+
+		.spotlight-footer {
+			grid-template-columns:
+				1fr;
+		}
+
+
 		.movement-row {
-			grid-template-columns: 1fr auto;
-			gap: 10px;
+			grid-template-columns:
+				1fr
+				auto;
 		}
+
+
 		.movement-meta {
 			grid-column: 1;
-			flex-direction: row;
-			align-items: center;
 		}
+
+
 		.movement-teams {
-			grid-column: 1 / -1;
-			flex-wrap: wrap;
+			grid-column:
+				1 / -1;
 		}
+
+
 		.movement-arrow {
 			grid-column: 2;
 			grid-row: 1;
 		}
-		.movement-logo {
-			width: 36px;
-			height: 36px;
-			flex-basis: 36px;
-		}
+
 	}
 
-	@media (max-width: 600px) {
-		.league-hero-bar {
-			grid-template-columns: auto 1fr;
-		}
-		.hero-season {
-			grid-column: 1 / -1;
-			justify-content: center;
-			border-top: 2px solid #070808;
-			border-left: 0;
-		}
-		.league-hero-body {
-			padding: 18px;
-		}
-		.league-hero h1 {
-			font-size: clamp(2.5rem, 13vw, 4rem);
-		}
-		.league-hero-stats {
-			grid-template-columns: 1fr;
-		}
-	}
 
-	@media (max-width: 1100px) {
-		.action-grid,
-		.featured-grid,
-		.hero-stats {
-			grid-template-columns: 1fr 1fr;
+	@media (max-width: 470px) {
+
+		.standing-row {
+			grid-template-columns:
+				32px
+				38px
+				minmax(0,1fr);
 		}
-	}
-	@media (max-width: 860px) {
-		.hero,
-		.grid.two-up,
-		.action-grid,
-		.featured-grid,
-		.hero-stats {
-			grid-template-columns: 1fr;
+
+
+		.standing-row .record {
+			grid-column: 3;
 		}
-		.row {
-			grid-template-columns: 1fr;
+
+
+		.activity-row {
+			grid-template-columns:
+				20px
+				36px
+				minmax(0,1fr);
 		}
-		.matchup-team {
-			grid-template-columns: 42px 1fr auto;
+
+
+		.activity-count {
+			grid-column: 3;
+			font-size: 1rem;
 		}
+
 	}
 </style>

@@ -1,72 +1,152 @@
+<script>
+	const documentUrl =
+		'https://docs.google.com/document/d/e/2PACX-1vQrprI-QZtCpV4usAki6N1cTIvwEJLdDewAlJwJRpBu29qqS5iIg9l78D8ryO0Xc57fqEChNy6SuV3u/pub';
+
+	const embeddedDocumentUrl =
+		`${documentUrl}?embedded=true`;
+</script>
+
+
 <svelte:head>
 	<title>
-		League Constitution | Irving Champions League
+		League Constitution | Irving Collective
 	</title>
 
 	<meta
 		name="description"
-		content="Official Irving Champions League constitution and league rules."
+		content="The official rules, bylaws, procedures, and operating standards of the Irving Champions League."
 	/>
 </svelte:head>
 
+
 <div class="constitution-page">
 
-	<header class="constitution-header">
-		<div>
+	<!-- ==================================================
+	     HERO
+	     ================================================== -->
+
+	<section class="constitution-hero">
+
+		<div class="hero-copy">
+
 			<div class="eyebrow">
 				League Governance
 			</div>
+
 
 			<h1>
 				League Constitution
 			</h1>
 
+
 			<p>
-				The official rules, procedures, and laws of the
-				Irving Champions League.
+				The official rules, procedures,
+				and laws of the Irving Champions League.
 			</p>
+
+
+			<div class="hero-actions">
+
+				<a
+					class="document-button"
+					href={documentUrl}
+					target="_blank"
+					rel="noreferrer"
+				>
+					Open Full Document →
+				</a>
+
+			</div>
+
 		</div>
 
-		<a
-			class="open-button"
-			href="https://docs.google.com/document/d/e/2PACX-1vQrprI-QZtCpV4usAki6N1cTIvwEJLdDewAlJwJRpBu29qqS5iIg9l78D8ryO0Xc57fqEChNy6SuV3u/pub"
-			target="_blank"
-			rel="noopener noreferrer"
+
+		<div
+			class="hero-brand"
+			aria-hidden="true"
 		>
-			Open Full Document
-		</a>
-	</header>
 
-
-	<section class="document-shell">
-		<div class="document-bar">
-			<div>
-				<span class="status-dot"></span>
-
-				Official League Document
+			<div class="hero-mark">
+				ICL
 			</div>
 
 			<span>
-				Irving Champions League
+				League Governance
 			</span>
+
+			<strong>
+				Rulebook
+			</strong>
+
+			<small>
+				Est. 2003
+			</small>
+
 		</div>
 
-		<iframe
-			src="https://docs.google.com/document/d/e/2PACX-1vQrprI-QZtCpV4usAki6N1cTIvwEJLdDewAlJwJRpBu29qqS5iIg9l78D8ryO0Xc57fqEChNy6SuV3u/pub?embedded=true"
-			title="Irving Champions League Constitution"
-			class="google-doc-iframe"
-		></iframe>
+
+		<div
+			class="hero-watermark"
+			aria-hidden="true"
+		>
+			RULEBOOK
+		</div>
+
+	</section>
+
+
+	<!-- ==================================================
+	     DOCUMENT
+	     ================================================== -->
+
+	<section class="document-shell">
+
+		<header class="document-bar">
+
+			<div class="document-status">
+
+				<span class="status-dot"></span>
+
+				<strong>
+					Official League Document
+				</strong>
+
+			</div>
+
+
+			<div class="document-meta">
+				Irving Collective
+			</div>
+
+		</header>
+
+
+		<div class="document-frame">
+
+			<iframe
+				src={embeddedDocumentUrl}
+				title="Irving Champions League Constitution"
+				class="google-doc-iframe"
+			></iframe>
+
+		</div>
+
 	</section>
 
 </div>
 
 
 <style>
-	.constitution-page {
-		display: grid;
-		gap: 18px;
+	/* ==================================================
+	   PAGE
+	   ================================================== */
 
+	.constitution-page {
+		width: 100%;
 		max-width: 1450px;
+
+		display: grid;
+		gap: 20px;
 
 		margin: 0 auto;
 
@@ -74,212 +154,387 @@
 	}
 
 
-	/* ======================================================
-	   HEADER
-	   ====================================================== */
+	.eyebrow {
+		color:
+			var(--brand-gold);
 
-	.constitution-header {
-		display: flex;
+		font-size: .58rem;
+
+		font-weight: 800;
+
+		letter-spacing: .15em;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   HERO
+	   ================================================== */
+
+	.constitution-hero {
+		position: relative;
+
+		min-height: 255px;
+
+		display: grid;
+
+		grid-template-columns:
+			minmax(0, 1fr)
+			250px;
 
 		align-items: center;
 
-		justify-content: space-between;
+		gap: 40px;
 
-		gap: 24px;
+		overflow: hidden;
 
-		padding: 23px 26px;
+		padding:
+			clamp(
+				28px,
+				4vw,
+				44px
+			);
 
 		border:
-			2px solid #070808;
+			1px solid
+			var(--border-strong);
 
 		border-radius:
-			18px;
+			var(--radius-lg);
 
 		background:
-			radial-gradient(
-				circle at 0% 100%,
-				rgba(0, 190, 230, .15),
-				transparent 32%
-			),
 			linear-gradient(
-				180deg,
-				#46504d,
-				#202523 45%,
-				#111413
-			);
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.05
+				),
+				transparent 40%
+			),
+			var(--panel-strong);
 
 		box-shadow:
 			var(--shadow-panel);
 	}
 
-	.eyebrow {
-		color:
-			var(--bug-yellow);
 
-		font-family:
-			var(--font-score);
+	.hero-copy {
+		position: relative;
 
-		font-size:
-			.68rem;
+		z-index: 2;
 
-		font-weight:
-			950;
-
-		letter-spacing:
-			.13em;
-
-		text-transform:
-			uppercase;
+		min-width: 0;
 	}
 
-	h1 {
+
+	.constitution-hero h1 {
 		margin:
-			6px 0 0;
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
 
 		font-family:
 			var(--font-display);
 
 		font-size:
 			clamp(
-				2.6rem,
-				5vw,
-				4.4rem
+				4rem,
+				6.5vw,
+				6.5rem
 			);
 
-		line-height:
-			.95;
+		font-weight: 400;
+
+		line-height: .86;
+
+		letter-spacing: -.02em;
+
+		text-transform: uppercase;
+
+		text-shadow: none;
 	}
 
-	.constitution-header p {
+
+	.constitution-hero p {
+		max-width: 62ch;
+
 		margin:
-			10px 0 0;
+			22px 0 0;
 
 		color:
 			var(--muted);
 
-		line-height:
-			1.5;
+		font-size: 1rem;
+
+		font-weight: 600;
+
+		line-height: 1.55;
 	}
 
-	.open-button {
-		flex:
-			0 0 auto;
+
+	.hero-actions {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		gap: 8px;
+
+		margin-top: 24px;
+	}
+
+
+	.document-button {
+		min-height: 38px;
+
+		display: inline-flex;
+
+		align-items: center;
+
+		justify-content: center;
 
 		padding:
-			11px 16px;
+			8px 13px;
 
 		border:
-			2px solid #070808;
+			1px solid
+			var(--brand-gold);
 
-		border-radius:
-			9px;
+		border-radius: 3px;
 
 		background:
-			linear-gradient(
-				180deg,
-				#f5c85a,
-				#d99e24
-			);
+			var(--brand-gold);
 
 		color:
-			#080908;
+			var(--brand-charcoal);
 
-		font-family:
-			var(--font-score);
+		font-size: .61rem;
 
-		font-size:
-			.7rem;
+		font-weight: 850;
 
-		font-weight:
-			950;
+		letter-spacing: .06em;
 
-		text-decoration:
-			none;
+		text-decoration: none;
 
-		text-transform:
-			uppercase;
-
-		box-shadow:
-			inset 0 1px 0
-			rgba(255,255,255,.3);
+		text-transform: uppercase;
 
 		transition:
-			transform .12s ease,
-			filter .12s ease;
+			background 120ms ease,
+			border-color 120ms ease,
+			transform 120ms ease;
 	}
 
-	.open-button:hover {
+
+	.document-button:hover {
 		transform:
 			translateY(-1px);
 
-		filter:
-			brightness(1.07);
+		border-color:
+			var(--brand-sand);
+
+		background:
+			var(--brand-sand);
 	}
 
 
-	/* ======================================================
-	   DOCUMENT
-	   ====================================================== */
+	/* ==================================================
+	   HERO BRAND
+	   ================================================== */
+
+	.hero-brand {
+		position: relative;
+
+		z-index: 2;
+
+		min-height: 175px;
+
+		display: grid;
+
+		justify-items: center;
+
+		align-content: center;
+
+		padding: 20px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.22
+			);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.36
+			);
+
+		text-align: center;
+	}
+
+
+	.hero-mark {
+		width: 58px;
+		height: 58px;
+
+		display: grid;
+
+		place-items: center;
+
+		margin-bottom: 14px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 1.55rem;
+	}
+
+
+	.hero-brand > span {
+		color:
+			var(--brand-stone);
+
+		font-size: .49rem;
+
+		font-weight: 800;
+
+		letter-spacing: .15em;
+
+		text-transform: uppercase;
+	}
+
+
+	.hero-brand > strong {
+		margin-top: 3px;
+
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size: 2.2rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+
+		text-transform: uppercase;
+	}
+
+
+	.hero-brand > small {
+		margin-top: 11px;
+
+		color:
+			var(--brand-gold);
+
+		font-size: .47rem;
+
+		font-weight: 800;
+
+		letter-spacing: .13em;
+
+		text-transform: uppercase;
+	}
+
+
+	.hero-watermark {
+		position: absolute;
+
+		right: -30px;
+		bottom: -40px;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.018
+			);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				8rem,
+				14vw,
+				13rem
+			);
+
+		line-height: 1;
+
+		pointer-events: none;
+	}
+
+
+	/* ==================================================
+	   DOCUMENT SHELL
+	   ================================================== */
 
 	.document-shell {
 		overflow: hidden;
 
 		border:
-			2px solid #070808;
+			1px solid
+			var(--border);
 
 		border-radius:
-			16px;
+			var(--radius-md);
 
 		background:
-			#161a18;
+			var(--panel);
 
 		box-shadow:
 			var(--shadow-panel);
 	}
 
+
 	.document-bar {
+		min-height: 44px;
+
 		display: flex;
 
 		align-items: center;
 
-		justify-content: space-between;
+		justify-content:
+			space-between;
 
-		gap: 20px;
+		gap: 18px;
 
 		padding:
-			11px 15px;
+			9px 14px;
 
 		border-bottom:
 			1px solid
-			rgba(255,255,255,.12);
+			var(--border);
 
 		background:
-			linear-gradient(
-				180deg,
-				#343b39,
-				#242927
+			rgba(
+				8,
+				11,
+				10,
+				.72
 			);
-
-		color:
-			var(--muted);
-
-		font-family:
-			var(--font-score);
-
-		font-size:
-			.64rem;
-
-		font-weight:
-			900;
-
-		letter-spacing:
-			.08em;
-
-		text-transform:
-			uppercase;
 	}
 
-	.document-bar > div {
+
+	.document-status {
 		display: flex;
 
 		align-items: center;
@@ -287,71 +542,142 @@
 		gap: 8px;
 	}
 
+
 	.status-dot {
-		width: 7px;
+		width: 6px;
+		height: 6px;
 
-		height: 7px;
+		flex: 0 0 auto;
 
-		border-radius:
-			999px;
+		border-radius: 50%;
 
 		background:
-			#57dd86;
+			#7fb48d;
 
 		box-shadow:
 			0 0 8px
-			rgba(87,221,134,.75);
+			rgba(
+				127,
+				180,
+				141,
+				.42
+			);
 	}
 
-	.google-doc-iframe {
-		display: block;
 
+	.document-status strong,
+	.document-meta {
+		color:
+			var(--brand-stone);
+
+		font-size: .54rem;
+
+		font-weight: 800;
+
+		letter-spacing: .09em;
+
+		text-transform: uppercase;
+	}
+
+
+	.document-status strong {
+		color:
+			var(--brand-ivory);
+	}
+
+
+	/* ==================================================
+	   GOOGLE DOCUMENT
+	   ================================================== */
+
+	.document-frame {
 		width: 100%;
 
-		height:
-			calc(100vh - 245px);
+		overflow: hidden;
 
-		min-height:
-			800px;
-
-		border:
-			0;
-
-		background:
-			#fff;
+		background: #fff;
 	}
 
 
-	/* ======================================================
-	   MOBILE
-	   ====================================================== */
+	.google-doc-iframe {
+		width: 100%;
+		height: 78vh;
 
-	@media (
-		max-width: 700px
-	) {
-		.constitution-header {
-			display: grid;
+		min-height: 720px;
+
+		display: block;
+
+		border: 0;
+
+		background: #fff;
+	}
+
+
+	/* ==================================================
+	   RESPONSIVE
+	   ================================================== */
+
+	@media (max-width: 850px) {
+
+		.constitution-hero {
+			grid-template-columns:
+				1fr;
 		}
 
-		.open-button {
-			width:
-				max-content;
+
+		.hero-brand {
+			display: none;
 		}
+
+	}
+
+
+	@media (max-width: 700px) {
+
+		.constitution-page {
+			gap: 14px;
+		}
+
+
+		.constitution-hero {
+			min-height: 0;
+
+			padding:
+				28px 22px;
+		}
+
+
+		.constitution-hero h1 {
+			font-size:
+				clamp(
+					3.6rem,
+					16vw,
+					5.5rem
+				);
+		}
+
 
 		.document-bar {
 			align-items:
-				start;
+				flex-start;
 
 			flex-direction:
 				column;
+
+			gap: 4px;
 		}
+
+
+		.document-meta {
+			display: none;
+		}
+
 
 		.google-doc-iframe {
-			height:
-				75vh;
+			height: 82vh;
 
-			min-height:
-				650px;
+			min-height: 600px;
 		}
+
 	}
 </style>

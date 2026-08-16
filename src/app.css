@@ -1,11 +1,4 @@
-/* -------------------------------------------------------
-Irving Champions League Theme
-Classic ICL branding + vintage football scorebug UI
-------------------------------------------------------- */
-
-/* =========================================================
-   GLOBAL MOBILE / OVERFLOW SAFETY
-   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap');
 
 html,
 body {
@@ -69,107 +62,212 @@ main > * {
 :root {
 	color-scheme: dark;
 
-	/* ---------------------------------------------------
-	   ICL BRAND
-	--------------------------------------------------- */
+	/* =========================================================
+	   IRVING COLLECTIVE — CORE BRAND
+	   ========================================================= */
 
-	--icl-black: #07090d;
-	--icl-navy: #0b1018;
-	--icl-navy-2: #111925;
+	--brand-ivory: #f2ece2;
+	--brand-sand: #c1b299;
+	--brand-slate: #606e79;
+	--brand-charcoal: #161817;
+	--brand-stone: #8f918e;
+	--brand-gold: #bfa16a;
 
-	--icl-blue: #1185c8;
-	--icl-blue-dark: #07578c;
-	--icl-blue-soft: rgba(17, 133, 200, 0.18);
+	/* Dark extensions for screen UI */
+	--brand-black: #0b0d0d;
+	--brand-black-2: #101312;
+	--brand-charcoal-2: #1d211f;
+	--brand-charcoal-3: #252a27;
 
-	--broadcast-black: #070808;
+	/* =========================================================
+	   SURFACES
+	   ========================================================= */
 
-	--bug-black: #0b0d0d;
-	--bug-charcoal: #1f2524;
-	--bug-charcoal-2: #2f3634;
+	--page-bg: #0d1010;
 
-	--bug-gray: #59605d;
-	--bug-gray-2: #747a76;
+	--panel:
+		rgba(22, 24, 23, 0.98);
 
-	--bug-silver: #d8d8cf;
-	--bug-white: #f7f5eb;
-	--bug-cream: #eee8d7;
+	--panel-strong:
+		rgba(29, 33, 31, 0.99);
 
-	--bug-red: #c7192f;
-	--bug-red-dark: #8e1020;
+	--panel-soft:
+		rgba(38, 43, 40, 0.94);
 
-	--bug-yellow: #f7c948;
-	--bug-green: #45a16a;
+	--panel-slate:
+		color-mix(
+			in srgb,
+			var(--brand-slate) 22%,
+			var(--brand-charcoal)
+		);
 
-	/*
-	 * Keep old variable name alive so
-	 * existing route CSS doesn't break.
-	 */
-	--bug-blue: var(--icl-blue);
+	/* =========================================================
+	   TEXT
+	   ========================================================= */
 
-	--text: var(--bug-white);
-	--text-strong: #ffffff;
+	--text:
+		var(--brand-ivory);
 
-	--muted: rgba(247, 245, 235, 0.72);
-	--muted-2: rgba(247, 245, 235, 0.52);
+	--text-strong:
+		#fffaf2;
 
-	--panel: rgba(18, 22, 24, 0.97);
-	--panel-strong: rgba(32, 37, 38, 0.99);
-	--panel-soft: rgba(67, 76, 75, 0.72);
+	--muted:
+		rgba(242, 236, 226, 0.68);
 
-	--border: rgba(216, 216, 207, 0.22);
-	--border-strong: rgba(17, 133, 200, 0.55);
+	--muted-2:
+		rgba(242, 236, 226, 0.46);
 
-	/*
-	 * Blue is now the main ICL accent.
-	 * Red remains our secondary/action color.
-	 */
-	--accent: var(--icl-blue);
-	--accent-2: var(--bug-yellow);
-	--accent-3: var(--bug-red);
+	/* =========================================================
+	   BORDERS
+	   ========================================================= */
 
-	--gold0: var(--bug-yellow);
-	--green: var(--bug-green);
+	--border:
+		rgba(191, 161, 106, 0.24);
 
-	--danger: #e32136;
-	--success: #47b26d;
-	--warning: var(--bug-yellow);
+	--border-strong:
+		rgba(191, 161, 106, 0.58);
+
+	/* =========================================================
+	   ACCENTS
+	   ========================================================= */
+
+	--accent:
+		var(--brand-gold);
+
+	--accent-2:
+		var(--brand-sand);
+
+	--accent-3:
+		var(--brand-slate);
+
+	--gold0:
+		var(--brand-gold);
+
+	--green:
+		#6f967d;
+
+	--danger:
+		#b95a5a;
+
+	--success:
+		#6f967d;
+
+	--warning:
+		var(--brand-gold);
+
+	/* =========================================================
+	   TYPOGRAPHY
+	   ========================================================= */
 
 	--font-body:
+		'Inter',
 		Arial,
 		Helvetica,
 		sans-serif;
 
 	--font-display:
-		"Arial Black",
-		"Arial Narrow",
+		'Bebas Neue',
+		'Arial Narrow',
 		Impact,
-		Arial,
 		sans-serif;
 
 	--font-serif:
 		Georgia,
-		"Times New Roman",
+		'Times New Roman',
 		serif;
 
 	--font-score:
-		"Arial Black",
-		Impact,
+		'Inter',
 		Arial,
+		Helvetica,
 		sans-serif;
 
+	/* =========================================================
+	   SHADOWS
+	   ========================================================= */
+
 	--shadow-bug:
-		0 2px 0 rgba(255, 255, 255, 0.18) inset,
-		0 -3px 0 rgba(0, 0, 0, 0.62) inset,
-		0 16px 42px rgba(0, 0, 0, 0.48);
+		0 1px 0 rgba(255,255,255,0.05) inset,
+		0 18px 44px rgba(0,0,0,0.42);
 
 	--shadow-panel:
-		0 1px 0 rgba(255, 255, 255, 0.18) inset,
-		0 -2px 0 rgba(0, 0, 0, 0.5) inset,
-		0 22px 60px rgba(0, 0, 0, 0.44);
+		0 1px 0 rgba(255,255,255,0.045) inset,
+		0 18px 46px rgba(0,0,0,0.34);
 
-	--radius-lg: 18px;
-	--radius-md: 12px;
-	--radius-sm: 7px;
+	/* =========================================================
+	   SHAPE
+	   ========================================================= */
+
+	--radius-lg: 12px;
+	--radius-md: 8px;
+	--radius-sm: 5px;
+
+	/* =========================================================
+	   LEGACY COMPATIBILITY
+	   
+	   Keep these alive while existing pages are migrated.
+	   ========================================================= */
+
+	--icl-black:
+		var(--brand-black);
+
+	--icl-navy:
+		var(--page-bg);
+
+	--icl-navy-2:
+		var(--brand-charcoal);
+
+	--icl-blue:
+		var(--brand-gold);
+
+	--icl-blue-dark:
+		#806943;
+
+	--icl-blue-soft:
+		rgba(191, 161, 106, 0.14);
+
+	--broadcast-black:
+		var(--brand-black);
+
+	--bug-black:
+		var(--brand-black);
+
+	--bug-charcoal:
+		var(--brand-charcoal);
+
+	--bug-charcoal-2:
+		var(--brand-charcoal-2);
+
+	--bug-gray:
+		#3d423f;
+
+	--bug-gray-2:
+		#555b57;
+
+	--bug-silver:
+		var(--brand-stone);
+
+	--bug-white:
+		var(--brand-ivory);
+
+	--bug-cream:
+		var(--brand-sand);
+
+	--bug-yellow:
+		var(--brand-gold);
+
+	--bug-blue:
+		var(--brand-gold);
+
+	--bug-green:
+		var(--green);
+
+	/* Keep red only for real destructive states */
+	--bug-red:
+		#9b4747;
+
+	--bug-red-dark:
+		#6d3030;
 }
 
 
@@ -182,9 +280,8 @@ html {
 	min-height: 100%;
 
 	background:
-		var(--icl-black);
+		var(--brand-black);
 }
-
 
 body {
 	margin: 0;
@@ -197,18 +294,13 @@ body {
 	font-family:
 		var(--font-body);
 
-	/*
-	 * THIS IS THE BIG CHANGE.
-	 *
-	 * No field.
-	 * No yard lines.
-	 * No giant vignette.
-	 * No football wallpaper.
-	 *
-	 * Just ICL.
-	 */
 	background:
-		var(--icl-navy);
+		radial-gradient(
+			circle at 50% -20%,
+			rgba(191, 161, 106, 0.055),
+			transparent 42%
+		),
+		var(--page-bg);
 
 	background-attachment:
 		fixed;
@@ -216,7 +308,6 @@ body {
 	text-rendering:
 		optimizeLegibility;
 }
-
 
 /*
  * Kill the old field texture layers.
@@ -268,48 +359,56 @@ img {
 	position: relative;
 	overflow: hidden;
 
-	border: 2px solid #050708;
-	border-radius: 16px;
+	border:
+		1px solid
+		var(--border-strong);
+
+	border-radius:
+		var(--radius-lg);
 
 	background:
 		linear-gradient(
-			90deg,
-			rgba(17, 133, 200, 0.16),
-			transparent 46%
+			120deg,
+			rgba(191,161,106,0.065),
+			transparent 36%
 		),
-		#111619;
+		linear-gradient(
+			180deg,
+			var(--brand-charcoal-2),
+			var(--brand-charcoal)
+		);
 
-	box-shadow: var(--shadow-panel);
+	box-shadow:
+		var(--shadow-panel);
 }
 
 .icl-hero-shell::before {
 	content: '';
+
 	position: absolute;
 	inset: 0;
+
 	pointer-events: none;
 
 	background:
 		linear-gradient(
 			90deg,
-			rgba(199, 25, 47, 0.16),
-			transparent 26%
+			rgba(96,110,121,0.09),
+			transparent 32%
 		);
 }
 
 .icl-hero-shell::after {
 	content: '';
+
 	position: absolute;
 	inset: 0;
+
 	pointer-events: none;
 
-	background:
-		linear-gradient(
-			180deg,
-			rgba(255,255,255,0.05),
-			transparent 30%
-		);
-
-	opacity: 0.55;
+	border-top:
+		1px solid
+		rgba(242,236,226,0.05);
 }
 
 .icl-hero-shell > * {
@@ -356,56 +455,45 @@ clean ICL background instead of becoming the background.
 .podium-card,
 .event-card {
 	border:
-		2px solid
-		#090a0a !important;
+		1px solid
+		var(--border) !important;
+
+	border-radius:
+		var(--radius-md);
 
 	background:
 		linear-gradient(
 			180deg,
-			rgba(255,255,255,0.11),
-			rgba(255,255,255,0.02) 18%,
-			rgba(0,0,0,0.10)
+			rgba(255,255,255,0.025),
+			transparent 24%
 		),
-		linear-gradient(
-			180deg,
-			var(--bug-gray),
-			var(--bug-charcoal) 48%,
-			var(--bug-black)
-		) !important;
+		var(--panel) !important;
 
 	box-shadow:
 		var(--shadow-panel) !important;
 
 	color:
-		var(--bug-white) !important;
+		var(--text) !important;
 }
 
 
 .hero-card,
 .hero,
 .hero-shell {
-	border-color:
-		#060707 !important;
+	border:
+		1px solid
+		var(--border-strong) !important;
 
-	/*
-	 * Replace the red wash with a subtle
-	 * ICL-blue identity wash.
-	 */
 	background:
 		linear-gradient(
-			90deg,
-			rgba(17, 133, 200, 0.22),
-			transparent 24%
+			120deg,
+			rgba(191,161,106,0.07),
+			transparent 34%
 		),
-		linear-gradient(
-			180deg,
-			#5f6763,
-			#252b2a 48%,
-			#101313
-		) !important;
+		var(--panel-strong) !important;
 
 	box-shadow:
-		var(--shadow-bug) !important;
+		var(--shadow-panel) !important;
 }
 
 
@@ -433,26 +521,25 @@ TYPOGRAPHY / LABELS
 .tag,
 .card-label {
 	color:
-		var(--bug-yellow) !important;
+		var(--brand-gold) !important;
 
 	font-family:
-		var(--font-score);
+		var(--font-body);
 
 	font-size:
-		0.68rem;
+		0.64rem;
 
 	font-weight:
-		950;
+		700;
 
 	text-transform:
 		uppercase;
 
 	letter-spacing:
-		0.16em;
+		0.17em;
 
 	text-shadow:
-		0 2px 0
-		rgba(0,0,0,0.75);
+		none;
 }
 
 
@@ -461,20 +548,28 @@ h2,
 h3,
 h4 {
 	color:
-		var(--bug-white);
+		var(--brand-ivory);
 
 	text-shadow:
-		0 2px 0
-		rgba(0,0,0,0.72);
+		none;
 }
 
-
-h1 {
+h1,
+h2,
+h3 {
 	font-family:
 		var(--font-display);
+}
 
+h1 {
 	letter-spacing:
-		-0.055em;
+		0.02em;
+}
+
+h2,
+h3 {
+	letter-spacing:
+		0.015em;
 }
 
 
@@ -498,19 +593,14 @@ SCOREBUG PRIMITIVES
 .score-strip,
 .bug-panel {
 	border:
-		2px solid
-		#070808;
+		1px solid
+		var(--border-strong);
 
 	background:
-		linear-gradient(
-			180deg,
-			#6b726f,
-			#252a29 45%,
-			#101212
-		);
+		var(--brand-charcoal);
 
 	box-shadow:
-		var(--shadow-bug);
+		var(--shadow-panel);
 }
 
 
@@ -524,31 +614,45 @@ SCOREBUG PRIMITIVES
 	display: inline-flex;
 	align-items: center;
 	gap: 0.45rem;
-	min-height: 24px;
-	padding: 4px 9px;
 
-	border: 1px solid #030303;
+	min-height: 24px;
+
+	padding:
+		4px 9px;
+
+	border:
+		1px solid
+		var(--brand-gold);
+
+	border-radius:
+		3px;
 
 	background:
-		linear-gradient(
-			180deg,
-			var(--bug-red),
-			var(--bug-red-dark)
-		);
+		transparent;
 
-	color: white;
+	color:
+		var(--brand-gold);
 
-	font-family: var(--font-score);
-	font-size: 0.72rem;
-	font-weight: 950;
-	line-height: 1;
+	font-family:
+		var(--font-body);
 
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
+	font-size:
+		0.66rem;
+
+	font-weight:
+		700;
+
+	line-height:
+		1;
+
+	text-transform:
+		uppercase;
+
+	letter-spacing:
+		0.12em;
 
 	box-shadow:
-		inset 0 1px 0 rgba(255,255,255,0.35),
-		inset 0 -2px 0 rgba(0,0,0,0.45);
+		none;
 }
 
 
@@ -558,36 +662,29 @@ SCOREBUG PRIMITIVES
 .rank {
 	border:
 		1px solid
-		#080909 !important;
+		var(--border-medium, rgba(191,161,106,.36)) !important;
 
 	background:
-		linear-gradient(
-			180deg,
-			#f5f4ea,
-			#c9cac1 50%,
-			#818782
-		) !important;
+		var(--brand-charcoal-2) !important;
 
 	color:
-		#111 !important;
+		var(--brand-ivory) !important;
 
 	font-family:
-		var(--font-score);
+		var(--font-body);
 
 	font-size:
-		0.72rem;
+		0.68rem;
 
 	font-weight:
-		950;
+		700;
 
 	text-transform:
 		uppercase;
 
 	box-shadow:
-		inset 0 1px 0 rgba(255,255,255,0.65),
-		inset 0 -2px 0 rgba(0,0,0,0.30);
+		none;
 }
-
 
 /* -------------------------------------------------------
 LINKS
@@ -600,30 +697,31 @@ LINKS
 .story-card span,
 .command-card em {
 	color:
-		var(--icl-blue) !important;
+		var(--brand-gold) !important;
 
 	font-weight:
-		900;
+		700;
 
 	text-decoration:
 		none !important;
 }
-
 
 .quick-links a:hover,
 .link-row a:hover,
 .section-head a:hover,
 .panel-head a:hover {
 	color:
-		var(--bug-white) !important;
+		var(--brand-ivory) !important;
 
 	text-decoration:
 		underline !important;
 
 	text-underline-offset:
-		3px;
-}
+		4px;
 
+	text-decoration-color:
+		var(--brand-gold) !important;
+}
 
 /* -------------------------------------------------------
 ROWS
@@ -643,25 +741,14 @@ ROWS
 .row {
 	border:
 		1px solid
-		#080909 !important;
+		rgba(191,161,106,0.14) !important;
 
 	background:
-		linear-gradient(
-			180deg,
-			rgba(255,255,255,0.08),
-			rgba(255,255,255,0.02)
-		),
-		linear-gradient(
-			180deg,
-			#2f3634,
-			#151817
-		) !important;
+		rgba(255,255,255,0.018) !important;
 
 	box-shadow:
-		inset 0 1px 0 rgba(255,255,255,0.13),
-		inset 0 -1px 0 rgba(0,0,0,0.5);
+		none !important;
 }
-
 
 .line-item span,
 .card-head strong,
@@ -670,17 +757,19 @@ ROWS
 .record-block strong,
 .score-value {
 	color:
-		var(--bug-yellow) !important;
+		var(--brand-gold) !important;
 
 	font-family:
-		var(--font-score);
+		var(--font-body);
+
+	font-weight:
+		800;
 
 	font-variant-numeric:
 		tabular-nums;
 
 	text-shadow:
-		0 2px 0
-		rgba(0,0,0,0.75);
+		none;
 }
 
 

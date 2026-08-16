@@ -932,29 +932,41 @@ function capitalDirection(
 <svelte:window on:keydown={handleKeydown} />
 
 {#if modal.open}
-	<div class="player-modal-backdrop" role="presentation" on:click={closePlayerModal}>
+	<div
+		class="player-modal-backdrop"
+		role="presentation"
+		on:click={closePlayerModal}
+	>
 		<section
 			class="player-modal"
 			role="dialog"
 			aria-modal="true"
-			aria-label={card?.profile?.name ? `${card.profile.name} player card` : 'Player card'}
+			aria-label={card?.profile?.name
+				? `${card.profile.name} player file`
+				: 'Player file'}
 			on:click|stopPropagation
 		>
 			<header class="modal-topbar">
-				<div class="modal-network">ICL</div>
+				<div class="modal-brand">
+					<span class="icl-mark">ICL</span>
 
-				<div class="modal-title">
-					<span>Player File</span>
+					<div class="modal-title">
+						<span>Player File</span>
 
-					<strong>
-						{card?.profile?.name || 'Loading player…'}
-					</strong>
+						<strong>
+							{card?.profile?.name || 'Loading player…'}
+						</strong>
+					</div>
+				</div>
+
+				<div class="modal-collective">
+					Irving Collective
 				</div>
 
 				<button
 					type="button"
 					class="modal-close"
-					aria-label="Close player card"
+					aria-label="Close player file"
 					on:click={closePlayerModal}
 				>
 					×
@@ -963,42 +975,74 @@ function capitalDirection(
 
 			{#if loading && !card}
 				<div class="modal-state">
+					<div class="state-kicker">
+						Irving Player Database
+					</div>
+
+					<h2>Pulling The Game Tape</h2>
+
 					<div class="loading-bar">
 						<span></span>
 					</div>
 
-					<strong> Pulling the game tape… </strong>
-
-					<span> Loading player profile and weekly stats. </span>
+					<p>
+						Loading player profile and weekly stats.
+					</p>
 				</div>
+
 			{:else if error}
 				<div class="modal-state error-state">
-					<strong> Player feed unavailable </strong>
+					<div class="state-kicker">
+						Player File
+					</div>
 
-					<span>
+					<h2>Feed Unavailable</h2>
+
+					<p>
 						{error}
-					</span>
+					</p>
 
-					<button type="button" on:click={() => loadPlayer(modal.playerId, selectedSeason)}>
-						Try again
+					<button
+						type="button"
+						class="retry-button"
+						on:click={() =>
+							loadPlayer(
+								modal.playerId,
+								selectedSeason
+							)}
+					>
+						Try Again
 					</button>
 				</div>
-			{:else if card}
-				<div class="player-hero icl-hero-shell">
-					<div class="portrait-bay ">
-						<img src={card.profile.headshotUrl} alt={card.profile.name} />
 
-						<div class="position-bug">
+			{:else if card}
+				<section class="player-hero">
+					<div class="portrait-bay">
+						<div
+							class="portrait-watermark"
+							aria-hidden="true"
+						>
+							{card.profile.position}
+						</div>
+
+						<img
+							src={card.profile.headshotUrl}
+							alt={card.profile.name}
+						/>
+
+						<div class="position-label">
 							{card.profile.position}
 						</div>
 					</div>
 
 					<div class="hero-main">
-						<div class="eyebrow">Irving Player Database</div>
+						<div class="eyebrow">
+							Irving Player Database
+						</div>
 
-						<h2>
+						<h1>
 							{card.profile.name}
-						</h2>
+						</h1>
 
 						<div class="player-subline">
 							{playerSubline(card.profile)}
@@ -1007,6 +1051,7 @@ function capitalDirection(
 						<div class="bio-grid">
 							<div>
 								<span>Age</span>
+
 								<strong>
 									{card.profile.age ?? '—'}
 								</strong>
@@ -1014,6 +1059,7 @@ function capitalDirection(
 
 							<div>
 								<span>Height</span>
+
 								<strong>
 									{heightLabel(card.profile.height) || '—'}
 								</strong>
@@ -1021,13 +1067,17 @@ function capitalDirection(
 
 							<div>
 								<span>Weight</span>
+
 								<strong>
-									{card.profile.weight ? `${card.profile.weight} lbs` : '—'}
+									{card.profile.weight
+										? `${card.profile.weight} lbs`
+										: '—'}
 								</strong>
 							</div>
 
 							<div>
 								<span>Exp</span>
+
 								<strong>
 									{card.profile.yearsExp ?? '—'}
 								</strong>
@@ -1035,13 +1085,19 @@ function capitalDirection(
 
 							<div class="college">
 								<span>College</span>
+
 								<strong>
 									{card.profile.college || '—'}
 								</strong>
 							</div>
 						</div>
 
-						<div class="status-line" class:injured={Boolean(card.profile.injuryStatus)}>
+						<div
+							class="status-line"
+							class:injured={Boolean(
+								card.profile.injuryStatus
+							)}
+						>
 							<span class="status-dot"></span>
 
 							{statusText(card.profile)}
@@ -1049,103 +1105,106 @@ function capitalDirection(
 					</div>
 
 					<aside class="irving-context">
+						<div class="context-kicker">
+							Current Irving Roster
+						</div>
 
-	<span>
-		Current Irving roster
-	</span>
+						{#if !irvingLeagueAvailable}
+							<strong class="context-team unavailable">
+								Roster Status Unavailable
+							</strong>
 
+							<small>
+								League feed could not be loaded.
+							</small>
 
-	{#if !irvingLeagueAvailable}
+						{:else if currentIrvingRoster?.rostered}
+							<strong class="context-team">
+								{currentIrvingRoster.teamName}
+							</strong>
 
-		<strong>
-			ROSTER STATUS UNAVAILABLE
-		</strong>
+							<small>
+								{currentIrvingRoster.managerName ||
+									'Unknown manager'}
+							</small>
 
-		<small>
-			League feed could not be loaded.
-		</small>
+						{:else}
+							<strong class="context-team free-agent-label">
+								Free Agent
+							</strong>
 
+							<small>
+								Not currently rostered
+							</small>
+						{/if}
 
-	{:else if currentIrvingRoster?.rostered}
+						{#if modal.context?.keeperEligible === false}
+							<div class="keeper-note ineligible">
+								<span>Keeper Status</span>
 
-		<strong>
-			{currentIrvingRoster.teamName}
-		</strong>
+								<strong>
+									Not Keeper Eligible
+								</strong>
+							</div>
 
-		<small>
-			{currentIrvingRoster.managerName ||
-				'Unknown manager'}
-		</small>
+						{:else if modal.context?.keeperCost != null}
+							<div class="keeper-note">
+								<span>Keeper Cost</span>
 
+								<strong>
+									{money(modal.context.keeperCost)}
+								</strong>
+							</div>
+						{/if}
 
-	{:else}
+						{#if modal.context?.note}
+							<p class="context-note">
+								{modal.context.note}
+							</p>
+						{/if}
+					</aside>
 
-		<strong class="free-agent-label">
-			FREE AGENT
-		</strong>
+					<div
+						class="hero-watermark"
+						aria-hidden="true"
+					>
+						PLAYER FILE
+					</div>
+				</section>
 
-		<small>
-			Not currently rostered
-		</small>
+				<section class="season-desk">
+					<div class="season-heading">
+						<div class="eyebrow">
+							Game Log
+						</div>
 
-	{/if}
-
-
-	{#if modal.context?.keeperEligible === false}
-
-		<b class="context-ineligible">
-			NOT KEEPER ELIGIBLE
-		</b>
-
-
-	{:else if modal.context?.keeperCost != null}
-
-		<b>
-			{money(
-				modal.context.keeperCost
-			)}
-			keeper
-		</b>
-
-	{/if}
-
-
-	{#if modal.context?.note}
-
-		<em>
-			{modal.context.note}
-		</em>
-
-	{/if}
-
-</aside>
-				</div>
-
-				<div class="season-toolbar">
-					<div>
-						<span> Game log </span>
-
-						<strong>
-							{selectedSeason} season
-						</strong>
+						<h2>
+							{selectedSeason} Season
+						</h2>
 					</div>
 
-					<div class="season-pills" aria-label="Player stats season selector">
+					<div
+						class="season-pills"
+						aria-label="Player stats season selector"
+					>
 						{#each card.availableSeasons as season}
 							<button
 								type="button"
-								class:active={Number(season) === Number(selectedSeason)}
-								on:click={() => changeSeason(season)}
+								class:active={Number(season) ===
+									Number(selectedSeason)}
+								on:click={() =>
+									changeSeason(season)}
 							>
 								{season}
 							</button>
 						{/each}
 					</div>
-				</div>
+				</section>
 
-				<div class="summary-strip">
+				<section class="summary-strip">
 					<div>
 						<span>Games</span>
+
 						<strong>
 							{card.summary.games}
 						</strong>
@@ -1153,52 +1212,72 @@ function capitalDirection(
 
 					<div>
 						<span>Half-PPR</span>
+
 						<strong>
-							{fmt(card.summary.fantasyPoints, 1)}
+							{fmt(
+								card.summary.fantasyPoints,
+								1
+							)}
 						</strong>
 					</div>
 
 					<div>
 						<span>FPTS/G</span>
+
 						<strong>
-							{fmt(card.summary.fantasyPointsPerGame, 1)}
+							{fmt(
+								card.summary.fantasyPointsPerGame,
+								1
+							)}
 						</strong>
 					</div>
 
 					{#if card.profile.position === 'QB'}
 						<div>
 							<span>Pass Yds</span>
+
 							<strong>
-								{whole(card.summary.passingYards)}
+								{whole(
+									card.summary.passingYards
+								)}
 							</strong>
 						</div>
 
 						<div>
 							<span>Pass TD</span>
+
 							<strong>
-								{whole(card.summary.passingTds)}
+								{whole(
+									card.summary.passingTds
+								)}
 							</strong>
 						</div>
 					{:else}
 						<div>
 							<span>Scrim Yds</span>
+
 							<strong>
-								{whole(card.summary.rushingYards + card.summary.receivingYards)}
+								{whole(
+									card.summary.rushingYards +
+										card.summary.receivingYards
+								)}
 							</strong>
 						</div>
 
 						<div>
 							<span>TD</span>
+
 							<strong>
-								{whole(card.summary.rushingTds + card.summary.receivingTds)}
+								{whole(
+									card.summary.rushingTds +
+										card.summary.receivingTds
+								)}
 							</strong>
 						</div>
 					{/if}
-				</div>
+				</section>
 
-				<div class="game-log-shell">
-					
-
+				<section class="game-log-shell">
 					{#if card.games.length}
 						<div class="game-log-scroll">
 							<table>
@@ -1206,24 +1285,19 @@ function capitalDirection(
 									<tr>
 										<th>WK</th>
 										<th>OPP</th>
-
-										<th class="fpts"> FPTS </th>
-
+										<th class="fpts">FPTS</th>
 										<th>CMP</th>
 										<th>ATT</th>
 										<th>PYD</th>
 										<th>PTD</th>
 										<th>INT</th>
-
 										<th>RUSH</th>
 										<th>RYD</th>
 										<th>RTD</th>
-
 										<th>REC</th>
 										<th>TGT</th>
 										<th>RECYD</th>
 										<th>RECTD</th>
-
 										<th>FL</th>
 									</tr>
 								</thead>
@@ -1241,439 +1315,432 @@ function capitalDirection(
 
 											<td class="fpts">
 												<strong>
-													{fmt(game.fantasyPoints, 1)}
+													{fmt(
+														game.fantasyPoints,
+														1
+													)}
 												</strong>
 											</td>
 
 											<td>
-												{game.passing.completions || '—'}
+												{game.passing.completions ||
+													'—'}
 											</td>
 
 											<td>
-												{game.passing.attempts || '—'}
+												{game.passing.attempts ||
+													'—'}
 											</td>
 
 											<td>
-												{game.passing.yards || '—'}
+												{game.passing.yards ||
+													'—'}
 											</td>
 
 											<td>
-												{game.passing.tds || '—'}
+												{game.passing.tds ||
+													'—'}
 											</td>
 
 											<td>
-												{game.passing.interceptions || '—'}
+												{game.passing.interceptions ||
+													'—'}
 											</td>
 
 											<td>
-												{game.rushing.attempts || '—'}
+												{game.rushing.attempts ||
+													'—'}
 											</td>
 
 											<td>
-												{game.rushing.yards || '—'}
+												{game.rushing.yards ||
+													'—'}
 											</td>
 
 											<td>
-												{game.rushing.tds || '—'}
+												{game.rushing.tds ||
+													'—'}
 											</td>
 
 											<td>
-												{game.receiving.receptions || '—'}
+												{game.receiving.receptions ||
+													'—'}
 											</td>
 
 											<td>
-												{game.receiving.targets || '—'}
+												{game.receiving.targets ||
+													'—'}
 											</td>
 
 											<td>
-												{game.receiving.yards || '—'}
+												{game.receiving.yards ||
+													'—'}
 											</td>
 
 											<td>
-												{game.receiving.tds || '—'}
+												{game.receiving.tds ||
+													'—'}
 											</td>
 
 											<td>
-												{game.fumblesLost || '—'}
+												{game.fumblesLost ||
+													'—'}
 											</td>
 										</tr>
 									{/each}
 								</tbody>
 							</table>
 						</div>
+
 					{:else}
 						<div class="no-games">
-							<strong>
-								No regular-season game log found for
-								{selectedSeason}.
-							</strong>
+							<div class="no-games-year">
+								{selectedSeason}
+							</div>
 
-							<span> If the season has not started yet, switch to the previous season above. </span>
+							<div>
+								<strong>
+									No Regular-Season Game Log
+								</strong>
+
+								<p>
+									No weekly stats were found for
+									{selectedSeason}. If the season
+									hasn't started yet, choose a
+									previous season above.
+								</p>
+							</div>
 						</div>
 					{/if}
-				</div>
+				</section>
+
 				<section class="irving-history">
+					<header class="history-header">
+						<div>
+							<div class="eyebrow">
+								Irving Transaction History
+							</div>
 
-	<header class="history-header">
+							<h2>
+								Franchise Trail
+							</h2>
+						</div>
 
-		<div>
-			<span>
-				Irving transaction history
-			</span>
-
-			<strong>
-				Franchise trail
-			</strong>
-		</div>
-
-
-		<em>
-			{irvingHistory.length}
-			event{irvingHistory.length === 1 ? '' : 's'}
-		</em>
-
-	</header>
-
-
-	{#if !irvingLeagueAvailable}
-
-		<div class="history-empty">
-			League history feed unavailable.
-		</div>
-
-
-	{:else if irvingHistory.length}
-
-		<div class="history-list">
-
-			{#each irvingHistory as event (event.id)}
-
-				<div class="history-row">
-
-					<div
-						class={`history-icon ${historyClass(
-							event.type
-						)}`}
-						aria-hidden="true"
-					>
-						{historyIcon(
-							event.type
-						)}
-					</div>
-
-
-					<div class="history-event">
-
-						<div class="history-event-top">
-
+						<div class="history-count">
 							<strong>
-								{event.label}
+								{irvingHistory.length}
 							</strong>
 
 							<span>
-								{historyDate(
-									event.timestamp
-								)}
+								event{irvingHistory.length === 1
+									? ''
+									: 's'}
 							</span>
+						</div>
+					</header>
 
+					{#if !irvingLeagueAvailable}
+						<div class="history-empty">
+							<strong>
+								League History Unavailable
+							</strong>
+
+							<span>
+								The Irving transaction feed
+								could not be loaded.
+							</span>
 						</div>
 
-
-						<div class="history-copy">
-
-							{#if event.type === 'trade'}
-
-								<span>
-									to
-									<b>
-										{event.toTeam?.teamName ||
-											'Unknown franchise'}
-									</b>
-
-									{#if event.fromTeam?.teamName}
-										from
-										<b>
-											{event.fromTeam.teamName}
-										</b>
-									{/if}
-								</span>
-
-
-								{#if event.toTeam?.managerName || event.fromTeam?.managerName}
-
-									<small>
-										{#if event.toTeam?.managerName}
-											{event.toTeam.managerName}
-										{/if}
-
-										{#if event.toTeam?.managerName && event.fromTeam?.managerName}
-											←
-										{/if}
-
-										{#if event.fromTeam?.managerName}
-											{event.fromTeam.managerName}
-										{/if}
-									</small>
-
-								{/if}
-
-
-							{:else if event.type === 'draft'}
-
-								<span>
-									by
-									<b>
-										{event.team?.teamName ||
-											'Unknown franchise'}
-									</b>
-
-									{#if event.amount != null}
-										for
-										<b>
-											{money(
-												event.amount
-											)}
-										</b>
-									{/if}
-								</span>
-
-
-								{#if event.team?.managerName}
-
-									<small>
-										{event.team.managerName}
-									</small>
-
-								{/if}
-
-
-							{:else if event.type === 'keeper'}
-
-								<span>
-									kept by
-									<b>
-										{event.team?.teamName ||
-											'Unknown franchise'}
-									</b>
-
-									{#if event.amount != null}
-										for
-										<b>
-											{money(
-												event.amount
-											)}
-										</b>
-									{/if}
-								</span>
-
-
-								{#if event.team?.managerName}
-
-									<small>
-										{event.team.managerName}
-									</small>
-
-								{/if}
-
-
-							{:else if event.type === 'waiver'}
-
-								<span>
-									claimed by
-									<b>
-										{event.team?.teamName ||
-											'Unknown franchise'}
-									</b>
-
-									{#if event.amount != null}
-										for
-										<b>
-											{money(
-												event.amount
-											)}
-											FAAB
-										</b>
-									{/if}
-								</span>
-
-
-								{#if event.week}
-
-									<small>
-										Week {event.week}
-										{#if event.team?.managerName}
-											· {event.team.managerName}
-										{/if}
-									</small>
-
-								{/if}
-
-
-							{:else if event.type === 'drop'}
-
-								<span>
-									by
-									<b>
-										{event.team?.teamName ||
-											'Unknown franchise'}
-									</b>
-								</span>
-
-
-								<small>
-									{#if event.week}
-										Week {event.week}
-									{/if}
-
-									{#if event.week && event.team?.managerName}
-										·
-									{/if}
-
-									{#if event.team?.managerName}
-										{event.team.managerName}
-									{/if}
-								</small>
-
-
-							{:else}
-
-								<span>
-									from Free Agency by
-									<b>
-										{event.team?.teamName ||
-											'Unknown franchise'}
-									</b>
-								</span>
-
-
-								<small>
-									{#if event.week}
-										Week {event.week}
-									{/if}
-
-									{#if event.week && event.team?.managerName}
-										·
-									{/if}
-
-									{#if event.team?.managerName}
-										{event.team.managerName}
-									{/if}
-								</small>
-
-							{/if}
-
-						</div>
-
-						{#if
-  event.type === 'trade' &&
-  event.draftCapital?.length
-}
-
-  <div class="history-capital">
-
-    {#each
-      event.draftCapital
-      as capital
-    }
-
-      <span class="history-capital-chip">
-
-        <b>
-          {money(
-            capital.amount
-          )}
-        </b>
-
-        <em>
-          {capital.futuresYear}
-          draft capital
-        </em>
-
-        <small>
-          {capitalDirection(
-            event,
-            capital
-          )}
-        </small>
-
-      </span>
-
-    {/each}
-
-  </div>
-
-{/if}
-						{#if event.assets?.length}
-
-							<div class="history-assets">
-
-								{#each event.assets as asset}
-
-									<span
-										class:incoming={asset.direction === 'in'}
-										class:outgoing={asset.direction === 'out'}
+					{:else if irvingHistory.length}
+						<div class="history-list">
+							{#each irvingHistory as event (event.id)}
+								<article class="history-row">
+									<div
+										class={`history-icon ${historyClass(
+											event.type
+										)}`}
+										aria-hidden="true"
 									>
+										{historyIcon(event.type)}
+									</div>
 
-										<b>
-											{asset.direction === 'in'
-												? '+'
-												: '−'}
-										</b>
+									<div class="history-event">
+										<div class="history-event-top">
+											<strong>
+												{event.label}
+											</strong>
 
-										{#if asset.kind === 'player'}
+											<span>
+												{historyDate(
+													event.timestamp
+												)}
+											</span>
+										</div>
 
-											{asset.shortName}
+										<div class="history-copy">
+											{#if event.type === 'trade'}
+												<span>
+													to
+													<b>
+														{event.toTeam
+															?.teamName ||
+															'Unknown franchise'}
+													</b>
 
-										{:else}
+													{#if event.fromTeam?.teamName}
+														from
+														<b>
+															{event.fromTeam
+																.teamName}
+														</b>
+													{/if}
+												</span>
 
-											{asset.label}
+												{#if event.toTeam?.managerName ||
+													event.fromTeam?.managerName}
+													<small>
+														{#if event.toTeam?.managerName}
+															{event.toTeam
+																.managerName}
+														{/if}
 
+														{#if event.toTeam?.managerName &&
+															event.fromTeam?.managerName}
+															←
+														{/if}
+
+														{#if event.fromTeam?.managerName}
+															{event.fromTeam
+																.managerName}
+														{/if}
+													</small>
+												{/if}
+
+											{:else if event.type === 'draft'}
+												<span>
+													by
+													<b>
+														{event.team?.teamName ||
+															'Unknown franchise'}
+													</b>
+
+													{#if event.amount != null}
+														for
+														<b>
+															{money(
+																event.amount
+															)}
+														</b>
+													{/if}
+												</span>
+
+												{#if event.team?.managerName}
+													<small>
+														{event.team
+															.managerName}
+													</small>
+												{/if}
+
+											{:else if event.type === 'keeper'}
+												<span>
+													kept by
+													<b>
+														{event.team?.teamName ||
+															'Unknown franchise'}
+													</b>
+
+													{#if event.amount != null}
+														for
+														<b>
+															{money(
+																event.amount
+															)}
+														</b>
+													{/if}
+												</span>
+
+												{#if event.team?.managerName}
+													<small>
+														{event.team
+															.managerName}
+													</small>
+												{/if}
+
+											{:else if event.type === 'waiver'}
+												<span>
+													claimed by
+													<b>
+														{event.team?.teamName ||
+															'Unknown franchise'}
+													</b>
+
+													{#if event.amount != null}
+														for
+														<b>
+															{money(
+																event.amount
+															)}
+															FAAB
+														</b>
+													{/if}
+												</span>
+
+												{#if event.week}
+													<small>
+														Week {event.week}
+
+														{#if event.team?.managerName}
+															·
+															{event.team
+																.managerName}
+														{/if}
+													</small>
+												{/if}
+
+											{:else if event.type === 'drop'}
+												<span>
+													by
+													<b>
+														{event.team?.teamName ||
+															'Unknown franchise'}
+													</b>
+												</span>
+
+												<small>
+													{#if event.week}
+														Week {event.week}
+													{/if}
+
+													{#if event.week &&
+														event.team?.managerName}
+														·
+													{/if}
+
+													{#if event.team?.managerName}
+														{event.team
+															.managerName}
+													{/if}
+												</small>
+
+											{:else}
+												<span>
+													from Free Agency by
+													<b>
+														{event.team?.teamName ||
+															'Unknown franchise'}
+													</b>
+												</span>
+
+												<small>
+													{#if event.week}
+														Week {event.week}
+													{/if}
+
+													{#if event.week &&
+														event.team?.managerName}
+														·
+													{/if}
+
+													{#if event.team?.managerName}
+														{event.team
+															.managerName}
+													{/if}
+												</small>
+											{/if}
+										</div>
+
+										{#if
+											event.type === 'trade' &&
+											event.draftCapital?.length
+										}
+											<div class="history-capital">
+												{#each event.draftCapital as capital}
+													<span
+														class="history-capital-chip"
+													>
+														<b>
+															{money(
+																capital.amount
+															)}
+														</b>
+
+														<em>
+															{capital.futuresYear}
+															draft capital
+														</em>
+
+														<small>
+															{capitalDirection(
+																event,
+																capital
+															)}
+														</small>
+													</span>
+												{/each}
+											</div>
 										{/if}
 
-									</span>
+										{#if event.assets?.length}
+											<div class="history-assets">
+												{#each event.assets as asset}
+													<span
+														class:incoming={asset.direction ===
+															'in'}
+														class:outgoing={asset.direction ===
+															'out'}
+													>
+														<b>
+															{asset.direction ===
+															'in'
+																? '+'
+																: '−'}
+														</b>
 
-								{/each}
+														{#if asset.kind === 'player'}
+															{asset.shortName}
+														{:else}
+															{asset.label}
+														{/if}
+													</span>
+												{/each}
+											</div>
+										{/if}
+									</div>
+								</article>
+							{/each}
+						</div>
 
-							</div>
+					{:else}
+						<div class="history-empty">
+							<strong>
+								No Irving Transactions Found
+							</strong>
 
-						{/if}
-
-					</div>
-
-				</div>
-
-			{/each}
-
-		</div>
-
-
-	{:else}
-
-		<div class="history-empty">
-
-			<strong>
-				No Irving transactions found.
-			</strong>
-
-			<span>
-				This player has no draft,
-				trade, waiver, free-agent,
-				or drop history in the
-				available league archive.
-			</span>
-
-		</div>
-
-	{/if}
-
-</section>
+							<span>
+								This player has no draft,
+								trade, waiver, free-agent,
+								keeper, or drop history in
+								the available league archive.
+							</span>
+						</div>
+					{/if}
+				</section>
 
 				<footer class="modal-footer">
-					<span> Profile: Sleeper </span>
+					<span>
+						Profile
+						<strong>Sleeper</strong>
+					</span>
 
-					<span> Stats: nflverse / nflfastR </span>
+					<span>
+						Stats
+						<strong>nflverse / nflfastR</strong>
+					</span>
 
-					<span> Fantasy points: Half-PPR </span>
+					<span>
+						Scoring
+						<strong>Half-PPR</strong>
+					</span>
 				</footer>
 			{/if}
 		</section>
@@ -1691,522 +1758,1264 @@ function capitalDirection(
 
 		padding: 22px;
 
-		background: rgba(3, 7, 7, 0.78);
+		background:
+			rgba(3, 6, 6, 0.82);
 
-		backdrop-filter: blur(7px);
+		backdrop-filter:
+			blur(9px);
 	}
 
-	.icl-hero-shell {
-		border-radius: 0 0 16px 16px;
-	}
+
+	/* ==================================================
+	   MODAL SHELL
+	   ================================================== */
 
 	.player-modal {
-		width: min(1080px, 96vw);
+		width:
+			min(
+				1240px,
+				96vw
+			);
 
-		max-height: min(860px, 92vh);
+		max-height:
+			min(
+				900px,
+				94vh
+			);
 
 		overflow: auto;
 
-		border: 2px solid #050606;
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.42
+			);
 
-		border-radius: 16px;
+		border-radius: 14px;
 
+		background:
+			#0b0f0e;
 
+		box-shadow:
+			0 28px 80px
+				rgba(
+					0,
+					0,
+					0,
+					0.68
+				);
+
+		scrollbar-color:
+			rgba(
+				191,
+				161,
+				106,
+				0.45
+			)
+			transparent;
 	}
+
+
+	.player-modal::-webkit-scrollbar {
+		width: 9px;
+	}
+
+
+	.player-modal::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+
+	.player-modal::-webkit-scrollbar-thumb {
+		border-radius: 99px;
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				0.35
+			);
+	}
+
+
+	/* ==================================================
+	   TOP BAR
+	   ================================================== */
 
 	.modal-topbar {
 		position: sticky;
 		top: 0;
-		z-index: 4;
+		z-index: 10;
+
+		min-height: 52px;
 
 		display: grid;
 
 		grid-template-columns:
-			64px
 			minmax(0, 1fr)
+			auto
 			52px;
 
 		align-items: stretch;
 
-		border-bottom: 2px solid #050606;
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.25
+			);
 
-		background: linear-gradient(180deg, #1a1e1c, #070808);
+		background:
+			rgba(
+				7,
+				10,
+				9,
+				0.97
+			);
+
+		backdrop-filter:
+			blur(10px);
 	}
 
-	.modal-network {
-		display: grid;
 
+	.modal-brand {
+		min-width: 0;
+
+		display: flex;
+		align-items: center;
+
+		gap: 13px;
+
+		padding-left: 13px;
+	}
+
+
+	.icl-mark {
+		width: 36px;
+		height: 36px;
+
+		display: grid;
 		place-items: center;
 
-		background: linear-gradient(180deg, var(--bug-red, #c7192f), var(--bug-red-dark, #7f0e1b));
+		flex: 0 0 auto;
 
-		border-right: 2px solid #050606;
+		border:
+			1px solid
+			var(
+				--brand-gold,
+				#bfa16a
+			);
 
-		font-family: var(--font-score);
+		color:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
 
-		font-weight: 950;
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 1.05rem;
+
+		line-height: 1;
 	}
 
-	.modal-title {
-		display: flex;
 
+	.modal-title {
+		min-width: 0;
+
+		display: flex;
 		align-items: baseline;
 
 		gap: 10px;
-
-		padding: 10px 14px;
-
-		min-width: 0;
 	}
 
-	.modal-title span {
-		color: var(--bug-yellow, #ffd34d);
 
-		font-family: var(--font-score);
+	.modal-title span,
+	.modal-collective,
+	.state-kicker,
+	.eyebrow,
+	.context-kicker,
+	.keeper-note span,
+	.bio-grid span,
+	.summary-strip span {
+		font-size: 0.62rem;
+		font-weight: 850;
 
-		font-size: 0.64rem;
-
-		font-weight: 950;
-
-		letter-spacing: 0.14em;
+		letter-spacing: 0.11em;
 
 		text-transform: uppercase;
-
-		white-space: nowrap;
 	}
+
+
+	.modal-title span {
+		color:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
+	}
+
 
 	.modal-title strong {
+		min-width: 0;
+
 		overflow: hidden;
 
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-size: 0.84rem;
+
 		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+
+	.modal-collective {
+		display: flex;
+		align-items: center;
+
+		padding: 0 17px;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.45
+			);
 
 		white-space: nowrap;
-
-		font-size: 0.95rem;
 	}
+
 
 	.modal-close {
 		border: 0;
 
-		border-left: 2px solid #050606;
+		border-left:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.22
+			);
 
-		background: linear-gradient(180deg, #656d69, #202523);
+		background: transparent;
 
-		color: white;
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
 
-		font-size: 1.8rem;
+		font-size: 1.75rem;
 
 		cursor: pointer;
+
+		transition:
+			background 0.13s ease,
+			color 0.13s ease;
 	}
+
 
 	.modal-close:hover {
-		background: linear-gradient(180deg, var(--bug-red, #c7192f), var(--bug-red-dark, #7f0e1b));
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				0.12
+			);
+
+		color:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
 	}
+
+
+	/* ==================================================
+	   LOADING / ERROR
+	   ================================================== */
 
 	.modal-state {
-		min-height: 430px;
+		min-height: 520px;
 
 		display: grid;
-
 		place-items: center;
-
 		align-content: center;
 
-		gap: 10px;
+		gap: 12px;
 
-		padding: 30px;
-
-		text-align: center;
-
-		color: rgba(255, 255, 255, 0.68);
-	}
-
-	.modal-state strong {
-		color: white;
-
-		font-size: 1.25rem;
-	}
-
-	.modal-state button {
-		padding: 8px 12px;
-
-		cursor: pointer;
-	}
-
-	.loading-bar {
-		width: min(320px, 70vw);
-
-		height: 8px;
-
-		overflow: hidden;
-
-		border: 1px solid #050606;
-
-		border-radius: 99px;
-
-		background: #111;
-	}
-
-	.loading-bar span {
-		display: block;
-
-		width: 42%;
-		height: 100%;
-
-		background: var(--bug-yellow, #ffd34d);
-
-		animation: load-slide 1s ease-in-out infinite alternate;
-	}
-
-	@keyframes load-slide {
-		from {
-			transform: translateX(-25%);
-		}
-
-		to {
-			transform: translateX(165%);
-		}
-	}
-
-	.player-hero {
-		display: grid;
-
-		grid-template-columns:
-		225px
-		minmax(0, 1fr)
-		220px;
-
-	min-height: 250px;
-
-
-		border-bottom: 2px solid #050606;
-	}
-
-	.portrait-bay {
-		position: relative;
-
-		display: grid;
-
-		place-items: end center;
-
-		overflow: hidden;
-
-		border-right: 1px solid rgba(255, 255, 255, 0.08);
-
-		background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.18), transparent 46%);
-	}
-
-.portrait-bay img {
-	position: absolute;
-
-	left: 50%;
-	bottom: -4px;
-
-	width: 235px;
-	height: 275px;
-
-	max-width: none;
-
-	object-fit: contain;
-	object-position: center bottom;
-
-	transform:
-		translateX(-50%)
-		scale(1.35);
-
-	transform-origin: center bottom;
-
-	filter:
-		drop-shadow(
-			0 15px 18px
-			rgba(0, 0, 0, 0.48)
-		);
-}
-
-	.position-bug {
-		position: absolute;
-
-		left: 0;
-		bottom: 0;
-
-		min-width: 58px;
-
-		padding: 8px 12px;
-
-		background: var(--bug-red, #c7192f);
-
-		border-top: 2px solid #050606;
-
-		border-right: 2px solid #050606;
-
-		font-family: var(--font-score);
-
-		font-weight: 950;
+		padding: 40px;
 
 		text-align: center;
 	}
 
-	.hero-main {
-		padding: 22px 24px;
-	}
 
+	.state-kicker,
 	.eyebrow,
-	.season-toolbar span,
-	.irving-context > span,
-	.bio-grid span,
-	.summary-strip span {
-		color: var(--bug-yellow, #ffd34d);
+	.context-kicker {
+		color:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
+	}
 
-		font-family: var(--font-score);
 
-		font-size: 0.62rem;
+	.modal-state h2 {
+		margin: 0;
 
-		font-weight: 950;
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
 
-		letter-spacing: 0.13em;
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size:
+			clamp(
+				2.8rem,
+				6vw,
+				4.5rem
+			);
+
+		font-weight: 400;
+
+		line-height: 0.9;
 
 		text-transform: uppercase;
 	}
 
-	.hero-main h2 {
-		margin: 5px 0 2px;
 
-		font-family: var(--font-display);
+	.modal-state p {
+		max-width: 500px;
 
-		font-size: clamp(2.25rem, 4.8vw, 4.25rem);
+		margin: 0;
 
-		line-height: 0.92;
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.58
+			);
 
-		letter-spacing: -0.045em;
-
-		text-shadow: 0 3px 0 #000;
+		line-height: 1.55;
 	}
 
-	.player-subline {
-		color: rgba(255, 255, 255, 0.75);
 
-		font-family: var(--font-score);
+	.loading-bar {
+		width:
+			min(
+				340px,
+				70vw
+			);
 
-		font-weight: 900;
+		height: 3px;
+
+		overflow: hidden;
+
+		margin: 5px 0;
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				0.13
+			);
 	}
 
-	.bio-grid {
-		display: grid;
 
-		grid-template-columns: repeat(5, minmax(0, auto));
-
-		margin-top: 22px;
-	}
-
-	.bio-grid > div {
-		padding: 0 13px;
-
-		border-left: 1px solid rgba(255, 255, 255, 0.16);
-	}
-
-	.bio-grid > div:first-child {
-		padding-left: 0;
-		border-left: 0;
-	}
-
-	.bio-grid strong {
+	.loading-bar span {
 		display: block;
 
-		margin-top: 3px;
+		width: 38%;
+		height: 100%;
 
-		font-size: 1.05rem;
+		background:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
 
-		white-space: nowrap;
+		animation:
+			load-slide
+			0.9s
+			ease-in-out
+			infinite
+			alternate;
 	}
 
-	.bio-grid .college {
-		min-width: 150px;
+
+	@keyframes load-slide {
+		from {
+			transform:
+				translateX(-25%);
+		}
+
+		to {
+			transform:
+				translateX(190%);
+		}
 	}
 
-	.status-line {
-		display: flex;
 
-		align-items: center;
+	.retry-button {
+		min-height: 38px;
 
-		gap: 7px;
+		margin-top: 8px;
+		padding: 0 15px;
 
-		margin-top: 18px;
+		border:
+			1px solid
+			var(
+				--brand-gold,
+				#bfa16a
+			);
 
-		color: rgba(255, 255, 255, 0.68);
+		background:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
 
-		font-size: 0.78rem;
-	}
+		color: #101211;
 
-	.status-dot {
-		width: 8px;
-		height: 8px;
+		font: inherit;
 
-		border-radius: 50%;
+		font-size: 0.68rem;
+		font-weight: 850;
 
-		background: var(--bug-green, #45a16a);
-	}
-
-	.status-line.injured .status-dot {
-		background: #ff7d6b;
-	}
-
-	.irving-context {
-		align-self: stretch;
-
-		display: grid;
-
-		align-content: center;
-
-		gap: 5px;
-
-		padding: 18px;
-
-		border-left: 2px solid #050606;
-
-		background: linear-gradient(180deg, rgba(255, 216, 77, 0.08), rgba(0, 0, 0, 0.18));
-	}
-
-	.irving-context strong {
-		font-size: 1.05rem;
-	}
-
-	.irving-context small {
-		color: rgba(255, 255, 255, 0.62);
-	}
-
-	.irving-context b {
-		margin-top: 7px;
-
-		color: var(--bug-yellow, #ffd34d);
-
-		font-family: var(--font-score);
-
-		font-size: 0.9rem;
-	}
-
-	.irving-context .context-ineligible {
-		color: #ff7777;
-
-		font-size: 0.72rem;
-	}
-
-	.irving-context em {
-		color: rgba(255, 255, 255, 0.55);
-
-		font-size: 0.72rem;
-
-		font-style: normal;
-	}
-
-	.free-agent-label {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.72
-		) !important;
-}
-
-	.season-toolbar {
-		display: flex;
-
-		justify-content: space-between;
-
-		align-items: center;
-
-		gap: 14px;
-
-		padding: 12px 16px;
-
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-
-		background: rgba(0, 0, 0, 0.16);
-	}
-
-	.season-toolbar > div:first-child {
-		display: grid;
-		gap: 2px;
-	}
-
-	.season-toolbar strong {
-		font-size: 0.95rem;
-	}
-
-	.season-pills {
-		display: flex;
-
-		gap: 7px;
-
-		flex-wrap: wrap;
-	}
-
-	.season-pills button {
-		min-width: 55px;
-
-		padding: 7px 10px;
-
-		border: 1px solid #050606;
-
-		border-radius: 7px;
-
-		background: linear-gradient(180deg, #69716d, #242927);
-
-		color: white;
-
-		font-family: var(--font-score);
-
-		font-weight: 950;
+		text-transform: uppercase;
 
 		cursor: pointer;
 	}
 
-	.season-pills button.active,
-	.season-pills button:hover {
-		background: linear-gradient(180deg, var(--bug-red, #c7192f), var(--bug-red-dark, #7f0e1b));
+
+	/* ==================================================
+	   PLAYER HERO
+	   ================================================== */
+
+	.player-hero {
+		position: relative;
+
+		min-height: 290px;
+
+		display: grid;
+
+		grid-template-columns:
+			260px
+			minmax(0, 1fr)
+			250px;
+
+		overflow: hidden;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.22
+			);
+
+		background:
+			linear-gradient(
+				105deg,
+				rgba(
+					191,
+					161,
+					106,
+					0.045
+				),
+				transparent
+				46%
+			),
+			#111614;
 	}
+
+
+	.hero-watermark {
+		position: absolute;
+
+		right: -18px;
+		bottom: -36px;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				0.018
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size:
+			clamp(
+				7rem,
+				14vw,
+				12rem
+			);
+
+		line-height: 0.8;
+
+		pointer-events: none;
+	}
+
+
+	/* ==================================================
+	   PORTRAIT
+	   ================================================== */
+
+	.portrait-bay {
+		position: relative;
+
+		min-height: 290px;
+
+		overflow: hidden;
+
+		border-right:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.16
+			);
+
+		background:
+			radial-gradient(
+				circle at 50% 47%,
+				rgba(
+					241,
+					237,
+					227,
+					0.1
+				),
+				transparent 55%
+			),
+			#141918;
+	}
+
+
+	.portrait-bay img {
+		position: absolute;
+
+		left: 50%;
+		bottom: -8px;
+
+		width: 270px;
+		height: 315px;
+
+		max-width: none;
+
+		object-fit: contain;
+		object-position: center bottom;
+
+		transform:
+			translateX(-50%)
+			scale(1.16);
+
+		transform-origin:
+			center bottom;
+
+		filter:
+			drop-shadow(
+				0 18px 20px
+				rgba(
+					0,
+					0,
+					0,
+					0.46
+				)
+			);
+	}
+
+
+	.portrait-watermark {
+		position: absolute;
+
+		left: 14px;
+		top: 11px;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				0.07
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 7.5rem;
+
+		line-height: 1;
+	}
+
+
+	.position-label {
+		position: absolute;
+
+		left: 17px;
+		bottom: 15px;
+
+		z-index: 2;
+
+		padding:
+			5px 8px;
+
+		border:
+			1px solid
+			var(
+				--brand-gold,
+				#bfa16a
+			);
+
+		background:
+			rgba(
+				6,
+				9,
+				8,
+				0.86
+			);
+
+		color:
+			var(
+				--brand-sand,
+				#dbc392
+			);
+
+		font-size: 0.66rem;
+		font-weight: 900;
+
+		letter-spacing: 0.08em;
+
+		text-transform: uppercase;
+	}
+
+
+	/* ==================================================
+	   PLAYER INFO
+	   ================================================== */
+
+	.hero-main {
+		position: relative;
+		z-index: 2;
+
+		align-self: center;
+
+		min-width: 0;
+
+		padding:
+			28px 32px;
+	}
+
+
+	.hero-main h1 {
+		max-width: 650px;
+
+		margin: 6px 0 0;
+
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size:
+			clamp(
+				3.8rem,
+				6vw,
+				6rem
+			);
+
+		font-weight: 400;
+
+		line-height: 0.84;
+
+		letter-spacing: -0.025em;
+
+		text-transform: uppercase;
+
+		text-wrap: balance;
+	}
+
+
+	.player-subline {
+		margin-top: 11px;
+
+		color:
+			var(
+				--brand-sand,
+				#dbc392
+			);
+
+		font-size: 0.9rem;
+		font-weight: 800;
+	}
+
+
+	.bio-grid {
+		display: grid;
+
+		grid-template-columns:
+			repeat(
+				5,
+				minmax(
+					0,
+					auto
+				)
+			);
+
+		width: fit-content;
+
+		margin-top: 26px;
+	}
+
+
+	.bio-grid > div {
+		min-width: 90px;
+
+		padding:
+			0 16px;
+
+		border-left:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.2
+			);
+	}
+
+
+	.bio-grid > div:first-child {
+		padding-left: 0;
+
+		border-left: 0;
+	}
+
+
+	.bio-grid span {
+		display: block;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				0.76
+			);
+	}
+
+
+	.bio-grid strong {
+		display: block;
+
+		margin-top: 5px;
+
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-size: 1rem;
+
+		white-space: nowrap;
+	}
+
+
+	.bio-grid .college {
+		min-width: 140px;
+	}
+
+
+	.status-line {
+		display: flex;
+		align-items: center;
+
+		gap: 7px;
+
+		margin-top: 21px;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.58
+			);
+
+		font-size: 0.74rem;
+	}
+
+
+	.status-dot {
+		width: 7px;
+		height: 7px;
+
+		border-radius: 50%;
+
+		background:
+			#7ea889;
+
+		box-shadow:
+			0 0 8px
+				rgba(
+					126,
+					168,
+					137,
+					0.42
+				);
+	}
+
+
+	.status-line.injured
+	.status-dot {
+		background:
+			#bf776d;
+
+		box-shadow:
+			0 0 8px
+				rgba(
+					191,
+					119,
+					109,
+					0.35
+				);
+	}
+
+
+	/* ==================================================
+	   IRVING CONTEXT
+	   ================================================== */
+
+	.irving-context {
+		position: relative;
+		z-index: 2;
+
+		align-self: stretch;
+
+		display: grid;
+		align-content: center;
+
+		gap: 5px;
+
+		padding:
+			24px 22px;
+
+		border-left:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.2
+			);
+
+		background:
+			rgba(
+				5,
+				8,
+				7,
+				0.34
+			);
+	}
+
+
+	.context-team {
+		margin-top: 5px;
+
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-size: 1.05rem;
+
+		line-height: 1.2;
+	}
+
+
+	.context-team.unavailable {
+		font-size: 0.82rem;
+
+		text-transform: uppercase;
+	}
+
+
+	.irving-context > small {
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.5
+			);
+
+		font-size: 0.7rem;
+	}
+
+
+	.free-agent-label {
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.65
+			);
+	}
+
+
+	.keeper-note {
+		display: grid;
+
+		gap: 3px;
+
+		margin-top: 18px;
+		padding-top: 13px;
+
+		border-top:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.16
+			);
+	}
+
+
+	.keeper-note span {
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				0.7
+			);
+	}
+
+
+	.keeper-note strong {
+		color:
+			var(
+				--brand-sand,
+				#dbc392
+			);
+
+		font-size: 0.88rem;
+	}
+
+
+	.keeper-note.ineligible strong {
+		color:
+			#c48077;
+	}
+
+
+	.context-note {
+		margin: 10px 0 0;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.48
+			);
+
+		font-size: 0.67rem;
+
+		font-style: italic;
+
+		line-height: 1.45;
+	}
+
+
+	/* ==================================================
+	   SEASON DESK
+	   ================================================== */
+
+	.season-desk {
+		display: flex;
+
+		justify-content: space-between;
+		align-items: end;
+
+		gap: 20px;
+
+		padding:
+			18px 24px
+			13px;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.2
+			);
+
+		background:
+			#090d0c;
+	}
+
+
+	.season-heading h2 {
+		margin: 4px 0 0;
+
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 1.65rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+
+		text-transform: uppercase;
+	}
+
+
+	.season-pills {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		gap: 5px;
+	}
+
+
+	.season-pills button {
+		min-width: 55px;
+		min-height: 32px;
+
+		padding:
+			0 10px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.25
+			);
+
+		background:
+			transparent;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.55
+			);
+
+		font: inherit;
+
+		font-size: 0.67rem;
+		font-weight: 850;
+
+		cursor: pointer;
+
+		transition:
+			color 0.12s ease,
+			border-color 0.12s ease,
+			background 0.12s ease;
+	}
+
+
+	.season-pills button:hover {
+		border-color:
+			rgba(
+				191,
+				161,
+				106,
+				0.7
+			);
+
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+	}
+
+
+	.season-pills button.active {
+		border-color:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
+
+		background:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
+
+		color:
+			#101211;
+	}
+
+
+	/* ==================================================
+	   SUMMARY STRIP
+	   ================================================== */
 
 	.summary-strip {
 		display: grid;
 
-		grid-template-columns: repeat(5, minmax(0, 1fr));
+		grid-template-columns:
+			repeat(
+				5,
+				minmax(
+					0,
+					1fr
+				)
+			);
 
-		border-bottom: 2px solid #050606;
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.2
+			);
 
-		background: linear-gradient(180deg, #4d5551, #252a28);
+		background:
+			#101513;
 	}
+
 
 	.summary-strip > div {
-		padding: 11px 14px;
+		min-height: 68px;
 
-		border-right: 1px solid rgba(255, 255, 255, 0.08);
+		display: grid;
+		align-content: center;
+
+		gap: 4px;
+
+		padding:
+			10px 18px;
+
+		border-right:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.14
+			);
 	}
+
 
 	.summary-strip > div:last-child {
 		border-right: 0;
 	}
 
-	.summary-strip strong {
-		display: block;
 
-		margin-top: 3px;
-
-		font-family: var(--font-score);
-
-		font-size: 1.2rem;
+	.summary-strip span {
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				0.7
+			);
 	}
+
+
+	.summary-strip strong {
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 1.7rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+	}
+
+
+	/* ==================================================
+	   GAME LOG
+	   ================================================== */
 
 	.game-log-shell {
 		position: relative;
 
-		min-height: 230px;
+		min-height: 240px;
 
-		background: #171b1a;
+		background:
+			#0d1210;
 	}
+
 
 	.game-log-scroll {
 		overflow-x: auto;
 	}
+
 
 	table {
 		width: 100%;
@@ -2215,812 +3024,1344 @@ function capitalDirection(
 
 		border-collapse: collapse;
 
-		font-size: 0.78rem;
+		font-size: 0.74rem;
 	}
+
 
 	th,
 	td {
-		padding: 9px 8px;
+		padding:
+			10px 8px;
+
+		border-right:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.08
+			);
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.1
+			);
 
 		text-align: center;
-
-		border-right: 1px solid rgba(255, 255, 255, 0.065);
-
-		border-bottom: 1px solid rgba(255, 255, 255, 0.065);
 	}
+
+
+	th:last-child,
+	td:last-child {
+		border-right: 0;
+	}
+
 
 	th {
-		background: #282e2b;
+		background:
+			#090d0c;
 
-		color: rgba(255, 255, 255, 0.72);
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				0.78
+			);
 
-		font-family: var(--font-score);
+		font-size: 0.57rem;
+		font-weight: 850;
 
-		font-size: 0.62rem;
+		letter-spacing: 0.07em;
 
-		letter-spacing: 0.04em;
+		text-transform: uppercase;
 	}
+
+
+	td {
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.73
+			);
+	}
+
 
 	tbody tr:nth-child(even) {
-		background: rgba(255, 255, 255, 0.025);
+		background:
+			rgba(
+				241,
+				237,
+				227,
+				0.018
+			);
 	}
 
+
 	tbody tr:hover {
-		background: rgba(199, 25, 47, 0.11);
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				0.055
+			);
 	}
+
 
 	th.fpts,
 	td.fpts {
-		background: rgba(255, 216, 77, 0.09);
+		border-left:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.25
+			);
+
+		border-right:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.25
+			);
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				0.045
+			);
 	}
+
 
 	td.fpts strong {
-		color: var(--bug-yellow, #ffd34d);
-
-		font-family: var(--font-score);
+		color:
+			var(
+				--brand-sand,
+				#dbc392
+			);
 	}
+
 
 	td.opp {
-		font-weight: 900;
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-weight: 850;
 	}
 
-	.table-loading {
-		position: absolute;
-
-		z-index: 2;
-
-		top: 0;
-		right: 0;
-
-		padding: 5px 10px;
-
-		background: var(--bug-yellow, #ffd34d);
-
-		color: #111;
-
-		font-family: var(--font-score);
-
-		font-size: 0.62rem;
-
-		font-weight: 950;
-	}
 
 	.no-games {
-		min-height: 230px;
+		min-height: 240px;
 
 		display: grid;
 
+		grid-template-columns:
+			auto
+			minmax(
+				0,
+				520px
+			);
+
+		place-content: center;
+
+		align-items: center;
+
+		gap: 25px;
+
+		padding: 35px;
+	}
+
+
+	.no-games-year {
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				0.18
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 4.5rem;
+
+		line-height: 1;
+	}
+
+
+	.no-games > div:last-child {
+		display: grid;
+
+		gap: 5px;
+	}
+
+
+	.no-games strong {
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-size: 0.95rem;
+	}
+
+
+	.no-games p {
+		margin: 0;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.52
+			);
+
+		font-size: 0.75rem;
+
+		line-height: 1.5;
+	}
+
+
+	/* ==================================================
+	   FRANCHISE TRAIL
+	   ================================================== */
+
+	.irving-history {
+		border-top:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.26
+			);
+
+		background:
+			#0a0e0d;
+	}
+
+
+	.history-header {
+		display: flex;
+
+		justify-content: space-between;
+		align-items: end;
+
+		gap: 20px;
+
+		padding:
+			22px 24px
+			15px;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.16
+			);
+	}
+
+
+	.history-header h2 {
+		margin: 4px 0 0;
+
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 2.2rem;
+
+		font-weight: 400;
+
+		line-height: 0.95;
+
+		text-transform: uppercase;
+	}
+
+
+	.history-count {
+		display: flex;
+
+		align-items: baseline;
+
+		gap: 5px;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.45
+			);
+
+		text-transform: uppercase;
+	}
+
+
+	.history-count strong {
+		color:
+			var(
+				--brand-sand,
+				#dbc392
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 1.8rem;
+
+		font-weight: 400;
+	}
+
+
+	.history-count span {
+		font-size: 0.57rem;
+		font-weight: 850;
+
+		letter-spacing: 0.07em;
+	}
+
+
+	.history-list {
+		display: grid;
+	}
+
+
+	.history-row {
+		display: grid;
+
+		grid-template-columns:
+			54px
+			minmax(
+				0,
+				1fr
+			);
+
+		min-height: 74px;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.11
+			);
+	}
+
+
+	.history-row:last-child {
+		border-bottom: 0;
+	}
+
+
+	.history-icon {
+		display: grid;
 		place-items: center;
 
-		align-content: center;
+		border-right:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.12
+			);
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.55
+			);
+
+		font-family:
+			var(
+				--font-display
+			);
+
+		font-size: 1.35rem;
+	}
+
+
+	.history-icon.trade {
+		color:
+			#9ab3bd;
+	}
+
+
+	.history-icon.draft {
+		color:
+			var(
+				--brand-gold,
+				#bfa16a
+			);
+	}
+
+
+	.history-icon.keeper {
+		color:
+			#c6a16c;
+	}
+
+
+	.history-icon.waiver {
+		color:
+			#82a68d;
+	}
+
+
+	.history-icon.free-agent {
+		color:
+			#8ca5a6;
+	}
+
+
+	.history-icon.drop {
+		color:
+			#b77d75;
+	}
+
+
+	.history-event {
+		min-width: 0;
+
+		display: grid;
 
 		gap: 6px;
 
-		padding: 25px;
-
-		text-align: center;
-
-		color: rgba(255, 255, 255, 0.58);
+		padding:
+			12px 15px;
 	}
 
-	.no-games strong {
-		color: white;
-	}
-	.irving-history {
-	border-top:
-		2px solid
-		#050606;
 
-	background:
-		linear-gradient(
-			180deg,
-			#252b29,
-			#111413
-		);
-}
-
-.history-capital {
-	display:
-		flex;
-
-	flex-wrap:
-		wrap;
-
-	gap:
-		6px;
-
-	margin-top:
-		5px;
-}
-
-
-.history-capital-chip {
-	display:
-		inline-flex;
-
-	align-items:
-		center;
-
-	flex-wrap:
-		wrap;
-
-	gap:
-		5px;
-
-	padding:
-		4px
-		8px;
-
-	border:
-		1px solid
-		rgba(
-			255,
-			211,
-			77,
-			.34
-		);
-
-	border-radius:
-		5px;
-
-	background:
-		rgba(
-			255,
-			211,
-			77,
-			.07
-		);
-
-	font-size:
-		.66rem;
-}
-
-
-.history-capital-chip b {
-	color:
-		var(
-			--bug-yellow,
-			#ffd34d
-		);
-
-	font-family:
-		var(
-			--font-score
-		);
-
-	font-size:
-		.72rem;
-
-	font-weight:
-		950;
-}
-
-
-.history-capital-chip em {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.82
-		);
-
-	font-style:
-		normal;
-
-	font-weight:
-		900;
-
-	text-transform:
-		uppercase;
-
-	letter-spacing:
-		.04em;
-}
-
-
-.history-capital-chip small {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.48
-		);
-
-	font-size:
-		.62rem;
-}
-.history-header {
-	display: flex;
-
-	align-items:
-		center;
-
-	justify-content:
-		space-between;
-
-	gap: 16px;
-
-	padding:
-		13px
-		16px;
-
-	border-bottom:
-		1px solid
-		rgba(
-			255,
-			255,
-			255,
-			.08
-		);
-
-	background:
-		rgba(
-			0,
-			0,
-			0,
-			.17
-		);
-}
-
-
-.history-header > div {
-	display: grid;
-	gap: 2px;
-}
-
-
-.history-header span {
-	color:
-		var(
-			--bug-yellow,
-			#ffd34d
-		);
-
-	font-family:
-		var(
-			--font-score
-		);
-
-	font-size:
-		.62rem;
-
-	font-weight:
-		950;
-
-	letter-spacing:
-		.12em;
-
-	text-transform:
-		uppercase;
-}
-
-
-.history-header strong {
-	font-size:
-		1rem;
-}
-
-
-.history-header em {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.48
-		);
-
-	font-size:
-		.68rem;
-
-	font-style:
-		normal;
-
-	text-transform:
-		uppercase;
-
-	letter-spacing:
-		.06em;
-}
-
-
-.history-list {
-	display: grid;
-}
-
-
-.history-row {
-	display: grid;
-
-	grid-template-columns:
-		52px
-		minmax(
-			0,
-			1fr
-		);
-
-	min-height:
-		70px;
-
-	border-bottom:
-		1px solid
-		rgba(
-			255,
-			255,
-			255,
-			.07
-		);
-}
-
-
-.history-row:last-child {
-	border-bottom: 0;
-}
-
-
-.history-icon {
-	display: grid;
-
-	place-items:
-		center;
-
-	border-right:
-		1px solid
-		rgba(
-			255,
-			255,
-			255,
-			.07
-		);
-
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.72
-		);
-
-	font-family:
-		var(
-			--font-score
-		);
-
-	font-size:
-		1rem;
-
-	font-weight:
-		950;
-}
-
-
-.history-icon.trade {
-	color:
-		#8fc5ff;
-}
-
-
-.history-icon.draft {
-	color:
-		var(
-			--bug-yellow,
-			#ffd34d
-		);
-}
-
-
-.history-icon.keeper {
-	color:
-		#ff9f55;
-}
-
-
-.history-icon.waiver {
-	color:
-		#72d89a;
-}
-
-
-.history-icon.free-agent {
-	color:
-		#73d5dc;
-}
-
-
-.history-icon.drop {
-	color:
-		#ff7d73;
-}
-
-
-.history-event {
-	min-width: 0;
-
-	display: grid;
-
-	gap: 5px;
-
-	padding:
-		10px
-		14px;
-}
-
-
-.history-event-top {
-	display: flex;
-
-	align-items:
-		center;
-
-	justify-content:
-		space-between;
-
-	gap: 12px;
-}
-
-
-.history-event-top strong {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.9
-		);
-
-	font-family:
-		var(
-			--font-score
-		);
-
-	font-size:
-		.67rem;
-
-	letter-spacing:
-		.04em;
-}
-
-
-.history-event-top span {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.46
-		);
-
-	font-size:
-		.63rem;
-
-	text-transform:
-		uppercase;
-}
-
-
-.history-copy {
-	display: grid;
-
-	gap: 2px;
-
-	font-size:
-		.78rem;
-
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.68
-		);
-}
-
-
-.history-copy span {
-	display: flex;
-
-	flex-wrap:
-		wrap;
-
-	align-items:
-		baseline;
-
-	gap: 4px;
-}
-
-
-.history-copy b {
-	color:
-		white;
-
-	font-weight:
-		900;
-}
-
-
-.history-copy small {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.45
-		);
-
-	font-size:
-		.66rem;
-}
-
-
-.history-assets {
-	display: flex;
-
-	flex-wrap:
-		wrap;
-
-	gap: 6px;
-
-	margin-top: 3px;
-}
-
-
-.history-assets span {
-	display: inline-flex;
-
-	align-items:
-		center;
-
-	gap: 4px;
-
-	padding:
-		3px
-		7px;
-
-	border:
-		1px solid
-		rgba(
-			255,
-			255,
-			255,
-			.08
-		);
-
-	border-radius:
-		5px;
-
-	background:
-		rgba(
-			0,
-			0,
-			0,
-			.2
-		);
-
-	font-size:
-		.65rem;
-
-	font-weight:
-		850;
-}
-
-
-.history-assets
-.incoming b {
-	color:
-		#72d89a;
-}
-
-
-.history-assets
-.outgoing b {
-	color:
-		#ff7d73;
-}
-
-
-.history-empty {
-	min-height:
-		90px;
-
-	display: grid;
-
-	place-items:
-		center;
-
-	align-content:
-		center;
-
-	gap: 4px;
-
-	padding:
-		18px;
-
-	text-align:
-		center;
-
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.48
-		);
-
-	font-size:
-		.75rem;
-}
-
-
-.history-empty strong {
-	color:
-		rgba(
-			255,
-			255,
-			255,
-			.8
-		);
-}
-	.modal-footer {
+	.history-event-top {
 		display: flex;
 
-		gap: 9px 18px;
+		justify-content: space-between;
+		align-items: baseline;
 
-		flex-wrap: wrap;
+		gap: 15px;
+	}
 
-		padding: 9px 14px;
 
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	.history-event-top strong {
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
 
-		background: #090b0a;
+		font-size: 0.72rem;
+		font-weight: 850;
 
-		color: rgba(255, 255, 255, 0.46);
+		letter-spacing: 0.02em;
+
+		text-transform: uppercase;
+	}
+
+
+	.history-event-top span {
+		flex: 0 0 auto;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.38
+			);
 
 		font-size: 0.64rem;
 
 		text-transform: uppercase;
+	}
+
+
+	.history-copy {
+		display: grid;
+
+		gap: 2px;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.62
+			);
+
+		font-size: 0.82rem;
+	line-height: 1.45;
+	}
+
+
+	.history-copy span {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		align-items: baseline;
+
+		gap: 4px;
+	}
+
+
+	.history-copy b {
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-weight: 850;
+	}
+
+
+	.history-copy small {
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.38
+			);
+
+		font-size: 0.69rem;
+	}
+
+
+	.history-capital {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		gap: 6px;
+
+		margin-top: 3px;
+	}
+
+
+	.history-capital-chip {
+		display: inline-flex;
+
+		align-items: center;
+
+		flex-wrap: wrap;
+
+		gap: 5px;
+
+		padding:
+			4px 7px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.28
+			);
+
+		background:
+			rgba(
+				191,
+				161,
+				106,
+				0.045
+			);
+
+		font-size: 0.66rem;
+	}
+
+
+	.history-capital-chip b {
+		color:
+			var(
+				--brand-gold,
+				#dbc392
+			);
+	}
+
+
+	.history-capital-chip em {
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.68
+			);
+
+		font-style: normal;
+		font-weight: 800;
+
+		text-transform: uppercase;
+	}
+
+
+	.history-capital-chip small {
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.36
+			);
+		font-size: 0.65rem;
+	}
+
+
+	.history-assets {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		gap: 5px;
+
+		margin-top: 2px;
+	}
+
+
+	.history-assets span {
+		display: inline-flex;
+
+		align-items: center;
+
+		gap: 4px;
+
+		padding:
+			3px 6px;
+
+		border:
+			1px solid
+			rgba(
+				241,
+				237,
+				227,
+				0.08
+			);
+
+		background:
+			rgba(
+				241,
+				237,
+				227,
+				0.018
+			);
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.62
+			);
+
+		font-size: 0.62rem;
+		font-weight: 800;
+	}
+
+
+	.history-assets
+	.incoming b {
+		color:
+			#82a68d;
+	}
+
+
+	.history-assets
+	.outgoing b {
+		color:
+			#b77d75;
+	}
+
+
+	.history-empty {
+		min-height: 120px;
+
+		display: grid;
+		place-items: center;
+		align-content: center;
+
+		gap: 5px;
+
+		padding: 22px;
+
+		text-align: center;
+	}
+
+
+	.history-empty strong {
+		color:
+			var(
+				--brand-ivory,
+				#f1ede3
+			);
+
+		font-size: 0.78rem;
+
+		text-transform: uppercase;
+	}
+
+
+	.history-empty span {
+		max-width: 520px;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.42
+			);
+
+		font-size: 0.7rem;
+
+		line-height: 1.5;
+	}
+
+
+	/* ==================================================
+	   FOOTER
+	   ================================================== */
+
+	.modal-footer {
+		display: flex;
+
+		flex-wrap: wrap;
+
+		gap: 8px 24px;
+
+		padding:
+			10px 16px;
+
+		border-top:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				0.13
+			);
+
+		background:
+			#070a09;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.32
+			);
+
+		font-size: 0.57rem;
+		font-weight: 700;
 
 		letter-spacing: 0.05em;
+
+		text-transform: uppercase;
 	}
 
-	@media (max-width: 900px) {
+
+	.modal-footer strong {
+		margin-left: 4px;
+
+		color:
+			rgba(
+				241,
+				237,
+				227,
+				0.52
+			);
+	}
+
+
+	/* ==================================================
+	   TABLET
+	   ================================================== */
+
+	@media (max-width: 980px) {
 		.player-modal-backdrop {
-			padding: 10px;
+			padding: 12px;
 		}
+
 
 		.player-modal {
-			width: min(100%, 760px);
+			width:
+				min(
+					820px,
+					100%
+				);
 
-			max-height: 95vh;
+			max-height:
+				calc(
+					100vh -
+					24px
+				);
 		}
 
-		@media (max-width: 900px) {
-	.player-hero {
-		grid-template-columns:
-			190px
-			minmax(0, 1fr);
-	}
-
-	.portrait-bay img {
-		width: 180px;
-		height: 215px;
-
-		transform: scale(1.08);
-		transform-origin: center bottom;
-	}
-
-	/* keep your existing Irving/context rules below */
-}
-
-		.irving-context {
-			grid-column: 1 / -1;
-
-			border-left: 0;
-
-			border-top: 2px solid #050606;
-		}
-
-		.bio-grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-
-			gap: 10px 0;
-		}
-		.history-row {
-	grid-template-columns:
-		42px
-		minmax(
-			0,
-			1fr
-		);
-}
-
-
-.history-event {
-	padding:
-		10px;
-}
-
-
-.history-event-top {
-	align-items:
-		flex-start;
-
-	flex-direction:
-		column;
-
-	gap: 2px;
-}
-	}
-
-	@media (max-width: 620px) {
-		.player-modal-backdrop {
-	padding: 10px;
-
-	place-items: center;
-}
-
-.player-modal {
-	width: calc(100% - 4px);
-	max-width: 390px;
-
-	height: auto;
-
-	min-height: 0;
-	max-height: calc(100vh - 20px);
-
-	border-radius: 14px;
-}
 
 		.player-hero {
-	grid-template-columns:
-		145px
-		minmax(0, 1fr);
+			grid-template-columns:
+				215px
+				minmax(
+					0,
+					1fr
+				);
+		}
 
-	min-height: 215px;
-}
 
-	.portrait-bay img {
-		width: 220px;
-		height: 250px;
+		.portrait-bay {
+			min-height: 275px;
+		}
 
-		max-width: none;
 
-		transform:
-			translateX(-50%)
-			scale(1.55);
+		.portrait-bay img {
+			width: 235px;
+			height: 285px;
+		}
 
-		transform-origin: center bottom;
-	}
+
+		.irving-context {
+			grid-column:
+				1 / -1;
+
+			display: grid;
+
+			grid-template-columns:
+				minmax(
+					0,
+					1fr
+				)
+				auto;
+
+			align-items: center;
+
+			gap:
+				4px 20px;
+
+			padding:
+				15px 20px;
+
+			border-top:
+				1px solid
+				rgba(
+					191,
+					161,
+					106,
+					0.18
+				);
+
+			border-left: 0;
+		}
+
+
+		.irving-context
+		.context-kicker,
+		.irving-context
+		.context-team,
+		.irving-context
+		> small,
+		.irving-context
+		.context-note {
+			grid-column: 1;
+		}
+
+
+		.irving-context
+		.keeper-note {
+			grid-column: 2;
+			grid-row:
+				1 / span 3;
+
+			margin-top: 0;
+			padding:
+				0 0 0 20px;
+
+			border-top: 0;
+
+			border-left:
+				1px solid
+				rgba(
+					191,
+					161,
+					106,
+					0.16
+				);
+		}
+
 
 		.hero-main {
-			padding: 17px 15px;
+			padding:
+				24px 25px;
 		}
 
-		.hero-main h2 {
-			font-size: 2.35rem;
+
+		.hero-main h1 {
+			font-size:
+				clamp(
+					3.4rem,
+					8vw,
+					5rem
+				);
 		}
+
 
 		.bio-grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+			grid-template-columns:
+				repeat(
+					3,
+					minmax(
+						0,
+						1fr
+					)
+				);
+
+			width: 100%;
+
+			gap: 15px 0;
+		}
+
+
+		.bio-grid .college {
+			grid-column:
+				span 2;
+		}
+	}
+
+
+	/* ==================================================
+	   MOBILE
+	   ================================================== */
+
+	@media (max-width: 640px) {
+		.player-modal-backdrop {
+			padding: 6px;
+		}
+
+
+		.player-modal {
+			width: 100%;
+
+			max-height:
+				calc(
+					100vh -
+					12px
+				);
+
+			border-radius: 9px;
+		}
+
+
+		.modal-topbar {
+			grid-template-columns:
+				minmax(
+					0,
+					1fr
+				)
+				46px;
+		}
+
+
+		.modal-brand {
+			padding-left: 9px;
+
+			gap: 9px;
+		}
+
+
+		.icl-mark {
+			width: 32px;
+			height: 32px;
+
+			font-size: 0.94rem;
+		}
+
+
+		.modal-title {
+			display: grid;
+
+			gap: 1px;
+		}
+
+
+		.modal-title span {
+			font-size: 0.53rem;
+		}
+
+
+		.modal-title strong {
+			font-size: 0.74rem;
+		}
+
+
+		.modal-collective {
+			display: none;
+		}
+
+
+		.player-hero {
+			display: grid;
+
+			grid-template-columns:
+				130px
+				minmax(
+					0,
+					1fr
+				);
+
+			min-height: 225px;
+		}
+
+
+		.portrait-bay {
+			min-height: 225px;
+		}
+
+
+		.portrait-bay img {
+			left: 50%;
+			bottom: -5px;
+
+			width: 175px;
+			height: 230px;
+
+			transform:
+				translateX(-50%)
+				scale(1.16);
+		}
+
+
+		.portrait-watermark {
+			left: 7px;
+			top: 7px;
+
+			font-size: 5rem;
+		}
+
+
+		.position-label {
+			left: 9px;
+			bottom: 9px;
+
+			padding:
+				4px 6px;
+
+			font-size: 0.56rem;
+		}
+
+
+		.hero-main {
+			padding:
+				19px 14px;
+		}
+
+
+		.hero-main h1 {
+			font-size:
+				clamp(
+					2.7rem,
+					12vw,
+					3.7rem
+				);
+
+			line-height: 0.86;
+		}
+
+
+		.player-subline {
+			margin-top: 7px;
+
+			font-size: 0.72rem;
+		}
+
+
+		.bio-grid {
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(
+						0,
+						1fr
+					)
+				);
+
+			gap: 10px 0;
 
 			margin-top: 15px;
 		}
 
-		.bio-grid .college {
+
+		.bio-grid > div {
 			min-width: 0;
 
-			grid-column: 1 / -1;
+			padding:
+				0 9px;
+
+			border-left:
+				1px solid
+				rgba(
+					191,
+					161,
+					106,
+					0.17
+				);
 		}
+
+
+		.bio-grid > div:nth-child(odd) {
+			padding-left: 0;
+
+			border-left: 0;
+		}
+
+
+		.bio-grid .college {
+			grid-column:
+				1 / -1;
+
+			padding-left: 0;
+
+			border-left: 0;
+		}
+
+
+		.bio-grid span {
+			font-size: 0.51rem;
+		}
+
+
+		.bio-grid strong {
+			font-size: 0.77rem;
+		}
+
+
+		.status-line {
+			margin-top: 13px;
+
+			font-size: 0.64rem;
+		}
+
+
+		.irving-context {
+			grid-template-columns:
+				1fr;
+
+			gap: 3px;
+
+			padding:
+				14px 16px;
+		}
+
+
+		.irving-context
+		.context-kicker,
+		.irving-context
+		.context-team,
+		.irving-context
+		> small,
+		.irving-context
+		.context-note,
+		.irving-context
+		.keeper-note {
+			grid-column: 1;
+			grid-row: auto;
+		}
+
+
+		.irving-context
+		.keeper-note {
+			margin-top: 10px;
+
+			padding:
+				10px 0 0;
+
+			border-top:
+				1px solid
+				rgba(
+					191,
+					161,
+					106,
+					0.15
+				);
+
+			border-left: 0;
+		}
+
+
+		.season-desk {
+			display: grid;
+
+			gap: 13px;
+
+			padding:
+				15px 16px
+				12px;
+		}
+
+
+		.season-pills {
+			width: 100%;
+		}
+
+
+		.season-pills button {
+			flex: 1 1 auto;
+
+			min-width: 48px;
+		}
+
 
 		.summary-strip {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+			grid-template-columns:
+				repeat(
+					2,
+					minmax(
+						0,
+						1fr
+					)
+				);
 		}
 
-		.season-toolbar {
+
+		.summary-strip > div {
+			min-height: 62px;
+
+			border-bottom:
+				1px solid
+				rgba(
+					191,
+					161,
+					106,
+					0.1
+				);
+		}
+
+
+		.summary-strip > div:nth-child(even) {
+			border-right: 0;
+		}
+
+
+		.summary-strip > div:last-child {
+			grid-column:
+				1 / -1;
+
+			border-bottom: 0;
+		}
+
+
+		.summary-strip strong {
+			font-size: 1.45rem;
+		}
+
+
+		.no-games {
+			grid-template-columns:
+				1fr;
+
+			gap: 6px;
+
+			padding:
+				30px 18px;
+
+			text-align: center;
+		}
+
+
+		.no-games-year {
+			font-size: 3.7rem;
+		}
+
+
+		.history-header {
+			align-items: center;
+
+			padding:
+				18px 16px
+				12px;
+		}
+
+
+		.history-header h2 {
+			font-size: 1.8rem;
+		}
+
+
+		.history-row {
+			grid-template-columns:
+				42px
+				minmax(
+					0,
+					1fr
+				);
+		}
+
+
+		.history-event {
+			padding:
+				11px 10px;
+		}
+
+
+		.history-event-top {
+			font-size: 0.78rem;
 			align-items: flex-start;
 
 			flex-direction: column;
+
+			gap: 2px;
+		}
+
+
+		.history-capital-chip {
+			align-items: flex-start;
+
+			flex-direction: column;
+
+			gap: 1px;
+		}
+
+
+		.modal-footer {
+			gap: 5px 12px;
+
+			padding:
+				9px 11px;
 		}
 	}
 </style>

@@ -75,6 +75,7 @@
 					eventTimestamp(b)
 			)[0] || null;
 
+
 	function eventTimestamp(event) {
 		const raw =
 			event?.lock_at ??
@@ -92,6 +93,7 @@
 			? number * 1000
 			: number;
 	}
+
 
 	function pretty(value) {
 		const number =
@@ -122,6 +124,7 @@
 			);
 	}
 
+
 	function eventDisplay(event) {
 		const type =
 			String(
@@ -148,13 +151,20 @@
 				type ||
 				'Event',
 
+			/*
+			 * IMPORTANT:
+			 * no more fallback to the old ICL shield.
+			 * If an event has no logo, the UI renders
+			 * a clean Irving Collective monogram.
+			 */
 			logo:
 				event?.logo ||
 				event?.image ||
 				event?.badge ||
-				'/badge.png'
+				null
 		};
 	}
+
 
 	function status(event) {
 		const explicit =
@@ -170,7 +180,7 @@
 		) {
 			return {
 				key: 'locked',
-				text: 'LOCKED'
+				text: 'CLOSED'
 			};
 		}
 
@@ -193,7 +203,7 @@
 		) {
 			return {
 				key: 'locked',
-				text: 'LOCKED'
+				text: 'CLOSED'
 			};
 		}
 
@@ -202,6 +212,7 @@
 			text: 'OPEN'
 		};
 	}
+
 
 	function renderEvent(event) {
 		return {
@@ -217,35 +228,39 @@
 
 <svelte:head>
 	<title>
-		Games Floor · Irving Champions League
+		Games Floor | Irving Collective
 	</title>
 
 	<meta
 		name="description"
-		content="Irving Champions League offseason games, pools and competitions."
+		content="Offseason games, pools, brackets, races and deeply unnecessary competitions from the Irving Collective."
 	/>
 </svelte:head>
 
 
 <div class="games-page">
 
-	<!-- ===============================================
-	     GAMES SUBNAV
-	=============================================== -->
+	<!-- ==================================================
+	     GAMES NAV
+	     ================================================== -->
 
 	<nav
 		class="games-nav"
 		aria-label="Games navigation"
 	>
-		<div class="games-nav-bug">
+
+		<div class="games-nav-mark">
 			ICL
 		</div>
 
+
 		{#each gamesNav as item}
+
 			<a
 				href={item.href}
 				class:active={item.active}
 			>
+
 				<strong>
 					{item.label}
 				</strong>
@@ -253,53 +268,68 @@
 				<span>
 					{item.meta}
 				</span>
+
 			</a>
+
 		{/each}
+
 	</nav>
 
 
-	<!-- ===============================================
+	<!-- ==================================================
 	     HERO
-	=============================================== -->
+	     ================================================== -->
 
-	<section class="games-hero icl-hero-shell">
+	<section class="games-hero">
 
 		<div class="hero-copy">
 
 			<div class="eyebrow">
-				ICL Offseason
+				Irving Collective Offseason
 			</div>
+
 
 			<h1>
 				Games Floor
 			</h1>
 
-			<p>
-				Brackets, races, pools and
-				other deeply unnecessary ways
-				to compete when fantasy football
-				isn't enough.
+
+			<p class="hero-lede">
+				Brackets, races, pools and other
+				deeply unnecessary ways to compete
+				when fantasy football isn't enough.
 			</p>
 
 
 			<div class="hero-stats">
 
 				<div>
-					<span>Events</span>
+					<span>
+						Events
+					</span>
+
 					<strong>
 						{events.length}
 					</strong>
 				</div>
 
+
 				<div>
-					<span>Open</span>
+					<span>
+						Open
+					</span>
+
 					<strong>
 						{openEvents.length}
 					</strong>
 				</div>
 
+
 				<div>
-					<span>Archive</span>
+					<span>
+						Archive
+					</span>
+
 					<strong>
 						{lockedEvents.length}
 					</strong>
@@ -311,21 +341,42 @@
 
 
 		<div
-			class="hero-shield"
+			class="hero-brand"
 			aria-hidden="true"
 		>
-			<img
-				src="/badge.png"
-				alt=""
-			/>
+
+			<div class="hero-brand-mark">
+				ICL
+			</div>
+
+			<span>
+				Offseason
+			</span>
+
+			<strong>
+				Games
+			</strong>
+
+			<small>
+				Bad ideas since 2003
+			</small>
+
+		</div>
+
+
+		<div
+			class="hero-watermark"
+			aria-hidden="true"
+		>
+			PLAY
 		</div>
 
 	</section>
 
 
-	<!-- ===============================================
-	     OPEN / UPCOMING EVENTS
-	=============================================== -->
+	<!-- ==================================================
+	     OPEN EVENTS
+	     ================================================== -->
 
 	{#if openEvents.length}
 
@@ -334,20 +385,24 @@
 			<header class="section-head">
 
 				<div>
+
 					<div class="eyebrow">
-						Now playing
+						Now Playing
 					</div>
 
 					<h2>
 						Open Events
 					</h2>
+
 				</div>
 
 
 				{#if nextEvent}
+
 					<div class="next-lock">
+
 						<span>
-							Next lock
+							Next Lock
 						</span>
 
 						<strong>
@@ -355,7 +410,9 @@
 								nextEvent.lock_at
 							)}
 						</strong>
+
 					</div>
+
 				{/if}
 
 			</header>
@@ -372,24 +429,36 @@
 						href={`/games/${e.slug}`}
 					>
 
-						<div class="event-top">
+						<div class="event-card-top">
 
 							<div class="event-identity">
 
 								<div class="event-logo">
-									<img
-										src={card.display.logo}
-										alt=""
-										loading="lazy"
-									/>
+
+									{#if card.display.logo}
+
+										<img
+											src={card.display.logo}
+											alt=""
+											loading="lazy"
+										/>
+
+									{:else}
+
+										<span>
+											ICL
+										</span>
+
+									{/if}
+
 								</div>
 
 
 								<div class="event-copy">
 
-									<span class="event-format">
+									<div class="event-format">
 										{card.display.format}
-									</span>
+									</div>
 
 									<h3>
 										{card.display.title}
@@ -404,11 +473,9 @@
 							</div>
 
 
-							<div
-								class="status-pill open"
-							>
+							<div class="status open">
 								<span></span>
-								OPEN
+								Open
 							</div>
 
 						</div>
@@ -417,8 +484,9 @@
 						<div class="event-details">
 
 							<div>
+
 								<span>
-									Entry locks
+									Entry Locks
 								</span>
 
 								<strong>
@@ -426,9 +494,12 @@
 										e.lock_at
 									)}
 								</strong>
+
 							</div>
 
+
 							<div>
+
 								<span>
 									Competition
 								</span>
@@ -436,6 +507,7 @@
 								<strong>
 									{card.display.format}
 								</strong>
+
 							</div>
 
 						</div>
@@ -448,7 +520,7 @@
 							</span>
 
 							<strong>
-								Enter game →
+								Enter Game →
 							</strong>
 
 						</footer>
@@ -464,9 +536,9 @@
 	{/if}
 
 
-	<!-- ===============================================
-	     EVENT ARCHIVE
-	=============================================== -->
+	<!-- ==================================================
+	     ARCHIVE
+	     ================================================== -->
 
 	{#if lockedEvents.length}
 
@@ -475,14 +547,17 @@
 			<header class="section-head">
 
 				<div>
+
 					<div class="eyebrow">
-						Season archive
+						Season Archive
 					</div>
 
 					<h2>
 						Past Events
 					</h2>
+
 				</div>
+
 
 				<span class="section-note">
 					{lockedEvents.length}
@@ -503,24 +578,36 @@
 						href={`/games/${e.slug}`}
 					>
 
-						<div class="event-top">
+						<div class="event-card-top">
 
 							<div class="event-identity">
 
 								<div class="event-logo">
-									<img
-										src={card.display.logo}
-										alt=""
-										loading="lazy"
-									/>
+
+									{#if card.display.logo}
+
+										<img
+											src={card.display.logo}
+											alt=""
+											loading="lazy"
+										/>
+
+									{:else}
+
+										<span>
+											ICL
+										</span>
+
+									{/if}
+
 								</div>
 
 
 								<div class="event-copy">
 
-									<span class="event-format">
+									<div class="event-format">
 										{card.display.format}
-									</span>
+									</div>
 
 									<h3>
 										{card.display.title}
@@ -535,10 +622,8 @@
 							</div>
 
 
-							<div
-								class="status-pill locked"
-							>
-								LOCKED
+							<div class="status locked">
+								Closed
 							</div>
 
 						</div>
@@ -547,6 +632,7 @@
 						<div class="event-details">
 
 							<div>
+
 								<span>
 									Locked
 								</span>
@@ -556,9 +642,12 @@
 										e.lock_at
 									)}
 								</strong>
+
 							</div>
 
+
 							<div>
+
 								<span>
 									Competition
 								</span>
@@ -566,6 +655,7 @@
 								<strong>
 									{card.display.format}
 								</strong>
+
 							</div>
 
 						</div>
@@ -578,7 +668,7 @@
 							</span>
 
 							<strong>
-								View event →
+								View Event →
 							</strong>
 
 						</footer>
@@ -594,18 +684,17 @@
 	{/if}
 
 
-	<!-- ===============================================
-	     EMPTY STATE
-	=============================================== -->
+	<!-- ==================================================
+	     EMPTY
+	     ================================================== -->
 
 	{#if !events.length}
 
 		<section class="games-empty">
 
-			<img
-				src="/badge.png"
-				alt=""
-			/>
+			<div class="empty-mark">
+				ICL
+			</div>
 
 			<div class="eyebrow">
 				Games Floor
@@ -630,120 +719,148 @@
 <style>
 	/* ==================================================
 	   PAGE
-	================================================== */
+	   ================================================== */
 
 	.games-page {
-		display: grid;
-
-		gap: 24px;
-
+		width: 100%;
 		max-width: 1500px;
+
+		display: grid;
+		gap: 22px;
 
 		margin: 0 auto;
 
-		padding-bottom: 56px;
+		padding-bottom: 60px;
+	}
+
+
+	.eyebrow {
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.59rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.15em;
+
+		text-transform:
+			uppercase;
 	}
 
 
 	/* ==================================================
-	   SUBNAV
-	================================================== */
+	   GAMES NAV
+	   ================================================== */
 
 	.games-nav {
 		display: flex;
 
 		align-items: stretch;
 
-		min-height: 54px;
+		min-height: 50px;
 
 		overflow: hidden;
 
-		border:
-			2px solid
-			#050708;
+		border-top:
+			1px solid
+			var(--brand-gold);
 
-		border-radius: 13px;
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.25
+			);
 
 		background:
-			#0c1012;
-
-		box-shadow:
-			var(--shadow-bug);
+			rgba(
+				8,
+				11,
+				10,
+				.72
+			);
 	}
 
 
-	.games-nav-bug {
-		display: grid;
+	.games-nav-mark {
+		width: 50px;
 
+		display: grid;
 		place-items: center;
 
-		min-width: 60px;
+		margin:
+			7px 13px 7px 0;
 
-		padding:
-			0 14px;
+		border:
+			1px solid
+			var(--brand-gold);
 
-		border-right:
-			2px solid
-			#050708;
-
-		background:
-			linear-gradient(
-				180deg,
-				var(--bug-red),
-				var(--bug-red-dark)
-			);
-
-		color: white;
+		color:
+			var(--brand-gold);
 
 		font-family:
-			var(--font-score);
+			var(--font-display);
 
 		font-size:
 			1rem;
-
-		font-weight:
-			950;
 	}
 
 
 	.games-nav a {
-		min-width: 160px;
+		position: relative;
+
+		min-width: 145px;
 
 		display: grid;
 
 		align-content: center;
 
-		gap: 1px;
+		gap: 2px;
 
 		padding:
-			8px 14px;
-
-		border-right:
-			1px solid
-			#050708;
-
-		background:
-			linear-gradient(
-				180deg,
-				#404744,
-				#161a19
-			);
+			8px 15px;
 
 		color:
-			var(--bug-white);
+			var(--brand-stone);
 
 		text-decoration: none;
 	}
 
 
+	.games-nav a::after {
+		content: '';
+
+		position: absolute;
+
+		left: 15px;
+		right: 15px;
+		bottom: 0;
+
+		height: 1px;
+
+		background:
+			transparent;
+	}
+
+
 	.games-nav a strong {
-		font-family:
-			var(--font-score);
+		color:
+			inherit;
 
 		font-size:
-			.72rem;
+			.63rem;
 
-		line-height: 1;
+		font-weight:
+			800;
+
+		letter-spacing:
+			.06em;
 
 		text-transform:
 			uppercase;
@@ -755,97 +872,126 @@
 			var(--muted);
 
 		font-size:
-			.58rem;
+			.5rem;
+
+		letter-spacing:
+			.08em;
 
 		text-transform:
 			uppercase;
-
-		letter-spacing:
-			.05em;
 	}
 
 
 	.games-nav a:hover,
 	.games-nav a.active {
-		background:
-			linear-gradient(
-				180deg,
-				#f5f4ea,
-				#b8bbb4 52%,
-				#6b716d
-			);
-
 		color:
-			#101111;
+			var(--brand-sand);
 	}
 
 
-	.games-nav a:hover span,
-	.games-nav a.active span {
-		color:
-			rgba(
-				0,
-				0,
-				0,
-				.6
-			);
+	.games-nav a:hover::after,
+	.games-nav a.active::after {
+		background:
+			var(--brand-gold);
 	}
 
 
 	/* ==================================================
 	   HERO
-	================================================== */
+	   ================================================== */
 
 	.games-hero {
 		position: relative;
 
-		min-height: 280px;
+		min-height: 330px;
 
-		display: flex;
+		display: grid;
+
+		grid-template-columns:
+			minmax(0,1fr)
+			280px;
 
 		align-items: center;
+
+		gap: 40px;
 
 		overflow: hidden;
 
 		padding:
-			40px 44px;
+			clamp(
+				30px,
+				5vw,
+				48px
+			);
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius:
+			var(--radius-lg);
+
+		background:
+			linear-gradient(
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.05
+				),
+				transparent 38%
+			),
+			var(--panel-strong);
+
+		box-shadow:
+			var(--shadow-panel);
 	}
 
 
 	.hero-copy {
 		position: relative;
-
 		z-index: 2;
 
-		max-width: 760px;
+		max-width: 780px;
 	}
 
 
 	.games-hero h1 {
 		margin:
-			6px 0 10px;
+			8px 0 0;
+
+		color:
+			var(--brand-ivory);
 
 		font-family:
 			var(--font-display);
 
 		font-size:
 			clamp(
-				4rem,
-				7vw,
-				6.5rem
+				4.5rem,
+				7.5vw,
+				7.5rem
 			);
 
-		line-height: .88;
+		font-weight: 400;
+
+		line-height:
+			.84;
 
 		letter-spacing:
-			-.06em;
+			-.02em;
+
+		text-transform:
+			uppercase;
 	}
 
 
-	.games-hero p {
-		max-width: 56ch;
+	.hero-lede {
+		max-width: 57ch;
 
-		margin: 0;
+		margin:
+			25px 0 0;
 
 		color:
 			var(--muted);
@@ -853,9 +999,11 @@
 		font-size:
 			1rem;
 
-		font-weight: 700;
+		font-weight:
+			600;
 
-		line-height: 1.5;
+		line-height:
+			1.55;
 	}
 
 
@@ -864,121 +1012,249 @@
 
 		flex-wrap: wrap;
 
-		gap: 8px;
+		gap: 1px;
 
-		margin-top: 24px;
+		width: fit-content;
+
+		margin-top: 28px;
+
+		overflow: hidden;
+
+		border:
+			1px solid
+			var(--border);
 	}
 
 
 	.hero-stats > div {
-		min-width: 94px;
+		min-width: 105px;
 
 		display: grid;
 
-		gap: 3px;
+		gap: 4px;
 
 		padding:
-			9px 12px;
-
-		border:
-			1px solid
-			rgba(
-				255,
-				255,
-				255,
-				.08
-			);
-
-		border-radius:
-			6px;
+			11px 14px;
 
 		background:
 			rgba(
-				0,
-				0,
-				0,
-				.26
+				8,
+				11,
+				10,
+				.68
 			);
+
+		border-right:
+			1px solid
+			var(--border);
+	}
+
+
+	.hero-stats > div:last-child {
+		border-right: 0;
 	}
 
 
 	.hero-stats span {
 		color:
-			var(--muted-2);
-
-		font-family:
-			var(--font-score);
+			var(--brand-stone);
 
 		font-size:
-			.55rem;
+			.5rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.12em;
 
 		text-transform:
 			uppercase;
-
-		letter-spacing:
-			.11em;
 	}
 
 
 	.hero-stats strong {
 		color:
-			var(--bug-yellow);
+			var(--brand-gold);
 
 		font-family:
-			var(--font-score);
+			var(--font-display);
 
 		font-size:
-			1.25rem;
-	}
+			1.6rem;
 
-
-	.hero-shield {
-		position: absolute;
-
-		right: 6%;
-
-		top: 50%;
-
-		width:
-			min(
-				245px,
-				23vw
-			);
-
-		transform:
-			translateY(-50%);
-
-		opacity:
-			.075;
-
-		pointer-events:
-			none;
-	}
-
-
-	.hero-shield img {
-		display: block;
-
-		width: 100%;
+		font-weight: 400;
 	}
 
 
 	/* ==================================================
-	   SECTION
-	================================================== */
+	   HERO BRAND
+	   ================================================== */
+
+	.hero-brand {
+		position: relative;
+		z-index: 2;
+
+		display: grid;
+
+		justify-items: center;
+
+		align-content: center;
+
+		min-height: 235px;
+
+		padding: 22px;
+
+		border:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.24
+			);
+
+		background:
+			rgba(
+				8,
+				11,
+				10,
+				.38
+			);
+
+		text-align: center;
+	}
+
+
+	.hero-brand-mark {
+		width: 72px;
+		height: 72px;
+
+		display: grid;
+		place-items: center;
+
+		margin-bottom: 17px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			2rem;
+	}
+
+
+	.hero-brand > span {
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.54rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.17em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.hero-brand > strong {
+		margin-top: 4px;
+
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			2.6rem;
+
+		font-weight: 400;
+
+		line-height: 1;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.hero-brand > small {
+		margin-top: 14px;
+
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.5rem;
+
+		font-weight:
+			750;
+
+		letter-spacing:
+			.11em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.hero-watermark {
+		position: absolute;
+
+		right: -8px;
+		bottom: -48px;
+
+		color:
+			rgba(
+				191,
+				161,
+				106,
+				.019
+			);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				9rem,
+				16vw,
+				15rem
+			);
+
+		line-height: 1;
+
+		pointer-events: none;
+	}
+
+
+	/* ==================================================
+	   EVENT SECTION
+	   ================================================== */
 
 	.event-section {
 		overflow: hidden;
 
 		border:
-			2px solid
-			#050708;
+			1px solid
+			var(--border);
 
 		border-radius:
-			15px;
+			var(--radius-md);
 
 		background:
-			#101517;
+			var(--panel);
 
 		box-shadow:
 			var(--shadow-panel);
@@ -986,7 +1262,7 @@
 
 
 	.section-head {
-		min-height: 76px;
+		min-height: 78px;
 
 		display: flex;
 
@@ -998,19 +1274,16 @@
 		gap: 20px;
 
 		padding:
-			16px 20px;
+			17px 20px;
 
 		border-bottom:
 			1px solid
 			rgba(
-				255,
-				255,
-				255,
-				.09
+				191,
+				161,
+				106,
+				.13
 			);
-
-		background:
-			#171d1f;
 	}
 
 
@@ -1018,11 +1291,16 @@
 		margin:
 			4px 0 0;
 
+		color:
+			var(--brand-ivory);
+
 		font-family:
 			var(--font-display);
 
 		font-size:
-			2rem;
+			2.2rem;
+
+		font-weight: 400;
 
 		line-height: 1;
 	}
@@ -1030,13 +1308,16 @@
 
 	.section-note {
 		color:
-			var(--muted);
+			var(--brand-stone);
 
 		font-size:
-			.72rem;
+			.58rem;
 
 		font-weight:
 			800;
+
+		letter-spacing:
+			.09em;
 
 		text-transform:
 			uppercase;
@@ -1048,37 +1329,40 @@
 
 		justify-items: end;
 
-		gap: 3px;
+		gap: 4px;
 	}
 
 
 	.next-lock span {
 		color:
-			var(--bug-yellow);
-
-		font-family:
-			var(--font-score);
+			var(--brand-gold);
 
 		font-size:
-			.57rem;
+			.52rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.12em;
 
 		text-transform:
 			uppercase;
-
-		letter-spacing:
-			.11em;
 	}
 
 
 	.next-lock strong {
+		color:
+			var(--brand-ivory);
+
 		font-size:
-			.78rem;
+			.72rem;
 	}
 
 
 	/* ==================================================
 	   EVENT GRID
-	================================================== */
+	   ================================================== */
 
 	.events-grid {
 		display: grid;
@@ -1086,80 +1370,67 @@
 		grid-template-columns:
 			repeat(
 				2,
-				minmax(
-					0,
-					1fr
-				)
+				minmax(0,1fr)
 			);
 
-		gap: 14px;
+		gap: 12px;
 
-		padding: 18px;
+		padding: 16px;
 	}
 
 
 	.event-card {
 		position: relative;
 
-		min-height: 240px;
+		min-height: 245px;
 
 		display: grid;
 
 		grid-template-rows:
-			auto 1fr auto;
+			auto
+			1fr
+			auto;
 
 		gap: 18px;
 
 		overflow: hidden;
 
 		padding:
-			19px 20px 0;
+			18px 18px 0;
 
 		border:
 			1px solid
 			rgba(
-				255,
-				255,
-				255,
-				.11
+				191,
+				161,
+				106,
+				.12
 			);
 
 		border-radius:
-			12px;
+			var(--radius-sm);
 
 		background:
-			linear-gradient(
-				135deg,
-				rgba(
-					17,
-					133,
-					200,
-					.09
-				),
-				transparent 42%
-			),
-			#111719;
-
-		color:
-			var(--bug-white);
-
-		text-decoration:
-			none;
-
-		box-shadow:
-			inset 0 1px 0
 			rgba(
 				255,
 				255,
 				255,
-				.05
+				.012
 			);
 
+		color: inherit;
+
+		text-decoration: none;
+
 		transition:
-			transform 140ms ease,
-			border-color 140ms ease,
-			background 140ms ease,
-			opacity 140ms ease;
+			transform
+			120ms ease,
+			border-color
+			120ms ease,
+			background
+			120ms ease,
+			opacity
+			120ms ease;
 	}
 
 
@@ -1168,14 +1439,14 @@
 
 		position: absolute;
 
-		left: 0;
 		top: 0;
 		bottom: 0;
+		left: 0;
 
-		width: 4px;
+		width: 2px;
 
 		background:
-			var(--icl-blue);
+			var(--brand-gold);
 	}
 
 
@@ -1185,39 +1456,30 @@
 
 		border-color:
 			rgba(
-				17,
-				133,
-				200,
-				.72
+				191,
+				161,
+				106,
+				.42
 			);
 
 		background:
-			linear-gradient(
-				135deg,
-				rgba(
-					17,
-					133,
-					200,
-					.15
-				),
-				transparent 46%
-			),
-			#151c20;
-
-		color:
-			var(--bug-white);
+			rgba(
+				191,
+				161,
+				106,
+				.025
+			);
 	}
 
 
 	.event-card.locked {
-		opacity:
-			.72;
+		opacity: .72;
 	}
 
 
 	.event-card.locked::before {
 		background:
-			#666d69;
+			var(--brand-stone);
 	}
 
 
@@ -1228,9 +1490,9 @@
 
 	/* ==================================================
 	   EVENT TOP
-	================================================== */
+	   ================================================== */
 
-	.event-top {
+	.event-card-top {
 		display: flex;
 
 		align-items:
@@ -1250,48 +1512,69 @@
 
 		align-items: center;
 
-		gap: 14px;
+		gap: 13px;
 	}
 
 
 	.event-logo {
-		width: 62px;
+		flex: 0 0 auto;
 
-		height: 62px;
-
-		flex:
-			0 0 auto;
+		width: 58px;
+		height: 58px;
 
 		display: grid;
-
 		place-items: center;
 
-		padding: 6px;
+		overflow: hidden;
+
+		padding: 5px;
 
 		border:
 			1px solid
 			rgba(
-				255,
-				255,
-				255,
-				.1
+				191,
+				161,
+				106,
+				.18
 			);
 
-		border-radius:
-			11px;
-
 		background:
-			#090d10;
+			rgba(
+				8,
+				11,
+				10,
+				.8
+			);
 	}
 
 
 	.event-logo img {
 		width: 100%;
-
 		height: 100%;
 
-		object-fit:
-			contain;
+		object-fit: contain;
+	}
+
+
+	.event-logo > span {
+		display: grid;
+		place-items: center;
+
+		width: 100%;
+		height: 100%;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.1rem;
 	}
 
 
@@ -1301,27 +1584,22 @@
 
 
 	.event-format {
-		display: block;
-
-		margin-bottom: 4px;
+		margin-bottom: 5px;
 
 		color:
-			var(--bug-yellow);
-
-		font-family:
-			var(--font-score);
+			var(--brand-gold);
 
 		font-size:
-			.57rem;
+			.52rem;
 
 		font-weight:
-			950;
-
-		text-transform:
-			uppercase;
+			800;
 
 		letter-spacing:
 			.12em;
+
+		text-transform:
+			uppercase;
 	}
 
 
@@ -1329,16 +1607,18 @@
 		margin: 0;
 
 		color:
-			var(--bug-white);
+			var(--brand-ivory);
 
 		font-family:
-			var(--font-score);
+			var(--font-display);
 
 		font-size:
-			1.25rem;
+			1.65rem;
+
+		font-weight: 400;
 
 		line-height:
-			1.08;
+			1;
 
 		text-transform:
 			uppercase;
@@ -1353,16 +1633,17 @@
 			var(--muted);
 
 		font-size:
-			.76rem;
+			.72rem;
 	}
 
 
 	/* ==================================================
 	   STATUS
-	================================================== */
+	   ================================================== */
 
-	.status-pill {
-		flex: 0 0 auto;
+	.status {
+		flex:
+			0 0 auto;
 
 		display:
 			inline-flex;
@@ -1370,92 +1651,66 @@
 		align-items:
 			center;
 
-		gap: 5px;
+		gap: 6px;
 
 		padding:
-			6px 8px;
+			5px 7px;
 
 		border:
 			1px solid
-			#050606;
+			var(--border);
 
-		border-radius:
-			5px;
-
-		font-family:
-			var(--font-score);
+		color:
+			var(--brand-stone);
 
 		font-size:
-			.61rem;
+			.5rem;
 
 		font-weight:
-			950;
+			850;
+
+		letter-spacing:
+			.09em;
 
 		text-transform:
 			uppercase;
+	}
 
-		box-shadow:
-			inset 0 1px 0
+
+	.status.open {
+		border-color:
 			rgba(
-				255,
-				255,
-				255,
+				191,
+				161,
+				106,
 				.4
-			);
-	}
-
-
-	.status-pill.open {
-		background:
-			linear-gradient(
-				180deg,
-				#45b875,
-				#23683f
-			);
-
-		color: white;
-	}
-
-
-	.status-pill.open span {
-		width: 6px;
-
-		height: 6px;
-
-		border-radius:
-			50%;
-
-		background:
-			#86ffae;
-
-		box-shadow:
-			0 0 7px
-			rgba(
-				134,
-				255,
-				174,
-				.8
-			);
-	}
-
-
-	.status-pill.locked {
-		background:
-			linear-gradient(
-				180deg,
-				#f0efe6,
-				#a5aaa5 54%,
-				#666c68
 			);
 
 		color:
-			#111;
+			var(--brand-gold);
+	}
+
+
+	.status.open span {
+		width: 5px;
+		height: 5px;
+
+		border-radius: 50%;
+
+		background:
+			var(--brand-gold);
+	}
+
+
+	.status.locked {
+		color:
+			var(--brand-stone);
 	}
 
 
 	/* ==================================================
 	   DETAILS
-	================================================== */
+	   ================================================== */
 
 	.event-details {
 		display: grid;
@@ -1463,13 +1718,10 @@
 		grid-template-columns:
 			repeat(
 				2,
-				minmax(
-					0,
-					1fr
-				)
+				minmax(0,1fr)
 			);
 
-		gap: 12px;
+		gap: 8px;
 
 		align-content: end;
 	}
@@ -1481,66 +1733,63 @@
 		gap: 4px;
 
 		padding:
-			11px 12px;
+			10px 11px;
 
 		border:
 			1px solid
 			rgba(
-				255,
-				255,
-				255,
-				.07
+				191,
+				161,
+				106,
+				.09
 			);
-
-		border-radius:
-			7px;
 
 		background:
 			rgba(
-				0,
-				0,
-				0,
-				.17
+				8,
+				11,
+				10,
+				.36
 			);
 	}
 
 
 	.event-details span {
 		color:
-			var(--muted-2);
-
-		font-family:
-			var(--font-score);
+			var(--brand-stone);
 
 		font-size:
-			.55rem;
+			.5rem;
 
-		text-transform:
-			uppercase;
+		font-weight:
+			800;
 
 		letter-spacing:
 			.1em;
+
+		text-transform:
+			uppercase;
 	}
 
 
 	.event-details strong {
 		color:
-			var(--bug-white);
+			var(--brand-ivory);
 
 		font-size:
-			.78rem;
+			.72rem;
 
-		line-height: 1.3;
+		line-height: 1.35;
 	}
 
 
 	/* ==================================================
 	   FOOTER
-	================================================== */
+	   ================================================== */
 
 	.event-footer {
 		margin:
-			0 -20px;
+			0 -18px;
 
 		display: flex;
 
@@ -1551,26 +1800,26 @@
 
 		gap: 12px;
 
-		min-height: 48px;
+		min-height: 46px;
 
 		padding:
-			11px 20px;
+			10px 18px;
 
 		border-top:
 			1px solid
 			rgba(
-				255,
-				255,
-				255,
-				.07
+				191,
+				161,
+				106,
+				.09
 			);
 
 		background:
 			rgba(
-				0,
-				0,
-				0,
-				.18
+				8,
+				11,
+				10,
+				.3
 			);
 	}
 
@@ -1580,19 +1829,22 @@
 			var(--muted);
 
 		font-size:
-			.68rem;
+			.62rem;
 	}
 
 
 	.event-footer > strong {
 		color:
-			var(--icl-blue);
-
-		font-family:
-			var(--font-score);
+			var(--brand-sand);
 
 		font-size:
-			.69rem;
+			.57rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.06em;
 
 		text-transform:
 			uppercase;
@@ -1601,13 +1853,14 @@
 
 	.event-card:hover
 	.event-footer > strong {
-		color: white;
+		color:
+			var(--brand-gold);
 	}
 
 
 	/* ==================================================
 	   EMPTY
-	================================================== */
+	   ================================================== */
 
 	.games-empty {
 		min-height: 300px;
@@ -1618,19 +1871,19 @@
 
 		align-content: center;
 
-		gap: 7px;
+		gap: 8px;
 
 		padding: 34px;
 
 		border:
-			2px solid
-			#050708;
+			1px solid
+			var(--border);
 
 		border-radius:
-			15px;
+			var(--radius-md);
 
 		background:
-			#111719;
+			var(--panel);
 
 		text-align: center;
 
@@ -1639,22 +1892,43 @@
 	}
 
 
-	.games-empty img {
-		width: 90px;
+	.empty-mark {
+		display: grid;
+		place-items: center;
 
-		margin-bottom: 8px;
+		width: 70px;
+		height: 70px;
 
-		opacity: .65;
+		margin-bottom: 7px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.65rem;
 	}
 
 
 	.games-empty h2 {
 		margin: 0;
 
+		color:
+			var(--brand-ivory);
+
 		font-family:
 			var(--font-display);
 
-		font-size: 2rem;
+		font-size:
+			2rem;
+
+		font-weight: 400;
 	}
 
 
@@ -1668,29 +1942,27 @@
 
 	/* ==================================================
 	   RESPONSIVE
-	================================================== */
+	   ================================================== */
 
-	@media (
-		max-width: 900px
-	) {
+	@media (max-width: 900px) {
+
+		.games-hero {
+			grid-template-columns:
+				1fr
+				220px;
+		}
+
+
 		.events-grid {
 			grid-template-columns:
 				1fr;
 		}
 
-		.hero-shield {
-			right: -20px;
-
-			width: 220px;
-
-			opacity: .05;
-		}
 	}
 
 
-	@media (
-		max-width: 650px
-	) {
+	@media (max-width: 700px) {
+
 		.games-page {
 			gap: 18px;
 		}
@@ -1702,30 +1974,38 @@
 
 
 		.games-nav a {
-			min-width: 135px;
+			min-width: 130px;
 		}
 
 
 		.games-hero {
-			min-height: 330px;
+			grid-template-columns:
+				1fr;
+
+			min-height: 0;
 
 			padding:
-				30px 22px;
+				29px 22px;
 		}
 
 
 		.games-hero h1 {
 			font-size:
 				clamp(
-					3.4rem,
+					3.8rem,
 					17vw,
-					5rem
+					5.7rem
 				);
 		}
 
 
+		.hero-brand {
+			display: none;
+		}
+
+
 		.hero-stats {
-			max-width: 320px;
+			max-width: 100%;
 		}
 
 
@@ -1749,7 +2029,7 @@
 
 
 		.events-grid {
-			padding: 12px;
+			padding: 11px;
 		}
 
 
@@ -1761,22 +2041,15 @@
 		}
 
 
-		.event-top {
-			align-items:
-				flex-start;
-		}
-
-
 		.event-logo {
 			width: 50px;
-
 			height: 50px;
 		}
 
 
 		.event-copy h3 {
 			font-size:
-				1rem;
+				1.35rem;
 		}
 
 
@@ -1791,7 +2064,22 @@
 				0 -15px;
 
 			padding:
-				11px 15px;
+				10px 15px;
 		}
+
+	}
+
+
+	@media (max-width: 480px) {
+
+		.event-card-top {
+			display: grid;
+		}
+
+
+		.status {
+			width: fit-content;
+		}
+
 	}
 </style>

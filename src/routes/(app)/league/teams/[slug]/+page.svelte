@@ -483,98 +483,209 @@ function badgeScoreLabel(
 <div class="page-stack">
   <LeagueSubnav season={season} active="teams" />
 
-  <section class="franchise-broadcast">
-    <div class="broadcast-header">
-      <span class="network-label">ICL FantasyCast</span>
-      <strong>{teamName}</strong>
+<section class="franchise-hero">
+	<div class="franchise-hero-top">
+		<div>
+			<div class="eyebrow">
+				Franchise dossier
+			</div>
 
-      <nav class="season-switcher" aria-label="Season selector">
-        <span class="season-box-label">Season Feed</span>
-        <div class="season-pills">
-          {#each availableSeasons as option}
-            <a class:active={Number(option) === Number(season)} href={seasonHref(option)}>
-              {option}
-            </a>
-          {/each}
-        </div>
-      </nav>
-    </div>
+			<div class="manager-kicker">
+				{managerName}
+			</div>
+		</div>
 
-    <div class="main-bug icl-hero-shell pad-md">
-      <div class="logo-bay">
-        <img class="team-logo" src={teamLogo} alt={teamName} />
-      </div>
+		<nav
+			class="franchise-season"
+			aria-label="Season selector"
+		>
+			<span>
+				Season feed
+			</span>
 
-      <div class="scorebug-body">
-        <div class="score-lines">
-          <div class="score-line home">
-            <span>{teamAbbr}</span>
-            <strong>{teamName}</strong>
-            <em>{manager.currentRank ? `#${manager.currentRank}` : '—'}</em>
-          </div>
-          <div class="score-line away">
-            <span>GM</span>
-            <strong>{managerName}</strong>
-            <em>{manager.recordLabel || '0-0'}</em>
-          </div>
-        </div>
+			<div class="season-pills">
+				{#each availableSeasons as option}
+					<a
+						class:active={
+							Number(option) ===
+							Number(season)
+						}
+						href={seasonHref(option)}
+					>
+						{option}
+					</a>
+				{/each}
+			</div>
+		</nav>
+	</div>
 
-        <div class="meta-strip">
-          <span>Rank {manager.currentRank ? `#${manager.currentRank}` : '—'}</span>
-          <span>Record {manager.recordLabel || '0-0'}</span>
-          <span>PF {fmt(manager.pointsFor)}</span>
-          <span>PA {fmt(manager.pointsAgainst)}</span>
-          
-        </div>
 
-        <div class="story-box">
-          <div>
-            <div class="eyebrow">Franchise profile</div>
-            <h1>{teamName}</h1>
-            <p class="philosophy">{teamPhilosophy}</p>
-          </div>
-          <p>{teamBio}</p>
-        </div>
+	<div class="franchise-hero-grid">
+		<div class="logo-bay">
+			<img
+				class="team-logo"
+				src={teamLogo}
+				alt={teamName}
+			/>
+		</div>
 
-        <dl class="mini-facts">
-          <div class="future-dollars">
-            <dt>Future Draft $</dt>
-            <dd class={`draft-money-pill ${futureDraftClass}`}>{futureDraftLabel}</dd>
-          </div>
-          <div>
-            <dt>Fantasy start</dt>
-            <dd>{manager.fantasyStart || '—'}</dd>
-          </div>
-          <div>
-            <dt>NFL tie</dt>
-            <dd>{nflLabel(manager.favoriteTeam)}</dd>
-          </div>
-          <div>
-            <dt>Location</dt>
-            <dd>{manager.location || '—'}</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
 
-    <!-- <section class="stat-grid" aria-label="Current season summary">
-      {#each topStats as stat}
-        <article class="stat-card">
-          <div class="label">{stat.label}</div>
-          <strong>{stat.value}</strong>
-          <small>{stat.note}</small>
-        </article>
-      {/each}
-    </section> -->
+		<div class="franchise-copy">
+			<div>
+				<div class="eyebrow">
+					Irving franchise
+				</div>
 
-    <div class="quick-links">
-      {#if sections.moves}<a href={sections.moves}>Move log</a>{/if}
-      {#if sections.games}<a href={sections.games}>Games</a>{/if}
-      {#if sections.drafts}<a href={sections.drafts}>Draft archive</a>{/if}
-      {#if sections.standings}<a href={sections.standings}>Standings</a>{/if}
-      {#if data.managerNav?.all}<a href={data.managerNav.all}>All franchises</a>{/if}
-    </div>
-  </section>
+				<h1>
+					{teamName}
+				</h1>
+
+				<p class="philosophy">
+					{teamPhilosophy}
+				</p>
+			</div>
+
+			<p class="franchise-bio">
+				{teamBio}
+			</p>
+
+
+			<div
+				class="season-stat-strip"
+				aria-label="Current season summary"
+			>
+				<div>
+					<span>
+						Rank
+					</span>
+
+					<strong>
+						{manager.currentRank
+							? `#${manager.currentRank}`
+							: '—'}
+					</strong>
+				</div>
+
+				<div>
+					<span>
+						Record
+					</span>
+
+					<strong>
+						{manager.recordLabel ||
+							'0-0'}
+					</strong>
+				</div>
+
+				<div>
+					<span>
+						Points for
+					</span>
+
+					<strong>
+						{fmt(
+							manager.pointsFor
+						)}
+					</strong>
+				</div>
+
+				<div>
+					<span>
+						Points against
+					</span>
+
+					<strong>
+						{fmt(
+							manager.pointsAgainst
+						)}
+					</strong>
+				</div>
+			</div>
+
+
+			<dl class="mini-facts">
+				<div class="future-dollars">
+					<dt>
+						Future Draft $
+					</dt>
+
+					<dd
+						class={`draft-money-pill ${futureDraftClass}`}
+					>
+						{futureDraftLabel}
+					</dd>
+				</div>
+
+				<div>
+					<dt>
+						Fantasy start
+					</dt>
+
+					<dd>
+						{manager.fantasyStart ||
+							'—'}
+					</dd>
+				</div>
+
+				<div>
+					<dt>
+						NFL tie
+					</dt>
+
+					<dd>
+						{nflLabel(
+							manager.favoriteTeam
+						)}
+					</dd>
+				</div>
+
+				<div>
+					<dt>
+						Location
+					</dt>
+
+					<dd>
+						{manager.location ||
+							'—'}
+					</dd>
+				</div>
+			</dl>
+		</div>
+	</div>
+
+
+	<div class="quick-links">
+		{#if sections.moves}
+			<a href={sections.moves}>
+				Move log
+			</a>
+		{/if}
+
+		{#if sections.games}
+			<a href={sections.games}>
+				Games
+			</a>
+		{/if}
+
+		{#if sections.drafts}
+			<a href={sections.drafts}>
+				Draft archive
+			</a>
+		{/if}
+
+		{#if sections.standings}
+			<a href={sections.standings}>
+				Standings
+			</a>
+		{/if}
+
+		{#if data.managerNav?.all}
+			<a href={data.managerNav.all}>
+				All franchises
+			</a>
+		{/if}
+	</div>
+</section>
 
   <section class="identity-shelf" aria-label="Franchise identity">
     {#each identityCards as identityCard}
@@ -3156,5 +3267,1083 @@ summary::after {
     justify-self:
       start;
   }
+}
+
+/* =========================================================
+   IRVING COLLECTIVE — FRANCHISE DOSSIER REBRAND
+   ========================================================= */
+
+.page-stack {
+	max-width: 1500px;
+	gap: 18px;
+}
+
+
+/* =========================================================
+   COMMON SURFACES
+   ========================================================= */
+
+.card,
+.identity-card,
+.ledger-panel,
+.mini-stat,
+.line-item,
+.moment-row,
+.empty {
+	border:
+		1px solid
+		var(--border) !important;
+
+	border-radius:
+		var(--radius-md) !important;
+
+	background:
+		linear-gradient(
+			180deg,
+			rgba(255,255,255,.018),
+			transparent 24%
+		),
+		var(--panel) !important;
+
+	box-shadow:
+		var(--shadow-panel) !important;
+}
+
+
+.eyebrow {
+	color:
+		var(--brand-gold);
+
+	font-family:
+		var(--font-body);
+
+	font-size:
+		.61rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.16em;
+
+	text-transform:
+		uppercase;
+}
+
+
+/* =========================================================
+   FRANCHISE HERO
+   ========================================================= */
+
+.franchise-hero {
+	position: relative;
+
+	overflow: hidden;
+
+	border:
+		1px solid
+		var(--border-strong);
+
+	border-radius:
+		var(--radius-lg);
+
+	background:
+		linear-gradient(
+			120deg,
+			rgba(191,161,106,.055),
+			transparent 38%
+		),
+		var(--panel-strong);
+
+	box-shadow:
+		var(--shadow-panel);
+}
+
+
+.franchise-hero::after {
+	content: 'FRANCHISE';
+
+	position: absolute;
+
+	right: 24px;
+
+	bottom: -22px;
+
+	color:
+		rgba(191,161,106,.024);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		clamp(
+			5rem,
+			11vw,
+			10rem
+		);
+
+	line-height: 1;
+
+	pointer-events: none;
+}
+
+
+.franchise-hero-top {
+	position: relative;
+
+	z-index: 1;
+
+	display: flex;
+
+	align-items: start;
+
+	justify-content:
+		space-between;
+
+	gap: 24px;
+
+	padding:
+		22px 24px 0;
+}
+
+
+.manager-kicker {
+	margin-top: 4px;
+
+	color:
+		var(--brand-stone);
+
+	font-size:
+		.72rem;
+
+	font-weight:
+		700;
+
+	letter-spacing:
+		.08em;
+
+	text-transform:
+		uppercase;
+}
+
+
+/* =========================================================
+   SEASON SELECTOR
+   ========================================================= */
+
+.franchise-season {
+	display: grid;
+
+	gap: 9px;
+
+	min-width: 180px;
+
+	padding:
+		12px 14px;
+
+	border:
+		1px solid
+		var(--border-strong);
+
+	border-radius:
+		var(--radius-sm);
+
+	background:
+		rgba(8,11,10,.78);
+}
+
+
+.franchise-season > span {
+	color:
+		var(--brand-gold);
+
+	font-size:
+		.61rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.15em;
+
+	text-transform:
+		uppercase;
+}
+
+
+.franchise-season .season-pills {
+	justify-content:
+		flex-start;
+}
+
+
+.franchise-season .season-pills a {
+	min-width: 54px;
+
+	padding:
+		7px 10px;
+
+	border:
+		1px solid
+		rgba(191,161,106,.18);
+
+	border-radius:
+		3px;
+
+	background:
+		transparent;
+
+	color:
+		var(--brand-stone);
+
+	font-family:
+		var(--font-body);
+
+	font-size:
+		.67rem;
+
+	font-weight:
+		700;
+
+	text-shadow:
+		none;
+
+	box-shadow:
+		none;
+}
+
+
+.franchise-season .season-pills a:hover {
+	border-color:
+		var(--brand-gold);
+
+	color:
+		var(--brand-ivory);
+
+	background:
+		transparent;
+
+	text-shadow:
+		none;
+}
+
+
+.franchise-season .season-pills a.active {
+	border-color:
+		var(--brand-gold);
+
+	background:
+		var(--brand-gold);
+
+	color:
+		var(--brand-charcoal);
+
+	text-shadow:
+		none;
+}
+
+
+/* =========================================================
+   HERO BODY
+   ========================================================= */
+
+.franchise-hero-grid {
+	position: relative;
+
+	z-index: 1;
+
+	display: grid;
+
+	grid-template-columns:
+		230px
+		minmax(0,1fr);
+
+	gap: 28px;
+
+	align-items: start;
+
+	padding:
+		22px 24px 24px;
+}
+
+
+.logo-bay {
+	display: grid;
+
+	place-items: start center;
+}
+
+
+.franchise-hero .team-logo {
+	width: 210px;
+
+	height: 210px;
+
+	object-fit: cover;
+
+	border:
+		1px solid
+		rgba(191,161,106,.25);
+
+	border-radius:
+		var(--radius-sm);
+
+	background:
+		var(--brand-ivory);
+
+	box-shadow:
+		0 16px 36px
+		rgba(0,0,0,.32);
+}
+
+
+.franchise-copy {
+	min-width: 0;
+
+	display: grid;
+
+	gap: 16px;
+}
+
+
+.franchise-copy h1 {
+	margin:
+		5px 0 0;
+
+	color:
+		var(--brand-ivory);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		clamp(
+			3.4rem,
+			6vw,
+			6.2rem
+		);
+
+	font-weight: 400;
+
+	line-height: .86;
+
+	letter-spacing:
+		-.015em;
+
+	text-shadow:
+		none;
+}
+
+
+.franchise-copy .philosophy {
+	margin-top: 13px;
+
+	padding: 0;
+
+	color:
+		var(--brand-sand) !important;
+
+	font-size:
+		1rem;
+
+	font-weight:
+		800;
+
+	line-height:
+		1.35;
+}
+
+
+.franchise-bio {
+	max-width: 80ch;
+
+	margin: 0;
+
+	color:
+		var(--muted);
+
+	line-height:
+		1.58;
+}
+
+
+/* =========================================================
+   CURRENT SEASON STRIP
+   ========================================================= */
+
+.season-stat-strip {
+	display: grid;
+
+	grid-template-columns:
+		repeat(
+			4,
+			minmax(0,1fr)
+		);
+
+	overflow: hidden;
+
+	border:
+		1px solid
+		var(--border);
+
+	border-radius:
+		var(--radius-sm);
+
+	background:
+		var(--border);
+}
+
+
+.season-stat-strip > div {
+	display: grid;
+
+	gap: 5px;
+
+	padding:
+		11px 13px;
+
+	background:
+		rgba(8,11,10,.92);
+}
+
+
+.season-stat-strip span {
+	color:
+		var(--brand-stone);
+
+	font-size:
+		.56rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.11em;
+
+	text-transform:
+		uppercase;
+}
+
+
+.season-stat-strip strong {
+	color:
+		var(--brand-ivory);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.35rem;
+
+	font-weight:
+		400;
+
+	font-variant-numeric:
+		tabular-nums;
+}
+
+
+/* =========================================================
+   FACTS
+   ========================================================= */
+
+.franchise-hero .mini-facts {
+	gap: 0;
+}
+
+
+.franchise-hero .mini-facts div {
+	grid-template-columns:
+		170px
+		minmax(0,1fr);
+
+	padding:
+		9px 0;
+
+	border-bottom:
+		1px solid
+		rgba(191,161,106,.11);
+}
+
+
+.franchise-hero .mini-facts dt {
+	color:
+		var(--brand-stone);
+}
+
+
+.franchise-hero .mini-facts dd {
+	color:
+		var(--brand-ivory);
+}
+
+
+.future-dollars .draft-money-pill {
+	min-width: 0;
+
+	padding:
+		2px 0;
+
+	border: 0;
+
+	background:
+		transparent;
+
+	color:
+		var(--brand-gold);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.25rem;
+
+	text-align:
+		left;
+
+	box-shadow:
+		none !important;
+
+	text-shadow:
+		none;
+}
+
+
+/* preserve the semantic budget colors */
+
+.future-dollars .draft-money-low {
+	color:
+		#d98585;
+}
+
+.future-dollars .draft-money-mid {
+	color:
+		var(--brand-gold);
+}
+
+.future-dollars .draft-money-high {
+	color:
+		#91b69c;
+}
+
+
+/* =========================================================
+   QUICK LINKS
+   ========================================================= */
+
+.quick-links {
+	position: relative;
+
+	z-index: 1;
+
+	justify-content:
+		flex-start;
+
+	gap: 6px;
+
+	padding:
+		0 24px 22px;
+}
+
+
+.quick-links a {
+	padding:
+		7px 10px;
+
+	border:
+		1px solid
+		rgba(191,161,106,.17);
+
+	border-radius:
+		3px;
+
+	background:
+		transparent;
+
+	color:
+		var(--brand-sand) !important;
+
+	font-family:
+		var(--font-body);
+
+	font-size:
+		.61rem;
+
+	font-weight:
+		750;
+
+	letter-spacing:
+		.06em;
+
+	text-transform:
+		uppercase;
+
+	text-shadow:
+		none;
+}
+
+
+.quick-links a:hover {
+	border-color:
+		var(--brand-gold);
+
+	color:
+		var(--brand-gold) !important;
+}
+
+
+/* =========================================================
+   IDENTITY SHELF
+   ========================================================= */
+
+.identity-shelf {
+	gap: 12px;
+}
+
+
+.identity-card {
+	min-height: 178px;
+
+	align-content: start;
+
+	padding:
+		16px !important;
+
+	border-color:
+		var(--border) !important;
+
+	text-align:
+		center;
+}
+
+
+.identity-card > span {
+	color:
+		var(--brand-gold);
+
+	font-size:
+		.57rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.14em;
+
+	text-transform:
+		uppercase;
+}
+
+
+.identity-card img {
+	width: 76px;
+
+	height: 76px;
+
+	object-fit:
+		contain;
+
+	border-radius: 0;
+
+	filter:
+		drop-shadow(
+			0 9px 15px
+			rgba(0,0,0,.32)
+		);
+}
+
+
+.identity-card strong {
+	color:
+		var(--brand-ivory);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.35rem;
+
+	font-weight:
+		400;
+}
+
+
+.identity-card small {
+	color:
+		var(--muted);
+}
+
+
+/* =========================================================
+   SECTION CARDS
+   ========================================================= */
+
+.card {
+	padding:
+		18px !important;
+}
+
+
+.card-head h3,
+.card-title-row h3 {
+	color:
+		var(--brand-ivory);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.8rem;
+
+	font-weight:
+		400;
+
+	line-height: 1;
+}
+
+
+.card-head > strong,
+.badge-case-summary strong {
+	color:
+		var(--brand-gold);
+
+	font-family:
+		var(--font-display);
+
+	font-weight:
+		400;
+}
+
+
+.badge-case-summary span,
+.card-head small,
+.card-title-row small {
+	color:
+		var(--brand-stone);
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.manager-badge {
+	border:
+		1px solid
+		var(--border) !important;
+
+	border-radius:
+		var(--radius-sm);
+
+	background:
+		linear-gradient(
+			180deg,
+			rgba(255,255,255,.018),
+			transparent
+		),
+		#121615;
+
+	box-shadow:
+		none;
+
+	transform:
+		none;
+}
+
+
+.manager-badge:hover {
+	transform:
+		translateY(-1px);
+
+	border-color:
+		var(--brand-gold) !important;
+
+	box-shadow:
+		var(--shadow-panel);
+}
+
+
+.manager-badge:focus-visible {
+	outline:
+		2px solid
+		var(--brand-gold);
+}
+
+
+.manager-badge-title span,
+.manager-badge-click,
+.badge-case-footer a,
+.badge-history summary {
+	color:
+		var(--brand-gold);
+}
+
+
+.manager-badge-title strong {
+	color:
+		var(--brand-ivory);
+}
+
+
+.manager-badge-description,
+.manager-badge-latest small {
+	color:
+		var(--muted);
+}
+
+
+.manager-badge-count {
+	border:
+		1px solid
+		var(--brand-charcoal);
+
+	background:
+		var(--brand-gold);
+
+	color:
+		var(--brand-charcoal);
+
+	box-shadow:
+		0 5px 12px
+		rgba(0,0,0,.3);
+}
+
+
+/* stains can still look like stains */
+
+.manager-badge-stains {
+	border-color:
+		rgba(193,49,39,.48) !important;
+}
+
+
+/* =========================================================
+   ALL-TIME
+   ========================================================= */
+
+.all-time-grid {
+	gap: 8px;
+}
+
+
+.mini-stat {
+	padding:
+		13px !important;
+
+	background:
+		#121615 !important;
+}
+
+
+.mini-stat span {
+	color:
+		var(--brand-gold);
+
+	font-size:
+		.57rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.11em;
+
+	text-transform:
+		uppercase;
+}
+
+
+.mini-stat strong {
+	color:
+		var(--brand-ivory);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.65rem;
+}
+
+
+.mini-stat small {
+	color:
+		var(--muted);
+}
+
+
+.ledger-panel {
+	border-color:
+		var(--border) !important;
+
+	background:
+		#121615 !important;
+}
+
+
+.ledger-panel h4 {
+	color:
+		var(--brand-ivory);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.35rem;
+
+	font-weight:
+		400;
+}
+
+
+/* =========================================================
+   FACT TABLES
+   ========================================================= */
+
+.facts div {
+	border-bottom:
+		1px solid
+		rgba(191,161,106,.11);
+}
+
+
+.facts dt {
+	color:
+		var(--brand-stone);
+}
+
+
+.facts dd {
+	color:
+		var(--brand-ivory);
+}
+
+
+/* =========================================================
+   RECENT GAMES / MOVES
+   ========================================================= */
+
+.line-item {
+	border-color:
+		rgba(191,161,106,.11) !important;
+
+	background:
+		#121615 !important;
+}
+
+
+.line-item:hover {
+	border-color:
+		rgba(191,161,106,.36) !important;
+}
+
+
+.line-item strong {
+	color:
+		var(--brand-ivory);
+}
+
+
+.line-item small {
+	color:
+		var(--muted);
+}
+
+
+.line-item span {
+	color:
+		var(--brand-gold);
+
+	font-variant-numeric:
+		tabular-nums;
+}
+
+
+.more-list summary {
+	border:
+		1px solid
+		rgba(191,161,106,.18);
+
+	background:
+		transparent;
+
+	color:
+		var(--brand-sand);
+
+	font-family:
+		var(--font-body);
+
+	font-size:
+		.62rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.08em;
+}
+
+
+.more-list summary:hover {
+	border-color:
+		var(--brand-gold);
+
+	color:
+		var(--brand-gold);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+	.franchise-hero-grid {
+		grid-template-columns:
+			1fr;
+	}
+
+	.logo-bay {
+		justify-items:
+			start;
+	}
+
+	.season-stat-strip {
+		grid-template-columns:
+			repeat(2,minmax(0,1fr));
+	}
+}
+
+
+@media (max-width: 680px) {
+	.franchise-hero-top {
+		display: grid;
+	}
+
+	.franchise-season {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.franchise-hero-grid {
+		padding:
+			18px;
+	}
+
+	.franchise-hero .team-logo {
+		width: 160px;
+		height: 160px;
+	}
+
+	.quick-links {
+		padding:
+			0 18px 18px;
+	}
+
+	.season-stat-strip,
+	.identity-shelf,
+	.all-time-grid {
+		grid-template-columns:
+			1fr;
+	}
 }
 </style>

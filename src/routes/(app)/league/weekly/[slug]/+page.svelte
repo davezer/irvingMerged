@@ -20,31 +20,18 @@
 			'weekly_recap'
 			? renderWeeklyMarkdown(
 					post?.body ||
-					''
+						''
 				)
 			: '';
 
-	function typeLabel(
-		value
-	) {
+	function typeLabel(value) {
 		const labels = {
-			feature:
-				'Feature',
-
-			commissioner:
-				'Commissioner',
-
-			league_news:
-				'League News',
-
-			power_rankings:
-				'Power Rankings',
-
-			announcement:
-				'Announcement',
-
-			opinion:
-				'Opinion'
+			feature: 'Feature',
+			commissioner: 'Commissioner',
+			league_news: 'League News',
+			power_rankings: 'Power Rankings',
+			announcement: 'Announcement',
+			opinion: 'Opinion'
 		};
 
 		return (
@@ -54,9 +41,7 @@
 		);
 	}
 
-	function dateLabel(
-		value
-	) {
+	function dateLabel(value) {
 		if (!value) {
 			return '';
 		}
@@ -75,18 +60,14 @@
 		return date.toLocaleDateString(
 			'en-US',
 			{
-				month:
-					'long',
-
-				day:
-					'numeric',
-
-				year:
-					'numeric'
+				month: 'long',
+				day: 'numeric',
+				year: 'numeric'
 			}
 		);
 	}
 </script>
+
 
 <svelte:head>
 	<title>
@@ -95,6 +76,7 @@
 
 	{#if post.subtitle ||
 		post.excerpt}
+
 		<meta
 			name="description"
 			content={
@@ -102,14 +84,56 @@
 				post.excerpt
 			}
 		/>
+
 	{/if}
 </svelte:head>
 
+
 <div class="article-page">
-	<div class="article-nav">
-		<a href="/league/weekly">
-			← The Irving Weekly
+
+	<!-- ==================================================
+	     MINI MASTHEAD
+	     ================================================== -->
+
+	<header class="article-masthead">
+
+		<a
+			class="publication"
+			href="/league/weekly"
+		>
+			<span>
+				ICL
+			</span>
+
+			<strong>
+				The Irving Weekly
+			</strong>
 		</a>
+
+
+		<div class="publication-meta">
+
+			<span>
+				Irving Collective
+			</span>
+
+			<i></i>
+
+			<span>
+				Est. 2003
+			</span>
+
+		</div>
+
+	</header>
+
+
+	<nav class="article-nav">
+
+		<a href="/league/weekly">
+			← Back to The Irving Weekly
+		</a>
+
 
 		<span>
 			{post.sourceType ===
@@ -119,233 +143,810 @@
 						post.postType
 					)}
 		</span>
-	</div>
+
+	</nav>
+
+
+	<!-- ==================================================
+	     WEEKLY RECAP
+	     ================================================== -->
 
 	{#if post.sourceType ===
 		'weekly_recap'}
-		<WeeklyRecapArticle
-			recap={
-				publishedRecap.recap
-			}
-		/>
+
+		{#if publishedRecap?.recap}
+
+			<div class="recap-shell">
+
+				<WeeklyRecapArticle
+					recap={
+						publishedRecap.recap
+					}
+				/>
+
+			</div>
+
+		{:else}
+
+			<div class="article-empty">
+
+				<strong>
+					This recap is unavailable.
+				</strong>
+
+				<p>
+					The publication record exists,
+					but its recap snapshot could not
+					be loaded.
+				</p>
+
+			</div>
+
+		{/if}
+
+
+	<!-- ==================================================
+	     MANUAL ARTICLE
+	     ================================================== -->
+
 	{:else}
+
 		<article class="manual-article">
-			<header>
+
+			<header class="story-header">
+
 				<div class="article-type">
 					{typeLabel(
 						post.postType
 					)}
 				</div>
 
+
 				<h1>
 					{post.title}
 				</h1>
 
+
 				{#if post.subtitle}
+
 					<p class="subtitle">
 						{post.subtitle}
 					</p>
+
 				{/if}
 
+
 				<div class="byline">
+
 					<span>
 						By
-						{post.authorName ||
-							'The Irving Weekly'}
+						<strong>
+							{post.authorName ||
+								'The Irving Weekly'}
+						</strong>
 					</span>
 
 					{#if post.publishedAt}
+
 						<span>
 							{dateLabel(
 								post.publishedAt
 							)}
 						</span>
+
 					{/if}
+
 				</div>
+
 			</header>
+
 
 			<div class="story-body">
 				{@html manualHtml}
 			</div>
+
 		</article>
+
 	{/if}
+
 </div>
 
+
 <style>
+	/* ==================================================
+	   ARTICLE PAGE
+	   ================================================== */
+
 	.article-page {
-		display: grid;
-		gap: 14px;
+		width: 100%;
 		max-width: 1180px;
+
+		display: grid;
+
+		gap: 14px;
+
 		margin: 0 auto;
-		padding-bottom: 56px;
+
+		padding-bottom: 60px;
 	}
 
-	.article-nav {
+
+	/* ==================================================
+	   MINI MASTHEAD
+	   ================================================== */
+
+	.article-masthead {
 		display: flex;
-		justify-content: space-between;
-		gap: 16px;
+
 		align-items: center;
-		color: var(--muted);
-		font-family:
-			var(--font-score);
-		font-size: .68rem;
-		font-weight: 900;
-		letter-spacing: .09em;
-		text-transform: uppercase;
+
+		justify-content:
+			space-between;
+
+		gap: 20px;
+
+		padding:
+			10px 0;
+
+		border-top:
+			1px solid
+			var(--brand-gold);
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.25
+			);
 	}
 
-	.article-nav a {
-		color: #67dbe8;
+
+	.publication {
+		display: flex;
+
+		align-items: center;
+
+		gap: 11px;
+
+		color: inherit;
+
 		text-decoration: none;
 	}
 
+
+	.publication > span {
+		display: grid;
+		place-items: center;
+
+		width: 32px;
+		height: 32px;
+
+		border:
+			1px solid
+			var(--brand-gold);
+
+		color:
+			var(--brand-gold);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			.9rem;
+	}
+
+
+	.publication strong {
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.35rem;
+
+		font-weight: 400;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.publication-meta {
+		display: flex;
+
+		align-items: center;
+
+		gap: 8px;
+
+		color:
+			var(--brand-stone);
+
+		font-size: .53rem;
+
+		font-weight: 800;
+
+		letter-spacing:
+			.11em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.publication-meta i {
+		width: 3px;
+		height: 3px;
+
+		border-radius: 50%;
+
+		background:
+			var(--brand-gold);
+	}
+
+
+	/* ==================================================
+	   ARTICLE NAV
+	   ================================================== */
+
+	.article-nav {
+		display: flex;
+
+		justify-content:
+			space-between;
+
+		align-items: center;
+
+		gap: 16px;
+
+		padding:
+			3px 0 10px;
+
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.58rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.09em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.article-nav a {
+		color:
+			var(--brand-sand);
+
+		text-decoration: none;
+	}
+
+
+	.article-nav a:hover {
+		color:
+			var(--brand-gold);
+	}
+
+
+	/* ==================================================
+	   RECAP WRAPPER
+	   ================================================== */
+
+	.recap-shell {
+		width: 100%;
+	}
+
+
+	/* ==================================================
+	   MANUAL ARTICLE
+	   ================================================== */
+
 	.manual-article {
-		border: 2px solid #070808;
-		border-radius: 16px;
-		padding: 34px;
+		overflow: hidden;
+
+		border:
+			1px solid
+			var(--border-strong);
+
+		border-radius:
+			var(--radius-md);
+
 		background:
 			linear-gradient(
-				180deg,
-				rgba(255,255,255,.05),
-				rgba(0,0,0,.13)
+				120deg,
+				rgba(
+					191,
+					161,
+					106,
+					.035
+				),
+				transparent 35%
 			),
-			linear-gradient(
-				180deg,
-				var(--bug-gray),
-				var(--bug-charcoal) 38%,
-				var(--bug-black)
-			);
+			var(--panel);
+
 		box-shadow:
 			var(--shadow-panel);
 	}
 
-	.manual-article header {
+
+	.story-header {
+		position: relative;
+
 		max-width: 980px;
+
 		margin: 0 auto;
-		padding-bottom: 25px;
+
+		padding:
+			clamp(
+				30px,
+				5vw,
+				54px
+			)
+			clamp(
+				24px,
+				5vw,
+				48px
+			)
+			30px;
+
 		border-bottom:
 			1px solid
-			rgba(255,255,255,.12);
+			rgba(
+				191,
+				161,
+				106,
+				.15
+			);
 	}
 
-	.article-type {
-		color: var(--bug-yellow);
-		font-family:
-			var(--font-score);
-		font-size: .68rem;
-		font-weight: 950;
-		letter-spacing: .13em;
-		text-transform: uppercase;
-	}
 
-	.manual-article h1 {
-		max-width: 920px;
-		margin: 9px 0 0;
+	.story-header::after {
+		content:
+			'WEEKLY';
+
+		position: absolute;
+
+		right: -10px;
+
+		bottom: -24px;
+
+		color:
+			rgba(
+				191,
+				161,
+					106,
+					.022
+				);
+
 		font-family:
 			var(--font-display);
+
 		font-size:
 			clamp(
-				2.8rem,
-				6vw,
-				5rem
+				5rem,
+				10vw,
+				8rem
 			);
-		line-height: .94;
-		text-wrap: balance;
+
+		line-height: 1;
+
+		pointer-events: none;
 	}
+
+
+	.article-type {
+		position: relative;
+
+		z-index: 1;
+
+		color:
+			var(--brand-gold);
+
+		font-size:
+			.59rem;
+
+		font-weight:
+			800;
+
+		letter-spacing:
+			.14em;
+
+		text-transform:
+			uppercase;
+	}
+
+
+	.manual-article h1 {
+		position: relative;
+
+		z-index: 1;
+
+		max-width: 920px;
+
+		margin:
+			11px 0 0;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			clamp(
+				3.2rem,
+				6.5vw,
+				6rem
+			);
+
+		font-weight: 400;
+
+		line-height:
+			.9;
+
+		letter-spacing:
+			-.01em;
+
+		text-wrap:
+			balance;
+	}
+
 
 	.subtitle {
-		max-width: 800px;
-		margin: 14px 0 0;
-		color: #e5e0d6;
-		font-size: 1.15rem;
-		line-height: 1.45;
+		position: relative;
+
+		z-index: 1;
+
+		max-width: 820px;
+
+		margin:
+			19px 0 0;
+
+		color:
+			var(--brand-sand);
+
+		font-size:
+			1.15rem;
+
+		font-weight: 600;
+
+		line-height:
+			1.5;
 	}
+
 
 	.byline {
+		position: relative;
+
+		z-index: 1;
+
 		display: flex;
+
 		flex-wrap: wrap;
-		gap: 14px;
-		margin-top: 18px;
-		color: #67dbe8;
-		font-family:
-			var(--font-score);
-		font-size: .68rem;
-		font-weight: 900;
-		text-transform: uppercase;
+
+		gap: 15px;
+
+		margin-top: 23px;
+
+		color:
+			var(--brand-stone);
+
+		font-size:
+			.58rem;
+
+		font-weight: 750;
+
+		letter-spacing:
+			.06em;
+
+		text-transform:
+			uppercase;
 	}
+
+
+	.byline strong {
+		margin-left: 3px;
+
+		color:
+			var(--brand-ivory);
+	}
+
 
 	.byline span + span {
-		color: var(--muted);
+		color:
+			var(--brand-gold);
 	}
+
+
+	/* ==================================================
+	   STORY BODY
+	   ================================================== */
 
 	.story-body {
-		max-width: 880px;
+		max-width: 820px;
+
 		margin: 0 auto;
-		padding-top: 22px;
+
+		padding:
+			34px
+			26px
+			55px;
 	}
+
 
 	:global(.story-body h2) {
-		margin: 32px 0 10px;
-		font-size: 1.85rem;
-		line-height: 1.12;
+		margin:
+			38px 0 12px;
+
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			2.2rem;
+
+		font-weight: 400;
+
+		line-height:
+			1.05;
 	}
+
 
 	:global(.story-body h3) {
-		margin: 26px 0 8px;
-		font-size: 1.35rem;
+		margin:
+			29px 0 9px;
+
+		color:
+			var(--brand-sand);
+
+		font-size:
+			1.25rem;
 	}
 
+
 	:global(.story-body p) {
-		margin: 0 0 17px;
-		color: #eee9de;
-		font-size: 1.05rem;
-		line-height: 1.75;
+		margin:
+			0 0 19px;
+
+		color:
+			var(--brand-ivory);
+
+		font-size:
+			1.04rem;
+
+		line-height:
+			1.78;
 	}
+
+
+	:global(.story-body strong) {
+		color:
+			var(--brand-sand);
+	}
+
 
 	:global(.story-body ul),
 	:global(.story-body ol) {
-		margin: 0 0 20px;
-		padding-left: 26px;
+		margin:
+			0 0 22px;
+
+		padding-left:
+			26px;
 	}
+
 
 	:global(.story-body li) {
-		margin: 6px 0;
-		color: #eee9de;
-		line-height: 1.65;
+		margin:
+			7px 0;
+
+		color:
+			var(--brand-ivory);
+
+		line-height:
+			1.7;
 	}
+
 
 	:global(.story-body blockquote) {
-		margin: 24px 0;
-		padding: 15px 18px;
+		margin:
+			29px 0;
+
+		padding:
+			18px 20px;
+
 		border-left:
-			4px solid
-			var(--bug-yellow);
+			2px solid
+			var(--brand-gold);
+
 		background:
-			rgba(244,220,123,.05);
-		color: #e7e0d3;
-		font-size: 1.05rem;
-		line-height: 1.65;
+			rgba(
+				191,
+				161,
+				106,
+				.035
+			);
+
+		color:
+			var(--brand-sand);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.55rem;
+
+		line-height:
+			1.25;
 	}
+
 
 	:global(.story-body a) {
-		color: #67dbe8;
+		color:
+			var(--brand-gold);
+
+		text-decoration-color:
+			rgba(
+				191,
+				161,
+				106,
+				.4
+			);
+
+		text-underline-offset:
+			3px;
 	}
+
 
 	:global(.story-body code) {
-		padding: 2px 5px;
-		border-radius: 4px;
+		padding:
+			2px 5px;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			3px;
+
 		background:
-			rgba(0,0,0,.35);
-		color: #efc86a;
+			rgba(
+				0,
+				0,
+				0,
+				.28
+			);
+
+		color:
+			var(--brand-gold);
 	}
 
+
+	:global(.story-body hr) {
+		margin:
+			34px 0;
+
+		border: 0;
+
+		border-top:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.2
+			);
+	}
+
+
+	/* ==================================================
+	   ERROR
+	   ================================================== */
+
+	.article-empty {
+		min-height: 260px;
+
+		display: grid;
+
+		place-items: center;
+
+		align-content: center;
+
+		gap: 8px;
+
+		padding: 30px;
+
+		border:
+			1px solid
+			var(--border);
+
+		border-radius:
+			var(--radius-md);
+
+		background:
+			var(--panel);
+
+		text-align: center;
+	}
+
+
+	.article-empty strong {
+		color:
+			var(--brand-ivory);
+
+		font-family:
+			var(--font-display);
+
+		font-size:
+			1.8rem;
+
+		font-weight: 400;
+	}
+
+
+	.article-empty p {
+		max-width: 44ch;
+
+		margin: 0;
+
+		color:
+			var(--muted);
+	}
+
+
+	/* ==================================================
+	   MOBILE
+	   ================================================== */
+
 	@media (max-width: 700px) {
-		.article-nav {
+
+		.article-masthead {
 			display: grid;
 		}
 
-		.manual-article {
-			padding: 20px;
+
+		.publication-meta {
+			display: none;
 		}
+
+
+		.article-nav {
+			display: grid;
+
+			gap: 6px;
+		}
+
+
+		.story-header {
+			padding:
+				27px 21px;
+		}
+
+
+		.manual-article h1 {
+			font-size:
+				clamp(
+					3rem,
+					14vw,
+					4.5rem
+				);
+		}
+
+
+		.story-body {
+			padding:
+				28px 21px
+				44px;
+		}
+
 	}
 </style>
