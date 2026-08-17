@@ -1113,14 +1113,7 @@
 
 		overflow: hidden;
 
-		border:
-			1px solid
-			rgba(191,161,106,.24);
-
-		border-radius: 3px;
-
-		background:
-			var(--brand-ivory);
+		
 
 		color:
 			var(--brand-charcoal);

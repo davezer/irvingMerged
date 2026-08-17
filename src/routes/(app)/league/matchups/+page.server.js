@@ -128,18 +128,52 @@ export async function load({ url, platform }) {
     .filter((week) => week.games.length > 0);
 
   return {
-    season: context.season,
-    leagueId: context.leagueId,
-    selectedWeek: context.selectedWeek,
-    availableWeeks: context.availableWeeks,
-    previousWeek: context.availableWeeks.filter((week) => week < context.selectedWeek).at(-1) || null,
-    nextWeek: context.availableWeeks.find((week) => week > context.selectedWeek) || null,
-    week: selectedWeek,
-    filterTeam,
-    highlights: buildWeekHighlights(selectedWeek.matchups),
-    rivalryCards: buildRivalryCards(history, rosterIdentityMap, filterTeam?.rosterId || null),
-    playoffBoard,
-    hasData: selectedWeek.matchups.length > 0,
-    source: 'Sleeper API + shared edge/runtime cache'
+  season: context.season,
+  leagueId: context.leagueId,
+  selectedWeek: context.selectedWeek,
+  availableWeeks: context.availableWeeks,
+
+  previousWeek:
+    context.availableWeeks
+      .filter(
+        (week) =>
+          week <
+          context.selectedWeek
+      )
+      .at(-1) || null,
+
+  nextWeek:
+    context.availableWeeks.find(
+      (week) =>
+        week >
+        context.selectedWeek
+    ) || null,
+
+  week: selectedWeek,
+  filterTeam,
+
+  highlights:
+    buildWeekHighlights(
+      selectedWeek.matchups
+    ),
+
+  rivalryCards:
+    buildRivalryCards(
+      history,
+      rosterIdentityMap,
+      filterTeam?.rosterId || null
+    ),
+
+  playoffBoard,
+
+  regularSeasonStarted:
+    context.regularSeasonStarted,
+
+  hasData:
+    selectedWeek.matchups.length > 0,
+
+  source:
+    'Sleeper API + shared edge/runtime cache'
+};
   };
-}
+

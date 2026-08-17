@@ -1341,8 +1341,6 @@
 
 		overflow: hidden;
 
-		background:
-			var(--brand-ivory);
 	}
 
 

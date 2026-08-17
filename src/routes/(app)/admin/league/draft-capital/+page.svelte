@@ -140,10 +140,10 @@
        ONE-TIME IMPORT
        ===================================================== -->
 
-	{#if data.year === 2026}
+	<!-- {#if data.year === 2026}
 		<section class="card import-card">
-			{#if data.legacyImport?.rowCount > 0}
-				<div>
+			{#if data.legacyImport?.rowCount > 0} -->
+				<!-- <div>
 					<div class="eyebrow">Migration complete</div>
 
 					<h2>Historical ledger is in D1</h2>
@@ -155,10 +155,10 @@
 						through
 						{data.legacyImport.lastDate}. Opening-balance snapshots have been retired.
 					</p>
-				</div>
+				</div> -->
 
-				<div class="migration-complete">✓ FULL HISTORY ACTIVE</div>
-			{:else}
+				<!-- <div class="migration-complete">✓ FULL HISTORY ACTIVE</div> -->
+			<!-- {:else}
 				<div>
 					<div class="eyebrow">Legacy Migration</div>
 
@@ -168,9 +168,9 @@
 						Upload the exported Google Sheets Ledger CSV. The importer will refuse to commit unless
 						all 14 calculated balances exactly match the current D1 capital board.
 					</p>
-				</div>
+				</div> -->
 
-				<form
+				<!-- <form
 					method="POST"
 					action="?/importLegacyLedger"
 					enctype="multipart/form-data"
@@ -186,9 +186,9 @@
 
 					<button type="submit" class="gold-button"> Import Complete Ledger </button>
 				</form>
-			{/if}
-		</section>
-	{/if}
+			{/if} -->
+		<!-- </section>
+	{/if} -->
 
 	<!-- =====================================================
        BALANCE BOARD
@@ -1354,44 +1354,69 @@
 
 	.balance-grid {
 		display: grid;
-
-		grid-template-columns:
-			repeat(
-				2,
-				minmax(0,1fr)
-			);
-
-		column-gap: 42px;
-
-		border-top:
-			1px solid
-			var(--border);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 12px;
+		margin-top: 2px;
 	}
 
 
 	.balance-card {
+		position: relative;
 		min-width: 0;
+		min-height: 118px;
 
 		display: grid;
-
-		grid-template-columns:
-			minmax(0,1fr)
-			auto;
-
-		grid-template-rows:
-			auto auto;
-
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-rows: auto auto;
 		align-items: center;
+		gap: 7px 16px;
 
-		gap:
-			3px 20px;
+		padding: 16px;
 
-		padding:
-			13px 0;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
 
-		border-bottom:
-			1px solid
-			var(--border);
+		background:
+			linear-gradient(
+				180deg,
+				rgba(255,255,255,.025),
+				rgba(255,255,255,.008)
+			),
+			var(--panel);
+
+		box-shadow:
+			inset 0 1px 0 rgba(255,255,255,.025);
+
+		transition:
+			border-color 120ms ease,
+			background 120ms ease,
+			transform 120ms ease;
+	}
+
+
+	.balance-card:hover {
+		transform: translateY(-1px);
+		border-color: rgba(191,161,106,.38);
+
+		background:
+			linear-gradient(
+				180deg,
+				rgba(191,161,106,.035),
+				rgba(255,255,255,.008)
+			),
+			var(--panel);
+	}
+
+
+	.balance-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 2px;
+		height: 100%;
+		background: var(--brand-gold);
+		opacity: .42;
 	}
 
 
@@ -1399,97 +1424,78 @@
 		min-width: 0;
 
 		display: grid;
-
-		grid-template-columns:
-			38px
-			minmax(0,1fr);
-
+		grid-template-columns: 52px minmax(0, 1fr);
 		align-items: center;
+		gap: 11px;
 
-		gap: 10px;
-
-		grid-row:
-			1 / 3;
+		grid-row: 1 / 3;
 	}
 
 
 	.team-row img {
-		width: 38px;
-		height: 38px;
-
+		width: 52px;
+		height: 52px;
 		object-fit: contain;
 	}
 
 
 	.team-row > div {
 		min-width: 0;
-
 		display: grid;
-
-		gap: 2px;
+		gap: 3px;
 	}
 
 
 	.team-row strong {
-		overflow: hidden;
-
-		color:
-			var(--brand-ivory);
-
-		font-size: .77rem;
-
-		text-overflow: ellipsis;
-
-		white-space: nowrap;
+		color: var(--brand-ivory);
+		font-size: .82rem;
+		font-weight: 850;
+		line-height: 1.15;
+		white-space: normal;
+		overflow-wrap: anywhere;
 	}
 
 
 	.team-row span {
-		color:
-			var(--brand-stone);
-
-		font-size: .62rem;
+		color: var(--brand-stone);
+		font-size: .64rem;
+		line-height: 1.2;
+		white-space: normal;
 	}
 
 
 	.capital-number {
 		margin: 0;
 
-		color:
-			var(--brand-sand);
+		color: var(--brand-sand);
 
-		font-family:
-			var(--font-display);
-
-		font-size: 1.85rem;
-
+		font-family: var(--font-display);
+		font-size: clamp(1.85rem, 2vw, 2.2rem);
 		font-weight: 400;
-
-		line-height: 1;
-
+		line-height: .95;
+		letter-spacing: -.015em;
 		text-align: right;
 	}
 
 
 	.capital-number.positive {
-		color:
-			#94b496;
+		color: #91b89b;
 	}
 
 
 	.capital-number.negative {
-		color:
-			#c07a72;
+		color: #c77d72;
 	}
 
 
 	.balance-card > small {
-		color:
-			var(--brand-stone);
-
+		color: var(--brand-stone);
 		font-size: .55rem;
-
+		font-weight: 750;
+		letter-spacing: .04em;
+		line-height: 1.2;
 		text-align: right;
+		text-transform: uppercase;
 	}
 
 
@@ -1501,7 +1507,7 @@
 		color:
 			var(--brand-gold);
 
-		font-size: .52rem;
+		font-size: .62rem;
 
 		font-weight: 850;
 
@@ -1552,7 +1558,7 @@
 		gap: 20px;
 
 		padding:
-			14px 0;
+			17px 0;
 
 		border: 0;
 
@@ -1582,7 +1588,7 @@
 		color:
 			var(--brand-gold);
 
-		font-size: .49rem;
+		font-size: .60rem;
 
 		font-weight: 850;
 
@@ -1593,7 +1599,8 @@
 
 
 	.trade-toggle strong {
-		font-size: .82rem;
+		font-size: .98rem;
+		line-height: 1.25;
 	}
 
 
@@ -1602,12 +1609,12 @@
 
 		align-items: center;
 
-		gap: 7px;
+		gap: 8px;
 
 		color:
 			var(--brand-stone);
 
-		font-size: .51rem;
+		font-size: .60rem;
 
 		font-weight: 850;
 
@@ -1692,7 +1699,7 @@
 		color:
 			var(--brand-ivory);
 
-		font-size: .76rem;
+		font-size: .90rem;
 	}
 
 
@@ -1700,7 +1707,7 @@
 		color:
 			var(--brand-stone);
 
-		font-size: .46rem;
+		font-size: .56rem;
 
 		font-weight: 800;
 
@@ -1714,7 +1721,7 @@
 		color:
 			var(--brand-sand);
 
-		font-size: .72rem;
+		font-size: .82rem;
 	}
 
 
@@ -1762,7 +1769,7 @@
 		color:
 			var(--brand-stone);
 
-		font-size: .48rem;
+		font-size: .58rem;
 
 		font-weight: 850;
 
@@ -1776,7 +1783,7 @@
 		color:
 			var(--brand-gold);
 
-		font-size: .85rem;
+		font-size: .98rem;
 	}
 
 
@@ -2146,7 +2153,7 @@
 
 		.balance-grid {
 			grid-template-columns:
-				1fr;
+				repeat(2, minmax(0, 1fr));
 		}
 
 
@@ -2238,283 +2245,29 @@
 
 	}
 
-	.balance-grid {
-	display: grid;
-
-	grid-template-columns:
-		repeat(
-			4,
-			minmax(0, 1fr)
-		);
-
-	gap: 10px;
-
-	margin-top: 2px;
-}
-
-
-/* ==================================================
-   CAPITAL BOARD
-   14 franchises = 2 rows of 7
-   ================================================== */
-
-.balance-grid {
-	display: grid;
-
-	grid-template-columns:
-		repeat(
-			7,
-			minmax(0, 1fr)
-		);
-
-	gap: 8px;
-
-	margin-top: 2px;
-}
-
-
-.balance-card {
-	position: relative;
-
-	min-width: 0;
-	min-height: 132px;
-
-	display: grid;
-
-	grid-template-rows:
-		auto
-		1fr
-		auto;
-
-	gap: 10px;
-
-	padding: 13px;
-
-	overflow: hidden;
-
-	border:
-		1px solid
-		var(--border);
-
-	border-radius:
-		var(--radius-sm);
-
-	background:
-		linear-gradient(
-			180deg,
-			rgba(255,255,255,.025),
-			rgba(255,255,255,.008)
-		),
-		var(--panel);
-
-	box-shadow:
-		inset 0 1px 0
-		rgba(255,255,255,.025);
-
-	transition:
-		border-color 120ms ease,
-		background 120ms ease,
-		transform 120ms ease;
-}
-
-
-.balance-card:hover {
-	transform:
-		translateY(-1px);
-
-	border-color:
-		rgba(191,161,106,.38);
-
-	background:
-		linear-gradient(
-			180deg,
-			rgba(191,161,106,.035),
-			rgba(255,255,255,.008)
-		),
-		var(--panel);
-}
-
-
-.balance-card::before {
-	content: '';
-
-	position: absolute;
-
-	top: 0;
-	left: 0;
-
-	width: 2px;
-	height: 100%;
-
-	background:
-		var(--brand-gold);
-
-	opacity: .42;
-}
-
-
-/* CAPITAL VALUE */
-
-.capital-number {
-	order: 1;
-
-	margin: 0;
-
-	color:
-		var(--brand-sand);
-
-	font-family:
-		var(--font-display);
-
-	font-size:
-		clamp(
-			1.65rem,
-			1.8vw,
-			2rem
-		);
-
-	font-weight: 400;
-
-	line-height: .9;
-
-	letter-spacing: -.015em;
-
-	text-align: right;
-}
-
-
-.capital-number.positive {
-	color:
-		#91b89b;
-}
-
-
-.capital-number.negative {
-	color:
-		#c77d72;
-}
-
-
-/* TEAM IDENTITY */
-
-.team-row {
-	order: 2;
-
-	min-width: 0;
-
-	display: grid;
-
-	grid-template-columns:
-		36px
-		minmax(0, 1fr);
-
-	align-items: center;
-
-	gap: 8px;
-}
-
-
-.team-row img {
-	width: 36px;
-	height: 36px;
-
-	object-fit: contain;
-}
-
-
-.team-row > div {
-	min-width: 0;
-
-	display: grid;
-
-	gap: 2px;
-}
-
-
-.team-row strong {
-	overflow: hidden;
-
-	color:
-		var(--brand-ivory);
-
-	font-size: .62rem;
-
-	font-weight: 850;
-
-	line-height: 1.12;
-
-	text-overflow: ellipsis;
-
-	white-space: nowrap;
-}
-
-
-.team-row span {
-	overflow: hidden;
-
-	color:
-		var(--brand-stone);
-
-	font-size: .49rem;
-
-	line-height: 1.15;
-
-	text-overflow: ellipsis;
-
-	white-space: nowrap;
-}
-
-
-/* LEDGER COUNT */
-
-.balance-card > small {
-	order: 3;
-
-	color:
-		var(--brand-stone);
-
-	font-size: .44rem;
-
-	font-weight: 750;
-
-	letter-spacing: .04em;
-
-	text-align: right;
-
-	text-transform: uppercase;
-}
-
-
-/* ==================================================
-   RESPONSIVE
-   ================================================== */
-
-@media (max-width: 1300px) {
-	.balance-grid {
-		grid-template-columns:
-			repeat(
-				4,
-				minmax(0,1fr)
-			);
+	@media (max-width: 1200px) and (min-width: 901px) {
+		.balance-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
 	}
-}
 
 
-@media (max-width: 900px) {
-	.balance-grid {
-		grid-template-columns:
-			repeat(
-				2,
-				minmax(0,1fr)
-			);
+	@media (max-width: 560px) {
+		.balance-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.balance-card {
+			min-height: 108px;
+		}
+
+		.team-row {
+			grid-template-columns: 48px minmax(0, 1fr);
+		}
+
+		.team-row img {
+			width: 48px;
+			height: 48px;
+		}
 	}
-}
-
-
-@media (max-width: 560px) {
-	.balance-grid {
-		grid-template-columns:
-			1fr;
-	}
-}
 </style>

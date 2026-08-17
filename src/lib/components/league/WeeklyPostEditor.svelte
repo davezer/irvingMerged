@@ -48,7 +48,23 @@
 	$: status =
 		post?.status ||
 		'draft';
+	function confirmDeleteDraft(event) {
+  const draftTitle =
+    String(
+      title ||
+      post?.title ||
+      'this draft'
+    ).trim();
 
+  const confirmed =
+    window.confirm(
+      `Delete "${draftTitle}"?\n\nThis permanently removes the draft.`
+    );
+
+  if (!confirmed) {
+    event.preventDefault();
+  }
+}
 
 	function typeLabel(value) {
 		const labels = {
@@ -581,19 +597,38 @@
 
 		<div class="actions">
 
-			<div class="action-context">
+			<div class="action-left">
 
-				<span>
-					Publication Status
-				</span>
+  <div class="action-context">
 
-				<strong>
-					{isNew
-						? 'New Draft'
-						: status}
-				</strong>
+    <span>
+      Publication Status
+    </span>
 
-			</div>
+    <strong>
+      {isNew
+        ? 'New Draft'
+        : status}
+    </strong>
+
+  </div>
+
+
+  {#if !isNew && status === 'draft'}
+
+    <button
+      type="submit"
+      formaction="?/delete"
+      formnovalidate
+      class="delete"
+      on:click={confirmDeleteDraft}
+    >
+      Delete Draft
+    </button>
+
+  {/if}
+
+</div>
 
 
 			<div class="action-buttons">
@@ -1883,7 +1918,12 @@
 		gap: 7px;
 	}
 
-
+.action-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
 	button {
 		min-height: 39px;
 
@@ -1921,7 +1961,38 @@
 			translateY(-1px);
 	}
 
+.delete {
+  border-color:
+    rgba(
+      161,
+      80,
+      80,
+      .38
+    );
 
+  background:
+    transparent;
+
+  color:
+    #c77d72;
+}
+
+
+.delete:hover {
+  border-color:
+    #cf8f8f;
+
+  background:
+    rgba(
+      130,
+      54,
+      54,
+      .10
+    );
+
+  color:
+    #e0a0a0;
+}
 	.save {
 		background:
 			transparent;
@@ -2081,6 +2152,11 @@
 		.action-buttons button {
 			flex: 1;
 		}
+
+		.action-left {
+  width: 100%;
+  justify-content: space-between;
+}
 
 	}
 

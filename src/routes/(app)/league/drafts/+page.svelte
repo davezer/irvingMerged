@@ -1175,15 +1175,10 @@
 
 	overflow: hidden;
 
-	border:
-		1px solid
-		rgba(255,255,255,.18);
+	
 
-	border-radius:
-		50%;
 
-	background:
-		#e9e3d5;
+	
 
 	color:
 		#111;

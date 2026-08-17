@@ -31,9 +31,7 @@ function initials(value = '') {
     .join('') || '?';
 }
 
-function sleeperAvatarUrl(avatarId) {
-  return avatarId ? `https://sleepercdn.com/avatars/thumbs/${avatarId}` : null;
-}
+
 
 export function getLegacyManagerProfiles() {
   return managers.map((manager, index) => ({
@@ -71,7 +69,11 @@ export function resolveTeamIdentity({ ownerId, sleeperUser = null, roster = null
     `Roster ${roster?.roster_id ?? ''}`.trim();
 
   const managerName = branded?.name || sleeperUser?.display_name || sleeperUser?.username || 'Unknown Manager';
-  const teamPhoto = branded?.photo || sleeperAvatarUrl(sleeperUser?.avatar) || null;
+  const TEAM_LOGO_VERSION = '20260817';
+
+const teamPhoto = branded?.photo
+  ? `${branded.photo}?v=${TEAM_LOGO_VERSION}`
+  : null;
 
   return {
     ownerId: ownerId ? String(ownerId) : null,

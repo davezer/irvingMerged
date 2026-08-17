@@ -1786,12 +1786,8 @@ function badgeScoreLabel(
     width: 220px;
     height: 220px;
     object-fit: cover;
-    border: 3px solid #070808;
     border-radius: 9px;
-    background: var(--bug-silver);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.45),
-      0 16px 40px rgba(0,0,0,0.45);
+    
   }
 
   .scorebug-body,
@@ -3791,19 +3787,9 @@ summary::after {
 
 	object-fit: cover;
 
-	border:
-		1px solid
-		rgba(191,161,106,.25);
 
-	border-radius:
-		var(--radius-sm);
 
-	background:
-		var(--brand-ivory);
 
-	box-shadow:
-		0 16px 36px
-		rgba(0,0,0,.32);
 }
 
 

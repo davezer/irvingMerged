@@ -725,7 +725,7 @@
 					selectedType
 			});
 	}
-</script>d
+</script>
 
 <div class="page-stack">
   <LeagueSubnav season={season} active="transactions" />
@@ -1997,7 +1997,7 @@
 		color:
 			var(--brand-ivory);
 
-		font-size: 1rem;
+		font-size: 1.5rem;
 
 		line-height: 1.3;
 	}
@@ -2095,14 +2095,10 @@
 
 		overflow: hidden;
 
-		border:
-			1px solid
-			rgba(191,161,106,.26);
 
 		border-radius: 3px;
 
-		background:
-			var(--brand-ivory);
+		
 
 		color:
 			var(--brand-charcoal);

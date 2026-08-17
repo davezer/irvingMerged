@@ -498,7 +498,64 @@ export async function unpublishWeeklyPost(
   );
 }
 
+/*
+ * ============================================================
+ * DELETE MANUAL DRAFT
+ * ============================================================
+ */
 
+export async function deleteManualWeeklyDraft(
+  db,
+  id
+) {
+  assertDb(db);
+
+  const post =
+    await getWeeklyPostById(
+      db,
+      id
+    );
+
+  if (!post) {
+    throw new Error(
+      'Article not found.'
+    );
+  }
+
+  if (
+    post.sourceType !==
+    'manual'
+  ) {
+    throw new Error(
+      'Only manual Irving Weekly drafts can be deleted here.'
+    );
+  }
+
+  if (
+    post.status !==
+    'draft'
+  ) {
+    throw new Error(
+      'Published articles must be unpublished before they can be deleted.'
+    );
+  }
+
+  await db
+    .prepare(`
+      DELETE FROM posts
+
+      WHERE
+        id = ?
+        AND source_type = 'manual'
+        AND status = 'draft'
+    `)
+    .bind(
+      String(id)
+    )
+    .run();
+
+  return true;
+}
 /*
  * ============================================================
  * AI WEEKLY RECAP → IRVING WEEKLY POST

@@ -98,7 +98,7 @@
 
 		<div class="hero-main">
 			<div class="hero-copy">
-				<div class="hero-label">History</div>
+				<div class="hero-label"></div>
 
 				<h1>
 					<span>The</span>
@@ -157,7 +157,7 @@
 			</div>
 		</div>
 	</section>
-</div>
+
 	<!-- =====================================================
        YEAR INDEX
        ===================================================== -->
@@ -988,6 +988,8 @@
 
 </section>
 
+</div>
+
 <style>
 	:global(body) {
 		--archive-gold: #d6b15e;
@@ -1005,8 +1007,8 @@
 
 	.archive-page {
 		display: grid;
-		gap: 64px;
-		padding-bottom: 70px;
+		gap: 82px;
+		padding-bottom: 90px;
 	}
 
 	.archive-kicker,
@@ -2647,7 +2649,7 @@
 
 	@media (max-width: 780px) {
 		.archive-page {
-			gap: 46px;
+			gap: 54px;
 		}
 
 		.archive-hero {

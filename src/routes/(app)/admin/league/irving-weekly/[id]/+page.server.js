@@ -1,9 +1,11 @@
 import {
   error,
-  fail
+  fail,
+  redirect
 } from '@sveltejs/kit';
 
 import {
+  deleteManualWeeklyDraft,
   getWeeklyPostById,
   publishWeeklyPost,
   saveManualWeeklyPost,
@@ -209,6 +211,57 @@ export const actions = {
         }
       );
     }
+  },
+
+    delete: async ({
+    params,
+    platform
+  }) => {
+    const db =
+      platform?.env?.DB;
+
+    const post =
+      await requireManualPost(
+        db,
+        params.id
+      );
+
+    if (
+      post.status !==
+      'draft'
+    ) {
+      return fail(
+        400,
+        {
+          error:
+            'Published articles must be unpublished before they can be deleted.',
+          post
+        }
+      );
+    }
+
+    try {
+      await deleteManualWeeklyDraft(
+        db,
+        params.id
+      );
+    } catch (error) {
+      return fail(
+        400,
+        {
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Could not delete draft.',
+          post
+        }
+      );
+    }
+
+    throw redirect(
+      303,
+      '/admin/league/irving-weekly'
+    );
   },
 
   unpublish: async ({

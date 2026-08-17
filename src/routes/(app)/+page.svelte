@@ -1892,20 +1892,7 @@
 
 		overflow: hidden;
 
-		border:
-			1px solid
-			rgba(
-				191,
-				161,
-				106,
-				.18
-			);
-
-		border-radius:
-			4px;
-
-		background:
-			var(--brand-ivory);
+	
 	}
 
 
@@ -2298,20 +2285,7 @@
 
 		overflow: hidden;
 
-		border:
-			1px solid
-			rgba(
-				191,
-				161,
-				106,
-				.17
-			);
-
-		border-radius:
-			4px;
-
-		background:
-			var(--brand-ivory);
+	
 	}
 
 

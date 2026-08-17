@@ -118,10 +118,33 @@ function seasonHref(
   </div>
 
   {#if !data.hasData}
-    <div class="card empty">
-      <h2>No matchup data yet</h2>
-      <p>We could not pull matchup data for this league/week selection.</p>
-    </div>
+  <div class="card empty">
+
+    {#if !data.regularSeasonStarted}
+
+      <h2>
+        The season hasn't started yet
+      </h2>
+
+      <p>
+        Week 1 matchups will appear here
+        once the NFL regular season begins.
+      </p>
+
+    {:else}
+
+      <h2>
+        No matchup data yet
+      </h2>
+
+      <p>
+        We could not pull matchup data for
+        this league/week selection.
+      </p>
+
+    {/if}
+
+  </div>
   {:else}
     {#if data.highlights}
       <section class="highlight-grid">
@@ -1001,15 +1024,10 @@ function seasonHref(
 
 		overflow: hidden;
 
-		border:
-			1px solid
-			rgba(191,161,106,.28);
 
 		border-radius: 4px;
 
-		background:
-			var(--brand-ivory);
-
+		
 		color:
 			var(--brand-charcoal);
 

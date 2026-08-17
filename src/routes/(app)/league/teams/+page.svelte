@@ -517,29 +517,15 @@ function seasonHref(option) {
 	}
 
 
-	.cover img {
-		display: block;
-
-		width: 118px;
-
-		height: 118px;
-
-		object-fit: cover;
-
-		border:
-			1px solid
-			rgba(191,161,106,.30);
-
-		border-radius:
-			4px;
-
-		background:
-			var(--brand-ivory);
-
-		box-shadow:
-			0 10px 22px
-			rgba(0,0,0,.24);
-	}
+.cover img {
+  display: block;
+  width: 118px;
+  height: 118px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: transparent;
+  
+}
 
 
 	/* =========================================================

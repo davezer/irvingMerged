@@ -9,10 +9,52 @@ function numberOrNull(value) {
 }
 
 function getCurrentWeekFromState(state) {
-  if (!state) return 1;
-  const displayWeek = numberOrNull(state.display_week);
-  const week = numberOrNull(state.week);
-  return Math.max(1, displayWeek || week || 1);
+  if (!state) {
+    return 1;
+  }
+
+  const seasonType =
+    String(
+      state.season_type || ''
+    ).toLowerCase();
+
+  /*
+   * Sleeper's week/display_week can represent
+   * PRESEASON weeks before fantasy Week 1.
+   *
+   * Until the NFL regular season begins,
+   * keep the fantasy UI parked on Week 1.
+   */
+  if (
+    seasonType === 'pre' ||
+    seasonType === 'off'
+  ) {
+    return 1;
+  }
+
+  /*
+   * Once the NFL regular season is over,
+   * the fantasy regular season is already
+   * fully available.
+   */
+  if (seasonType === 'post') {
+    return 18;
+  }
+
+  const displayWeek =
+    numberOrNull(
+      state.display_week
+    );
+
+  const week =
+    numberOrNull(
+      state.week
+    );
+
+  return Math.max(
+    1,
+    displayWeek || week || 1
+  );
 }
 
 function isCompletedHistoricalSeason({ season, currentSeason, league }) {
@@ -91,6 +133,16 @@ export async function resolveLeagueContext({ url, env, allWeeksByDefault = false
   }
 
   if (!weeks.length) weeks = [defaultWeek];
+  const seasonType =
+  String(
+    nflState?.season_type || ''
+  ).toLowerCase();
+
+const regularSeasonStarted =
+  Number(season) <
+    Number(currentSeason) ||
+  seasonType === 'regular' ||
+  seasonType === 'post';
 
   return {
     season,
@@ -98,6 +150,8 @@ export async function resolveLeagueContext({ url, env, allWeeksByDefault = false
     leagueId: String(leagueId || rootLeagueId),
     league,
     currentSeason,
+    seasonType,
+    regularSeasonStarted,
     currentWeek,
     weeks,
     selectedWeek: weeks[0],

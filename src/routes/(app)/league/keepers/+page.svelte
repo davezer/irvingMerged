@@ -1363,11 +1363,11 @@
 
 		overflow: hidden;
 
-		border: 1px solid rgba(191, 161, 106, 0.32);
+		
 
 		border-radius: 4px;
 
-		background: var(--brand-ivory);
+		
 
 		color: var(--brand-charcoal);
 
