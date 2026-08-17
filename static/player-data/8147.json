@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T02:14:00.565Z",
+  "generatedAt": "2026-08-17T16:25:36.513Z",
   "playerId": "8147",
   "profile": {
     "id": "8147",
@@ -17,7 +17,7 @@
     "status": "Active",
     "injuryStatus": null,
     "practiceParticipation": null,
-    "depthChartOrder": 4,
+    "depthChartOrder": 7,
     "fantasyPositions": [
       "WR"
     ],

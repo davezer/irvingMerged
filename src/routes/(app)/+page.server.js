@@ -327,7 +327,7 @@ export async function load({
 		commandCards: [
 			{
 				eyebrow:
-					'IRVING CHAMPIONS LEAGUE',
+					'IRVING CHAMPIONSHIP LEAGUE',
 
 				title:
 					'Fantasy Football War Room',

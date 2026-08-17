@@ -70,6 +70,26 @@
     return value ? `/${value}.png` : '/RookieWatch.png';
   }
 
+  function legacyChampionshipIcon(league) {
+  switch (
+    String(league || '')
+      .trim()
+      .toLowerCase()
+  ) {
+    case 'dtsp':
+      return '/badges/DTSP.png';
+
+    case 'irving':
+      return '/badges/Irving.png';
+
+    case 'icl':
+      return '/badges/ICLChamp.png';
+
+    default:
+      return null;
+  }
+}
+
   function serviceTitle(value) {
     if (!value) return 'Rookie Watch';
 
@@ -145,6 +165,37 @@
     badges: []
   };
 
+  $: championshipHistory =
+  String(
+    manager?.championship?.years ||
+    ''
+  )
+    .split(',')
+    .map((value) =>
+      Number(value.trim())
+    )
+    .filter(Number.isInteger)
+    .map((year) => {
+      const league =
+        championshipLeagueForYear(
+          manager,
+          year
+        );
+
+      return {
+        year,
+        league,
+        image:
+          championshipIcon(
+            league
+          )
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.year - a.year
+    );
+
 /*
  * Persona, Service, and Legacy already live
  * in the identity shelf directly above this.
@@ -191,11 +242,30 @@ let selectedBadge = null;
       image: serviceIcon(manager.yearsOfService)
     },
     {
-      label: 'Legacy',
-      title: manager.championship?.league || 'No legacy titles',
-      meta: legacyTitleYears.length ? legacyTitleYears.join(', ') : 'Pre-merge history',
-      image: legacyTitleYears.length ? '/Irving.png' : null
-    },
+  label: 'Championship',
+
+  title:
+    championshipHistory.length
+      ? `${championshipHistory.length} ${
+          championshipHistory.length === 1
+            ? 'Title'
+            : 'Titles'
+        }`
+      : 'No Titles',
+
+  championships:
+    championshipHistory,
+
+  meta:
+    championshipHistory.length
+      ? championshipHistory
+          .map(
+            (title) =>
+              `${title.year} ${title.league}`
+          )
+          .join(' • ')
+      : 'No championship history'
+},
     {
       label: 'Rival',
       title: rival?.name || manager.rival?.name || 'TBD',
@@ -283,7 +353,40 @@ let selectedBadge = null;
     'Badge'
   );
 }
+function championshipLeagueForYear(
+  manager,
+  year
+) {
+  return (
+    manager?.championship
+      ?.leagueByYear?.[year] ||
+    manager?.championship?.league ||
+    null
+  );
+}
 
+
+function championshipIcon(
+  league
+) {
+  switch (
+    String(league || '')
+      .trim()
+      .toLowerCase()
+  ) {
+    case 'icl':
+      return '/badges/ICLChamp.png';
+
+    case 'dtsp':
+      return '/badges/DTSP.png';
+
+    case 'irving':
+      return '/badges/Irving.png';
+
+    default:
+      return null;
+  }
+}
 
 function badgeAwardWhen(
   award
@@ -687,25 +790,132 @@ function badgeScoreLabel(
 	</div>
 </section>
 
-  <section class="identity-shelf" aria-label="Franchise identity">
-    {#each identityCards as identityCard}
-      {#if identityCard.href}
-        <a class="identity-card" href={identityCard.href}>
-          <span>{identityCard.label}</span>
-          {#if identityCard.image}<img src={identityCard.image} alt={identityCard.title} />{/if}
-          <strong>{identityCard.title}</strong>
-          <small>{identityCard.meta}</small>
-        </a>
-      {:else}
-        <article class="identity-card">
-          <span>{identityCard.label}</span>
-          {#if identityCard.image}<img src={identityCard.image} alt={identityCard.title} />{/if}
-          <strong>{identityCard.title}</strong>
-          <small>{identityCard.meta}</small>
-        </article>
-      {/if}
-    {/each}
-  </section>
+  <section
+  class="identity-shelf"
+  aria-label="Franchise identity"
+>
+  {#each identityCards as identityCard}
+
+    {#if identityCard.href}
+
+      <a
+        class="identity-card"
+        href={identityCard.href}
+      >
+
+        <span>
+          {identityCard.label}
+        </span>
+
+
+        {#if identityCard.championships?.length}
+
+          <div class="championship-badges">
+
+            {#each identityCard.championships as title}
+
+              <div class="championship-badge">
+
+                {#if title.image}
+
+                  <img
+                    src={title.image}
+                    alt={`${title.league} Champion`}
+                  />
+
+                {/if}
+
+                <span>
+                  {title.year}
+                </span>
+
+              </div>
+
+            {/each}
+
+          </div>
+
+        {:else if identityCard.image}
+
+          <img
+            src={identityCard.image}
+            alt={identityCard.title}
+          />
+
+        {/if}
+
+
+        <strong>
+          {identityCard.title}
+        </strong>
+
+        <small>
+          {identityCard.meta}
+        </small>
+
+      </a>
+
+
+    {:else}
+
+      <article class="identity-card">
+
+        <span>
+          {identityCard.label}
+        </span>
+
+
+        {#if identityCard.championships?.length}
+
+          <div class="championship-badges">
+
+            {#each identityCard.championships as title}
+
+              <div class="championship-badge">
+
+                {#if title.image}
+
+                  <img
+                    src={title.image}
+                    alt={`${title.league} Champion`}
+                  />
+
+                {/if}
+
+                <span>
+                  {title.year}
+                </span>
+
+              </div>
+
+            {/each}
+
+          </div>
+
+        {:else if identityCard.image}
+
+          <img
+            src={identityCard.image}
+            alt={identityCard.title}
+          />
+
+        {/if}
+
+
+        <strong>
+          {identityCard.title}
+        </strong>
+
+        <small>
+          {identityCard.meta}
+        </small>
+
+      </article>
+
+    {/if}
+
+  {/each}
+</section>
 
   <section
   class="card badge-case-card"
@@ -4116,7 +4326,39 @@ summary::after {
 		rgba(193,49,39,.48) !important;
 }
 
+.championship-badges {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
 
+  min-height: 82px;
+}
+
+
+.championship-badge {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+
+.championship-badge img {
+  width: 70px;
+  height: 70px;
+
+  object-fit: contain;
+}
+
+
+.championship-badge span {
+  color: #d6b15e;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .08em;
+}
 /* =========================================================
    ALL-TIME
    ========================================================= */

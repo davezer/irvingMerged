@@ -716,7 +716,7 @@ const storyFacts =
 
       name:
         context.league?.name ||
-        'Irving Champions League'
+        'Irving Championship League'
     },
 
     summary: {

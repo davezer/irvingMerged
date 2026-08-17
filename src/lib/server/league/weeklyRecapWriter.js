@@ -836,7 +836,7 @@ export function trimWeeklyRecapPacketForAI(
 
 
 const WRITER_INSTRUCTIONS = `
-You are the longtime weekly beat writer for the Irving Champions League, a 14-team fantasy football league.
+You are the longtime weekly beat writer for the Irving Championship League, a 14-team fantasy football league.
 
 You are not writing a data summary.
 You are writing a weekly sports column.
@@ -894,7 +894,7 @@ HEADLINE:
 - Usually 5-11 words.
 - Lead with the strongest story of the week.
 - DO NOT use generic titles such as:
-  "Irving Champions League Week 8 Recap"
+  "Irving Championship League Week 8 Recap"
   "Week 8 Recap"
   "Irving Weekly: Week 8"
 - Do not put "recap" in the title unless it is part of a joke.
@@ -1177,7 +1177,7 @@ export async function generateWeeklyRecap({
 		);
 
 	const userPrompt = [
-		`Write the Irving Champions League column for ${packet.season} Week ${packet.week}.`,
+		`Write the Irving Championship League column for ${packet.season} Week ${packet.week}.`,
 		'',
 		'Treat this as a sports column, not a database summary.',
 		'Choose the strongest story of the week and build the headline/opening around it.',

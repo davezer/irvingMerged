@@ -1693,7 +1693,7 @@ applyTransactionPrices({
 		leagueName:
 			targetContext.league?.name ||
 			sourceContext.league?.name ||
-			'Irving Champions League',
+			'Irving Championship League',
 
 		teams,
 

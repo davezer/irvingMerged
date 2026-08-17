@@ -234,7 +234,7 @@ export async function load({ url, platform }) {
   return {
     season: context.season,
     leagueId: context.leagueId,
-    leagueName: context.league?.name || 'Irving Champions League',
+    leagueName: context.league?.name || 'Irving Championship League',
     selectedWeek,
     availableWeeks: context.availableWeeks,
     starterSlots,

@@ -14,7 +14,7 @@
 
 	<meta
 		name="description"
-		content="The official rules, bylaws, procedures, and operating standards of the Irving Champions League."
+		content="The official rules, bylaws, procedures, and operating standards of the Irving Championship League."
 	/>
 </svelte:head>
 
@@ -41,7 +41,7 @@
 
 			<p>
 				The official rules, procedures,
-				and laws of the Irving Champions League.
+				and laws of the Irving Championship League.
 			</p>
 
 
@@ -125,7 +125,7 @@
 
 			<iframe
 				src={embeddedDocumentUrl}
-				title="Irving Champions League Constitution"
+				title="Irving Championship League Constitution"
 				class="google-doc-iframe"
 			></iframe>
 

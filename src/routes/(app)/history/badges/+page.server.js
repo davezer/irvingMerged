@@ -1,16 +1,13 @@
 import {
-  getHistoryModules,
-  getRecordsBoard,
-  getRivalries
-} from '$lib/server/league';
-
-import {
   getBadgeCabinet
 } from '$lib/server/league/badgeRepository';
 
 
-export const load = async ({ platform, url }) => {
-  const db = platform?.env?.DB;
+export const load = async ({
+  platform
+}) => {
+  const db =
+    platform?.env?.DB;
 
   if (!db) {
     throw new Error(
@@ -18,27 +15,43 @@ export const load = async ({ platform, url }) => {
     );
   }
 
-  const season =
-    url.searchParams.get('season') ??
-    String(new Date().getFullYear());
 
   const badgeCabinet =
-    await getBadgeCabinet(db, {
-      season
-    });
+    await getBadgeCabinet(db);
+
+
+  const categoryStats =
+    Object.entries(
+      badgeCabinet.sections || {}
+    ).map(
+      ([key, badges]) => ({
+        key,
+
+        definitions:
+          badges.length,
+
+        earnedDefinitions:
+          badges.filter(
+            (badge) =>
+              Number(
+                badge?.count || 0
+              ) > 0
+          ).length,
+
+        awards:
+          badges.reduce(
+            (sum, badge) =>
+              sum +
+              Number(
+                badge?.count || 0
+              ),
+            0
+          )
+      })
+    );
+
 
   return {
-    modules:
-      getHistoryModules(),
-
-    records:
-      getRecordsBoard()
-        .slice(0, 2),
-
-    rivalries:
-      getRivalries()
-        .slice(0, 2),
-
     sections:
       badgeCabinet.sections,
 
@@ -46,6 +59,31 @@ export const load = async ({ platform, url }) => {
       badgeCabinet.byManager,
 
     badgeMeta:
-      badgeCabinet.meta
+      badgeCabinet.meta,
+
+    categoryStats,
+
+    stats: {
+      definitions:
+        badgeCabinet.meta
+          ?.definitions ?? 0,
+
+      awards:
+        badgeCabinet.meta
+          ?.displayedAwards ?? 0,
+
+      managers:
+        Object.keys(
+          badgeCabinet.byManager || {}
+        ).length,
+
+      earnedBadges:
+        categoryStats.reduce(
+          (sum, category) =>
+            sum +
+            category.earnedDefinitions,
+          0
+        )
+    }
   };
 };

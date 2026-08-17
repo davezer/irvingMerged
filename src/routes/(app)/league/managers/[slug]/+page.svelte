@@ -41,7 +41,7 @@
 </script>
 
 <svelte:head>
-  <title>{manager.name} | Irving Champions League</title>
+  <title>{manager.name} | Irving Championship League</title>
 </svelte:head>
 
 <div class="manager-page">

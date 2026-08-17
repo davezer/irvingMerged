@@ -1,14 +1,14 @@
 export const leagueID = "1253040502786228224";
-export const leagueName = "Irving Champions League";
+export const leagueName = "Irving Championship League";
 export const dues = 100;
 export const dynasty = false;
 export const enableBlog = true;
 
 export const homepageText = `
-  <p>Introducing the Irving Champions League.</p>
+  <p>Introducing the Irving Championship League.</p>
   <p>
     Born from the ashes of two legendary leagues—The Irving League and DTSP—the
-    <strong>Irving Champions League</strong> unites the fiercest competitors into
+    <strong>Irving Championship League</strong> unites the fiercest competitors into
     one ultimate arena. This is no ordinary fantasy football league; it’s a clash
     of titans, where the best of the best now battle for a single crown.
   </p>
@@ -183,7 +183,13 @@ export const managers = [
     yearsOfService: "Fifteen",
     persona: "The Kornacki",
     philosophy: "Brewed strong, loyal to the last drop, fire the cannons!",
-    championship: { league: "Irving", years: "2020" },
+    championship: {
+  league: "Irving",
+  years: "2020, 2025",
+  leagueByYear: {
+    2025: "ICL"
+  }
+},
     preferredContact: "Text"
   },
   { // array 10

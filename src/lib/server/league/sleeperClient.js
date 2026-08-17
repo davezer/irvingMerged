@@ -44,6 +44,24 @@ export async function getSleeperMatchupsForWeek(leagueId, week) {
     return Array.isArray(data) ? data : [];
   });
 }
+export async function getSleeperWinnersBracket(leagueId) {
+  return withLeagueCache(
+    `sleeper:winners-bracket:${leagueId}`,
+    FAST_TTL_MS,
+    async () => {
+      const data = await fetchJson(
+        `${SLEEPER_BASE}/league/${leagueId}/winners_bracket`,
+        {
+          allow404: true
+        }
+      );
+
+      return Array.isArray(data)
+        ? data
+        : [];
+    }
+  );
+}
 
 export async function getSleeperLeagueDrafts(leagueId) {
   return withLeagueCache(`sleeper:league-drafts:${leagueId}`, FAST_TTL_MS, async () => {

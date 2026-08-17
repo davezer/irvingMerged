@@ -6,7 +6,7 @@ export async function load({ url, platform }) {
 	/*
 	 * The Clubhouse has no season selector,
 	 * so always point it at the current
-	 * Irving Champions League season.
+	 * Irving Championship League season.
 	 */
 	leagueUrl.searchParams.set('season', '2026');
 

@@ -518,7 +518,7 @@ export async function getLeagueHomeBundle({
 
 		leagueName:
 			context.league?.name ||
-			'CHAMPIONS LEAGUE',
+			'CHAMPIONSHIP LEAGUE',
 
 
 		/*

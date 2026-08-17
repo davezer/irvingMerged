@@ -103,7 +103,7 @@
 </script>
 
 <svelte:head>
-	<title>Keeper Desk · {data?.leagueName || 'Irving Champions League'}</title>
+	<title>Keeper Desk · {data?.leagueName || 'Irving Championship League'}</title>
 </svelte:head>
 
 <div class="page-stack keeper-page">

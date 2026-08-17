@@ -14,7 +14,7 @@
 
 <svelte:head>
   <title>
-    {recap?.title || `Week ${published?.week} Recap`} | Irving Champions League
+    {recap?.title || `Week ${published?.week} Recap`} | Irving Championship League
   </title>
 
   {#if recap?.subtitle}
