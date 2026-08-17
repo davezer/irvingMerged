@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:16:25.485Z",
+  "generatedAt": "2026-08-17T02:06:38.812Z",
   "playerId": "11589",
   "profile": {
     "id": "11589",
@@ -15,7 +15,7 @@
     "yearsExp": 2,
     "college": "Florida State",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 4,
     "fantasyPositions": [

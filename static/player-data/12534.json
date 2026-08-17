@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:16:26.629Z",
+  "generatedAt": "2026-08-17T02:06:39.997Z",
   "playerId": "12534",
   "profile": {
     "id": "12534",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Rutgers",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [

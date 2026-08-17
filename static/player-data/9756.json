@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:16:28.876Z",
+  "generatedAt": "2026-08-17T02:06:42.231Z",
   "playerId": "9756",
   "profile": {
     "id": "9756",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "USC",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [

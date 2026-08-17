@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:16:30.165Z",
+  "generatedAt": "2026-08-17T02:06:43.560Z",
   "playerId": "11435",
   "profile": {
     "id": "11435",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "Fort Valley State",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 3,
     "fantasyPositions": [

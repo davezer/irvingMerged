@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:16:29.893Z",
+  "generatedAt": "2026-08-17T02:06:43.285Z",
   "playerId": "9500",
   "profile": {
     "id": "9500",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "North Carolina",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [

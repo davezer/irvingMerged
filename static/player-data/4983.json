@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:16:26.678Z",
+  "generatedAt": "2026-08-17T02:06:40.043Z",
   "playerId": "4983",
   "profile": {
     "id": "4983",
@@ -15,7 +15,7 @@
     "yearsExp": 8,
     "college": "Maryland",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

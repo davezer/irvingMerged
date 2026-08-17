@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:16:33.675Z",
+  "generatedAt": "2026-08-17T02:06:47.107Z",
   "playerId": "2216",
   "profile": {
     "id": "2216",
@@ -15,7 +15,7 @@
     "yearsExp": 12,
     "college": "Texas A&M",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
