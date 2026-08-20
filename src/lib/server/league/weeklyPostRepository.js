@@ -101,14 +101,37 @@ function normalizePost(row) {
             row.recap_season
           ),
 
-    recapWeek:
-      row.recap_week == null
-        ? null
-        : Number(
-            row.recap_week
-          ),
+   recapWeek:
+	row.recap_week == null
+		? null
+		: Number(
+				row.recap_week
+			),
 
-    featured:
+hasPendingDraft:
+	Boolean(
+		Number(
+			row.has_pending_draft ||
+			0
+		)
+	),
+
+pendingDraftTitle:
+	row.pending_draft_title ||
+	null,
+
+pendingDraftSubtitle:
+	row.pending_draft_subtitle ||
+	null,
+
+pendingDraftGeneratedAt:
+	row.pending_draft_generated_at == null
+		? null
+		: Number(
+				row.pending_draft_generated_at
+			),
+
+featured:
       Boolean(
         Number(
           row.featured ||
@@ -209,36 +232,122 @@ async function uniqueSlug(
  */
 
 export async function listWeeklyPostsAdmin(
-  db
+	db
 ) {
-  assertDb(db);
+	assertDb(
+		db
+	);
 
-  const result =
-    await db
-      .prepare(`
-        SELECT *
-        FROM posts
+	const result =
+		await db
+			.prepare(`
+				SELECT
+					p.*,
 
-        ORDER BY
-          CASE
-            WHEN status = 'draft'
-              THEN 0
-            ELSE 1
-          END,
+					CASE
+						WHEN
+							p.source_type = 'weekly_recap'
 
-          COALESCE(
-            updated_at,
-            created_at
-          ) DESC
-      `)
-      .all();
+							AND p.status = 'published'
 
-  return (
-    result.results ||
-    []
-  ).map(
-    normalizePost
-  );
+							AND wr.draft_recap_json
+								IS NOT NULL
+
+							AND (
+								wr.published_at IS NULL
+
+								OR wr.draft_generated_at >
+									wr.published_at
+							)
+
+							THEN 1
+
+						ELSE 0
+					END AS has_pending_draft,
+
+					wr.draft_title
+						AS pending_draft_title,
+
+					wr.draft_subtitle
+						AS pending_draft_subtitle,
+
+					wr.draft_generated_at
+						AS pending_draft_generated_at
+
+				FROM posts p
+
+				LEFT JOIN weekly_recaps wr
+					ON
+						p.source_type =
+							'weekly_recap'
+
+						AND p.recap_season =
+							wr.season
+
+						AND p.recap_week =
+							wr.week
+
+				ORDER BY
+					CASE
+						WHEN p.status = 'draft'
+							THEN 0
+
+						WHEN
+							p.source_type =
+								'weekly_recap'
+
+							AND p.status =
+								'published'
+
+							AND wr.draft_recap_json
+								IS NOT NULL
+
+							AND (
+								wr.published_at IS NULL
+
+								OR wr.draft_generated_at >
+									wr.published_at
+							)
+
+							THEN 1
+
+						ELSE 2
+					END,
+
+					CASE
+						WHEN
+							p.source_type =
+								'weekly_recap'
+
+							AND p.status =
+								'published'
+
+							AND wr.draft_recap_json
+								IS NOT NULL
+
+							AND (
+								wr.published_at IS NULL
+
+								OR wr.draft_generated_at >
+									wr.published_at
+							)
+
+							THEN wr.draft_generated_at
+
+						ELSE COALESCE(
+							p.updated_at,
+							p.created_at
+						)
+					END DESC
+			`)
+			.all();
+
+	return (
+		result.results ||
+		[]
+	).map(
+		normalizePost
+	);
 }
 
 

@@ -2,17 +2,14 @@ import { fail } from '@sveltejs/kit';
 
 import { buildWeeklyRecapPacket } from '$lib/server/league/weeklyRecapPacket.js';
 
-import { generateWeeklyRecap } from '$lib/server/league/weeklyRecapWriter.js';
 
 import {
-  upsertWeeklyRecapDraftPost,
-  upsertWeeklyRecapPost
+	upsertWeeklyRecapPost
 } from '$lib/server/league/weeklyPostRepository.js';
 
 import {
 	getWeeklyRecap,
-	publishWeeklyRecap,
-	saveWeeklyRecapDraft
+	publishWeeklyRecap
 } from '$lib/server/league/weeklyRecapRepository.js';
 
 function validSeason(value) {
@@ -175,136 +172,7 @@ export const actions = {
 		}
 	},
 
-	generate: async ({ request, url, platform, locals }) => {
-		const { season, week } = await readSelection(request);
-
-		const error = validateSelection(season, week);
-
-		if (error) {
-			return fail(400, {
-				ok: false,
-
-				season,
-
-				week,
-
-				error
-			});
-		}
-
-		const apiKey = platform?.env?.OPENAI_API_KEY;
-
-		if (!String(apiKey || '').trim()) {
-			return fail(500, {
-				ok: false,
-
-				season,
-
-				week,
-
-				error: 'OPENAI_API_KEY is missing. Add it to .dev.vars and restart the dev server.'
-			});
-		}
-
-		try {
-			/*
-			 * Rebuild the packet instead
-			 * of trusting anything sent
-			 * from the browser.
-			 */
-			const packet = await buildWeeklyRecapPacket({
-				url: buildPacketUrl({
-					url,
-					season,
-					week
-				}),
-
-				env: platform?.env
-			});
-
-			const { recap, meta } = await generateWeeklyRecap({
-				packet,
-
-				apiKey
-			});
-
-			const db = platform?.env?.DB;
-
-			if (!db) {
-				return fail(500, {
-					ok: false,
-
-					season,
-
-					week,
-
-					error:
-						'Cloudflare D1 binding is unavailable. The recap was generated but could not be saved.'
-				});
-			}
-
-			const savedRecap = await saveWeeklyRecapDraft(db, {
-				season,
-
-				week,
-
-				leagueId: packet.league.id,
-
-				recap,
-
-				packet,
-
-				aiMeta: meta,
-
-				generatedBy: locals.user?.id || null
-			});
-      await upsertWeeklyRecapDraftPost(
-  db,
-  {
-    season,
-    week,
-
-    title:
-      recap.title,
-
-    subtitle:
-      recap.subtitle
-  }
-);
-
-			return {
-				ok: true,
-
-				mode: 'recap',
-
-				season,
-
-				week,
-
-				packet,
-
-				recap,
-
-				aiMeta: meta,
-
-				savedRecap,
-
-				message: 'AI recap generated and draft saved.'
-			};
-		} catch (error) {
-			console.error('[weekly-recap] AI generation failed:', error);
-
-			return fail(500, {
-				ok: false,
-
-				season,
-
-				week,
-
-				error: error instanceof Error ? error.message : 'Could not generate weekly recap.'
-			});
-		}
-	},
+	
 
 	publish: async ({
   request,

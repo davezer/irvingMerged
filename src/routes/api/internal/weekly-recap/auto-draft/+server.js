@@ -58,32 +58,47 @@ function numberOrNull(
 
 
 function isAuthorized(
-  request,
-  env
+	request,
+	env,
+	locals
 ) {
-  const expected =
-    String(
-      env
-        ?.WEEKLY_CRON_SECRET ||
-      ''
-    ).trim();
+	/*
+	 * Logged-in admins may use the endpoint
+	 * from the Recap Lab.
+	 */
+	if (
+		locals?.user?.role ===
+		'admin'
+	) {
+		return true;
+	}
 
-  if (!expected) {
-    return false;
-  }
+	/*
+	 * The standalone Tuesday cron still
+	 * authenticates with its bearer secret.
+	 */
+	const expected =
+		String(
+			env
+				?.WEEKLY_CRON_SECRET ||
+			''
+		).trim();
 
-  const supplied =
-    String(
-      request.headers.get(
-        'authorization'
-      ) ||
-      ''
-    );
+	if (!expected) {
+		return false;
+	}
 
-  return (
-    supplied ===
-    `Bearer ${expected}`
-  );
+	const supplied =
+		String(
+			request.headers.get(
+				'authorization'
+			) || ''
+		);
+
+	return (
+		supplied ===
+		`Bearer ${expected}`
+	);
 }
 
 
@@ -347,7 +362,8 @@ async function findLatestCompletedWeek({
 export async function POST({
 	request,
 	url,
-	platform
+	platform,
+	locals
 }) {
 	const env =
 		platform?.env;
@@ -364,11 +380,12 @@ export async function POST({
 	 * ------------------------------------------------------------
 	 */
 	if (
-		!isAuthorized(
-			request,
-			env
-		)
-	) {
+	!isAuthorized(
+		request,
+		env,
+		locals
+	)
+) {
 		return json(
 			{
 				ok: false,
@@ -410,6 +427,10 @@ if (
 ) {
 	let stage =
 		'reading_write_payload';
+		const force =
+	url.searchParams.get(
+		'force'
+	) === '1';
 
 	try {
 		const body =
@@ -468,9 +489,12 @@ if (
 			);
 
 		if (
-			existing?.draftRecap ||
-			existing?.publishedRecap
-		) {
+	!force &&
+	(
+		existing?.draftRecap ||
+		existing?.publishedRecap
+	)
+) {
 			return json({
 				ok: true,
 
@@ -545,7 +569,8 @@ if (
 						meta,
 
 					generatedBy:
-						'automation'
+	locals?.user?.id ||
+	'automation'
 				}
 			);
 

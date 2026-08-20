@@ -48,6 +48,283 @@ $: isPublished =
   Boolean(
     savedRecap?.publishedRecap
   );
+
+  let generatingDraft = false;
+let generationStage = '';
+let generationError = '';
+
+
+async function readApiResponse(
+	response,
+	label
+) {
+	const text =
+		await response.text();
+
+	let body =
+		null;
+
+	try {
+		body =
+			text
+				? JSON.parse(text)
+				: null;
+	} catch {
+		body =
+			null;
+	}
+
+	if (!response.ok) {
+		throw new Error(
+			body?.error ||
+			`${label} failed (${response.status}).`
+		);
+	}
+
+	if (!body) {
+		throw new Error(
+			`${label} returned an unreadable response.`
+		);
+	}
+
+	return body;
+}
+
+
+async function generateDraft(
+	event
+) {
+	if (generatingDraft) {
+		return;
+	}
+
+	const formElement =
+		event.currentTarget?.form;
+
+	if (!formElement) {
+		generationError =
+			'Could not read the recap controls.';
+
+		return;
+	}
+
+	const values =
+		new FormData(
+			formElement
+		);
+
+	const season =
+		Number(
+			values.get(
+				'season'
+			)
+		);
+
+	const week =
+		Number(
+			values.get(
+				'week'
+			)
+		);
+
+	if (
+		!Number.isInteger(
+			season
+		) ||
+		!Number.isInteger(
+			week
+		)
+	) {
+		generationError =
+			'Choose a valid season and week.';
+
+		return;
+	}
+
+	generatingDraft =
+		true;
+
+	generationError =
+		'';
+
+	try {
+		/*
+		 * ========================================================
+		 * PHASE 1 — PREPARE
+		 *
+		 * Build the authoritative packet in its own
+		 * Cloudflare request.
+		 * ========================================================
+		 */
+
+		generationStage =
+			'Building facts…';
+
+		const prepareParams =
+			new URLSearchParams({
+				phase:
+					'prepare',
+
+				season:
+					String(
+						season
+					),
+
+				week:
+					String(
+						week
+					),
+
+				force:
+					'1'
+			});
+
+		const prepareResponse =
+			await fetch(
+				`/api/internal/weekly-recap/auto-draft?${prepareParams.toString()}`,
+				{
+					method:
+						'POST',
+
+					credentials:
+						'same-origin',
+
+					headers: {
+						'content-type':
+							'application/json'
+					},
+
+					body:
+						'{}'
+				}
+			);
+
+		const prepared =
+			await readApiResponse(
+				prepareResponse,
+				'Packet preparation'
+			);
+
+		if (
+			prepared.status !==
+				'packet_ready' ||
+			!prepared.packet
+		) {
+			throw new Error(
+				prepared.reason ||
+				'The recap packet was not returned.'
+			);
+		}
+
+
+		/*
+		 * ========================================================
+		 * PHASE 2 — WRITE
+		 *
+		 * Fresh request = fresh Worker invocation.
+		 * OpenAI + D1 save happen here.
+		 * ========================================================
+		 */
+
+		generationStage =
+			'Writing draft…';
+
+		const writeParams =
+			new URLSearchParams({
+				phase:
+					'write',
+
+				force:
+					'1'
+			});
+
+		const writeResponse =
+			await fetch(
+				`/api/internal/weekly-recap/auto-draft?${writeParams.toString()}`,
+				{
+					method:
+						'POST',
+
+					credentials:
+						'same-origin',
+
+					headers: {
+						'content-type':
+							'application/json'
+					},
+
+					body:
+						JSON.stringify({
+							season,
+							week,
+							packet:
+								prepared.packet
+						})
+				}
+			);
+
+		const written =
+			await readApiResponse(
+				writeResponse,
+				'Draft generation'
+			);
+
+		if (
+			written.status !==
+			'draft_created'
+		) {
+			throw new Error(
+				written.reason ||
+				`Unexpected draft status: ${written.status || 'unknown'}.`
+			);
+		}
+
+
+		/*
+		 * Reload the selected week so load() pulls
+		 * the newly saved recap from D1.
+		 */
+
+		const next =
+			new URL(
+				window.location.href
+			);
+
+		next.searchParams.set(
+			'season',
+			String(
+				season
+			)
+		);
+
+		next.searchParams.set(
+			'week',
+			String(
+				week
+			)
+		);
+
+		window.location.assign(
+			next.toString()
+		);
+	} catch (error) {
+		console.error(
+			'[weekly-recap] Split generation failed:',
+			error
+		);
+
+		generationError =
+			error instanceof Error
+				? error.message
+				: 'Could not generate the weekly recap draft.';
+	} finally {
+		generatingDraft =
+			false;
+
+		generationStage =
+			'';
+	}
+}
 </script>
 
 <div class="page-stack">
@@ -183,13 +460,18 @@ $: isPublished =
 </button>
 
 <button
-  type="submit"
-  formaction="?/generate"
-  class="ai-button"
+	type="button"
+	class="ai-button"
+	onclick={generateDraft}
+	disabled={generatingDraft}
 >
-  {recap
-    ? 'Regenerate Draft'
-    : 'Generate Draft'}
+	{#if generatingDraft}
+		{generationStage}
+	{:else if recap}
+		Regenerate Draft
+	{:else}
+		Generate Draft
+	{/if}
 </button>
 
 <button
@@ -238,6 +520,11 @@ $: isPublished =
   <div class="success-message">
     {form.message}
   </div>
+{/if}
+{#if generationError}
+	<div class="generation-error">
+		{generationError}
+	</div>
 {/if}
   </section>
 
@@ -1350,7 +1637,24 @@ $: isPublished =
 
 		font-size: .7rem;
 	}
+.generation-error {
+	margin-top: 12px;
 
+	padding:
+		9px 11px;
+
+	border:
+		1px solid
+		rgba(166,87,77,.55);
+
+	background:
+		rgba(166,87,77,.06);
+
+	color:
+		#dba49d;
+
+	font-size: .7rem;
+}
 
 	/* ==================================================
 	   PACKET SUMMARY
