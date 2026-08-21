@@ -480,29 +480,26 @@
 								#{row.rank}
 							</div>
 
+<div class="standing-logo">
 
-							<div class="standing-logo">
+	{#if row.teamChiclet || row.teamPhoto}
 
-								{#if row.teamPhoto}
+		<img
+			src={row.teamChiclet || row.teamPhoto}
+			alt={row.teamName}
+			loading="lazy"
+		/>
 
-									<img
-										src={row.teamPhoto}
-										alt={row.teamName}
-										loading="lazy"
-									/>
+	{:else}
 
-								{:else}
+		<span>
+			{row.initials ||
+				initials(row.teamName)}
+		</span>
 
-									<span>
-										{row.initials ||
-											initials(
-												row.teamName
-											)}
-									</span>
+	{/if}
 
-								{/if}
-
-							</div>
+</div>
 
 
 							<div class="standing-copy">
@@ -1896,13 +1893,11 @@
 	}
 
 
-	.standing-logo img {
-		width: 100%;
-		height: 100%;
-
-		object-fit: cover;
-	}
-
+.standing-logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
 
 	.standing-logo span {
 		color:

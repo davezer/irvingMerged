@@ -70,10 +70,14 @@ function buildChampionshipLedger(managers) {
     manager.teamName,
 
   photo:
-    manager.photo,
+  manager.photo,
 
-  slug:
-    manager.slug
+chiclet:
+  manager.chiclet ||
+  manager.photo,
+
+slug:
+  manager.slug
 }));
     })
     .sort((a, b) => {
@@ -108,10 +112,14 @@ function buildTitleLeaders(managers) {
           manager.teamName,
 
         photo:
-          manager.photo,
+  manager.photo,
 
-        slug:
-          manager.slug,
+chiclet:
+  manager.chiclet ||
+  manager.photo,
+
+slug:
+  manager.slug,
 
         league:
           manager?.championship?.league ||

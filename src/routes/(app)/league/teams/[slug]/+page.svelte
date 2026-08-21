@@ -1777,10 +1777,15 @@ function badgeScoreLabel(
     padding: 22px;
   }
 
-  .logo-bay {
-    display: grid;
-    place-items: center;
-  }
+.logo-bay {
+	width: 230px;
+	height: 230px;
+
+	display: grid;
+	place-items: center;
+
+	align-self: start;
+}
 
   .team-logo {
     width: 220px;
@@ -3782,14 +3787,18 @@ summary::after {
 
 .franchise-hero .team-logo {
 	width: 210px;
-
 	height: 210px;
 
-	object-fit: cover;
+	object-fit: contain;
+	object-position: center;
 
+	display: block;
 
-
-
+	filter:
+		drop-shadow(
+			0 12px 18px
+			rgba(0, 0, 0, .28)
+		);
 }
 
 

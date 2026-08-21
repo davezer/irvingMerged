@@ -254,8 +254,39 @@ export function getRivalries() {
       const rightStanding = getStandings().find((row) => row.slug === rival.slug);
       return {
         key: [manager.slug, rival.slug].sort().join('__'),
-        left: { slug: manager.slug, name: manager.name, teamName: manager.teamName, photo: manager.photo, rank: leftStanding?.rank || null },
-        right: { slug: rival.slug, name: rival.name, teamName: rival.teamName, photo: rival.photo, rank: rightStanding?.rank || null },
+        left: {
+  slug: manager.slug,
+  name: manager.name,
+  teamName: manager.teamName,
+
+  photo:
+    manager.photo,
+
+  chiclet:
+    manager.chiclet ||
+    manager.photo,
+
+  rank:
+    leftStanding?.rank ||
+    null
+},
+
+right: {
+  slug: rival.slug,
+  name: rival.name,
+  teamName: rival.teamName,
+
+  photo:
+    rival.photo,
+
+  chiclet:
+    rival.chiclet ||
+    rival.photo,
+
+  rank:
+    rightStanding?.rank ||
+    null
+},
         headline: `${manager.teamName} vs ${rival.teamName}`,
         subhead: `${manager.persona || 'Operator'} energy colliding with ${rival.persona || 'house chaos'}.`,
         stakes: `${manager.philosophy || 'No quote'}  /  ${rival.philosophy || 'No quote'}`

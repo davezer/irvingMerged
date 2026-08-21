@@ -139,7 +139,11 @@ function identityView(identity) {
       identity.teamName,
 
     teamPhoto:
-      identity.teamPhoto
+  identity.teamPhoto,
+
+teamChiclet:
+  identity.teamChiclet ||
+  identity.teamPhoto
   };
 }
 

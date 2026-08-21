@@ -99,6 +99,9 @@
 						photo:
 							side?.teamPhoto ||
 							null,
+						teamChiclet:
+							side?.teamChiclet ||
+							null,
 
 						games: 0,
 
@@ -857,14 +860,14 @@
 
 						<div class="career-team">
 
-							{#if manager.photo}
+							{#if manager.teamChiclet || manager.photo}
 
-								<img
-									src={manager.photo}
-									alt=""
-								/>
+	<img
+		src={manager.teamChiclet || manager.photo}
+		alt=""
+	/>
 
-							{/if}
+{/if}
 
 
 							<div>

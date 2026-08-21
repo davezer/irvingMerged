@@ -221,9 +221,13 @@
 					</div>
 
 					<div class="champion-identity">
-						{#if title.photo}
-							<img src={title.photo} alt="" loading="lazy" />
-						{/if}
+						{#if title.chiclet || title.photo}
+	<img
+		src={title.chiclet || title.photo}
+		alt=""
+		loading="lazy"
+	/>
+{/if}
 
 						<div>
 							<span>
@@ -284,10 +288,13 @@
 							</div>
 
 							<div class="leader-team">
-								{#if leader.photo}
-									<img src={leader.photo} alt="" loading="lazy" />
-								{/if}
-
+								{#if leader.chiclet || leader.photo}
+	<img
+		src={leader.chiclet || leader.photo}
+		alt=""
+		loading="lazy"
+	/>
+{/if}
 								<div>
 									<strong>
 										{leader.teamName}
@@ -437,15 +444,13 @@
 
           <div class="rival-team">
 
-            {#if rivalry.left.photo}
-
-              <img
-                src={rivalry.left.photo}
-                alt=""
-                loading="lazy"
-              />
-
-            {/if}
+         {#if rivalry.left.chiclet || rivalry.left.photo}
+	<img
+		src={rivalry.left.chiclet || rivalry.left.photo}
+		alt=""
+		loading="lazy"
+	/>
+{/if}
 
             <div>
 
@@ -522,15 +527,13 @@
 
             </div>
 
-            {#if rivalry.right.photo}
-
-              <img
-                src={rivalry.right.photo}
-                alt=""
-                loading="lazy"
-              />
-
-            {/if}
+           {#if rivalry.right.chiclet || rivalry.right.photo}
+	<img
+		src={rivalry.right.chiclet || rivalry.right.photo}
+		alt=""
+		loading="lazy"
+	/>
+{/if}
 
           </div>
 
@@ -845,15 +848,13 @@
 
           {#if season.champion}
 
-            {#if season.champion.teamPhoto}
-
-              <img
-                src={season.champion.teamPhoto}
-                alt=""
-                loading="lazy"
-              />
-
-            {/if}
+            {#if season.champion.teamChiclet || season.champion.teamPhoto}
+	<img
+		src={season.champion.teamChiclet || season.champion.teamPhoto}
+		alt=""
+		loading="lazy"
+	/>
+{/if}
 
             <div>
 

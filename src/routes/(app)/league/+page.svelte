@@ -78,16 +78,17 @@
 					findMoveTeam(name);
 
 				return {
-					name,
-					photo:
-						team?.teamPhoto ||
-						null,
-					initials:
-						team?.initials ||
-						teamInitials(
-							name
-						)
-				};
+	name,
+
+	photo:
+		team?.teamChiclet ||
+		team?.teamPhoto ||
+		null,
+
+	initials:
+		team?.initials ||
+		teamInitials(name)
+};
 			}
 		);
 	}
@@ -313,23 +314,15 @@
 
 
 						<div class="team-logo">
-
-							{#if row.teamPhoto}
-
-								<img
-									src={row.teamPhoto}
-									alt={row.teamName}
-								/>
-
-							{:else}
-
-								<span>
-									{row.initials}
-								</span>
-
-							{/if}
-
-						</div>
+	{#if row.teamChiclet || row.teamPhoto}
+		<img
+			src={row.teamChiclet || row.teamPhoto}
+			alt={row.teamName}
+		/>
+	{:else}
+		<span>{row.initials}</span>
+	{/if}
+</div>
 
 
 						<div class="standing-identity">
@@ -390,20 +383,20 @@
 
 						<div class="spotlight-logo">
 
-							{#if data.spotlightMatchup.left.teamPhoto}
+							{#if data.spotlightMatchup.left.teamChiclet || data.spotlightMatchup.left.teamPhoto}
 
-								<img
-									src={data.spotlightMatchup.left.teamPhoto}
-									alt={data.spotlightMatchup.left.teamName}
-								/>
+	<img
+		src={data.spotlightMatchup.left.teamChiclet || data.spotlightMatchup.left.teamPhoto}
+		alt={data.spotlightMatchup.left.teamName}
+	/>
 
-							{:else}
+{:else}
 
-								<span>
-									{data.spotlightMatchup.left.initials}
-								</span>
+	<span>
+		{data.spotlightMatchup.left.initials}
+	</span>
 
-							{/if}
+{/if}
 
 						</div>
 
@@ -439,20 +432,20 @@
 
 						<div class="spotlight-logo">
 
-							{#if data.spotlightMatchup.right.teamPhoto}
+							{#if data.spotlightMatchup.right.teamChiclet || data.spotlightMatchup.right.teamPhoto}
 
-								<img
-									src={data.spotlightMatchup.right.teamPhoto}
-									alt={data.spotlightMatchup.right.teamName}
-								/>
+	<img
+		src={data.spotlightMatchup.right.teamChiclet || data.spotlightMatchup.right.teamPhoto}
+		alt={data.spotlightMatchup.right.teamName}
+	/>
 
-							{:else}
+{:else}
 
-								<span>
-									{data.spotlightMatchup.right.initials}
-								</span>
+	<span>
+		{data.spotlightMatchup.right.initials}
+	</span>
 
-							{/if}
+{/if}
 
 						</div>
 
@@ -724,22 +717,22 @@
 
 						<div class="activity-logo">
 
-							{#if row.teamPhoto}
+	{#if row.teamChiclet || row.teamPhoto}
 
-								<img
-									src={row.teamPhoto}
-									alt={row.teamName}
-								/>
+		<img
+			src={row.teamChiclet || row.teamPhoto}
+			alt={row.teamName}
+		/>
 
-							{:else}
+	{:else}
 
-								<span>
-									{row.initials}
-								</span>
+		<span>
+			{row.initials}
+		</span>
 
-							{/if}
+	{/if}
 
-						</div>
+</div>
 
 
 						<div class="activity-copy">
@@ -1352,17 +1345,18 @@
 			4px;
 	}
 
-
-	.team-logo img,
-	.activity-logo img,
-	.spotlight-logo img,
-	.movement-logo img {
-		width: 100%;
-		height: 100%;
-
-		object-fit:
-			cover;
-	}
+.team-logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+.activity-logo img,
+.spotlight-logo img,
+.movement-logo img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
 
 
 	.team-logo > span,
