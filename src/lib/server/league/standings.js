@@ -39,8 +39,18 @@ export function buildStandingsRows({ rosters = [], users = [] } = {}) {
       ownerId: roster?.owner_id ? String(roster.owner_id) : null,
       teamName: identity?.teamName || `Roster ${roster?.roster_id}`,
       managerName: identity?.managerName || 'Unknown Manager',
-      teamPhoto: identity?.teamPhoto || null,
-      initials: identity?.initials || '?',
+      teamPhoto:
+  identity?.teamPhoto ||
+  null,
+
+teamChiclet:
+  identity?.teamChiclet ||
+  identity?.teamPhoto ||
+  null,
+
+initials:
+  identity?.initials ||
+  '?',
       branded: Boolean(identity?.branded),
       slug: identity?.managerSlug || null,
       wins,

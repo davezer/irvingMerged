@@ -129,8 +129,8 @@
 								<td class="team-cell">
 									<a class="team-inline" href={teamHref(row)}>
 										<span class="inline-photo">
-											{#if row.teamPhoto}
-												<img src={row.teamPhoto} alt={row.teamName} />
+											{#if row.teamChiclet || row.teamPhoto}
+												<img src={row.teamChiclet || row.teamPhoto} alt={row.teamName} />
 											{:else}
 												<span>{row.initials}</span>
 											{/if}
@@ -168,7 +168,6 @@
 		gap: 18px;
 	}
 
-
 	/* =========================================================
 	   HERO
 	   ========================================================= */
@@ -192,25 +191,15 @@
 
 		overflow: hidden;
 
-		border:
-			1px solid
-			var(--border-strong) !important;
+		border: 1px solid var(--border-strong) !important;
 
-		border-radius:
-			var(--radius-lg);
+		border-radius: var(--radius-lg);
 
 		background:
-			linear-gradient(
-				120deg,
-				rgba(191,161,106,.055),
-				transparent 38%
-			),
-			var(--panel-strong) !important;
+			linear-gradient(120deg, rgba(191, 161, 106, 0.055), transparent 38%), var(--panel-strong) !important;
 
-		box-shadow:
-			var(--shadow-panel) !important;
+		box-shadow: var(--shadow-panel) !important;
 	}
-
 
 	.studio-header::after {
 		content: 'STANDINGS';
@@ -221,26 +210,18 @@
 
 		bottom: -19px;
 
-		color:
-			rgba(191,161,106,.024);
+		color: rgba(191, 161, 106, 0.024);
 
-		font-family:
-			var(--font-display);
+		font-family: var(--font-display);
 
-		font-size:
-			clamp(
-				5rem,
-				12vw,
-				10rem
-			);
+		font-size: clamp(5rem, 12vw, 10rem);
 
 		line-height: 1;
 
-		letter-spacing: .04em;
+		letter-spacing: 0.04em;
 
 		pointer-events: none;
 	}
-
 
 	.header-copy {
 		position: relative;
@@ -250,50 +231,38 @@
 		padding: 0;
 	}
 
-
 	h1 {
 		margin: 0;
 
-		color:
-			var(--brand-ivory);
+		color: var(--brand-ivory);
 
-		font-family:
-			var(--font-display);
+		font-family: var(--font-display);
 
-		font-size:
-			clamp(
-				3.8rem,
-				7vw,
-				6.8rem
-			);
+		font-size: clamp(3.8rem, 7vw, 6.8rem);
 
 		font-weight: 400;
 
-		line-height: .88;
+		line-height: 0.88;
 
-		letter-spacing: .015em;
+		letter-spacing: 0.015em;
 
 		text-shadow: none;
 	}
 
-
 	.eyebrow,
 	.board-note {
-		color:
-			var(--brand-gold);
+		color: var(--brand-gold);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .62rem;
+		font-size: 0.62rem;
 
 		font-weight: 700;
 
-		letter-spacing: .16em;
+		letter-spacing: 0.16em;
 
 		text-transform: uppercase;
 	}
-
 
 	/* =========================================================
 	   SEASON SELECTOR
@@ -316,42 +285,32 @@
 
 		margin: 0;
 
-		padding:
-			12px 14px;
+		padding: 12px 14px;
 
-		border:
-			1px solid
-			var(--border-strong) !important;
+		border: 1px solid var(--border-strong) !important;
 
-		border-radius:
-			var(--radius-sm);
+		border-radius: var(--radius-sm);
 
-		background:
-			rgba(13,16,15,.78) !important;
+		background: rgba(13, 16, 15, 0.78) !important;
 
-		box-shadow:
-			none !important;
+		box-shadow: none !important;
 	}
 
-
 	.standings-season-label {
-		color:
-			var(--brand-gold);
+		color: var(--brand-gold);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .61rem;
+		font-size: 0.61rem;
 
 		font-weight: 700;
 
-		letter-spacing: .16em;
+		letter-spacing: 0.16em;
 
 		text-transform: uppercase;
 
 		text-shadow: none;
 	}
-
 
 	.standings-season-pills {
 		display: flex;
@@ -360,7 +319,6 @@
 
 		flex-wrap: wrap;
 	}
-
 
 	.standings-season-pills a {
 		display: grid;
@@ -371,29 +329,23 @@
 
 		min-height: 32px;
 
-		padding:
-			5px 9px;
+		padding: 5px 9px;
 
-		border:
-			1px solid
-			rgba(191,161,106,.18);
+		border: 1px solid rgba(191, 161, 106, 0.18);
 
 		border-radius: 3px;
 
-		background:
-			transparent;
+		background: transparent;
 
-		color:
-			var(--brand-stone);
+		color: var(--brand-stone);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .67rem;
+		font-size: 0.67rem;
 
 		font-weight: 700;
 
-		letter-spacing: .08em;
+		letter-spacing: 0.08em;
 
 		text-decoration: none;
 
@@ -407,27 +359,19 @@
 			background 130ms ease;
 	}
 
-
 	.standings-season-pills a:hover {
-		border-color:
-			var(--brand-gold);
+		border-color: var(--brand-gold);
 
-		color:
-			var(--brand-ivory);
+		color: var(--brand-ivory);
 	}
-
 
 	.standings-season-pills a.active {
-		border-color:
-			var(--brand-gold);
+		border-color: var(--brand-gold);
 
-		background:
-			var(--brand-gold);
+		background: var(--brand-gold);
 
-		color:
-			var(--brand-charcoal);
+		color: var(--brand-charcoal);
 	}
-
 
 	/* =========================================================
 	   STANDINGS BOARD
@@ -438,20 +382,14 @@
 
 		padding: 0 !important;
 
-		border:
-			1px solid
-			var(--border) !important;
+		border: 1px solid var(--border) !important;
 
-		border-radius:
-			var(--radius-lg);
+		border-radius: var(--radius-lg);
 
-		background:
-			var(--panel) !important;
+		background: var(--panel) !important;
 
-		box-shadow:
-			var(--shadow-panel) !important;
+		box-shadow: var(--shadow-panel) !important;
 	}
-
 
 	.board-topper {
 		display: flex;
@@ -462,31 +400,19 @@
 
 		gap: 18px;
 
-		padding:
-			20px 22px 17px;
+		padding: 20px 22px 17px;
 
-		border-bottom:
-			1px solid
-			var(--border);
+		border-bottom: 1px solid var(--border);
 
-		background:
-			linear-gradient(
-				180deg,
-				rgba(255,255,255,.018),
-				transparent
-			);
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent);
 	}
 
-
 	.board-topper h2 {
-		margin:
-			4px 0 0;
+		margin: 4px 0 0;
 
-		color:
-			var(--brand-ivory);
+		color: var(--brand-ivory);
 
-		font-family:
-			var(--font-display);
+		font-family: var(--font-display);
 
 		font-size: 2rem;
 
@@ -494,17 +420,14 @@
 
 		line-height: 1;
 
-		letter-spacing: .02em;
+		letter-spacing: 0.02em;
 	}
-
 
 	.board-note {
 		padding-bottom: 2px;
 
-		color:
-			var(--brand-stone);
+		color: var(--brand-stone);
 	}
-
 
 	/* =========================================================
 	   TABLE
@@ -513,98 +436,86 @@
 	.table-shell {
 		overflow-x: auto;
 
-		background:
-			transparent;
+		background: transparent;
 	}
 
+	table {
+		width: 100%;
+		min-width: 1000px;
 
-table {
-	width: 100%;
-	min-width: 1000px;
+		border-collapse: collapse;
 
-	border-collapse: collapse;
+		table-layout: fixed;
 
-	table-layout: fixed;
+		font-variant-numeric: tabular-nums;
+	}
 
-	font-variant-numeric:
-		tabular-nums;
-}
+	th,
+	td {
+		padding: 10px 12px;
 
-th,
-td {
-	padding:
-		10px 12px;
+		border-bottom: 1px solid rgba(191, 161, 106, 0.1);
 
-	border-bottom:
-		1px solid
-		rgba(191,161,106,.10);
+		text-align: left;
 
-	text-align: left;
+		vertical-align: middle;
+	}
+	th:nth-child(1),
+	td:nth-child(1) {
+		width: 58px;
 
-	vertical-align: middle;
-}
-th:nth-child(1),
-td:nth-child(1) {
-	width: 58px;
+		text-align: center;
+	}
 
-	text-align: center;
-}
+	/* Franchise */
+	th:nth-child(2),
+	td:nth-child(2) {
+		width: 34%;
+	}
 
+	/* Manager */
+	th:nth-child(3),
+	td:nth-child(3) {
+		width: 18%;
+	}
 
-/* Franchise */
-th:nth-child(2),
-td:nth-child(2) {
-	width: 34%;
-}
+	/* Record */
+	th:nth-child(4),
+	td:nth-child(4) {
+		width: 9%;
+	}
+	th:nth-child(n + 4),
+	td:nth-child(n + 4) {
+		text-align: right;
+	}
+	th:nth-child(4),
+	td:nth-child(4) {
+		text-align: center;
+	}
 
+	/* PF */
+	th:nth-child(5),
+	td:nth-child(5) {
+		width: 8%;
+	}
 
-/* Manager */
-th:nth-child(3),
-td:nth-child(3) {
-	width: 18%;
-}
+	/* PA */
+	th:nth-child(6),
+	td:nth-child(6) {
+		width: 8%;
+	}
 
+	/* Diff */
+	th:nth-child(7),
+	td:nth-child(7) {
+		width: 8%;
+	}
 
-/* Record */
-th:nth-child(4),
-td:nth-child(4) {
-	width: 9%;
-}
-th:nth-child(n + 4),
-td:nth-child(n + 4) {
-	text-align: right;
-}
-th:nth-child(4),
-td:nth-child(4) {
-	text-align: center;
-}
-
-/* PF */
-th:nth-child(5),
-td:nth-child(5) {
-	width: 8%;
-}
-
-
-/* PA */
-th:nth-child(6),
-td:nth-child(6) {
-	width: 8%;
-}
-
-
-/* Diff */
-th:nth-child(7),
-td:nth-child(7) {
-	width: 8%;
-}
-
-
-/* Win % */
-th:nth-child(8),
-td:nth-child(8) {
-	width: 9%;
-}
+	/* Win % */
+	th:nth-child(8),
+	td:nth-child(8) {
+		width: 9%;
+	}
 
 	/* =========================================================
 	   TABLE HEADER
@@ -621,30 +532,24 @@ td:nth-child(8) {
 
 		padding-bottom: 9px;
 
-		border-bottom:
-			1px solid
-			var(--border-strong);
+		border-bottom: 1px solid var(--border-strong);
 
-		background:
-			#101312;
+		background: #101312;
 
-		color:
-			var(--brand-stone);
+		color: var(--brand-stone);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .58rem;
+		font-size: 0.58rem;
 
 		font-weight: 700;
 
-		letter-spacing: .13em;
+		letter-spacing: 0.13em;
 
 		text-transform: uppercase;
 
 		text-shadow: none;
 	}
-
 
 	/* =========================================================
 	   ROWS
@@ -653,73 +558,50 @@ td:nth-child(8) {
 	tbody tr {
 		position: relative;
 
-		background:
-			transparent;
+		background: transparent;
 
-		transition:
-			background 120ms ease;
+		transition: background 120ms ease;
 	}
-
 
 	tbody tr:nth-child(even) {
-		background:
-			rgba(255,255,255,.012);
+		background: rgba(255, 255, 255, 0.012);
 	}
-
 
 	tbody tr:hover {
-		background:
-			rgba(191,161,106,.045);
+		background: rgba(191, 161, 106, 0.045);
 	}
-
 
 	tbody tr.leader {
-		background:
-			linear-gradient(
-				90deg,
-				rgba(191,161,106,.07),
-				transparent 34%
-			);
+		background: linear-gradient(90deg, rgba(191, 161, 106, 0.07), transparent 34%);
 	}
-
 
 	tbody tr.leader td:first-child {
-		box-shadow:
-			inset 2px 0 0
-			var(--brand-gold);
+		box-shadow: inset 2px 0 0 var(--brand-gold);
 	}
-
 
 	/* =========================================================
 	   RANK
 	   ========================================================= */
 
-
-
-
 	.rank-cell {
-		color:
-			var(--brand-gold);
+		color: var(--brand-gold);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .77rem;
+		font-size: 0.77rem;
 
 		font-weight: 800;
 
 		text-shadow: none;
 	}
 
-
 	/* =========================================================
 	   FRANCHISE
 	   ========================================================= */
 
-.team-col {
-	min-width: 0;
-}
-
+	.team-col {
+		min-width: 0;
+	}
 
 	.team-inline {
 		display: flex;
@@ -728,26 +610,21 @@ td:nth-child(8) {
 
 		gap: 11px;
 
-		color:
-			var(--brand-ivory);
+		color: var(--brand-ivory);
 
 		text-decoration: none;
 	}
 
-
 	.team-inline:hover strong {
-		color:
-			var(--brand-gold);
+		color: var(--brand-gold);
 	}
-
 
 	.inline-photo {
 		width: 38px;
 
 		height: 38px;
 
-		flex:
-			0 0 38px;
+		flex: 0 0 38px;
 
 		display: grid;
 
@@ -755,33 +632,24 @@ td:nth-child(8) {
 
 		overflow: hidden;
 
-
 		border-radius: 4px;
 
-	
+		color: var(--brand-charcoal);
 
-		color:
-			var(--brand-charcoal);
+		font-family: var(--font-body);
 
-		font-family:
-			var(--font-body);
-
-		font-size: .7rem;
+		font-size: 0.7rem;
 
 		font-weight: 800;
 
 		box-shadow: none;
 	}
 
-
 	.inline-photo img {
 		width: 100%;
-
 		height: 100%;
-
-		object-fit: cover;
+		object-fit: contain;
 	}
-
 
 	.team-copy {
 		display: grid;
@@ -791,14 +659,12 @@ td:nth-child(8) {
 		min-width: 0;
 	}
 
-
 	.team-copy strong {
 		overflow: hidden;
 
-		color:
-			var(--brand-ivory);
+		color: var(--brand-ivory);
 
-		font-size: .84rem;
+		font-size: 0.84rem;
 
 		font-weight: 800;
 
@@ -807,41 +673,32 @@ td:nth-child(8) {
 		white-space: nowrap;
 	}
 
-
 	/* =========================================================
 	   BODY DATA
 	   ========================================================= */
 
 	td {
-		color:
-			var(--brand-sand);
+		color: var(--brand-sand);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .78rem;
+		font-size: 0.78rem;
 	}
 
-
 	.record-text {
-		color:
-			var(--brand-ivory);
+		color: var(--brand-ivory);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
 		font-weight: 800;
 
 		text-shadow: none;
 	}
 
-
 	.num {
-		color:
-			var(--brand-sand);
+		color: var(--brand-sand);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
 		font-weight: 600;
 
@@ -852,41 +709,29 @@ td:nth-child(8) {
 		text-shadow: none;
 	}
 
-
 	.diff.good {
-		color:
-			#91b69c;
+		color: #91b69c;
 	}
-
 
 	.diff.bad {
-		color:
-			#d98585;
+		color: #d98585;
 	}
-
 
 	.diff.even {
-		color:
-			var(--brand-stone);
+		color: var(--brand-stone);
 	}
-
 
 	/* =========================================================
 	   EMPTY STATE
 	   ========================================================= */
 
 	.studio-card {
-		border:
-			1px solid
-			var(--border) !important;
+		border: 1px solid var(--border) !important;
 
-		background:
-			var(--panel) !important;
+		background: var(--panel) !important;
 
-		box-shadow:
-			var(--shadow-panel) !important;
+		box-shadow: var(--shadow-panel) !important;
 	}
-
 
 	.empty-state {
 		display: grid;
@@ -895,22 +740,17 @@ td:nth-child(8) {
 
 		padding: 24px;
 
-		border-radius:
-			var(--radius-lg);
+		border-radius: var(--radius-lg);
 	}
-
 
 	.empty-state h2,
 	.empty-state p {
 		margin: 0;
 	}
 
-
 	.empty-state p {
-		color:
-			var(--muted);
+		color: var(--muted);
 	}
-
 
 	.bug-row {
 		display: inline-flex;
@@ -921,30 +761,24 @@ td:nth-child(8) {
 
 		overflow: hidden;
 
-		border:
-			1px solid
-			var(--border-strong);
+		border: 1px solid var(--border-strong);
 
 		border-radius: 3px;
 
-		background:
-			var(--brand-charcoal);
+		background: var(--brand-charcoal);
 
-		color:
-			var(--brand-gold);
+		color: var(--brand-gold);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .62rem;
+		font-size: 0.62rem;
 
 		font-weight: 700;
 
-		letter-spacing: .1em;
+		letter-spacing: 0.1em;
 
 		text-transform: uppercase;
 	}
-
 
 	.bug-row span {
 		display: grid;
@@ -953,26 +787,18 @@ td:nth-child(8) {
 
 		min-height: 30px;
 
-		padding:
-			0 9px;
+		padding: 0 9px;
 
-		border-right:
-			1px solid
-			var(--border-strong);
+		border-right: 1px solid var(--border-strong);
 
-		background:
-			transparent;
+		background: transparent;
 
-		color:
-			var(--brand-gold);
+		color: var(--brand-gold);
 	}
-
 
 	.bug-row strong {
-		padding:
-			7px 10px;
+		padding: 7px 10px;
 	}
-
 
 	/* =========================================================
 	   OPTIONAL / FUTURE SUMMARY CARDS
@@ -981,15 +807,10 @@ td:nth-child(8) {
 	.studio-strip {
 		display: grid;
 
-		grid-template-columns:
-			repeat(
-				4,
-				minmax(0,1fr)
-			);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 
 		gap: 12px;
 	}
-
 
 	.studio-strip article {
 		min-height: 104px;
@@ -1000,88 +821,63 @@ td:nth-child(8) {
 
 		gap: 12px;
 
-		padding:
-			14px 16px;
+		padding: 14px 16px;
 
-		border:
-			1px solid
-			var(--border);
+		border: 1px solid var(--border);
 
-		border-radius:
-			var(--radius-md);
+		border-radius: var(--radius-md);
 
-		background:
-			var(--panel);
+		background: var(--panel);
 
-		box-shadow:
-			var(--shadow-panel);
+		box-shadow: var(--shadow-panel);
 	}
 
-
 	.studio-strip span {
-		color:
-			var(--brand-gold);
+		color: var(--brand-gold);
 
-		font-family:
-			var(--font-body);
+		font-family: var(--font-body);
 
-		font-size: .6rem;
+		font-size: 0.6rem;
 
 		font-weight: 700;
 
-		letter-spacing: .14em;
+		letter-spacing: 0.14em;
 
 		text-transform: uppercase;
 	}
 
-
 	.studio-strip strong {
 		display: block;
 
-		color:
-			var(--brand-ivory);
+		color: var(--brand-ivory);
 
-		font-family:
-			var(--font-display);
+		font-family: var(--font-display);
 
-		font-size:
-			clamp(
-				1.5rem,
-				3vw,
-				2.5rem
-			);
+		font-size: clamp(1.5rem, 3vw, 2.5rem);
 
 		font-weight: 400;
 
-		line-height: .92;
+		line-height: 0.92;
 
 		text-shadow: none;
 	}
 
-
 	.studio-strip small {
-		color:
-			var(--muted);
+		color: var(--muted);
 	}
-
 
 	/* =========================================================
 	   RESPONSIVE
 	   ========================================================= */
 
-	@media (
-		max-width: 960px
-	) {
+	@media (max-width: 960px) {
 		.studio-header {
-			grid-template-columns:
-				1fr;
+			grid-template-columns: 1fr;
 		}
-
 
 		.studio-header::after {
 			display: none;
 		}
-
 
 		.standings-season-box {
 			justify-self: start;
@@ -1089,30 +885,20 @@ td:nth-child(8) {
 			width: 100%;
 		}
 
-
 		.studio-strip {
-			grid-template-columns:
-				repeat(
-					2,
-					minmax(0,1fr)
-				);
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 
-
-	@media (
-		max-width: 640px
-	) {
+	@media (max-width: 640px) {
 		.board-topper {
 			align-items: start;
 
 			flex-direction: column;
 		}
 
-
 		.studio-strip {
-			grid-template-columns:
-				1fr;
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

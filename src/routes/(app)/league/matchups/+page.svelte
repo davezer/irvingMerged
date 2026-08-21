@@ -184,12 +184,15 @@ function seasonHref(
               <div class:winning={isWinner(matchup, side)} class="team-row">
                 <div class="team-main">
                   <div class="team-photo">
-                    {#if side?.teamPhoto}
-                      <img src={side.teamPhoto} alt={side.teamName} />
-                    {:else}
-                      <span>{side?.initials || '?'}</span>
-                    {/if}
-                  </div>
+  {#if side?.teamChiclet || side?.teamPhoto}
+    <img
+      src={side.teamChiclet || side.teamPhoto}
+      alt={side.teamName}
+    />
+  {:else}
+    <span>{side?.initials || '?'}</span>
+  {/if}
+</div>
                   <div>
                     <strong>{side?.teamName || 'Bye / TBD'}</strong>
                     <small>{side?.managerName || 'Waiting on opponent'} · {side?.recordLabel || '—'}</small>
@@ -1041,12 +1044,10 @@ function seasonHref(
 
 
 	.team-photo img {
-		width: 100%;
-
-		height: 100%;
-
-		object-fit: cover;
-	}
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
 
 	/* =========================================================

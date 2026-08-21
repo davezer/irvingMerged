@@ -9,57 +9,28 @@
 	$: draft = data?.draft;
 	$: archive = data?.archive || [];
 
-	const money = (value) =>
-		Number(value || 0).toFixed(0);
+	const money = (value) => Number(value || 0).toFixed(0);
 
-	const money2 = (value) =>
-		Number(value || 0).toFixed(2);
+	const money2 = (value) => Number(value || 0).toFixed(2);
 
-	$: season =
-		Number(
-			data?.season ||
-			new Date().getFullYear()
-		);
+	$: season = Number(data?.season || new Date().getFullYear());
 
-	$: teamBoards =
-		draft?.teamBoards || [];
+	$: teamBoards = draft?.teamBoards || [];
 
-	$: maxRosterRows =
-		Math.max(
-			0,
-			...teamBoards.map(
-				(team) =>
-					team.allPicks?.length ||
-					team.picks?.length ||
-					0
-			)
-		);
+	$: maxRosterRows = Math.max(
+		0,
+		...teamBoards.map((team) => team.allPicks?.length || team.picks?.length || 0)
+	);
 
-	$: draftRows =
-		Array.from(
-			{ length: maxRosterRows },
-			(_, index) => index
-		);
+	$: draftRows = Array.from({ length: maxRosterRows }, (_, index) => index);
 
-	$: topBuys =
-		draft?.topPicks?.slice(
-			0,
-			10
-		) || [];
+	$: topBuys = draft?.topPicks?.slice(0, 10) || [];
 
-	$: hasPickRows =
-		Boolean(
-			draft &&
-			teamBoards.length &&
-			maxRosterRows
-		);
+	$: hasPickRows = Boolean(draft && teamBoards.length && maxRosterRows);
 
-	$: positionEconomy =
-		draft?.positionEconomy || [];
+	$: positionEconomy = draft?.positionEconomy || [];
 
-	$: priceBands =
-		draft?.priceBands || [];
-
+	$: priceBands = draft?.priceBands || [];
 
 	/*
 	 * ========================================================
@@ -67,103 +38,38 @@
 	 * ========================================================
 	 */
 
-	$: allPicks =
-		teamBoards.flatMap(
-			(team) =>
-				team.allPicks ||
-				team.picks ||
-				[]
-		);
+	$: allPicks = teamBoards.flatMap((team) => team.allPicks || team.picks || []);
 
-	$: totalPicks =
-		allPicks.length;
+	$: totalPicks = allPicks.length;
 
-	$: totalSpend =
-		allPicks.reduce(
-			(total, pick) =>
-				total +
-				Number(
-					pick?.amount ||
-					0
-				),
-			0
-		);
+	$: totalSpend = allPicks.reduce((total, pick) => total + Number(pick?.amount || 0), 0);
 
-	$: averageBid =
-		totalPicks
-			? totalSpend /
-				totalPicks
-			: 0;
+	$: averageBid = totalPicks ? totalSpend / totalPicks : 0;
 
-	$: highestBid =
-		allPicks.reduce(
-			(highest, pick) =>
-				Math.max(
-					highest,
-					Number(
-						pick?.amount ||
-							0
-					)
-				),
-			0
-		);
+	$: highestBid = allPicks.reduce(
+		(highest, pick) => Math.max(highest, Number(pick?.amount || 0)),
+		0
+	);
 
-	$: teamSpendRows =
-		teamBoards
-			.map(
-				(team) => ({
-					...team,
+	$: teamSpendRows = teamBoards
+		.map((team) => ({
+			...team,
 
-					spend:
-						(
-							team.allPicks ||
-							team.picks ||
-							[]
-						).reduce(
-							(total, pick) =>
-								total +
-								Number(
-									pick?.amount ||
-										0
-								),
-							0
-						),
-
-					pickCount:
-						(
-							team.allPicks ||
-							team.picks ||
-							[]
-						).length
-				})
-			)
-			.sort(
-				(a, b) =>
-					b.spend -
-					a.spend
-			);
-
-	$: biggestSpender =
-		teamSpendRows[0] ||
-		null;
-
-	$: lightestSpender =
-		teamSpendRows.length
-			? teamSpendRows[
-					teamSpendRows.length -
-					1
-				]
-			: null;
-
-
-	function amountClass(
-		amount
-	) {
-		const value =
-			Number(
-				amount ||
+			spend: (team.allPicks || team.picks || []).reduce(
+				(total, pick) => total + Number(pick?.amount || 0),
 				0
-			);
+			),
+
+			pickCount: (team.allPicks || team.picks || []).length
+		}))
+		.sort((a, b) => b.spend - a.spend);
+
+	$: biggestSpender = teamSpendRows[0] || null;
+
+	$: lightestSpender = teamSpendRows.length ? teamSpendRows[teamSpendRows.length - 1] : null;
+
+	function amountClass(amount) {
+		const value = Number(amount || 0);
 
 		if (value >= 50) {
 			return 'pick-elite';
@@ -184,98 +90,48 @@
 		return 'pick-cheap';
 	}
 
+	function playerLine(pick) {
+		const pos = pick?.player?.position || 'FLEX';
 
-	function playerLine(
-		pick
-	) {
-		const pos =
-			pick?.player?.position ||
-			'FLEX';
-
-		const team =
-			pick?.player?.teamLabel ||
-			pick?.player?.team ||
-			'FA';
+		const team = pick?.player?.teamLabel || pick?.player?.team || 'FA';
 
 		return `${pos} · ${team}`;
 	}
 
-
-	function playerPhoto(
-		pick
-	) {
-		return (
-			pick?.player?.photoUrl ||
-			'/managers/question.jpg'
-		);
+	function playerPhoto(pick) {
+		return pick?.player?.photoUrl || '/managers/question.jpg';
 	}
 
-
-	function seasonHref(
-		nextSeason
-	) {
-		return (
-			`/league/drafts?season=` +
-			encodeURIComponent(
-				nextSeason
-			)
-		);
+	function seasonHref(nextSeason) {
+		return `/league/drafts?season=` + encodeURIComponent(nextSeason);
 	}
 </script>
 
 <div class="page-stack draft-page">
-	<LeagueSubnav
-		season={season}
-		active="drafts"
-	/>
+	<LeagueSubnav {season} active="drafts" />
 
 	<!-- =====================================================
 	     HERO
 	===================================================== -->
 
-	<section
-		class="draft-hero icl-hero-shell"
-		aria-label="Draft archive"
-	>
+	<section class="draft-hero icl-hero-shell" aria-label="Draft archive">
 		<div class="hero-copy">
-			<div class="eyebrow">
-				Irving auction archive
-			</div>
+			<div class="eyebrow">Irving auction archive</div>
 
-			<h1>
-				The Draft Room
-			</h1>
+			<h1>The Draft Room</h1>
 
 			<p>
-				Every dollar. Every overpay. Every bargain.
-				The complete Irving auction board and draft
+				Every dollar. Every overpay. Every bargain. The complete Irving auction board and draft
 				economy for {season}.
 			</p>
 		</div>
 
-		<aside
-			class="season-box"
-			aria-label="Season selector"
-		>
-			<span>
-				Season feed
-			</span>
+		<aside class="season-box" aria-label="Season selector">
+			<span> Season feed </span>
 
 			<div class="season-pills">
 				{#each archive as item}
-					<a
-						class:active={
-							Number(
-								item.season
-							) ===
-							Number(
-								season
-							)
-						}
-						href={seasonHref(
-							item.season
-						)}
-					>
+					<a class:active={Number(item.season) === Number(season)} href={seasonHref(item.season)}>
 						{item.season}
 					</a>
 				{/each}
@@ -284,9 +140,7 @@
 
 		<div class="hero-stats">
 			<div>
-				<span>
-					Players sold
-				</span>
+				<span> Players sold </span>
 
 				<strong>
 					{totalPicks}
@@ -294,63 +148,40 @@
 			</div>
 
 			<div>
-				<span>
-					Room spend
-				</span>
+				<span> Room spend </span>
 
 				<strong>
-					${money(
-						totalSpend
-					)}
+					${money(totalSpend)}
 				</strong>
 			</div>
 
 			<div>
-				<span>
-					Average bid
-				</span>
+				<span> Average bid </span>
 
 				<strong>
-					${money2(
-						averageBid
-					)}
+					${money2(averageBid)}
 				</strong>
 			</div>
 
 			<div>
-				<span>
-					High bid
-				</span>
+				<span> High bid </span>
 
 				<strong>
-					${money(
-						highestBid
-					)}
+					${money(highestBid)}
 				</strong>
 			</div>
 		</div>
 	</section>
 
-
 	{#if !draft}
-
 		<section class="card empty-state">
-			<div class="eyebrow">
-				No signal
-			</div>
+			<div class="eyebrow">No signal</div>
 
-			<h2>
-				No draft data available
-			</h2>
+			<h2>No draft data available</h2>
 
-			<p>
-				We could not pull a Sleeper draft for
-				this season.
-			</p>
+			<p>We could not pull a Sleeper draft for this season.</p>
 		</section>
-
 	{:else}
-
 		<!-- =================================================
 		     AUCTION BOARD
 		================================================== -->
@@ -358,77 +189,50 @@
 		<section class="draft-board-card">
 			<header class="board-head">
 				<div>
-					<div class="eyebrow">
-						Sleeper auction archive
-					</div>
+					<div class="eyebrow">Sleeper auction archive</div>
 
 					<h2>
 						{season} Auction Board
 					</h2>
 
-					<p>
-	Every franchise. Every pick. The full auction room at a glance.
-</p>
+					<p>Every franchise. Every pick. The full auction room at a glance.</p>
 				</div>
 
-				<div
-					class="board-key"
-					aria-label="Bid color key"
-				>
-					<span class="key elite">
-						$50+
-					</span>
+				<div class="board-key" aria-label="Bid color key">
+					<span class="key elite"> $50+ </span>
 
-					<span class="key premium">
-						$40–$49
-					</span>
+					<span class="key premium"> $40–$49 </span>
 
-					<span class="key core">
-						$25–$39
-					</span>
+					<span class="key core"> $25–$39 </span>
 
-					<span class="key mid">
-						$10–$24
-					</span>
+					<span class="key mid"> $10–$24 </span>
 
-					<span class="key cheap">
-						Under $10
-					</span>
+					<span class="key cheap"> Under $10 </span>
 				</div>
 			</header>
 
 			{#if hasPickRows}
-
 				<div class="board-scroll">
-					<div
-						class="draft-board"
-						style={`--team-count:${teamBoards.length || 1}`}
-					>
+					<div class="draft-board" style={`--team-count:${teamBoards.length || 1}`}>
 						{#each teamBoards as team (team.teamName)}
-
 							<a
 								class="draft-team-head"
-								href={
-									team.managerSlug
-										? `/league/teams/${team.managerSlug}?season=${season}`
-										: `/league/teams?season=${season}`
-								}
+								href={team.managerSlug
+									? `/league/teams/${team.managerSlug}?season=${season}`
+									: `/league/teams?season=${season}`}
 							>
 								<div class="team-logo">
-									{#if team.teamPhoto}
-										<img
-											src={team.teamPhoto}
-											alt={team.teamName}
-										/>
-									{:else}
-										<span>
-											{team.teamName.slice(
-												0,
-												2
-											)}
-										</span>
-									{/if}
-								</div>
+	{#if team.teamChiclet || team.teamPhoto}
+		<img
+			src={team.teamChiclet || team.teamPhoto}
+			alt={team.teamName}
+		/>
+	{:else}
+		<span>
+			{team.teamName.slice(0, 2)}
+		</span>
+	{/if}
+</div>
 
 								<strong>
 									{team.teamName}
@@ -438,21 +242,13 @@
 									{team.managerName}
 								</small>
 							</a>
-
 						{/each}
 
-
 						{#each draftRows as rowIndex}
-
 							{#each teamBoards as team (team.teamName + '-' + rowIndex)}
-
-								{@const pick =
-									team.allPicks?.[
-										rowIndex
-									]}
+								{@const pick = team.allPicks?.[rowIndex]}
 
 								{#if pick}
-
 									<article
 										class={`draft-pick ${amountClass(pick.amount)}`}
 										data-player-id={pick.player.id}
@@ -462,151 +258,98 @@
 										aria-label={`Open ${pick.player.name} player card`}
 									>
 										<div class="price">
-											${money(
-												pick.amount
-											)}
+											${money(pick.amount)}
 										</div>
 
-										<img
-											src={playerPhoto(
-												pick
-											)}
-											alt={pick.player?.name || 'Player'}
-										/>
+										<img src={playerPhoto(pick)} alt={pick.player?.name || 'Player'} />
 
 										<div class="pick-copy">
 											<strong>
-												{pick.player?.name ||
-													'Unknown Player'}
+												{pick.player?.name || 'Unknown Player'}
 											</strong>
 
 											<small>
-												{playerLine(
-													pick
-												)}
+												{playerLine(pick)}
 											</small>
 										</div>
 									</article>
-
 								{:else}
-
-									<div
-										class="draft-empty"
-										aria-hidden="true"
-									></div>
-
+									<div class="draft-empty" aria-hidden="true"></div>
 								{/if}
-
 							{/each}
-
 						{/each}
 					</div>
 				</div>
-
 			{:else}
-
 				<div class="no-board">
 					<strong>
 						No picks have landed for
 						{season} yet.
 					</strong>
 
-					<p>
-						Flip to a completed season above
-						to see the full auction board.
-					</p>
+					<p>Flip to a completed season above to see the full auction board.</p>
 				</div>
-
 			{/if}
 		</section>
-
 
 		<!-- =================================================
 		     MONEY DESK
 		================================================== -->
 
 		<section class="money-strip">
-
 			<article>
-				<span>
-					Biggest spender
-				</span>
+				<span> Biggest spender </span>
 
 				<strong>
-					{biggestSpender?.teamName ||
-						'—'}
+					{biggestSpender?.teamName || '—'}
 				</strong>
 
 				<small>
-					{biggestSpender
-						? `$${money(biggestSpender.spend)} spent`
-						: 'No data'}
+					{biggestSpender ? `$${money(biggestSpender.spend)} spent` : 'No data'}
 				</small>
 			</article>
 
 			<article>
-				<span>
-					Lightest spender
-				</span>
+				<span> Lightest spender </span>
 
 				<strong>
-					{lightestSpender?.teamName ||
-						'—'}
+					{lightestSpender?.teamName || '—'}
 				</strong>
 
 				<small>
-					{lightestSpender
-						? `$${money(lightestSpender.spend)} spent`
-						: 'No data'}
+					{lightestSpender ? `$${money(lightestSpender.spend)} spent` : 'No data'}
 				</small>
 			</article>
 
 			<article>
-				<span>
-					Auction peak
-				</span>
+				<span> Auction peak </span>
 
 				<strong>
-					${money(
-						highestBid
-					)}
+					${money(highestBid)}
 				</strong>
 
-				<small>
-					Highest winning bid
-				</small>
+				<small> Highest winning bid </small>
 			</article>
-
 		</section>
-
 
 		<!-- =================================================
 		     ANALYTICS
 		================================================== -->
 
 		<section class="analytics-grid">
-
 			<article class="card studio-card">
 				<div class="section-head">
 					<div>
-						<div class="eyebrow">
-							Draft desk
-						</div>
+						<div class="eyebrow">Draft desk</div>
 
-						<h3>
-							Most Expensive Buys
-						</h3>
+						<h3>Most Expensive Buys</h3>
 					</div>
 
-					<span>
-						Top 10
-					</span>
+					<span> Top 10 </span>
 				</div>
 
 				<div class="expensive-list">
-
 					{#each topBuys as pick, index (pick.id)}
-
 						<div
 							class="expensive-row"
 							data-player-id={pick.player.id}
@@ -619,12 +362,7 @@
 								{index + 1}
 							</div>
 
-							<img
-								src={playerPhoto(
-									pick
-								)}
-								alt={pick.player?.name || 'Player'}
-							/>
+							<img src={playerPhoto(pick)} alt={pick.player?.name || 'Player'} />
 
 							<div class="expensive-copy">
 								<strong>
@@ -637,44 +375,30 @@
 							</div>
 
 							<b>
-								${money(
-									pick.amount
-								)}
+								${money(pick.amount)}
 							</b>
 						</div>
-
 					{/each}
 
 					{#if !topBuys.length}
-						<div class="empty">
-							No expensive buys yet.
-						</div>
+						<div class="empty">No expensive buys yet.</div>
 					{/if}
 				</div>
 			</article>
 
-
 			<article class="card studio-card">
 				<div class="section-head">
 					<div>
-						<div class="eyebrow">
-							Market share
-						</div>
+						<div class="eyebrow">Market share</div>
 
-						<h3>
-							Position Economy
-						</h3>
+						<h3>Position Economy</h3>
 					</div>
 
-					<span>
-						Avg bid
-					</span>
+					<span> Avg bid </span>
 				</div>
 
 				<div class="position-table">
-
 					{#each positionEconomy as row (row.position)}
-
 						<div>
 							<strong>
 								{row.position}
@@ -686,30 +410,22 @@
 							</span>
 
 							<span>
-								${money(
-									row.spend
-								)}
+								${money(row.spend)}
 								spent
 							</span>
 
 							<b>
-								${money2(
-									row.averageSpend
-								)}
+								${money2(row.averageSpend)}
 							</b>
 						</div>
-
 					{/each}
 
 					{#if !positionEconomy.length}
-						<div class="empty">
-							No position economy data yet.
-						</div>
+						<div class="empty">No position economy data yet.</div>
 					{/if}
 				</div>
 			</article>
 		</section>
-
 
 		<!-- =================================================
 		     BID BANDS
@@ -718,24 +434,16 @@
 		<section class="card studio-card">
 			<div class="section-head">
 				<div>
-					<div class="eyebrow">
-						Room spending
-					</div>
+					<div class="eyebrow">Room spending</div>
 
-					<h3>
-						Bid Bands
-					</h3>
+					<h3>Bid Bands</h3>
 				</div>
 
-				<span>
-					How the room spent its money
-				</span>
+				<span> How the room spent its money </span>
 			</div>
 
 			<div class="bands-grid">
-
 				{#each priceBands as band (band.label)}
-
 					<div class="band-card">
 						<strong>
 							{band.label}
@@ -747,17 +455,12 @@
 						</span>
 
 						<b>
-							${money(
-								band.spend
-							)}
+							${money(band.spend)}
 						</b>
 					</div>
-
 				{/each}
-
 			</div>
 		</section>
-
 	{/if}
 </div>
 
@@ -774,7 +477,6 @@
 		padding-bottom: 48px;
 	}
 
-
 	/* =========================================================
 	   COMMON
 	   ========================================================= */
@@ -783,22 +485,16 @@
 	.draft-board-card {
 		border: 1px solid var(--border);
 		border-radius: var(--radius-md);
-		background:
-			linear-gradient(
-				180deg,
-				rgba(255,255,255,.018),
-				transparent 24%
-			),
-			var(--panel);
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 24%), var(--panel);
 		box-shadow: var(--shadow-panel);
 	}
 
 	.eyebrow {
 		color: var(--brand-gold);
 		font-family: var(--font-body);
-		font-size: .61rem;
+		font-size: 0.61rem;
 		font-weight: 800;
-		letter-spacing: .16em;
+		letter-spacing: 0.16em;
 		text-transform: uppercase;
 	}
 
@@ -815,7 +511,7 @@
 		color: var(--brand-ivory);
 		font-family: var(--font-display);
 		font-weight: 400;
-		letter-spacing: .01em;
+		letter-spacing: 0.01em;
 		text-shadow: none;
 	}
 
@@ -823,7 +519,6 @@
 		color: var(--muted);
 		line-height: 1.55;
 	}
-
 
 	/* =========================================================
 	   HERO
@@ -839,12 +534,7 @@
 		border: 1px solid var(--border-strong);
 		border-radius: var(--radius-lg);
 		background:
-			linear-gradient(
-				120deg,
-				rgba(191,161,106,.055),
-				transparent 40%
-			),
-			var(--panel-strong);
+			linear-gradient(120deg, rgba(191, 161, 106, 0.055), transparent 40%), var(--panel-strong);
 		box-shadow: var(--shadow-panel);
 	}
 
@@ -853,11 +543,11 @@
 		position: absolute;
 		right: 24px;
 		top: 42px;
-		color: rgba(191,161,106,.025);
+		color: rgba(191, 161, 106, 0.025);
 		font-family: var(--font-display);
 		font-size: clamp(5rem, 10vw, 9rem);
-		line-height: .9;
-		letter-spacing: .02em;
+		line-height: 0.9;
+		letter-spacing: 0.02em;
 		pointer-events: none;
 	}
 
@@ -875,17 +565,16 @@
 	.hero-copy h1 {
 		margin-top: 7px;
 		font-size: clamp(3.6rem, 7vw, 7rem);
-		line-height: .82;
-		letter-spacing: -.025em;
+		line-height: 0.82;
+		letter-spacing: -0.025em;
 		text-transform: uppercase;
 	}
 
 	.hero-copy p {
 		max-width: 670px;
 		margin-top: 18px;
-		font-size: .96rem;
+		font-size: 0.96rem;
 	}
-
 
 	/* =========================================================
 	   SEASON
@@ -897,16 +586,16 @@
 		padding: 14px;
 		border: 1px solid var(--border);
 		border-radius: var(--radius-sm);
-		background: rgba(7,10,10,.7);
+		background: rgba(7, 10, 10, 0.7);
 	}
 
 	.season-box > span {
 		display: block;
 		margin-bottom: 10px;
 		color: var(--brand-gold);
-		font-size: .61rem;
+		font-size: 0.61rem;
 		font-weight: 800;
-		letter-spacing: .15em;
+		letter-spacing: 0.15em;
 		text-transform: uppercase;
 	}
 
@@ -921,14 +610,14 @@
 		border: 1px solid var(--border);
 		border-radius: 4px;
 		color: var(--text);
-		background: rgba(255,255,255,.025);
+		background: rgba(255, 255, 255, 0.025);
 		font-family: var(--font-score);
-		font-size: .78rem;
+		font-size: 0.78rem;
 		text-decoration: none;
 		transition:
-			background .15s ease,
-			color .15s ease,
-			border-color .15s ease;
+			background 0.15s ease,
+			color 0.15s ease,
+			border-color 0.15s ease;
 	}
 
 	.season-pills a:hover {
@@ -941,7 +630,6 @@
 		color: #111;
 		background: var(--brand-gold);
 	}
-
 
 	/* =========================================================
 	   HERO STATS
@@ -963,14 +651,14 @@
 		display: grid;
 		gap: 5px;
 		padding: 14px 16px;
-		background: rgba(9,12,12,.94);
+		background: rgba(9, 12, 12, 0.94);
 	}
 
 	.hero-stats span {
 		color: var(--muted);
-		font-size: .59rem;
+		font-size: 0.59rem;
 		font-weight: 800;
-		letter-spacing: .13em;
+		letter-spacing: 0.13em;
 		text-transform: uppercase;
 	}
 
@@ -980,7 +668,6 @@
 		font-size: 1.65rem;
 		font-weight: 400;
 	}
-
 
 	/* =========================================================
 	   BOARD
@@ -997,13 +684,7 @@
 		gap: 24px;
 		padding: 18px 20px;
 		border-bottom: 1px solid var(--border);
-		background:
-			linear-gradient(
-				180deg,
-				rgba(255,255,255,.025),
-				transparent
-			),
-			var(--panel);
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent), var(--panel);
 	}
 
 	.board-head h2 {
@@ -1013,7 +694,7 @@
 
 	.board-head p {
 		margin-top: 7px;
-		font-size: .78rem;
+		font-size: 0.78rem;
 	}
 
 	.board-key {
@@ -1029,9 +710,9 @@
 		padding: 5px 8px;
 		border-radius: 3px;
 		color: #0a0b0b;
-		font-size: .59rem;
+		font-size: 0.59rem;
 		font-weight: 900;
-		letter-spacing: .08em;
+		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
 
@@ -1055,7 +736,6 @@
 		background: #cfd4cc;
 	}
 
-
 	/* =========================================================
 	   IMPORTANT:
 	   DESKTOP BOARD SCROLLS NOW.
@@ -1068,385 +748,262 @@
    Desktop intentionally shows all 14 franchises at once.
    ========================================================= */
 
-.board-scroll {
-	width: 100%;
-	overflow: hidden;
-}
+	.board-scroll {
+		width: 100%;
+		overflow: hidden;
+	}
 
+	.draft-board {
+		display: grid;
 
-.draft-board {
-	display: grid;
+		grid-template-columns: repeat(var(--team-count), minmax(0, 1fr));
 
-	grid-template-columns:
-		repeat(
-			var(--team-count),
-			minmax(0,1fr)
-		);
+		width: 100%;
 
-	width: 100%;
+		min-width: 0;
 
-	min-width: 0;
+		background: #0c1010;
+	}
 
-	background:
-		#0c1010;
-}
+	.draft-board > * {
+		min-width: 0;
+	}
+	.draft-team-head {
+		position: sticky;
 
+		top: 0;
 
-.draft-board > * {
-	min-width: 0;
-}
-.draft-team-head {
-	position: sticky;
+		z-index: 3;
 
-	top: 0;
+		display: grid;
 
-	z-index: 3;
+		justify-items: center;
 
-	display: grid;
+		align-content: center;
 
-	justify-items: center;
+		gap: 4px;
 
-	align-content: center;
+		min-width: 0;
 
-	gap: 4px;
+		min-height: 105px;
 
-	min-width: 0;
+		padding: 8px 4px;
 
-	min-height: 105px;
+		border-right: 1px solid var(--border);
 
-	padding:
-		8px 4px;
+		border-bottom: 1px solid var(--border);
 
-	border-right:
-		1px solid
-		var(--border);
+		color: var(--brand-ivory);
 
-	border-bottom:
-		1px solid
-		var(--border);
+		background: linear-gradient(180deg, #242a28, #111514);
 
-	color:
-		var(--brand-ivory);
+		text-align: center;
 
-	background:
-		linear-gradient(
-			180deg,
-			#242a28,
-			#111514
-		);
+		text-decoration: none;
+	}
 
-	text-align: center;
+	.draft-team-head:hover {
+		color: var(--brand-gold);
 
-	text-decoration: none;
-}
+		background: linear-gradient(180deg, #303734, #151a18);
+	}
 
+	.team-logo {
+		width: clamp(32px, 2.5vw, 42px);
 
-.draft-team-head:hover {
-	color:
-		var(--brand-gold);
+		height: clamp(32px, 2.5vw, 42px);
 
-	background:
-		linear-gradient(
-			180deg,
-			#303734,
-			#151a18
-		);
-}
+		display: grid;
 
+		place-items: center;
 
-.team-logo {
-	width:
-		clamp(
-			32px,
-			2.5vw,
-			42px
-		);
+		overflow: hidden;
 
-	height:
-		clamp(
-			32px,
-			2.5vw,
-			42px
-		);
+		color: #111;
 
-	display: grid;
-
-	place-items: center;
-
-	overflow: hidden;
-
-	
-
-
-	
-
-	color:
-		#111;
-
-	font-family:
-		var(--font-score);
-}
-
+		font-family: var(--font-score);
+	}
 
 .team-logo img {
-	width: 100%;
-	height: 100%;
-
-	object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
+	.draft-team-head strong {
+		display: -webkit-box;
 
+		max-width: 100%;
 
-.draft-team-head strong {
-	display: -webkit-box;
+		overflow: hidden;
 
-	max-width: 100%;
+		color: var(--brand-ivory);
 
-	overflow: hidden;
+		font-size: clamp(0.51rem, 0.66vw, 0.68rem);
 
-	color:
-		var(--brand-ivory);
+		line-height: 1.02;
 
-	font-size:
-		clamp(
-			.51rem,
-			.66vw,
-			.68rem
-		);
+		-webkit-box-orient: vertical;
 
-	line-height: 1.02;
+		-webkit-line-clamp: 2;
 
-	-webkit-box-orient:
-		vertical;
+		overflow-wrap: anywhere;
+	}
 
-	-webkit-line-clamp:
-		2;
+	.draft-team-head small {
+		display: block;
 
-	overflow-wrap:
-		anywhere;
-}
+		max-width: 100%;
 
+		overflow: hidden;
 
-.draft-team-head small {
-	display: block;
+		color: var(--muted);
 
-	max-width: 100%;
+		font-size: clamp(0.43rem, 0.53vw, 0.56rem);
 
-	overflow: hidden;
+		line-height: 1;
 
-	color:
-		var(--muted);
+		text-overflow: ellipsis;
 
-	font-size:
-		clamp(
-			.43rem,
-			.53vw,
-			.56rem
-		);
-
-	line-height: 1;
-
-	text-overflow:
-		ellipsis;
-
-	white-space:
-		nowrap;
-}
-
+		white-space: nowrap;
+	}
 
 	/* =========================================================
 	   PICK CELLS
 	   ========================================================= */
-.draft-pick,
-.draft-empty {
-	min-width: 0;
+	.draft-pick,
+	.draft-empty {
+		min-width: 0;
 
-	min-height: 72px;
+		min-height: 72px;
 
-	border-right:
-		1px solid
-		var(--border);
+		border-right: 1px solid var(--border);
 
-	border-bottom:
-		1px solid
-		var(--border);
-}
+		border-bottom: 1px solid var(--border);
+	}
 
-.draft-pick {
-	position: relative;
+	.draft-pick {
+		position: relative;
 
-	display: grid;
+		display: grid;
 
-	grid-template-columns:
-		clamp(
-			18px,
-			1.55vw,
-			25px
-		)
-		minmax(0,1fr);
+		grid-template-columns:
+			clamp(18px, 1.55vw, 25px)
+			minmax(0, 1fr);
 
-	grid-template-rows:
-		auto
-		1fr;
+		grid-template-rows:
+			auto
+			1fr;
 
-	gap:
-		3px 5px;
+		gap: 3px 5px;
 
-	padding:
-		6px 4px 6px 6px;
+		padding: 6px 4px 6px 6px;
 
-	overflow: hidden;
+		overflow: hidden;
 
-	color:
-		var(--brand-ivory);
+		color: var(--brand-ivory);
 
-	background:
-		#121716;
+		background: #121716;
 
-	cursor: pointer;
+		cursor: pointer;
 
-	transition:
-		background 120ms ease;
-}
+		transition: background 120ms ease;
+	}
 
-.draft-pick:hover {
-	z-index: 2;
+	.draft-pick:hover {
+		z-index: 2;
 
-	background:
-		#1b211f;
+		background: #1b211f;
 
-	box-shadow:
-		inset 0 0 0 1px
-		rgba(255,255,255,.1);
-}
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+	}
 
-.draft-pick::before {
-	content: '';
+	.draft-pick::before {
+		content: '';
 
-	position: absolute;
+		position: absolute;
 
-	top: 0;
-	bottom: 0;
-	left: 0;
+		top: 0;
+		bottom: 0;
+		left: 0;
 
-	width: 2px;
+		width: 2px;
 
-	background:
-		var(--bid-color);
-}
-.draft-pick .price {
-	grid-column:
-		1 / -1;
+		background: var(--bid-color);
+	}
+	.draft-pick .price {
+		grid-column: 1 / -1;
 
-	color:
-		var(--bid-color);
+		color: var(--bid-color);
 
-	font-family:
-		var(--font-score);
+		font-family: var(--font-score);
 
-	font-size:
-		clamp(
-			.55rem,
-			.62vw,
-			.68rem
-		);
+		font-size: clamp(0.55rem, 0.62vw, 0.68rem);
 
-	font-weight: 900;
-}
+		font-weight: 900;
+	}
 
-.draft-pick img {
-	width:
-		clamp(
-			18px,
-			1.55vw,
-			25px
-		);
+	.draft-pick img {
+		width: clamp(18px, 1.55vw, 25px);
 
-	height:
-		clamp(
-			18px,
-			1.55vw,
-			25px
-		);
+		height: clamp(18px, 1.55vw, 25px);
 
-	align-self: start;
+		align-self: start;
 
-	object-fit: contain;
+		object-fit: contain;
 
-	filter:
-		drop-shadow(
-			0 2px 2px
-			rgba(0,0,0,.38)
-		);
-}
+		filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.38));
+	}
 
+	.pick-copy {
+		min-width: 0;
 
-.pick-copy {
-	min-width: 0;
+		display: grid;
 
-	display: grid;
+		align-content: start;
 
-	align-content: start;
+		gap: 2px;
+	}
+	.pick-copy strong {
+		display: -webkit-box;
 
-	gap: 2px;
-}
-.pick-copy strong {
-	display: -webkit-box;
+		min-width: 0;
 
-	min-width: 0;
+		overflow: hidden;
 
-	overflow: hidden;
+		color: var(--brand-ivory);
 
-	color:
-		var(--brand-ivory);
+		font-size: clamp(0.47rem, 0.57vw, 0.6rem);
 
-	font-size:
-		clamp(
-			.47rem,
-			.57vw,
-			.60rem
-		);
+		line-height: 1.04;
 
-	line-height: 1.04;
+		-webkit-box-orient: vertical;
 
-	-webkit-box-orient:
-		vertical;
+		-webkit-line-clamp: 2;
+	}
 
-	-webkit-line-clamp:
-		2;
-}
+	.pick-copy small {
+		display: -webkit-box;
 
-.pick-copy small {
-	display: -webkit-box;
+		min-width: 0;
 
-	min-width: 0;
+		overflow: hidden;
 
-	overflow: hidden;
+		color: var(--muted);
 
-	color:
-		var(--muted);
+		font-size: clamp(0.4rem, 0.48vw, 0.5rem);
 
-	font-size:
-		clamp(
-			.40rem,
-			.48vw,
-			.50rem
-		);
+		font-weight: 600;
 
-	font-weight: 600;
+		line-height: 1.04;
 
-	line-height: 1.04;
+		-webkit-box-orient: vertical;
 
-	-webkit-box-orient:
-		vertical;
+		-webkit-line-clamp: 2;
+	}
 
-	-webkit-line-clamp:
-		2;
-}
-
-.draft-empty {
-	background:
-		rgba(255,255,255,.012);
-}
+	.draft-empty {
+		background: rgba(255, 255, 255, 0.012);
+	}
 	.pick-elite {
 		--bid-color: #70c8bd;
 	}
@@ -1468,14 +1025,8 @@
 	}
 
 	.draft-empty {
-		background:
-			linear-gradient(
-				135deg,
-				rgba(255,255,255,.012),
-				transparent
-			);
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.012), transparent);
 	}
-
 
 	/* =========================================================
 	   MONEY STRIP
@@ -1483,8 +1034,7 @@
 
 	.money-strip {
 		display: grid;
-		grid-template-columns:
-			repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 12px;
 	}
 
@@ -1499,9 +1049,9 @@
 
 	.money-strip span {
 		color: var(--brand-gold);
-		font-size: .58rem;
+		font-size: 0.58rem;
 		font-weight: 800;
-		letter-spacing: .14em;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
 	}
 
@@ -1514,9 +1064,8 @@
 
 	.money-strip small {
 		color: var(--muted);
-		font-size: .67rem;
+		font-size: 0.67rem;
 	}
-
 
 	/* =========================================================
 	   ANALYTICS
@@ -1524,8 +1073,7 @@
 
 	.analytics-grid {
 		display: grid;
-		grid-template-columns:
-			repeat(2, minmax(0,1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 16px;
 	}
 
@@ -1548,12 +1096,11 @@
 
 	.section-head > span {
 		color: var(--muted);
-		font-size: .59rem;
+		font-size: 0.59rem;
 		font-weight: 800;
-		letter-spacing: .12em;
+		letter-spacing: 0.12em;
 		text-transform: uppercase;
 	}
-
 
 	/* =========================================================
 	   EXPENSIVE BUYS
@@ -1569,25 +1116,25 @@
 		grid-template-columns:
 			28px
 			38px
-			minmax(0,1fr)
+			minmax(0, 1fr)
 			auto;
 		gap: 10px;
 		align-items: center;
 		padding: 8px 10px;
 		border: 1px solid var(--border);
 		border-radius: 6px;
-		background: rgba(255,255,255,.018);
+		background: rgba(255, 255, 255, 0.018);
 		cursor: pointer;
 	}
 
 	.expensive-row:hover {
-		background: rgba(255,255,255,.04);
+		background: rgba(255, 255, 255, 0.04);
 	}
 
 	.expensive-row .rank {
 		color: var(--brand-gold);
 		font-family: var(--font-score);
-		font-size: .72rem;
+		font-size: 0.72rem;
 	}
 
 	.expensive-row img {
@@ -1604,13 +1151,13 @@
 
 	.expensive-copy strong {
 		color: var(--brand-ivory);
-		font-size: .79rem;
+		font-size: 0.79rem;
 	}
 
 	.expensive-copy small {
 		overflow: hidden;
 		color: var(--muted);
-		font-size: .64rem;
+		font-size: 0.64rem;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
@@ -1618,9 +1165,8 @@
 	.expensive-row > b {
 		color: var(--brand-gold);
 		font-family: var(--font-score);
-		font-size: .85rem;
+		font-size: 0.85rem;
 	}
-
 
 	/* =========================================================
 	   POSITION ECONOMY
@@ -1651,7 +1197,7 @@
 
 	.position-table span {
 		color: var(--muted);
-		font-size: .7rem;
+		font-size: 0.7rem;
 	}
 
 	.position-table b {
@@ -1660,15 +1206,13 @@
 		text-align: right;
 	}
 
-
 	/* =========================================================
 	   BID BANDS
 	   ========================================================= */
 
 	.bands-grid {
 		display: grid;
-		grid-template-columns:
-			repeat(4, minmax(0,1fr));
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 10px;
 	}
 
@@ -1678,17 +1222,17 @@
 		padding: 14px;
 		border: 1px solid var(--border);
 		border-radius: 7px;
-		background: rgba(255,255,255,.018);
+		background: rgba(255, 255, 255, 0.018);
 	}
 
 	.band-card strong {
 		color: var(--brand-ivory);
-		font-size: .8rem;
+		font-size: 0.8rem;
 	}
 
 	.band-card span {
 		color: var(--muted);
-		font-size: .65rem;
+		font-size: 0.65rem;
 	}
 
 	.band-card b {
@@ -1697,7 +1241,6 @@
 		font-size: 1.4rem;
 		font-weight: 400;
 	}
-
 
 	/* =========================================================
 	   EMPTY
@@ -1714,7 +1257,6 @@
 		margin-top: 5px;
 	}
 
-
 	/* =========================================================
 	   RESPONSIVE
 	   ========================================================= */
@@ -1729,15 +1271,13 @@
 		}
 
 		.hero-stats {
-			grid-template-columns:
-				repeat(2, minmax(0,1fr));
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
 		.analytics-grid {
 			grid-template-columns: 1fr;
 		}
 	}
-
 
 	@media (max-width: 760px) {
 		.page-stack {
@@ -1749,11 +1289,7 @@
 		}
 
 		.hero-copy h1 {
-			font-size: clamp(
-				3rem,
-				16vw,
-				5rem
-			);
+			font-size: clamp(3rem, 16vw, 5rem);
 		}
 
 		.board-head {
@@ -1782,18 +1318,16 @@
 		}
 	}
 
-
 	@media (max-width: 520px) {
 		.hero-stats {
 			grid-template-columns: 1fr 1fr;
 		}
 
-
 		.expensive-row {
 			grid-template-columns:
 				24px
 				34px
-				minmax(0,1fr)
+				minmax(0, 1fr)
 				auto;
 		}
 	}

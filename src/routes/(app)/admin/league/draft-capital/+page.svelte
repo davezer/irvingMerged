@@ -210,7 +210,10 @@
 				<article class="balance-card">
 					<div class="team-row">
 						{#if team.photo}
-							<img src={team.photo} alt="" />
+							<img
+  src={team.teamChiclet || team.teamPhoto}
+  alt={team.teamName}
+/>
 						{/if}
 
 						<div>

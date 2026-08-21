@@ -665,13 +665,18 @@ function buildCandidate({
 			roster.ownerId,
 
 		teamName:
-			roster.teamName,
+  roster.teamName,
 
-		teamPhoto:
-			roster.teamPhoto,
+teamPhoto:
+  roster.teamPhoto,
 
-		managerName:
-			roster.managerName,
+teamChiclet:
+  roster.teamChiclet ||
+  roster.teamPhoto ||
+  null,
+
+managerName:
+  roster.managerName,
 
 		managerSlug:
 			roster.managerSlug,
@@ -1478,12 +1483,17 @@ applyTransactionPrices({
 							`Roster ${rosterId}`,
 
 						teamPhoto:
-							identity.teamPhoto ||
-							null,
+  identity.teamPhoto ||
+  null,
 
-						managerSlug:
-							identity.managerSlug ||
-							null,
+teamChiclet:
+  identity.teamChiclet ||
+  identity.teamPhoto ||
+  null,
+
+managerSlug:
+  identity.managerSlug ||
+  null,
 
 						initials:
 							identity.initials ||

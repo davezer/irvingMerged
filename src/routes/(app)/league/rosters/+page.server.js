@@ -124,8 +124,19 @@ function buildRosterCard({ raw, identity, starterSlots, playersById }) {
     ownerId: raw.ownerId || null,
     managerName: identity?.managerName || 'Unknown Manager',
     teamName: identity?.teamName || `Roster ${raw.rosterId}`,
-    teamPhoto: identity?.teamPhoto || null,
-    managerSlug: identity?.managerSlug || null,
+
+teamPhoto:
+  identity?.teamPhoto ||
+  null,
+
+teamChiclet:
+  identity?.teamChiclet ||
+  identity?.teamPhoto ||
+  null,
+
+managerSlug:
+  identity?.managerSlug ||
+  null,
     initials: identity?.initials || '?',
     recordLabel: recordLabel(settings),
     pointsFor,
@@ -170,7 +181,8 @@ function buildTeamOptions(rosters = []) {
       managerName: roster.managerName,
       managerSlug: roster.managerSlug,
       teamPhoto: roster.teamPhoto,
-      initials: roster.initials
+teamChiclet: roster.teamChiclet,
+initials: roster.initials
     }))
     .sort((a, b) => a.teamName.localeCompare(b.teamName));
 }

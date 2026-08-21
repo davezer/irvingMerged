@@ -118,12 +118,17 @@ export function normalizeMatchupGroup(
         'Unknown Manager',
 
       teamPhoto:
-        identity?.teamPhoto ||
-        null,
+  identity?.teamPhoto ||
+  null,
 
-      initials:
-        identity?.initials ||
-        '?',
+teamChiclet:
+  identity?.teamChiclet ||
+  identity?.teamPhoto ||
+  null,
+
+initials:
+  identity?.initials ||
+  '?',
 
       managerSlug:
         identity?.managerSlug ||

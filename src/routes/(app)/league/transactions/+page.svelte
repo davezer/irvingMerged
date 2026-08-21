@@ -174,6 +174,8 @@
 							teamPhoto:
 								team.teamPhoto,
 
+							teamChiclet:team.teamChiclet,
+
 							initials:
 								team.initials,
 
@@ -824,7 +826,10 @@
           <div class="selected-team-pill" aria-label="Selected team">
             <span class="team-photo mini">
               {#if data.filterTeam.teamPhoto}
-                <img src={data.filterTeam.teamPhoto} alt={data.filterTeam.teamName} />
+                <img
+  src={data.filterTeam.teamChiclet || data.filterTeam.teamPhoto}
+  alt={data.filterTeam.teamName}
+/>
               {:else}
                 <span>{data.filterTeam.initials}</span>
               {/if}
@@ -964,7 +969,7 @@
 >
                     <div class="team-photo">
                       {#if team.teamPhoto}
-                        <img src={team.teamPhoto} alt={team.teamName} />
+                        <img src={team.teamChiclet || team.teamPhoto} alt={team.teamName} />
                       {:else}
                         <span>{team.initials}</span>
                       {/if}
@@ -1098,7 +1103,10 @@
 }>
                             <div class="team-photo small">
                               {#if group.teamPhoto}
-                                <img src={group.teamPhoto} alt={group.teamName} />
+                                <img
+  src={group.teamChiclet || group.teamPhoto}
+  alt={group.teamName}
+/>
                               {:else}
                                 <span>{group.initials}</span>
                               {/if}

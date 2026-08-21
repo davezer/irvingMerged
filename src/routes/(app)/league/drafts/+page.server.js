@@ -23,65 +23,150 @@ function moneyValue(pick) {
 }
 
 function resolveTeam(rosterIdentityMap, rosterId) {
-  return rosterIdentityMap.get(Number(rosterId)) || { teamName: `Roster ${rosterId}`, teamPhoto: null, managerName: 'Unknown Manager', initials: '?' };
+  return rosterIdentityMap.get(Number(rosterId)) || {
+    teamName: `Roster ${rosterId}`,
+    teamPhoto: null,
+    teamChiclet: null,
+    managerName: 'Unknown Manager',
+    initials: '?'
+  };
 }
 
 function toDraftPickView(pick, playersById, rosterIdentityMap) {
   const team = resolveTeam(rosterIdentityMap, pick.roster_id);
+
   const player = playersById.get(String(pick.player_id)) || {
     id: String(pick.player_id || 'unknown'),
-    name: pick.metadata?.first_name && pick.metadata?.last_name ? `${pick.metadata.first_name} ${pick.metadata.last_name}` : pick.metadata?.name || 'Unknown player',
-    shortName: pick.metadata?.last_name || pick.metadata?.name || 'Unknown',
+    name:
+      pick.metadata?.first_name && pick.metadata?.last_name
+        ? `${pick.metadata.first_name} ${pick.metadata.last_name}`
+        : pick.metadata?.name || 'Unknown player',
+    shortName:
+      pick.metadata?.last_name ||
+      pick.metadata?.name ||
+      'Unknown',
     position: pick.metadata?.position || null,
     team: pick.metadata?.team || null,
     teamLabel: pick.metadata?.team || null,
-    photoUrl: 'https://sleepercdn.com/images/v2/icons/player_default.webp'
+    photoUrl:
+      'https://sleepercdn.com/images/v2/icons/player_default.webp'
   };
+
   return {
-    id: String(pick.pick_no || `${pick.round}-${pick.draft_slot}-${pick.player_id}`),
+    id: String(
+      pick.pick_no ||
+        `${pick.round}-${pick.draft_slot}-${pick.player_id}`
+    ),
     round: Number(pick.round || 0),
     pickNo: Number(pick.pick_no || 0),
     amount: moneyValue(pick),
     rosterId: Number(pick.roster_id || 0),
+
     teamName: team.teamName,
     teamPhoto: team.teamPhoto,
+    teamChiclet: team.teamChiclet,
+
     managerName: team.managerName,
     managerSlug: team.managerSlug || null,
+
     player
   };
 }
 
 function buildTeamBoards(pickRows = []) {
   const map = new Map();
+
   for (const pick of pickRows) {
     if (!map.has(pick.teamName)) {
-      map.set(pick.teamName, { teamName: pick.teamName, teamPhoto: pick.teamPhoto, managerName: pick.managerName, managerSlug: pick.managerSlug, picks: [], spend: 0, positionSpend: new Map() });
+      map.set(pick.teamName, {
+        teamName: pick.teamName,
+        teamPhoto: pick.teamPhoto,
+        teamChiclet: pick.teamChiclet,
+        managerName: pick.managerName,
+        managerSlug: pick.managerSlug,
+        picks: [],
+        spend: 0,
+        positionSpend: new Map()
+      });
     }
+
     const row = map.get(pick.teamName);
+
     row.picks.push(pick);
     row.spend += pick.amount;
-    const pos = pick.player.position || 'UNK';
-    row.positionSpend.set(pos, (row.positionSpend.get(pos) || 0) + pick.amount);
-  }
-  return [...map.values()].map((row) => {
-    const picks = [...row.picks].sort((a, b) => b.amount - a.amount || a.pickNo - b.pickNo);
-    const topPosition = [...row.positionSpend.entries()].sort((a, b) => b[1] - a[1])[0] || null;
-    return {
-      teamName: row.teamName,
-      teamPhoto: row.teamPhoto,
-      managerName: row.managerName,
-      managerSlug: row.managerSlug,
-      picks: row.picks.length,
-      spend: row.spend,
-      averageSpend: row.picks.length ? Number((row.spend / row.picks.length).toFixed(2)) : 0,
-      bestBuy: picks[0] || null,
-      samplePicks: picks.slice(0, 4),
-      allPicks: picks,
-      topPosition: topPosition ? { position: topPosition[0], spend: topPosition[1] } : null
-    };
-  }).sort((a, b) => b.spend - a.spend || a.teamName.localeCompare(b.teamName));
-}
 
+    const pos =
+      pick.player.position ||
+      'UNK';
+
+    row.positionSpend.set(
+      pos,
+      (row.positionSpend.get(pos) || 0) + pick.amount
+    );
+  }
+
+  return [...map.values()]
+    .map((row) => {
+      const picks = [...row.picks].sort(
+        (a, b) =>
+          b.amount - a.amount ||
+          a.pickNo - b.pickNo
+      );
+
+      const topPosition =
+        [...row.positionSpend.entries()].sort(
+          (a, b) =>
+            b[1] - a[1]
+        )[0] || null;
+
+      return {
+        teamName: row.teamName,
+        teamPhoto: row.teamPhoto,
+        teamChiclet: row.teamChiclet,
+        managerName: row.managerName,
+        managerSlug: row.managerSlug,
+
+        picks: row.picks.length,
+        spend: row.spend,
+
+        averageSpend:
+          row.picks.length
+            ? Number(
+                (
+                  row.spend /
+                  row.picks.length
+                ).toFixed(2)
+              )
+            : 0,
+
+        bestBuy:
+          picks[0] || null,
+
+        samplePicks:
+          picks.slice(0, 4),
+
+        allPicks:
+          picks,
+
+        topPosition:
+          topPosition
+            ? {
+                position:
+                  topPosition[0],
+                spend:
+                  topPosition[1]
+              }
+            : null
+      };
+    })
+    .sort(
+      (a, b) =>
+        b.spend - a.spend ||
+        a.teamName.localeCompare(
+          b.teamName
+        )
+    );
+}
 function buildPositionEconomy(pickRows = []) {
   const map = new Map();
   for (const pick of pickRows) {
@@ -109,28 +194,110 @@ function buildPriceBands(pickRows = []) {
   return bands;
 }
 
-function buildFranchiseHistory(archiveData = [], playersById) {
+function buildFranchiseHistory(
+  archiveData = [],
+  playersById
+) {
   const map = new Map();
+
   for (const season of archiveData) {
     for (const pick of season.picks) {
-      const view = toDraftPickView(pick, playersById, season.rosterIdentityMap);
+      const view = toDraftPickView(
+        pick,
+        playersById,
+        season.rosterIdentityMap
+      );
+
       if (!map.has(view.teamName)) {
-        map.set(view.teamName, { teamName: view.teamName, teamPhoto: view.teamPhoto, managerName: view.managerName, managerSlug: view.managerSlug, seasons: [], totalSpend: 0, totalPicks: 0 });
+        map.set(view.teamName, {
+          teamName: view.teamName,
+          teamPhoto: view.teamPhoto,
+          teamChiclet: view.teamChiclet,
+          managerName: view.managerName,
+          managerSlug: view.managerSlug,
+          seasons: [],
+          totalSpend: 0,
+          totalPicks: 0
+        });
       }
-      const row = map.get(view.teamName);
-      row.totalSpend += view.amount;
+
+      const row =
+        map.get(view.teamName);
+
+      row.totalSpend +=
+        view.amount;
+
       row.totalPicks += 1;
-      let seasonRow = row.seasons.find((entry) => entry.season === season.season);
+
+      let seasonRow =
+        row.seasons.find(
+          (entry) =>
+            entry.season ===
+            season.season
+        );
+
       if (!seasonRow) {
-        seasonRow = { season: season.season, spend: 0, picks: 0, topBuy: null };
-        row.seasons.push(seasonRow);
+        seasonRow = {
+          season:
+            season.season,
+          spend:
+            0,
+          picks:
+            0,
+          topBuy:
+            null
+        };
+
+        row.seasons.push(
+          seasonRow
+        );
       }
-      seasonRow.spend += view.amount;
+
+      seasonRow.spend +=
+        view.amount;
+
       seasonRow.picks += 1;
-      if (!seasonRow.topBuy || view.amount > seasonRow.topBuy.amount) seasonRow.topBuy = view;
+
+      if (
+        !seasonRow.topBuy ||
+        view.amount >
+          seasonRow.topBuy.amount
+      ) {
+        seasonRow.topBuy =
+          view;
+      }
     }
   }
-  return [...map.values()].map((row) => ({ ...row, seasons: row.seasons.sort((a, b) => b.season - a.season), averageSpend: row.totalPicks ? Number((row.totalSpend / row.totalPicks).toFixed(2)) : 0 })).sort((a, b) => b.totalSpend - a.totalSpend || a.teamName.localeCompare(b.teamName));
+
+  return [...map.values()]
+    .map((row) => ({
+      ...row,
+
+      seasons:
+        row.seasons.sort(
+          (a, b) =>
+            b.season -
+            a.season
+        ),
+
+      averageSpend:
+        row.totalPicks
+          ? Number(
+              (
+                row.totalSpend /
+                row.totalPicks
+              ).toFixed(2)
+            )
+          : 0
+    }))
+    .sort(
+      (a, b) =>
+        b.totalSpend -
+          a.totalSpend ||
+        a.teamName.localeCompare(
+          b.teamName
+        )
+    );
 }
 
 function buildSeasonSpendTimeline(archiveData = [], playersById) {

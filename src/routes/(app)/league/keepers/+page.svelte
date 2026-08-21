@@ -337,8 +337,8 @@
 					<article class="team-card">
 						<header>
 							<div class="team-logo">
-								{#if team.teamPhoto}
-									<img src={team.teamPhoto} alt={team.teamName} />
+								{#if team.teamChiclet || team.teamPhoto}
+									<img src={team.teamChiclet || team.teamPhoto} alt={team.teamName} />
 								{:else}
 									<span>{team.initials}</span>
 								{/if}
@@ -518,8 +518,7 @@
 
 		z-index: 0;
 
-		color:
-	rgba(191,161,106,.025);
+		color: rgba(191, 161, 106, 0.025);
 
 		font-family: var(--font-display);
 
@@ -1363,11 +1362,7 @@
 
 		overflow: hidden;
 
-		
-
 		border-radius: 4px;
-
-		
 
 		color: var(--brand-charcoal);
 
@@ -1379,12 +1374,10 @@
 	}
 
 	.team-logo img {
-		width: 100%;
-
-		height: 100%;
-
-		object-fit: cover;
-	}
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
 	.team-card header h3 {
 		margin: 0;
@@ -1496,32 +1489,30 @@
 		text-align: left;
 
 		box-shadow: none !important;
-    position: relative;
+		position: relative;
 	}
 
-  .player-row::before {
-	content: '';
+	.player-row::before {
+		content: '';
 
-	position: absolute;
+		position: absolute;
 
-	top: 8px;
-	bottom: 8px;
-	left: 0;
+		top: 8px;
+		bottom: 8px;
+		left: 0;
 
-	width: 2px;
+		width: 2px;
 
-	background:
-		var(--brand-gold);
+		background: var(--brand-gold);
 
-	opacity: 0;
+		opacity: 0;
 
-	transition:
-		opacity 120ms ease;
-}
+		transition: opacity 120ms ease;
+	}
 
-.player-row:hover::before {
-	opacity: .7;
-}
+	.player-row:hover::before {
+		opacity: 0.7;
+	}
 
 	.player-row:last-child {
 		border-bottom: 0 !important;

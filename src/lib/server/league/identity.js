@@ -31,7 +31,14 @@ function initials(value = '') {
     .join('') || '?';
 }
 
+function chicletPath(photo) {
+  if (!photo) return null;
 
+  return photo.replace(
+    '/managers/',
+    '/managers/chiclets/'
+  );
+}
 
 export function getLegacyManagerProfiles() {
   return managers.map((manager, index) => ({
@@ -75,12 +82,17 @@ const teamPhoto = branded?.photo
   ? `${branded.photo}?v=${TEAM_LOGO_VERSION}`
   : null;
 
+const teamChiclet = branded?.chiclet
+  ? `${branded.chiclet}?v=${TEAM_LOGO_VERSION}`
+  : teamPhoto;
+
   return {
     ownerId: ownerId ? String(ownerId) : null,
     managerId: branded?.managerID || (ownerId ? String(ownerId) : null),
     managerName,
     teamName,
     teamPhoto,
+    teamChiclet,
     managerSlug: slugify(branded?.teamName || teamName),
     initials: initials(teamName),
     branded: Boolean(branded)
