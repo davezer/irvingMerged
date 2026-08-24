@@ -330,60 +330,72 @@ export async function getFranchiseTransactionHistory({
 	 * ============================================================
 	 */
 
-	const [
+const [
 	transactionResult,
 	rosterResult,
 	capitalLedger
-] =
-	await Promise.all([
-			db
-				.prepare(`
-					SELECT
-						league_id,
-						season,
-						round,
-						transaction_id,
-						type,
-						status,
-						roster_ids_json,
-						adds_json,
-						drops_json,
-						draft_picks_json,
-						waiver_budget_json,
-						created_at
+] = await Promise.all([
+	db
+		.prepare(`
+			SELECT
+				league_id,
+				season,
+				round,
+				transaction_id,
+				type,
+				status,
+				roster_ids_json,
+				adds_json,
+				drops_json,
+				draft_picks_json,
+				waiver_budget_json,
+				created_at
 
-					FROM sleeper_transactions_seasonal
+			FROM sleeper_transactions_seasonal
 
-					WHERE
-						${pairWhere}
+			WHERE
+				${pairWhere}
 
-					ORDER BY
-						created_at DESC
-				`)
-				.bind(
-					...pairBindings
-				)
-				.all(),
+			ORDER BY
+				created_at DESC
+		`)
+		.bind(
+			...pairBindings
+		)
+		.all(),
 
-			db
-				.prepare(`
-					SELECT
-						league_id,
-						season,
-						roster_id,
-						owner_id,
-						metadata_json
+	db
+		.prepare(`
+			SELECT
+				league_id,
+				season,
+				roster_id,
+				owner_id,
+				metadata_json
 
-					FROM sleeper_rosters_seasonal
+			FROM sleeper_rosters_seasonal
 
-					WHERE
-						${pairWhere}
-				`)
-				.bind(
-					...pairBindings
-				)
-				.all()
-		]);
+			WHERE
+				${pairWhere}
+		`)
+		.bind(
+			...pairBindings
+		)
+		.all(),
+
+	getDraftCapitalLedger(
+		db,
+		{
+			managerId:
+				String(
+					profile.managerID
+				),
+
+			limit:
+				1000
+		}
+	)
+]);
 
 	const transactions =
 		transactionResult.results ||
@@ -393,18 +405,7 @@ export async function getFranchiseTransactionHistory({
 		rosterResult.results ||
 		[];
 
-    getDraftCapitalLedger(
-	db,
-	{
-		managerId:
-			String(
-				profile.managerID
-			),
-
-		limit:
-			1000
-	}
-)
+   
 
 	/*
 	 * ============================================================
