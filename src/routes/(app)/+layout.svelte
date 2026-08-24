@@ -17,7 +17,7 @@
 
 	{
 		href: '/league',
-		label: 'League'
+		label: 'Irving Championship League'
 	},
 
 	{
@@ -27,7 +27,7 @@
 
 	{
 		href: '/games',
-		label: 'Games'
+		label: 'Offseason Games'
 	},
 
 	{
@@ -43,6 +43,11 @@
 	{
 		href: '/league/constitution',
 		label: 'Constitution'
+	},
+	{
+		href: 'https://irvingmappr.lovable.app',
+		label: 'IrvingMappr',
+		external: true
 	}
 ];
 
@@ -281,10 +286,18 @@ if (
 </a>
 
       <nav class="primary-nav" aria-label="Primary navigation">
-        {#each primaryLinks as link}
-          <a class:active={isActive(link.href)} class:league-link={link.href === '/league'} href={link.href}>{link.label}</a>
-        {/each}
-      </nav>
+	{#each primaryLinks as link}
+		<a
+			class:active={isActive(link.href)}
+			class:league-link={link.href === '/league'}
+			href={link.href}
+			target={link.external ? '_blank' : undefined}
+			rel={link.external ? 'noopener noreferrer' : undefined}
+		>
+			{link.label}
+		</a>
+	{/each}
+</nav>
 
       <div class="right-rail">
         <button

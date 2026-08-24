@@ -61,6 +61,17 @@
 			}
 		);
 	}
+
+	function authorLabel(post) {
+	if (post?.sourceType === 'weekly_recap') {
+		return 'Eli Lang';
+	}
+
+	return (
+		post?.authorName ||
+		'The Irving Weekly'
+	);
+}
 </script>
 
 
@@ -201,8 +212,7 @@
 					<div class="byline">
 						By
 						<strong>
-							{lead.authorName ||
-								'The Irving Weekly'}
+							{authorLabel(lead)}
 						</strong>
 					</div>
 
@@ -299,8 +309,7 @@
 							<div class="card-footer">
 
 								<span>
-									{post.authorName ||
-										'The Irving Weekly'}
+									{authorLabel(post)}
 								</span>
 
 								<strong>

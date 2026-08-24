@@ -158,23 +158,7 @@
 			</p>
 
 
-			<div class="hero-actions">
-
-				<a
-					class="button button-primary"
-					href="/league"
-				>
-					Enter League
-				</a>
-
-				<a
-					class="button"
-					href={`/league/keepers?season=${season}`}
-				>
-					Keeper Calculator
-				</a>
-
-			</div>
+		
 
 		</div>
 
@@ -202,6 +186,154 @@
 			</div>
 		</div>
 
+		<section class="quick-section">
+
+		<header class="section-heading">
+
+			<div>
+				<div class="eyebrow">
+					League HQ
+				</div>
+
+				<h2>
+					Quick Access
+				</h2>
+			</div>
+
+
+
+		</header>
+
+
+		<div class="quick-grid">
+
+			<a
+				class="quick-card"
+				href={`/league/standings?season=${season}`}
+			>
+				<span class="quick-number">
+					01
+				</span>
+
+				<div>
+					<strong>
+						Standings
+					</strong>
+
+					<small>
+						Records, points and
+						current league order.
+					</small>
+				</div>
+
+				<em>
+					Open standings →
+				</em>
+			</a>
+
+
+			<a
+				class="quick-card"
+				href={`/league/transactions?season=${season}`}
+			>
+				<span class="quick-number">
+					02
+				</span>
+
+				<div>
+					<strong>
+						Transactions
+					</strong>
+
+					<small>
+						Every franchise.
+						Every player.
+						Every move.
+					</small>
+				</div>
+
+				<em>
+					View transactions →
+				</em>
+			</a>
+
+
+			<a
+				class="quick-card"
+				href={`/league/drafts?season=${season}`}
+			>
+				<span class="quick-number">
+					03
+				</span>
+
+				<div>
+					<strong>
+						Draft Room
+					</strong>
+
+					<small>
+						Auction results,
+						prices and history.
+					</small>
+				</div>
+
+				<em>
+					Open draft room →
+				</em>
+			</a>
+
+
+			<a
+				class="quick-card"
+				href={`/league/keepers?season=${season}`}
+			>
+				<span class="quick-number">
+					04
+				</span>
+
+				<div>
+					<strong>
+						Keeper Desk
+					</strong>
+
+					<small>
+						Prices, tenure
+						and eligibility.
+					</small>
+				</div>
+
+				<em>
+					Run the numbers →
+				</em>
+			</a>
+
+			<a
+				class="quick-card"
+				href={`/history/badges`}
+			>
+				<span class="quick-number">
+					05
+				</span>
+
+				<div>
+					<strong>
+						Badge Cabinet
+					</strong>
+
+					<small>
+						Trophies, awards and shame.
+					</small>
+				</div>
+
+				<em>
+					View the trophies →
+				</em>
+			</a>
+
+		</div>
+
+	</section>
+
 
 		<div
 			class="hero-wordmark"
@@ -211,6 +343,8 @@
 		</div>
 
 	</section>
+
+		
 
 
 	<!-- ==================================================
@@ -300,133 +434,7 @@
 	     QUICK ACCESS
 	     ================================================== -->
 
-	<section class="quick-section">
-
-		<header class="section-heading">
-
-			<div>
-				<div class="eyebrow">
-					League HQ
-				</div>
-
-				<h2>
-					Quick Access
-				</h2>
-			</div>
-
-
-			<p>
-				The four doors most likely
-				to ruin your afternoon.
-			</p>
-
-		</header>
-
-
-		<div class="quick-grid">
-
-			<a
-				class="quick-card"
-				href={`/league/standings?season=${season}`}
-			>
-				<span class="quick-number">
-					01
-				</span>
-
-				<div>
-					<strong>
-						Standings
-					</strong>
-
-					<small>
-						Records, points and
-						current league order.
-					</small>
-				</div>
-
-				<em>
-					Open standings →
-				</em>
-			</a>
-
-
-			<a
-				class="quick-card"
-				href={`/league/rosters?season=${season}`}
-			>
-				<span class="quick-number">
-					02
-				</span>
-
-				<div>
-					<strong>
-						Rosters
-					</strong>
-
-					<small>
-						Every franchise.
-						Every player.
-					</small>
-				</div>
-
-				<em>
-					View rosters →
-				</em>
-			</a>
-
-
-			<a
-				class="quick-card"
-				href={`/league/drafts?season=${season}`}
-			>
-				<span class="quick-number">
-					03
-				</span>
-
-				<div>
-					<strong>
-						Draft Room
-					</strong>
-
-					<small>
-						Auction results,
-						prices and history.
-					</small>
-				</div>
-
-				<em>
-					Open draft room →
-				</em>
-			</a>
-
-
-			<a
-				class="quick-card"
-				href={`/league/keepers?season=${season}`}
-			>
-				<span class="quick-number">
-					04
-				</span>
-
-				<div>
-					<strong>
-						Keeper Desk
-					</strong>
-
-					<small>
-						Prices, tenure
-						and eligibility.
-					</small>
-				</div>
-
-				<em>
-					Run the numbers →
-				</em>
-			</a>
-
-		</div>
-
-	</section>
+	
 
 
 	<!-- ==================================================
@@ -1612,146 +1620,159 @@
 	}
 
 
-	/* ==================================================
-	   QUICK ACCESS
-	   ================================================== */
+/* ==================================================
+   QUICK ACCESS
+   ================================================== */
 
-	.quick-grid {
-		display: grid;
+.quick-section {
+	grid-column: 1 / -1;
+	width: 100%;
+	margin-top: 4px;
+}
 
-		grid-template-columns:
-			repeat(
-				4,
-				minmax(0,1fr)
-			);
+.quick-section .section-heading {
+	margin-bottom: 12px;
+}
 
-		gap: 10px;
-	}
+.quick-section .section-heading h2 {
+	font-size: clamp(1.55rem, 2vw, 2rem);
+}
 
+.quick-grid {
+	display: grid;
 
-	.quick-card {
-		position: relative;
+	grid-template-columns:
+		repeat(
+			5,
+			minmax(0, 1fr)
+		);
 
-		min-height: 160px;
+	gap: 9px;
+}
 
-		display: grid;
+.quick-card {
+	position: relative;
 
-		grid-template-rows:
-			auto
-			1fr
-			auto;
+	min-height: 118px;
 
-		gap: 14px;
+	display: grid;
 
-		padding:
-			16px;
+	grid-template-rows:
+		auto
+		1fr
+		auto;
 
-		border:
-			1px solid
-			var(--border);
+	gap: 8px;
 
-		border-radius:
-			var(--radius-sm);
+	padding:
+		12px 13px;
 
-		background:
-			var(--panel);
+	border:
+		1px solid
+		var(--border);
 
-		color: inherit;
+	border-radius:
+		var(--radius-sm);
 
-		text-decoration:
-			none;
+	background:
+		var(--panel);
 
-		transition:
-			transform
-			120ms ease,
-			border-color
-			120ms ease,
-			background
-			120ms ease;
-	}
+	color: inherit;
 
+	text-decoration:
+		none;
 
-	.quick-card:hover {
-		transform:
-			translateY(-2px);
+	transition:
+		transform
+		120ms ease,
+		border-color
+		120ms ease,
+		background
+		120ms ease;
+}
 
-		border-color:
-			var(--brand-gold);
+.quick-card:hover {
+	transform:
+		translateY(-2px);
 
-		background:
-			var(--panel-strong);
-	}
+	border-color:
+		var(--brand-gold);
 
+	background:
+		var(--panel-strong);
+}
 
-	.quick-number {
-		color:
-			var(--brand-gold);
+.quick-number {
+	color:
+		var(--brand-gold);
 
-		font-family:
-			var(--font-display);
+	font-family:
+		var(--font-display);
 
-		font-size:
-			1.15rem;
-	}
+	font-size:
+		.92rem;
+}
 
+.quick-card div {
+	display: grid;
+	align-content: start;
+	gap: 4px;
+}
 
-	.quick-card div {
-		display: grid;
-		align-content: start;
-		gap: 6px;
-	}
+.quick-card strong {
+	color:
+		var(--brand-ivory);
 
+	font-family:
+		var(--font-display);
 
-	.quick-card strong {
-		color:
-			var(--brand-ivory);
+	font-size:
+		1.25rem;
 
-		font-family:
-			var(--font-display);
+	font-weight:
+		400;
 
-		font-size:
-			1.55rem;
+	line-height:
+		1;
+}
 
-		font-weight: 400;
-	}
+.quick-card small {
+	max-width: 28ch;
 
+	color:
+		var(--muted);
 
-	.quick-card small {
-		max-width: 30ch;
+	font-size:
+		.72rem;
 
-		color:
-			var(--muted);
+	line-height:
+		1.3;
+}
 
-		line-height:
-			1.4;
-	}
+.quick-card em {
+	color:
+		var(--brand-sand);
 
+	font-size:
+		.52rem;
 
-	.quick-card em {
-		color:
-			var(--brand-sand);
+	font-style:
+		normal;
 
-		font-size:
-			.59rem;
+	font-weight:
+		800;
 
-		font-style:
-			normal;
+	letter-spacing:
+		.06em;
 
-		font-weight:
-			800;
+	text-transform:
+		uppercase;
+}
 
-		letter-spacing:
-			.06em;
-
-		text-transform:
-			uppercase;
-	}
-
-
-	.quick-card:hover em {
-		color:
-			var(--brand-gold);
-	}
+.quick-card:hover em {
+	color:
+		var(--brand-gold);
+}
 
 
 	/* ==================================================
@@ -2368,12 +2389,12 @@
 
 
 		.quick-grid {
-			grid-template-columns:
-				repeat(
-					2,
-					minmax(0,1fr)
-				);
-		}
+	grid-template-columns:
+		repeat(
+			3,
+			minmax(0,1fr)
+		);
+}
 
 
 		.pulse-grid {

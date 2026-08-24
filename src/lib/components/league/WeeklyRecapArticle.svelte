@@ -48,6 +48,22 @@
 
 				{/if}
 
+				<div class="recap-byline">
+	<span>
+		Written by
+	</span>
+
+	<strong>
+		Eli Lang
+	</strong>
+
+	<i></i>
+
+	<small>
+		Senior Writer, Scores & Signal
+	</small>
+</div>
+
 			</div>
 
 
@@ -602,7 +618,73 @@
 			1.5;
 	}
 
+.recap-byline {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
 
+	gap: 7px;
+
+	margin-top: 16px;
+
+	color:
+		var(--brand-stone);
+
+	font-size:
+		.64rem;
+
+	font-weight:
+		700;
+
+	letter-spacing:
+		.035em;
+}
+
+.recap-byline span {
+	color:
+		var(--muted);
+
+	text-transform:
+		uppercase;
+
+	font-size:
+		.54rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.1em;
+}
+
+.recap-byline strong {
+	color:
+		var(--brand-ivory);
+
+	font-weight:
+		800;
+}
+
+.recap-byline i {
+	width: 3px;
+	height: 3px;
+
+	border-radius: 50%;
+
+	background:
+		var(--brand-gold);
+}
+
+.recap-byline small {
+	color:
+		var(--brand-sand);
+
+	font-size:
+		.6rem;
+
+	font-weight:
+		650;
+}
 	.header-watermark {
 		position: absolute;
 
