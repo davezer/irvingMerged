@@ -3968,35 +3968,80 @@ function capitalDirection(
 	   MOBILE
 	   ================================================== */
 
-	@media (max-width: 640px) {
+	@media (max-width: 680px) {
 		.player-modal-backdrop {
-			padding: 6px;
-		}
+	display: block;
+
+	padding:
+		max(6px, env(safe-area-inset-top))
+		6px
+		max(6px, env(safe-area-inset-bottom));
+
+	overflow: hidden;
+}
 
 
-		.player-modal {
-			width: 100%;
-
-			max-height:
-				calc(
-					100vh -
-					12px
-				);
-
-			border-radius: 9px;
-		}
 
 
-		.modal-topbar {
-			grid-template-columns:
-				minmax(
-					0,
-					1fr
-				)
-				46px;
-		}
+.player-modal {
+	width: 100%;
+	height: 100%;
 
+	max-height:
+		calc(
+			100dvh -
+			max(12px, env(safe-area-inset-top)) -
+			max(12px, env(safe-area-inset-bottom))
+		);
 
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
+
+	border-radius: 9px;
+}
+
+.modal-topbar {
+	position: sticky;
+
+	top: 0;
+
+	z-index: 100;
+
+	grid-template-columns:
+		minmax(0, 1fr)
+		50px;
+
+	min-height: 52px;
+
+	background:
+		#070a09;
+
+	transform:
+		translateZ(0);
+}
+
+.modal-close {
+	position: relative;
+
+	z-index: 101;
+
+	width: 50px;
+	min-width: 50px;
+	height: 52px;
+
+	display: grid;
+	place-items: center;
+
+	padding: 0;
+
+	touch-action: manipulation;
+
+	font-size: 1.8rem;
+	line-height: 1;
+}
 		.modal-brand {
 			padding-left: 9px;
 

@@ -144,6 +144,7 @@
   $: lineupAnalytics = data.lineupAnalytics || {};
   $: tradeProfile = data.tradeProfile || {};
   $: moveProfile = data.moveProfile || {};
+  $: draftCapitalLedger = data.transactionHistory?.draftCapitalLedger || [];
 
   $: teamName = franchise.teamName || manager.liveTeamName || 'Franchise';
   $: teamLogo = franchise.teamPhoto || manager.photo || '/managers/question.jpg';
@@ -479,6 +480,89 @@ function signedCapitalMoney(
 	}
 
 	return '$0';
+}
+
+function capitalDate(value) {
+	if (!value) {
+		return 'Date unavailable';
+	}
+
+	const date =
+		new Date(
+			`${value}T12:00:00`
+		);
+
+	if (
+		Number.isNaN(
+			date.getTime()
+		)
+	) {
+		return value;
+	}
+
+	return date.toLocaleDateString(
+		'en-US',
+		{
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		}
+	);
+}
+
+
+function capitalEntryLabel(value) {
+	const labels = {
+		trade:
+			'Trade',
+
+		manual_adjustment:
+			'Manual adjustment',
+
+		import:
+			'Legacy import',
+
+		correction:
+			'Correction'
+	};
+
+	const key =
+		String(
+			value ||
+			''
+		)
+			.trim()
+			.toLowerCase();
+
+	return (
+		labels[key] ||
+		key
+			.replaceAll(
+				'_',
+				' '
+			)
+			.replace(
+				/\b\w/g,
+				(letter) =>
+					letter.toUpperCase()
+			) ||
+		'Ledger entry'
+	);
+}
+
+
+function capitalActivityTitle(row) {
+	if (row.counterpartyName) {
+		return row.counterpartyName;
+	}
+
+	if (row.note) {
+		return row.note;
+	}
+
+	return capitalEntryLabel(
+		row.entryType
+	);
 }
 
 
@@ -1186,54 +1270,7 @@ function badgeScoreLabel(
 					: '—'}
 			</dd>
 		</div>
-<div>
-	<dt>
-		Draft capital sent
-	</dt>
 
-	<dd>
-		{capitalMoney(
-			tradeProfile.draftCapitalSent
-		)}
-	</dd>
-</div>
-
-<div>
-	<dt>
-		Draft capital acquired
-	</dt>
-
-	<dd>
-		{capitalMoney(
-			tradeProfile.draftCapitalAcquired
-		)}
-	</dd>
-</div>
-
-<div>
-	<dt>
-		Net capital
-	</dt>
-
-	<dd
-		class:capital-positive={
-			Number(
-				tradeProfile.draftCapitalNet ||
-				0
-			) > 0
-		}
-		class:capital-negative={
-			Number(
-				tradeProfile.draftCapitalNet ||
-				0
-			) < 0
-		}
-	>
-		{signedCapitalMoney(
-			tradeProfile.draftCapitalNet
-		)}
-	</dd>
-</div>
 		<div>
 			<dt>
 				Waiver claims
@@ -1295,6 +1332,204 @@ function badgeScoreLabel(
 	</dl>
 </article>
   </section>
+
+  <!-- ==================================================
+     DRAFT CAPITAL LEDGER
+     ================================================== -->
+
+<section
+	class="card capital-ledger-card"
+	aria-labelledby="capital-ledger-title"
+>
+	<div class="card-head capital-ledger-head">
+
+		<div>
+			<div class="eyebrow">
+				Franchise finances
+			</div>
+
+			<h3 id="capital-ledger-title">
+				Draft Capital Ledger
+			</h3>
+		</div>
+
+
+		{#if draftCapitalLedger.length}
+
+			<div class="capital-ledger-count">
+				<strong>
+					{draftCapitalLedger.length}
+				</strong>
+
+				<span>
+					ledger entries
+				</span>
+			</div>
+
+		{/if}
+
+	</div>
+
+
+	{#if draftCapitalLedger.length}
+
+		<div class="capital-ledger-list">
+
+			{#each draftCapitalLedger as row}
+
+				<article class="capital-ledger-row">
+
+					<div class="capital-year">
+
+						<span>
+							Draft
+						</span>
+
+						<strong>
+							{row.futuresYear}
+						</strong>
+
+					</div>
+
+
+					<div class="capital-ledger-copy">
+
+						<strong>
+							{capitalActivityTitle(row)}
+						</strong>
+
+
+						<div class="capital-ledger-meta">
+
+							<span>
+								{capitalEntryLabel(
+									row.entryType
+								)}
+							</span>
+
+							<i></i>
+
+							<span>
+								{capitalDate(
+									row.transactionDate
+								)}
+							</span>
+
+						</div>
+
+
+						{#if row.note &&
+							row.note !==
+								capitalActivityTitle(row)}
+
+							<small>
+								{row.note}
+							</small>
+
+						{/if}
+
+					</div>
+
+
+					<div
+						class="capital-ledger-amount"
+						class:capital-positive={
+							Number(
+								row.amount ||
+								0
+							) > 0
+						}
+						class:capital-negative={
+							Number(
+								row.amount ||
+								0
+							) < 0
+						}
+					>
+						{signedCapitalMoney(
+							row.amount
+						)}
+					</div>
+
+				</article>
+
+			{/each}
+
+		</div>
+
+
+		<div class="capital-ledger-summary">
+
+			<div>
+
+				<span>
+					Career acquired
+				</span>
+
+				<strong class="capital-positive">
+					{capitalMoney(
+						tradeProfile.draftCapitalAcquired
+					)}
+				</strong>
+
+			</div>
+
+
+			<div>
+
+				<span>
+					Career sent
+				</span>
+
+				<strong class="capital-negative">
+					{capitalMoney(
+						tradeProfile.draftCapitalSent
+					)}
+				</strong>
+
+			</div>
+
+
+			<div>
+
+				<span>
+					Net capital
+				</span>
+
+				<strong
+					class:capital-positive={
+						Number(
+							tradeProfile.draftCapitalNet ||
+							0
+						) > 0
+					}
+					class:capital-negative={
+						Number(
+							tradeProfile.draftCapitalNet ||
+							0
+						) < 0
+					}
+				>
+					{signedCapitalMoney(
+						tradeProfile.draftCapitalNet
+					)}
+				</strong>
+
+			</div>
+
+		</div>
+
+
+	{:else}
+
+		<div class="empty">
+			No draft-capital activity
+			has been recorded for this franchise.
+		</div>
+
+	{/if}
+
+</section>
 
   <section class="grid two-up">
     <article class="card">
@@ -4582,5 +4817,505 @@ summary::after {
 		grid-template-columns:
 			1fr;
 	}
+}
+
+/* ==================================================
+   DRAFT CAPITAL LEDGER
+   ================================================== */
+
+.capital-ledger-card {
+	overflow: hidden;
+}
+
+
+.capital-ledger-head {
+	align-items: center;
+}
+
+
+.capital-ledger-count {
+	display: grid;
+	justify-items: end;
+
+	gap: 2px;
+}
+
+
+.capital-ledger-count strong {
+	color:
+		var(--brand-gold);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.55rem;
+
+	font-weight:
+		400;
+
+	line-height:
+		1;
+}
+
+
+.capital-ledger-count span {
+	color:
+		var(--muted);
+
+	font-size:
+		.57rem;
+
+	font-weight:
+		750;
+
+	letter-spacing:
+		.07em;
+
+	text-transform:
+		uppercase;
+}
+
+
+.capital-ledger-list {
+	display: grid;
+
+	max-height: 445px;
+
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	overscroll-behavior: contain;
+	scrollbar-gutter: stable;
+
+	border-top:
+		1px solid
+		var(--border);
+}
+
+.capital-ledger-list::-webkit-scrollbar {
+	width: 8px;
+}
+
+.capital-ledger-list::-webkit-scrollbar-track {
+	background:
+		rgba(
+			255,
+			255,
+			255,
+			.015
+		);
+}
+
+.capital-ledger-list::-webkit-scrollbar-thumb {
+	background:
+		rgba(
+			191,
+			161,
+			106,
+			.3
+		);
+
+	border-radius:
+		10px;
+}
+
+.capital-ledger-list::-webkit-scrollbar-thumb:hover {
+	background:
+		rgba(
+			191,
+			161,
+			106,
+			.5
+		);
+}
+
+.capital-ledger-row {
+	display: grid;
+
+	grid-template-columns:
+		74px
+		minmax(0, 1fr)
+		auto;
+
+	align-items: center;
+
+	gap: 16px;
+
+	min-height: 82px;
+
+	padding:
+		13px 18px;
+
+	border-bottom:
+		1px solid
+		rgba(
+			191,
+			161,
+			106,
+			.1
+		);
+}
+
+
+.capital-year {
+	display: grid;
+
+	gap: 2px;
+}
+
+
+.capital-year span {
+	color:
+		var(--muted);
+
+	font-size:
+		.52rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.1em;
+
+	text-transform:
+		uppercase;
+}
+
+
+.capital-year strong {
+	color:
+		var(--brand-sand);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.35rem;
+
+	font-weight:
+		400;
+}
+
+
+.capital-ledger-copy {
+	min-width: 0;
+
+	display: grid;
+
+	gap: 5px;
+}
+
+
+.capital-ledger-copy > strong {
+	overflow: hidden;
+
+	color:
+		var(--brand-ivory);
+
+	font-size:
+		.82rem;
+
+	font-weight:
+		800;
+
+	text-overflow:
+		ellipsis;
+
+	white-space:
+		nowrap;
+}
+
+
+.capital-ledger-meta {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+
+	gap: 7px;
+
+	color:
+		var(--brand-stone);
+
+	font-size:
+		.59rem;
+
+	font-weight:
+		700;
+
+	letter-spacing:
+		.04em;
+}
+
+
+.capital-ledger-meta i {
+	width: 3px;
+	height: 3px;
+
+	border-radius: 50%;
+
+	background:
+		var(--brand-gold);
+}
+
+
+.capital-ledger-copy small {
+	overflow: hidden;
+
+	max-width: 80ch;
+
+	color:
+		var(--muted);
+
+	font-size:
+		.64rem;
+
+	line-height:
+		1.35;
+
+	text-overflow:
+		ellipsis;
+
+	white-space:
+		nowrap;
+}
+
+
+.capital-ledger-amount {
+	min-width: 90px;
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.7rem;
+
+	font-weight:
+		400;
+
+	text-align: right;
+
+	font-variant-numeric:
+		tabular-nums;
+}
+
+
+.capital-positive {
+	color:
+		#8fc69a !important;
+}
+
+
+.capital-negative {
+	color:
+		#d98b83 !important;
+}
+
+
+.capital-ledger-summary {
+	display: grid;
+
+	grid-template-columns:
+		repeat(
+			3,
+			minmax(0, 1fr)
+		);
+
+	background:
+		rgba(
+			255,
+			255,
+			255,
+			.012
+		);
+}
+
+
+.capital-ledger-summary > div {
+	display: grid;
+
+	gap: 4px;
+
+	padding:
+		15px 18px;
+
+	border-right:
+		1px solid
+		rgba(
+			191,
+			161,
+			106,
+			.1
+		);
+}
+
+
+.capital-ledger-summary > div:last-child {
+	border-right: 0;
+}
+
+
+.capital-ledger-summary span {
+	color:
+		var(--muted);
+
+	font-size:
+		.53rem;
+
+	font-weight:
+		800;
+
+	letter-spacing:
+		.09em;
+
+	text-transform:
+		uppercase;
+}
+
+
+.capital-ledger-summary strong {
+	color:
+		var(--brand-ivory);
+
+	font-family:
+		var(--font-display);
+
+	font-size:
+		1.35rem;
+
+	font-weight:
+		400;
+}
+
+
+@media (max-width: 700px) {
+
+.capital-ledger-row {
+	grid-template-columns:
+		54px
+		minmax(0, 1fr)
+		auto;
+
+	align-items: center;
+
+	gap: 10px;
+
+	padding:
+		12px 10px;
+}
+
+.capital-year strong {
+	font-size:
+		1.35rem;
+}
+.capital-ledger-copy {
+	min-width: 0;
+}
+
+
+.capital-ledger-copy > strong {
+	font-size:
+		.85rem;
+}
+.capital-ledger-copy small {
+	max-width: 100%;
+
+	overflow: hidden;
+
+	text-overflow: ellipsis;
+
+	white-space: nowrap;
+}
+
+.capital-ledger-amount {
+	grid-column:
+		auto;
+
+	min-width: 50px;
+
+	font-size:
+		1.35rem;
+
+	text-align:
+		right;
+
+	align-self:
+		center;
+}
+
+/* KEEP CAREER TOTALS IN ONE ROW */
+
+.capital-ledger-summary {
+	grid-template-columns:
+		repeat(
+			3,
+			minmax(0, 1fr)
+		);
+}
+
+
+.capital-ledger-summary > div {
+	min-width: 0;
+
+	gap: 3px;
+
+	padding:
+		11px 8px;
+
+	border-right:
+		1px solid
+		rgba(
+			191,
+			161,
+			106,
+			.1
+		);
+
+	border-bottom: 0;
+}
+
+
+.capital-ledger-summary > div:last-child {
+	border-right: 0;
+}
+
+
+.capital-ledger-summary span {
+	font-size:
+		.64rem;
+
+	letter-spacing:
+		.055em;
+
+	white-space:
+		nowrap;
+}
+
+
+.capital-ledger-summary strong {
+	font-size:
+		1.05rem;
+}
+
+
+
+	.capital-ledger-summary > div {
+		border-right: 0;
+
+		border-bottom:
+			1px solid
+			rgba(
+				191,
+				161,
+				106,
+				.1
+			);
+	}
+
+
+	.capital-ledger-summary > div:last-child {
+		border-bottom: 0;
+	}
+
 }
 </style>

@@ -133,6 +133,7 @@ function emptyHistory() {
 
 		recentMoves:
 			[],
+		draftCapitalLedger: [],
 
 		moveProfile: {
 			totalMoves:
@@ -964,25 +965,46 @@ const draftCapitalTransfers =
 			null
 	};
 
-	return {
-		hasData:
-			moves.length >
+	const draftCapitalLedger =
+	(capitalLedger || [])
+		.map((row) => {
+			const counterparty =
+				row.counterpartyManagerId
+					? profileByOwner.get(
+							String(
+								row.counterpartyManagerId
+							)
+						)
+					: null;
+
+			return {
+				...row,
+
+				counterpartyName:
+					counterparty?.teamName ||
+					counterparty?.name ||
+					null
+			};
+		});
+
+
+return {
+	hasData:
+		moves.length >
+		0,
+
+	seasons,
+
+	moveProfile,
+
+	tradeProfile,
+
+	recentMoves:
+		moves.slice(
 			0,
+			25
+		),
 
-		seasons,
-
-		moveProfile,
-
-		tradeProfile,
-
-		/*
-		 * Keep this available for a future
-		 * all-time transaction tape.
-		 */
-		recentMoves:
-			moves.slice(
-				0,
-				25
-			)
-	};
+	draftCapitalLedger
+};
 }
