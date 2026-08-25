@@ -321,93 +321,120 @@ const managerRosters =
 			...pairMap.values()
 		];
 
-	const pairWhere =
-		pairs
-			.map(
-				() =>
-					'(league_id = ? AND season = ?)'
-			)
-			.join(
-				' OR '
-			);
-
-	const pairBindings =
-		pairs.flatMap(
-			(pair) => [
-				pair.leagueId,
-				pair.season
-			]
+	
+const pairWhere =
+	pairs
+		.map(
+			() =>
+				'(league_id = ? AND season = ?)'
+		)
+		.join(
+			' OR '
 		);
 
-	/*
-	 * ============================================================
-	 * LOAD ALL TRANSACTIONS + ROSTER IDENTITIES
-	 * ============================================================
-	 */
+const pairBindings =
+	pairs.flatMap(
+		(pair) => [
+			pair.leagueId,
+			pair.season
+		]
+	);
 
-const [
-	transactionResult,
-	rosterResult
-] = await Promise.all([
-	db
-		.prepare(`
-			SELECT
-				league_id,
-				season,
-				round,
-				transaction_id,
-				type,
-				status,
-				roster_ids_json,
-				adds_json,
-				drops_json,
-				draft_picks_json,
-				waiver_budget_json,
-				created_at
 
-			FROM sleeper_transactions_seasonal
+/*
+ * ============================================================
+ * LOAD ALL TRANSACTIONS + ROSTER IDENTITIES
+ *
+ * Sleeper history is optional here.
+ *
+ * A manager may have draft-capital ledger rows even when
+ * sleeper_rosters_seasonal has no historical roster rows.
+ *
+ * In that case, preserve an empty Sleeper transaction history
+ * while allowing the independent D1 capital ledger to continue.
+ * ============================================================
+ */
 
-			WHERE
-				${pairWhere}
+let transactionResult = {
+	results: []
+};
 
-			ORDER BY
-				created_at DESC
-		`)
-		.bind(
-			...pairBindings
-		)
-		.all(),
+let rosterResult = {
+	results: []
+};
 
-	db
-		.prepare(`
-			SELECT
-				league_id,
-				season,
-				roster_id,
-				owner_id,
-				metadata_json
 
-			FROM sleeper_rosters_seasonal
+if (pairs.length) {
+	const [
+		loadedTransactions,
+		loadedRosters
+	] =
+		await Promise.all([
+			db
+				.prepare(`
+					SELECT
+						league_id,
+						season,
+						round,
+						transaction_id,
+						type,
+						status,
+						roster_ids_json,
+						adds_json,
+						drops_json,
+						draft_picks_json,
+						waiver_budget_json,
+						created_at
 
-			WHERE
-				${pairWhere}
-		`)
-		.bind(
-			...pairBindings
-		)
-		.all(),
+					FROM sleeper_transactions_seasonal
 
-	
-]);
+					WHERE
+						${pairWhere}
 
-	const transactions =
-		transactionResult.results ||
-		[];
+					ORDER BY
+						created_at DESC
+				`)
+				.bind(
+					...pairBindings
+				)
+				.all(),
 
-	const historicalRosters =
-		rosterResult.results ||
-		[];
+			db
+				.prepare(`
+					SELECT
+						league_id,
+						season,
+						roster_id,
+						owner_id,
+						metadata_json
 
+					FROM sleeper_rosters_seasonal
+
+					WHERE
+						${pairWhere}
+				`)
+				.bind(
+					...pairBindings
+				)
+				.all()
+		]);
+
+
+	transactionResult =
+		loadedTransactions;
+
+	rosterResult =
+		loadedRosters;
+}
+
+
+const transactions =
+	transactionResult.results ||
+	[];
+
+const historicalRosters =
+	rosterResult.results ||
+	[];
    
 
 	/*
