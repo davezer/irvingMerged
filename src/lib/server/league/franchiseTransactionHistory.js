@@ -228,8 +228,12 @@ export async function getFranchiseTransactionHistory({
 	 * ============================================================
 	 */
 
-	const managerRostersResult =
-		await db
+	const [
+	managerRostersResult,
+	capitalLedger
+] =
+	await Promise.all([
+		db
 			.prepare(`
 				SELECT
 					league_id,
@@ -248,15 +252,25 @@ export async function getFranchiseTransactionHistory({
 					profile.managerID
 				)
 			)
-			.all();
+			.all(),
 
-	const managerRosters =
-		managerRostersResult.results ||
-		[];
+		getDraftCapitalLedger(
+			db,
+			{
+				managerId:
+					String(
+						profile.managerID
+					),
 
-	if (!managerRosters.length) {
-		return emptyHistory();
-	}
+				limit:
+					1000
+			}
+		)
+	]);
+
+const managerRosters =
+	managerRostersResult.results ||
+	[];
 
 	const seasonRosterMap =
 		new Map();
@@ -333,8 +347,7 @@ export async function getFranchiseTransactionHistory({
 
 const [
 	transactionResult,
-	rosterResult,
-	capitalLedger
+	rosterResult
 ] = await Promise.all([
 	db
 		.prepare(`
@@ -384,18 +397,7 @@ const [
 		)
 		.all(),
 
-	getDraftCapitalLedger(
-		db,
-		{
-			managerId:
-				String(
-					profile.managerID
-				),
-
-			limit:
-				1000
-		}
-	)
+	
 ]);
 
 	const transactions =
