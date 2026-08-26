@@ -209,12 +209,12 @@
 			{#each data.balances as team}
 				<article class="balance-card">
 					<div class="team-row">
-						{#if team.photo}
-							<img
-  src={team.teamChiclet || team.teamPhoto}
-  alt={team.teamName}
-/>
-						{/if}
+						{#if team.teamChiclet || team.teamPhoto || team.photo}
+	<img
+		src={team.teamChiclet || team.teamPhoto || team.photo}
+		alt={team.teamName}
+	/>
+{/if}
 
 						<div>
 							<strong>

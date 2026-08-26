@@ -187,6 +187,8 @@
 		================================================== -->
 
 		<section class="draft-board-card">
+		<div class="auction-board-shell">
+		<div class="auction-board-inner">
 			<header class="board-head">
 				<div>
 					<div class="eyebrow">Sleeper auction archive</div>
@@ -212,6 +214,7 @@
 			</header>
 
 			{#if hasPickRows}
+	
 				<div class="board-scroll">
 					<div class="draft-board" style={`--team-count:${teamBoards.length || 1}`}>
 						{#each teamBoards as team (team.teamName)}
@@ -222,17 +225,14 @@
 									: `/league/teams?season=${season}`}
 							>
 								<div class="team-logo">
-	{#if team.teamChiclet || team.teamPhoto}
-		<img
-			src={team.teamChiclet || team.teamPhoto}
-			alt={team.teamName}
-		/>
-	{:else}
-		<span>
-			{team.teamName.slice(0, 2)}
-		</span>
-	{/if}
-</div>
+									{#if team.teamChiclet || team.teamPhoto}
+										<img src={team.teamChiclet || team.teamPhoto} alt={team.teamName} />
+									{:else}
+										<span>
+											{team.teamName.slice(0, 2)}
+										</span>
+									{/if}
+								</div>
 
 								<strong>
 									{team.teamName}
@@ -280,6 +280,7 @@
 						{/each}
 					</div>
 				</div>
+		
 			{:else}
 				<div class="no-board">
 					<strong>
@@ -290,6 +291,8 @@
 					<p>Flip to a completed season above to see the full auction board.</p>
 				</div>
 			{/if}
+		</div>
+		</div>
 		</section>
 
 		<!-- =================================================
@@ -824,11 +827,11 @@
 		font-family: var(--font-score);
 	}
 
-.team-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+	.team-logo img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
 	.draft-team-head strong {
 		display: -webkit-box;
 
@@ -1279,6 +1282,48 @@
 		}
 	}
 
+	@media (max-width: 768px) {
+	.auction-board-inner {
+		min-width: 1100px;
+	}
+
+	.auction-board th,
+	.auction-board td {
+		min-width: 58px;
+		padding: 0.4rem 0.3rem;
+	}
+
+	.auction-board .team-logo {
+		width: 20px;
+		height: 20px;
+		display: block;
+		margin: 0 auto 0.2rem;
+	}
+
+	.auction-board .team-name {
+		font-size: 0.52rem;
+		line-height: 1.1;
+		text-align: center;
+	}
+
+	.auction-board .manager-name {
+		display: none;
+	}
+
+	.auction-board .price {
+		font-size: 0.78rem;
+		line-height: 1;
+		font-weight: 800;
+		text-align: center;
+	}
+
+	.auction-board .player-name {
+		font-size: 0.52rem;
+		line-height: 1.1;
+		text-align: center;
+	}
+}
+
 	@media (max-width: 760px) {
 		.page-stack {
 			gap: 14px;
@@ -1331,4 +1376,28 @@
 				auto;
 		}
 	}
+
+	.auction-board-shell {
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+	padding-bottom: 0.35rem;
+	scrollbar-width: thin;
+}
+
+.auction-board-inner {
+	min-width: 980px;
+}
+
+.auction-board {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.auction-board th,
+.auction-board td {
+	border: 1px solid rgba(214, 177, 94, 0.18);
+	padding: 0.35rem 0.25rem;
+	vertical-align: top;
+}
 </style>

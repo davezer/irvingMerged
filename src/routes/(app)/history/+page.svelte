@@ -2747,10 +2747,7 @@
       left;
   }
 
-  .rivalry-receipts {
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
-  }
+
 
   .last-meeting {
     align-items:
@@ -3040,5 +3037,186 @@
 }
 .rivalry-file {
   min-height: 365px;
+}
+
+/* =====================================================
+   RIVALRY VAULT — MOBILE FINAL OVERRIDES
+   ===================================================== */
+
+@media (max-width: 780px) {
+
+	.rivalry-file {
+		min-height: 0;
+
+		padding:
+			20px 16px;
+	}
+
+
+	.file-heading {
+		margin-bottom: 18px;
+	}
+
+
+	.rivalry-scoreboard {
+		grid-template-columns:
+			1fr;
+
+		gap: 16px;
+
+		padding-bottom: 18px;
+	}
+
+
+	.rival-team {
+		width: 100%;
+
+		gap: 12px;
+	}
+
+
+	.rival-team img {
+		width: 54px;
+		height: 54px;
+	}
+
+
+	.rival-team strong {
+		font-size: 13px;
+		line-height: 1.2;
+
+		word-break: normal;
+		overflow-wrap: normal;
+	}
+
+
+	.rival-team span {
+		font-size: 10px;
+	}
+
+
+	/*
+	 * Left franchise stays left.
+	 */
+	.rival-team:not(.right) {
+		justify-content:
+			flex-start;
+
+		text-align:
+			left;
+	}
+
+
+	/*
+	 * Right franchise mirrors it.
+	 *
+	 * DOM is:
+	 * text -> image
+	 *
+	 * so keeping normal row direction gives us:
+	 *
+	 * TEAM NAME   [LOGO]
+	 */
+	.rival-team.right {
+		flex-direction:
+			row;
+
+		justify-content:
+			flex-end;
+
+		text-align:
+			right;
+	}
+
+
+	.series-center {
+		justify-items:
+			center;
+
+		padding:
+			4px 0;
+
+		text-align:
+			center;
+	}
+
+
+	.series-record strong {
+		font-size:
+			36px;
+	}
+
+
+	.series-center small {
+		max-width:
+			220px;
+
+		text-align:
+			center;
+	}
+
+
+	.rivalry-receipts {
+		grid-template-columns:
+			repeat(
+				2,
+				minmax(0, 1fr)
+			);
+	}
+
+
+	.receipt-stat {
+		padding:
+			12px 8px;
+
+		border-right:
+			1px solid
+			rgba(
+				255,
+				255,
+				255,
+				.07
+			);
+
+		border-bottom:
+			1px solid
+			rgba(
+				255,
+				255,
+				255,
+				.07
+			);
+	}
+
+
+	.receipt-stat:nth-child(even) {
+		border-right:
+			0;
+	}
+
+
+	.last-meeting {
+		gap: 10px;
+	}
+
+
+	.last-score {
+		width: 100%;
+
+		justify-content:
+			space-between;
+
+		gap: 6px;
+	}
+
+
+	.last-score span {
+		max-width:
+			95px;
+
+		line-height:
+			1.25;
+	}
+
 }
 </style>

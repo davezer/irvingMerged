@@ -151,8 +151,17 @@ function managerRows() {
           manager.slug,
 
         photo:
-          manager.photo ||
-          null
+	manager.photo ||
+	null,
+
+teamPhoto:
+	manager.photo ||
+	null,
+
+teamChiclet:
+	manager.chiclet ||
+	manager.photo ||
+	null
       })
     )
     .sort(

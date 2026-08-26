@@ -2992,14 +2992,40 @@ summary::after {
   }
 
   @media (max-width: 860px) {
-    .main-bug,
-    .grid.two-up,
-    .mini-facts div,
-    .facts div,
-    .history-head,
-    .history-row {
-      grid-template-columns: 1fr;
+	.main-bug,
+	.grid.two-up,
+	.mini-facts div,
+	.facts div {
+		grid-template-columns:
+			1fr;
+	}
+
+
+    .history-head.s-Wy1C-PK6T3e1, .history-row.s-Wy1C-PK6T3e1 {
+        grid-template-columns: 49px 44px minmax(68px, 1fr) 62px;
+        gap: 7px;
+        padding: 8px 11px;
     }
+
+
+	.history-head {
+		font-size:
+			.58rem;
+	}
+
+
+	.history-head span:last-child,
+	.history-row span:last-child {
+		text-align:
+			right;
+	}
+
+
+	.history-row span {
+		min-width:
+			0;
+	}
+
 
     .logo-bay {
       justify-items: start;
