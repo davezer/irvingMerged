@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:34.328Z",
+  "generatedAt": "2026-09-08T14:35:25.187Z",
   "playerId": "8125",
   "profile": {
     "id": "8125",
@@ -14,10 +14,10 @@
     "weight": 162,
     "yearsExp": 4,
     "college": "Memphis",
-    "status": "Active",
-    "injuryStatus": null,
+    "status": "Inactive",
+    "injuryStatus": "IR",
     "practiceParticipation": null,
-    "depthChartOrder": 4,
+    "depthChartOrder": 7,
     "fantasyPositions": [
       "WR"
     ],

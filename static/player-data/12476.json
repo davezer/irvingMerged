@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:35.804Z",
+  "generatedAt": "2026-09-08T14:35:29.702Z",
   "playerId": "12476",
   "profile": {
     "id": "12476",
@@ -14,14 +14,14 @@
     "weight": 213,
     "yearsExp": 1,
     "college": "Kansas",
-    "status": "Active",
+    "status": "Inactive",
     "injuryStatus": "Questionable",
     "practiceParticipation": null,
-    "depthChartOrder": 3,
+    "depthChartOrder": null,
     "fantasyPositions": [
       "RB"
     ],
-    "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yqv7u0yb5toyhx1pnvku"
+    "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/e0pzghslevb27ssozx4s"
   },
   "availableSeasons": [
     2026,

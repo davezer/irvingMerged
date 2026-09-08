@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:26.488Z",
+  "generatedAt": "2026-09-08T14:35:03.161Z",
   "playerId": "11655",
   "profile": {
     "id": "11655",
@@ -15,9 +15,9 @@
     "yearsExp": 2,
     "college": "Purdue",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
-    "depthChartOrder": 2,
+    "depthChartOrder": 3,
     "fantasyPositions": [
       "RB"
     ],

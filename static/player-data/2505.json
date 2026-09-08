@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:33.150Z",
+  "generatedAt": "2026-09-08T14:35:21.922Z",
   "playerId": "2505",
   "profile": {
     "id": "2505",
@@ -8,10 +8,10 @@
     "lastName": "Waller",
     "position": "TE",
     "team": "CAR",
-    "number": 83,
+    "number": 88,
     "age": 33,
     "height": "78",
-    "weight": 238,
+    "weight": 245,
     "yearsExp": 11,
     "college": "Georgia Tech",
     "status": "Active",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:36.973Z",
+  "generatedAt": "2026-09-08T14:35:33.068Z",
   "playerId": "1373",
   "profile": {
     "id": "1373",
@@ -15,7 +15,7 @@
     "yearsExp": 13,
     "college": "West Virginia",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

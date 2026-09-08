@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:30.324Z",
+  "generatedAt": "2026-09-08T14:35:13.835Z",
   "playerId": "11620",
   "profile": {
     "id": "11620",
@@ -15,7 +15,7 @@
     "yearsExp": 2,
     "college": "Washington",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

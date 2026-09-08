@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:38.016Z",
+  "generatedAt": "2026-09-08T14:35:36.010Z",
   "playerId": "2216",
   "profile": {
     "id": "2216",
@@ -9,13 +9,13 @@
     "position": "WR",
     "team": "SF",
     "number": 5,
-    "age": 32,
+    "age": 33,
     "height": "77",
     "weight": 231,
     "yearsExp": 12,
     "college": "Texas A&M",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

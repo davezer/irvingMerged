@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:39.173Z",
+  "generatedAt": "2026-09-08T14:35:39.899Z",
   "playerId": "9504",
   "profile": {
     "id": "9504",
@@ -7,17 +7,17 @@
     "firstName": "Kayshon",
     "lastName": "Boutte",
     "position": "WR",
-    "team": "NE",
-    "number": 9,
+    "team": "HOU",
+    "number": 14,
     "age": 24,
-    "height": "71",
-    "weight": 203,
+    "height": "72",
+    "weight": 197,
     "yearsExp": 3,
     "college": "LSU",
     "status": "Active",
     "injuryStatus": null,
     "practiceParticipation": null,
-    "depthChartOrder": 3,
+    "depthChartOrder": 2,
     "fantasyPositions": [
       "WR"
     ],

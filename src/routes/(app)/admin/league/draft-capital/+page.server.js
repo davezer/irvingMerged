@@ -22,6 +22,10 @@ import {
 } from '$lib/server/league/draftCapitalRepository.js';
 
 import {
+  getDraftCapitalRunningBalances
+} from '$lib/server/league/draftCapitalRunningBalances.js';
+
+import {
   resolvePlayersByIds
 } from '$lib/server/league/players.js';
 import {
@@ -1453,7 +1457,7 @@ const [
   legacyImport
 ] =
   await Promise.all([
-    getDraftCapitalBalances(
+    getDraftCapitalRunningBalances(
       db,
       {
         year:

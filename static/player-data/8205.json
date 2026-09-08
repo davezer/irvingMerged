@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:29.723Z",
+  "generatedAt": "2026-09-08T14:35:12.296Z",
   "playerId": "8205",
   "profile": {
     "id": "8205",
@@ -14,10 +14,10 @@
     "weight": 210,
     "yearsExp": 4,
     "college": "Rutgers",
-    "status": "Active",
-    "injuryStatus": "Questionable",
+    "status": "Inactive",
+    "injuryStatus": "IR",
     "practiceParticipation": null,
-    "depthChartOrder": 2,
+    "depthChartOrder": 4,
     "fantasyPositions": [
       "RB"
     ],

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:35.036Z",
+  "generatedAt": "2026-09-08T14:35:27.460Z",
   "playerId": "5850",
   "profile": {
     "id": "5850",
@@ -15,9 +15,9 @@
     "yearsExp": 7,
     "college": "Alabama",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": "NA",
     "practiceParticipation": null,
-    "depthChartOrder": 1,
+    "depthChartOrder": 4,
     "fantasyPositions": [
       "RB"
     ],

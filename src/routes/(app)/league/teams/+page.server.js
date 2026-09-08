@@ -3,8 +3,8 @@ import {
 } from '$lib/server/league/franchisePages.js';
 
 import {
-  getDraftCapitalBalances
-} from '$lib/server/league/draftCapitalRepository.js';
+  getDraftCapitalRunningBalances
+} from '$lib/server/league/draftCapitalRunningBalances.js';
 
 
 export async function load({
@@ -35,6 +35,18 @@ export async function load({
 
 
   /*
+   * A displayed league season is managing the following
+   * auction year's draft capital.
+   *
+   * 2025 season -> 2026 capital
+   * 2026 season -> 2027 capital
+   * ============================================================
+   */
+  const capitalYear =
+    season + 1;
+
+
+  /*
    * ============================================================
    * DRAFT CAPITAL
    *
@@ -52,11 +64,11 @@ export async function load({
   if (env?.DB) {
     try {
       balances =
-        await getDraftCapitalBalances(
+        await getDraftCapitalRunningBalances(
           env.DB,
           {
             year:
-              season
+              capitalYear
           }
         );
     } catch (error) {
@@ -154,7 +166,7 @@ export async function load({
               null,
 
             year:
-              season,
+              capitalYear,
 
             managerId:
               managerId != null
@@ -165,7 +177,7 @@ export async function load({
 
             source:
               capital
-                ? 'D1 draft capital ledger'
+                ? 'D1 rolled-forward draft capital ledger'
                 : 'D1 draft capital unavailable'
           }
         };

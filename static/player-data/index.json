@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T16:25:39.403Z",
+  "generatedAt": "2026-09-08T14:35:40.558Z",
   "leagueId": "1253040502786228224",
   "seasons": [
     2026,
@@ -686,7 +686,7 @@
       "playerId": "12457",
       "name": "Jaydon Blue",
       "position": "RB",
-      "team": "DAL"
+      "team": "PHI"
     },
     {
       "playerId": "7526",
@@ -806,7 +806,7 @@
       "playerId": "9504",
       "name": "Kayshon Boutte",
       "position": "WR",
-      "team": "NE"
+      "team": "HOU"
     },
     {
       "playerId": "9511",
@@ -818,7 +818,7 @@
       "playerId": "1479",
       "name": "Keenan Allen",
       "position": "WR",
-      "team": "LAC"
+      "team": "IND"
     },
     {
       "playerId": "9757",
@@ -1231,7 +1231,7 @@
     {
       "playerId": "12530",
       "name": "Travis Hunter",
-      "position": "WR",
+      "position": "DB",
       "team": "JAX"
     },
     {
