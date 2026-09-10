@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:21.819Z",
+  "generatedAt": "2026-09-10T18:13:32.333Z",
   "playerId": "12527",
   "profile": {
     "id": "12527",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Boise State",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

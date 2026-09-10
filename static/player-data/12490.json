@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:38.114Z",
+  "generatedAt": "2026-09-10T18:13:38.513Z",
   "playerId": "12490",
   "profile": {
     "id": "12490",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Virginia Tech",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

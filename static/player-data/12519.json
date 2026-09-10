@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:15.065Z",
+  "generatedAt": "2026-09-10T18:13:29.562Z",
   "playerId": "12519",
   "profile": {
     "id": "12519",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Missouri",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:38.481Z",
+  "generatedAt": "2026-09-10T18:13:38.608Z",
   "playerId": "12518",
   "profile": {
     "id": "12518",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Penn State",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

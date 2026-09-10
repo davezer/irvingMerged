@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:02.451Z",
+  "generatedAt": "2026-09-10T18:13:24.764Z",
   "playerId": "11604",
   "profile": {
     "id": "11604",
@@ -15,9 +15,9 @@
     "yearsExp": 2,
     "college": "Georgia",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Doubtful",
     "practiceParticipation": null,
-    "depthChartOrder": 1,
+    "depthChartOrder": 2,
     "fantasyPositions": [
       "TE"
     ],

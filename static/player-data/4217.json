@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:22.429Z",
+  "generatedAt": "2026-09-10T18:13:32.531Z",
   "playerId": "4217",
   "profile": {
     "id": "4217",
@@ -15,7 +15,7 @@
     "yearsExp": 9,
     "college": "Iowa",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:25.516Z",
+  "generatedAt": "2026-09-10T18:13:33.711Z",
   "playerId": "8136",
   "profile": {
     "id": "8136",
@@ -15,7 +15,7 @@
     "yearsExp": 4,
     "college": "Arizona State",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [

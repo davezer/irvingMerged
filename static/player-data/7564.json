@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:33.663Z",
+  "generatedAt": "2026-09-10T18:13:36.888Z",
   "playerId": "7564",
   "profile": {
     "id": "7564",
@@ -15,7 +15,7 @@
     "yearsExp": 5,
     "college": "LSU",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

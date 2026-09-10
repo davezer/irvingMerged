@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:32.278Z",
+  "generatedAt": "2026-09-10T18:13:36.286Z",
   "playerId": "8259",
   "profile": {
     "id": "8259",
@@ -15,7 +15,7 @@
     "yearsExp": 4,
     "college": "Texas",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

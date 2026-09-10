@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:35:12.413Z",
+  "generatedAt": "2026-09-10T18:13:28.565Z",
   "playerId": "9484",
   "profile": {
     "id": "9484",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "South Dakota State",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
