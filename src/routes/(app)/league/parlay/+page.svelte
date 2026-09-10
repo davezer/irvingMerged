@@ -42,7 +42,7 @@
 
 			if (normalizedQuery) {
 				const haystack =
-					`${row.team} ${row.date} ${row.bet} ${row.result} ${row.category}`
+					`${row.team} ${formatDate(row.date)} ${row.bet} ${row.result} ${row.category}`
 						.toLowerCase();
 
 				if (
@@ -131,6 +131,43 @@
 	function filterChanged() {
 		page = 1;
 	}
+
+	function formatDate(value) {
+	if (!value) {
+		return '—';
+	}
+
+	const raw =
+		String(value)
+			.trim();
+
+	const dateOnly =
+		raw.match(/^\d{4}-\d{2}-\d{2}/)?.[0];
+
+	if (!dateOnly) {
+		return raw;
+	}
+
+	const [year, month, day] =
+		dateOnly
+			.split('-')
+			.map(Number);
+
+	return new Intl.DateTimeFormat(
+		'en-US',
+		{
+			month: 'numeric',
+			day: 'numeric',
+			year: 'numeric'
+		}
+	).format(
+		new Date(
+			year,
+			month - 1,
+			day
+		)
+	);
+}
 </script>
 
 
@@ -623,7 +660,7 @@
 									</td>
 
 									<td class="date-cell">
-										{row.date || '—'}
+										{formatDate(row.date) || '—'}
 									</td>
 
 									<td class="bet-cell">
