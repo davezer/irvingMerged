@@ -59,19 +59,33 @@ export async function getActiveManagerPick(db, { season, week, managerId }) {
   return await db
     .prepare(`
       SELECT * FROM parlay_picks
-      WHERE season = ? AND week = ? AND manager_id = ? AND status = 'active'
-        AND id <> COALESCE(?, -1)
+      WHERE season = ?
+        AND week = ?
+        AND manager_id = ?
+        AND status = 'active'
       LIMIT 1
     `)
-    .bind(Number(season), Number(week), String(managerId))
+    .bind(
+      Number(season),
+      Number(week),
+      String(managerId)
+    )
     .first();
 }
-
 export async function findDuplicatePick(db, pick) {
   return await db
     .prepare(`
-      SELECT id, manager_id, manager_name, team_name, subject, market, bet_type, direction,
-             current_line, current_odds
+      SELECT
+        id,
+        manager_id,
+        manager_name,
+        team_name,
+        subject,
+        market,
+        bet_type,
+        direction,
+        current_line,
+        current_odds
       FROM parlay_picks
       WHERE season = ?
         AND week = ?
@@ -80,6 +94,7 @@ export async function findDuplicatePick(db, pick) {
         AND market_normalized = ?
         AND COALESCE(direction, '') = COALESCE(?, '')
         AND status = 'active'
+        AND id <> COALESCE(?, -1)
       LIMIT 1
     `)
     .bind(
@@ -89,7 +104,9 @@ export async function findDuplicatePick(db, pick) {
       pick.betType,
       pick.marketNormalized,
       pick.direction || null,
-      pick.excludePickId == null ? null : Number(pick.excludePickId)
+      pick.excludePickId == null
+        ? null
+        : Number(pick.excludePickId)
     )
     .first();
 }

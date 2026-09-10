@@ -349,6 +349,57 @@
 
 		</div>
 
+					<!-- PARLAY CONTROL -->
+
+			<a
+				class="admin-card operation-card"
+				href="/admin/league/parlay"
+			>
+
+				<div class="card-top">
+
+					<div class="card-mark">
+						P
+					</div>
+
+					<span class="card-number">
+						05
+					</span>
+
+				</div>
+
+
+				<div class="card-copy">
+
+					<div class="card-kicker">
+						Parlay Operations
+					</div>
+
+					<h3>
+						Parlay Control Room
+					</h3>
+
+					<p>
+						Manage weekly submissions, Discord links,
+						ticket status, grading, history, and the
+						Hard Rock build process.
+					</p>
+
+				</div>
+
+
+				<footer>
+					<span>
+						Open Parlay Control Room
+					</span>
+
+					<strong>
+						→
+					</strong>
+				</footer>
+
+			</a>
+
 	</section>
 
 

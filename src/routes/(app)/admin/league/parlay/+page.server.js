@@ -239,6 +239,143 @@ export const actions = {
     return { success: true, message: `${manager.teamName} linked to Discord.` };
   },
 
+  addManualPick: async ({ request, platform, locals }) => {
+    const db = requireDb(platform);
+    const form = await request.formData();
+
+    const weekId = Number(form.get('weekId'));
+    const season = Number(form.get('season'));
+    const week = Number(form.get('week'));
+    const managerId = clean(form.get('managerId'), 80);
+    const sport = clean(form.get('sport'), 20).toLowerCase();
+    const betType = clean(form.get('betType'), 30).toLowerCase();
+    const subject = clean(form.get('subject'), 120);
+    const market = clean(form.get('market'), 120) || null;
+    const direction = clean(form.get('direction'), 10).toLowerCase() || null;
+    const line = parseOptionalNumber(form.get('line'));
+    const odds = parseAmericanOdds(form.get('odds'));
+    const notes = clean(form.get('notes'), 500) || null;
+
+    const manager = managerRows().find((row) => row.id === managerId);
+    if (!manager) return fail(400, { message: 'Choose a valid Irving manager.' });
+
+    if (!Number.isInteger(weekId) || !Number.isInteger(season) || !Number.isInteger(week)) {
+      return fail(400, { message: 'Invalid parlay week.' });
+    }
+
+    if (!['nfl', 'ncaaf'].includes(sport)) {
+      return fail(400, { message: 'Manual picks must be NFL or College Football.' });
+    }
+
+    if (!['player_prop', 'spread', 'moneyline', 'game_total', 'team_total', 'anytime_td', 'other'].includes(betType)) {
+      return fail(400, { message: 'Choose a valid bet type.' });
+    }
+
+    if (direction && !['over', 'under'].includes(direction)) {
+      return fail(400, { message: 'Direction must be Over, Under, or blank.' });
+    }
+
+    if (!subject || odds == null) {
+      return fail(400, { message: 'Player/team and valid American odds are required.' });
+    }
+
+    const selectedWeek = await db
+      .prepare(`SELECT id, season, week, status FROM parlay_weeks WHERE id = ?`)
+      .bind(weekId)
+      .first();
+
+    if (!selectedWeek || Number(selectedWeek.season) !== season || Number(selectedWeek.week) !== week) {
+      return fail(409, { message: 'That parlay week changed. Refresh the page and try again.' });
+    }
+
+    if (String(selectedWeek.status) === 'graded') {
+      return fail(409, { message: 'A graded week cannot accept new picks.' });
+    }
+
+    const existing = await db
+      .prepare(`
+        SELECT id, subject
+        FROM parlay_picks
+        WHERE season = ? AND week = ? AND manager_id = ? AND status = 'active'
+        LIMIT 1
+      `)
+      .bind(season, week, managerId)
+      .first();
+
+    if (existing) {
+      return fail(409, { message: `${manager.teamName} already has an active pick: ${existing.subject}.` });
+    }
+
+    const normalize = (value) => String(value || '')
+      .toLowerCase()
+      .replace(/[’']/g, '')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim()
+      .replace(/\s+/g, ' ');
+
+    const subjectNormalized = normalize(subject);
+    const marketNormalized = normalize(market || '');
+
+    const duplicate = await db
+      .prepare(`
+        SELECT manager_name, team_name, subject
+        FROM parlay_picks
+        WHERE season = ?
+          AND week = ?
+          AND subject_normalized = ?
+          AND bet_type = ?
+          AND market_normalized = ?
+          AND COALESCE(direction, '') = ?
+          AND status = 'active'
+        LIMIT 1
+      `)
+      .bind(season, week, subjectNormalized, betType, marketNormalized, direction || '')
+      .first();
+
+    if (duplicate) {
+      return fail(409, {
+        message: `Duplicate wager: ${duplicate.team_name || duplicate.manager_name} already has ${duplicate.subject}.`
+      });
+    }
+
+    const result = await db
+      .prepare(`
+        INSERT INTO parlay_picks (
+          season, week, parlay_week_id,
+          manager_id, manager_name, team_name,
+          discord_user_id, discord_username, discord_display_name,
+          sport, subject, subject_normalized, bet_type,
+          market, market_normalized, direction,
+          original_line, current_line,
+          original_odds, current_odds,
+          sportsbook, notes,
+          status, locked, result
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Hard Rock', ?, 'active', 0, 'PENDING')
+      `)
+      .bind(
+        season, week, weekId,
+        manager.id, manager.name, manager.teamName,
+        `manual:${manager.id}`, 'manual-admin', adminName(locals),
+        sport, subject, subjectNormalized, betType,
+        market, marketNormalized, direction,
+        line, line, odds, odds,
+        notes
+      )
+      .run();
+
+    const pickId = Number(result.meta?.last_row_id);
+    if (pickId) {
+      await writePickHistory(db, {
+        pickId,
+        action: 'MANUAL_ADD',
+        newValue: JSON.stringify({ subject, market, direction, line, odds, betType, sport }),
+        changedBy: adminName(locals)
+      });
+    }
+
+    return { success: true, message: `${manager.teamName} manual pick added to Week ${week}.` };
+  },
+
   editPick: async ({ request, platform, locals }) => {
     const db = requireDb(platform);
     const form = await request.formData();
