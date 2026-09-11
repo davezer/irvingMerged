@@ -41,7 +41,6 @@ export function buildDiscordPickEmbed(pick) {
     { name: pick.team_name || pick.manager_name || 'Irving Manager', value: pick.manager_name || '—', inline: false },
     { name: pick.subject || 'Pick', value: marketLabel(pick), inline: false },
     { name: 'Odds', value: oddsLabel(pick.current_odds), inline: true },
-    { name: 'Sportsbook', value: pick.sportsbook || 'Hard Rock', inline: true }
   ];
 
   if (pick.original_line !== pick.current_line || pick.original_odds !== pick.current_odds) {

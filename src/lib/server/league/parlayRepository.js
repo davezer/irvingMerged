@@ -146,7 +146,6 @@ export async function createParlayPick(db, pick) {
       pick.line,
       pick.odds,
       pick.odds,
-      pick.sportsbook || 'Hard Rock',
       pick.notes || null
     )
     .run();
@@ -252,7 +251,6 @@ export async function replaceParlayPick(db, existingPick, pick) {
     pick.sport, pick.subject, pick.subjectNormalized, pick.betType,
     pick.market || null, pick.marketNormalized, pick.direction || null,
     pick.line, pick.line, pick.odds, pick.odds,
-    pick.sportsbook || 'Hard Rock', pick.notes || null
   );
 
   const audit = db.prepare(`
