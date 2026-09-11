@@ -121,8 +121,7 @@ export async function createParlayPick(db, pick) {
         sport, subject, subject_normalized, bet_type,
         market, market_normalized, direction,
         original_line, current_line,
-        original_odds, current_odds,
-        sportsbook, notes
+        original_odds, current_odds, notes
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `)
     .bind(
