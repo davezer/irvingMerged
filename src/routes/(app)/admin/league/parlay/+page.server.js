@@ -350,7 +350,7 @@ export const actions = {
           original_odds, current_odds,
           sportsbook, notes,
           status, locked, result
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 0, 'PENDING')
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Hard Rock', ?, 'active', 0, 'PENDING')
       `)
       .bind(
         season, week, weekId,

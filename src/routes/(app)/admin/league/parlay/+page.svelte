@@ -108,7 +108,7 @@
 
                 <div class="pick-meta">
                   <span class="odds">{oddsLabel(pick.current_odds)}</span>
-                  <!-- <span>{pick.sportsbook}</span> -->
+                  <span>{pick.sportsbook}</span>
                   {#if pick.original_line !== pick.current_line || pick.original_odds !== pick.current_odds}
                     <span class="movement">Changed from {pick.original_line ?? '—'} @ {oddsLabel(pick.original_odds)}</span>
                   {/if}
@@ -187,7 +187,7 @@
         <section class="panel final-ticket">
           <div class="panel-head compact">
             <div>
-              <p class="kicker"></p>
+              <p class="kicker">HARD ROCK</p>
               <h2>Final ticket</h2>
               <p>Record the actual parlay once the 14-leg slip is built.</p>
             </div>

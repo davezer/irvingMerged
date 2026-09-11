@@ -381,7 +381,8 @@
 
 					<p>
 						Manage weekly submissions, Discord links,
-						ticket status, grading and history.
+						ticket status, grading, history, and the
+						Hard Rock build process.
 					</p>
 
 				</div>

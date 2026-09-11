@@ -732,6 +732,7 @@ export async function POST({ request, platform }) {
   const direction = directionRaw ? directionRaw : null;
   const subject = clean(body.subject, 120);
   const market = clean(body.market, 120) || null;
+  const sportsbook = clean(body.sportsbook, 60) || 'Hard Rock';
   const notes = clean(body.notes, 500) || null;
   const line = parseOptionalNumber(body.line);
   const odds = parseAmericanOdds(body.odds);

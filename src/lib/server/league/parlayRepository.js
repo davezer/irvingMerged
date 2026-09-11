@@ -121,8 +121,9 @@ export async function createParlayPick(db, pick) {
         sport, subject, subject_normalized, bet_type,
         market, market_normalized, direction,
         original_line, current_line,
-        original_odds, current_odds, notes
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        original_odds, current_odds,
+        sportsbook, notes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `)
     .bind(
       pick.season,
@@ -145,6 +146,7 @@ export async function createParlayPick(db, pick) {
       pick.line,
       pick.odds,
       pick.odds,
+      pick.sportsbook || 'Hard Rock',
       pick.notes || null
     )
     .run();
@@ -240,15 +242,17 @@ export async function replaceParlayPick(db, existingPick, pick) {
       sport, subject, subject_normalized, bet_type,
       market, market_normalized, direction,
       original_line, current_line,
-      original_odds, current_odds, notes
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      original_odds, current_odds,
+      sportsbook, notes
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     pick.season, pick.week, pick.parlayWeekId,
     pick.managerId, pick.managerName, pick.teamName || null,
     pick.discordUserId, pick.discordUsername, pick.discordDisplayName || null,
     pick.sport, pick.subject, pick.subjectNormalized, pick.betType,
     pick.market || null, pick.marketNormalized, pick.direction || null,
-    pick.line, pick.line, pick.odds, pick.odds, pick.notes || null
+    pick.line, pick.line, pick.odds, pick.odds,
+    pick.sportsbook || 'Hard Rock', pick.notes || null
   );
 
   const audit = db.prepare(`
