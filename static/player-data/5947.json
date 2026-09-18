@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:20.434Z",
+  "generatedAt": "2026-09-18T15:20:37.881Z",
   "playerId": "5947",
   "profile": {
     "id": "5947",
@@ -13,7 +13,7 @@
     "height": "74",
     "weight": 200,
     "yearsExp": 7,
-    "college": "North Carolina State",
+    "college": "NC State",
     "status": "Active",
     "injuryStatus": "Questionable",
     "practiceParticipation": null,
@@ -1327,23 +1327,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 11.2,
+        "fantasyPointsPerGame": 11.2,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 2,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
-        "receivingTds": 0,
+        "receptions": 2,
+        "receivingYards": 40,
+        "receivingTds": 1,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "JAX",
+          "opponent": "CLE",
+          "fantasyPoints": 11.2,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 2,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 2,
+            "receptions": 2,
+            "yards": 40,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0034960"
       }
     }

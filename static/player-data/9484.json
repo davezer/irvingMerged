@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:20.642Z",
+  "generatedAt": "2026-09-18T15:20:38.086Z",
   "playerId": "9484",
   "profile": {
     "id": "9484",
@@ -1119,23 +1119,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 8,
+        "fantasyPointsPerGame": 8,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 3,
+        "receivingYards": 65,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "GB",
+          "opponent": "MIN",
+          "fantasyPoints": 8,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 6,
+            "receptions": 3,
+            "yards": 65,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0038996"
       }
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:29.624Z",
+  "generatedAt": "2026-09-18T15:20:47.133Z",
   "playerId": "7021",
   "profile": {
     "id": "7021",
@@ -1379,23 +1379,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 3.1,
+        "fantasyPointsPerGame": 3.1,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 15,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 2,
+        "receivingYards": 6,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "PIT",
+          "opponent": "ATL",
+          "fantasyPoints": 3.1,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 15,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 5,
+            "receptions": 2,
+            "yards": 6,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0036139"
       }
     }

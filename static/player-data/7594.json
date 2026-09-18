@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:25.293Z",
+  "generatedAt": "2026-09-18T15:20:42.705Z",
   "playerId": "7594",
   "profile": {
     "id": "7594",
@@ -1327,23 +1327,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 22.2,
+        "fantasyPointsPerGame": 22.2,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
-        "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
-        "receivingTds": 0,
+        "rushingYards": 49,
+        "rushingTds": 1,
+        "receptions": 3,
+        "receivingYards": 38,
+        "receivingTds": 1,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "CHI",
+          "fantasyPoints": 22.2,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
+            "yards": 49,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 3,
+            "receptions": 3,
+            "yards": 38,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0036555"
       }
     }

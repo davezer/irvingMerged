@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:27.615Z",
+  "generatedAt": "2026-09-18T15:20:45.045Z",
   "playerId": "7002",
   "profile": {
     "id": "7002",
@@ -9,13 +9,13 @@
     "position": "TE",
     "team": "NO",
     "number": 83,
-    "age": 29,
+    "age": 30,
     "height": "76",
     "weight": 245,
     "yearsExp": 6,
     "college": "Oregon",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1275,23 +1275,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 12.9,
+        "fantasyPointsPerGame": 12.9,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
-        "receivingTds": 0,
+        "receptions": 3,
+        "receivingYards": 54,
+        "receivingTds": 1,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "DET",
+          "fantasyPoints": 12.9,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 7,
+            "receptions": 3,
+            "yards": 54,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0036040"
       }
     }

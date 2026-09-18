@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:25.205Z",
+  "generatedAt": "2026-09-18T15:20:42.618Z",
   "playerId": "6039",
   "profile": {
     "id": "6039",
@@ -9,15 +9,15 @@
     "position": "RB",
     "team": "BUF",
     "number": 26,
-    "age": 28,
+    "age": 29,
     "height": "70",
     "weight": 210,
     "yearsExp": 7,
     "college": "Maryland",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": "Out",
     "practiceParticipation": null,
-    "depthChartOrder": 3,
+    "depthChartOrder": 2,
     "fantasyPositions": [
       "RB"
     ],

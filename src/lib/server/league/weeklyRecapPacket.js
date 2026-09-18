@@ -39,6 +39,10 @@ import {
   buildWeeklyStoryFacts
 } from '$lib/server/league/weeklyRecapEnrichment.js';
 
+import {
+  buildWeeklyRecapLeagueMemory
+} from '$lib/server/league/weeklyRecapLeagueMemory.js';
+
 function compactPlayer(player) {
   if (!player) {
     return null;
@@ -630,10 +634,10 @@ enrichmentWarnings.push(
   )
 );
 
-   
 
 
- 
+
+
 
   const knownTypes =
     new Set([
@@ -695,6 +699,46 @@ const storyFacts =
     badgePreview
   });
 
+let beatWriterContext =
+  null;
+
+try {
+  beatWriterContext =
+    await buildWeeklyRecapLeagueMemory({
+      db,
+
+      season:
+        Number(
+          context.season
+        ),
+
+      week,
+
+      matchups
+    });
+
+  enrichmentWarnings.push(
+    ...(
+      beatWriterContext
+        ?.warnings ||
+      []
+    )
+  );
+} catch (error) {
+  console.warn(
+    '[weekly-recap] League memory enrichment failed:',
+    error
+  );
+
+  enrichmentWarnings.push(
+    `League memory enrichment failed: ${
+      error instanceof Error
+        ? error.message
+        : String(error)
+    }`
+  );
+}
+
   return {
     schemaVersion:
       1,
@@ -716,7 +760,9 @@ const storyFacts =
 
       name:
         context.league?.name ||
-        'Irving Championship League'
+        'Irving Championship League',
+
+      beatWriterContext
     },
 
     summary: {

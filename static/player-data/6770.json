@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:16.988Z",
+  "generatedAt": "2026-09-18T15:20:34.588Z",
   "playerId": "6770",
   "profile": {
     "id": "6770",
@@ -15,7 +15,7 @@
     "yearsExp": 6,
     "college": "LSU",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1015,23 +1015,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
-        "passingYards": 0,
-        "passingTds": 0,
+        "games": 1,
+        "fantasyPoints": 14.16,
+        "fantasyPointsPerGame": 14.16,
+        "passingYards": 254,
+        "passingTds": 1,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 20,
         "rushingTds": 0,
         "receptions": 0,
         "receivingYards": 0,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CIN",
+          "opponent": "TB",
+          "fantasyPoints": 14.16,
+          "passing": {
+            "completions": 25,
+            "attempts": 35,
+            "yards": 254,
+            "tds": 1,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 20,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0036442"
       }
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:18.091Z",
+  "generatedAt": "2026-09-18T15:20:35.628Z",
   "playerId": "4984",
   "profile": {
     "id": "4984",
@@ -1379,23 +1379,76 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
-        "passingYards": 0,
-        "passingTds": 0,
+        "games": 2,
+        "fantasyPoints": 76.48,
+        "fantasyPointsPerGame": 38.24,
+        "passingYards": 582,
+        "passingTds": 5,
         "interceptions": 0,
-        "rushingYards": 0,
-        "rushingTds": 0,
+        "rushingYards": 92,
+        "rushingTds": 4,
         "receptions": 0,
         "receivingYards": 0,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "HOU",
+          "fantasyPoints": 35.66,
+          "passing": {
+            "completions": 20,
+            "attempts": 29,
+            "yards": 334,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 23,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "DET",
+          "fantasyPoints": 40.82,
+          "passing": {
+            "completions": 20,
+            "attempts": 31,
+            "yards": 248,
+            "tds": 3,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 14,
+            "yards": 69,
+            "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0034857"
       }
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:28.644Z",
+  "generatedAt": "2026-09-18T15:20:46.107Z",
   "playerId": "6819",
   "profile": {
     "id": "6819",
@@ -15,7 +15,7 @@
     "yearsExp": 6,
     "college": "USC",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [
@@ -1379,23 +1379,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 7.3,
+        "fantasyPointsPerGame": 7.3,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 3,
+        "receivingYards": 58,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "PIT",
+          "opponent": "ATL",
+          "fantasyPoints": 7.3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 3,
+            "receptions": 3,
+            "yards": 58,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0036252"
       }
     }

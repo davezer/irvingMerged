@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:28.692Z",
+  "generatedAt": "2026-09-18T15:20:46.163Z",
   "playerId": "7569",
   "profile": {
     "id": "7569",
@@ -15,7 +15,7 @@
     "yearsExp": 5,
     "college": "Michigan",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1197,23 +1197,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 17.7,
+        "fantasyPointsPerGame": 17.7,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 7,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
-        "receivingTds": 0,
+        "receptions": 7,
+        "receivingYards": 75,
+        "receivingTds": 1,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "HOU",
+          "opponent": "BUF",
+          "fantasyPoints": 17.7,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 7,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 10,
+            "receptions": 7,
+            "yards": 75,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0036554"
       }
     }

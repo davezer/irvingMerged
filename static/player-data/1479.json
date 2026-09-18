@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:19.117Z",
+  "generatedAt": "2026-09-18T15:20:36.633Z",
   "playerId": "1479",
   "profile": {
     "id": "1479",
@@ -1275,23 +1275,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 6.2,
+        "fantasyPointsPerGame": 6.2,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 6,
+        "receivingYards": 32,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "IND",
+          "opponent": "BAL",
+          "fantasyPoints": 6.2,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 6,
+            "receptions": 6,
+            "yards": 32,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0030279"
       }
     }

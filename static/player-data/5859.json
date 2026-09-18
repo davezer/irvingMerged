@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:26.320Z",
+  "generatedAt": "2026-09-18T15:20:43.741Z",
   "playerId": "5859",
   "profile": {
     "id": "5859",
@@ -14,10 +14,10 @@
     "weight": 226,
     "yearsExp": 7,
     "college": "Ole Miss",
-    "status": "Active",
-    "injuryStatus": "Out",
+    "status": "Inactive",
+    "injuryStatus": "IR",
     "practiceParticipation": null,
-    "depthChartOrder": 1,
+    "depthChartOrder": 6,
     "fantasyPositions": [
       "WR"
     ],

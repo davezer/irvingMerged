@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:19.214Z",
+  "generatedAt": "2026-09-18T15:20:36.727Z",
   "playerId": "6130",
   "profile": {
     "id": "6130",
@@ -17,7 +17,7 @@
     "status": "Active",
     "injuryStatus": null,
     "practiceParticipation": null,
-    "depthChartOrder": 4,
+    "depthChartOrder": 2,
     "fantasyPositions": [
       "RB"
     ],
@@ -1379,23 +1379,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 11.8,
+        "fantasyPointsPerGame": 11.8,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 16,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
-        "receivingTds": 0,
+        "receptions": 4,
+        "receivingYards": 22,
+        "receivingTds": 1,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "DAL",
+          "fantasyPoints": 11.8,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 6,
+            "yards": 16,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 4,
+            "receptions": 4,
+            "yards": 22,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0035250"
       }
     }

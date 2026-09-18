@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:28.491Z",
+  "generatedAt": "2026-09-18T15:20:45.950Z",
   "playerId": "4046",
   "profile": {
     "id": "4046",
@@ -9,13 +9,13 @@
     "position": "QB",
     "team": "KC",
     "number": 15,
-    "age": 30,
+    "age": 31,
     "height": "74",
     "weight": 225,
     "yearsExp": 9,
     "college": "Texas Tech",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1301,23 +1301,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
-        "passingYards": 0,
-        "passingTds": 0,
+        "games": 1,
+        "fantasyPoints": 21.66,
+        "fantasyPointsPerGame": 21.66,
+        "passingYards": 184,
+        "passingTds": 2,
         "interceptions": 0,
-        "rushingYards": 0,
-        "rushingTds": 0,
+        "rushingYards": 23,
+        "rushingTds": 1,
         "receptions": 0,
         "receivingYards": 0,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "KC",
+          "opponent": "DEN",
+          "fantasyPoints": 21.66,
+          "passing": {
+            "completions": 15,
+            "attempts": 27,
+            "yards": 184,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 23,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0033873"
       }
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:28.390Z",
+  "generatedAt": "2026-09-18T15:20:45.849Z",
   "playerId": "12533",
   "profile": {
     "id": "12533",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Arizona",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -545,23 +545,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 12.1,
+        "fantasyPointsPerGame": 12.1,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
-        "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "rushingYards": 63,
+        "rushingTds": 1,
+        "receptions": 1,
+        "receivingYards": -7,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "WAS",
+          "opponent": "PHI",
+          "fantasyPoints": 12.1,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 16,
+            "yards": 63,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": -7,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0040242"
       }
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:21.445Z",
+  "generatedAt": "2026-09-18T15:20:38.863Z",
   "playerId": "12469",
   "profile": {
     "id": "12469",
@@ -9,15 +9,15 @@
     "position": "RB",
     "team": "CLE",
     "number": 22,
-    "age": 21,
+    "age": 22,
     "height": "68",
     "weight": 200,
     "yearsExp": 1,
     "college": "Tennessee",
-    "status": "Active",
-    "injuryStatus": null,
+    "status": "Inactive",
+    "injuryStatus": "IR",
     "practiceParticipation": null,
-    "depthChartOrder": 2,
+    "depthChartOrder": 6,
     "fantasyPositions": [
       "RB"
     ],
@@ -493,7 +493,7 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
+        "games": 1,
         "fantasyPoints": 0,
         "fantasyPointsPerGame": 0,
         "passingYards": 0,
@@ -506,10 +506,37 @@
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CLE",
+          "opponent": "JAX",
+          "fantasyPoints": 0,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0040162"
       }
     }

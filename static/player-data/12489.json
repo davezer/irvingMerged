@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:22.239Z",
+  "generatedAt": "2026-09-18T15:20:39.657Z",
   "playerId": "12489",
   "profile": {
     "id": "12489",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "UCF",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [
@@ -545,23 +545,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 6.1,
+        "fantasyPointsPerGame": 6.1,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 18,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 4,
+        "receivingYards": 23,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "DEN",
+          "opponent": "KC",
+          "fantasyPoints": 6.1,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 3,
+            "yards": 18,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 4,
+            "receptions": 4,
+            "yards": 23,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0040730"
       }
     }

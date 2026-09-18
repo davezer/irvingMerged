@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:27.498Z",
+  "generatedAt": "2026-09-18T15:20:44.922Z",
   "playerId": "12530",
   "profile": {
     "id": "12530",
@@ -286,23 +286,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 1.6,
+        "fantasyPointsPerGame": 1.6,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 3,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 1,
+        "receivingYards": 8,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "JAX",
+          "opponent": "CLE",
+          "fantasyPoints": 1.6,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 8,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0040718"
       }
     }

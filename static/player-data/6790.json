@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:26.353Z",
+  "generatedAt": "2026-09-18T15:20:43.771Z",
   "playerId": "6790",
   "profile": {
     "id": "6790",
@@ -15,7 +15,7 @@
     "yearsExp": 6,
     "college": "Georgia",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1379,23 +1379,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 31.9,
+        "fantasyPointsPerGame": 31.9,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
-        "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "rushingYards": 124,
+        "rushingTds": 3,
+        "receptions": 1,
+        "receivingYards": 10,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CHI",
+          "opponent": "CAR",
+          "fantasyPoints": 31.9,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 18,
+            "yards": 124,
+            "tds": 3
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 10,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0036275"
       }
     }

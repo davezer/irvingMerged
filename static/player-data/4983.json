@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:22.364Z",
+  "generatedAt": "2026-09-18T15:20:39.779Z",
   "playerId": "4983",
   "profile": {
     "id": "4983",
@@ -15,7 +15,7 @@
     "yearsExp": 8,
     "college": "Maryland",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Out",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1431,23 +1431,76 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 2,
+        "fantasyPoints": 18.4,
+        "fantasyPointsPerGame": 9.2,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": -1,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
-        "receivingTds": 0,
+        "receptions": 5,
+        "receivingYards": 100,
+        "receivingTds": 1,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "HOU",
+          "fantasyPoints": 18.5,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 8,
+            "receptions": 5,
+            "yards": 100,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "BUF",
+          "opponent": "DET",
+          "fantasyPoints": -0.1,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": -1,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0034827"
       }
     }

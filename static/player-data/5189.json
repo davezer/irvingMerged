@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:21.631Z",
+  "generatedAt": "2026-09-18T15:20:39.048Z",
   "playerId": "5189",
   "profile": {
     "id": "5189",
@@ -9,13 +9,13 @@
     "position": "K",
     "team": "SF",
     "number": 18,
-    "age": 30,
+    "age": 31,
     "height": "71",
     "weight": 190,
     "yearsExp": 8,
     "college": "Florida",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1301,7 +1301,7 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
+        "games": 1,
         "fantasyPoints": 0,
         "fantasyPointsPerGame": 0,
         "passingYards": 0,
@@ -1314,10 +1314,37 @@
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "SF",
+          "opponent": "LA",
+          "fantasyPoints": 0,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0034173"
       }
     }

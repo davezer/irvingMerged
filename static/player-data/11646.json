@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:22.174Z",
+  "generatedAt": "2026-09-18T15:20:39.580Z",
   "playerId": "11646",
   "profile": {
     "id": "11646",
@@ -15,7 +15,7 @@
     "yearsExp": 2,
     "college": "Holy Cross",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [
@@ -676,23 +676,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 29.8,
+        "fantasyPointsPerGame": 29.8,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
-        "receivingTds": 0,
+        "receptions": 8,
+        "receivingYards": 138,
+        "receivingTds": 2,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "CHI",
+          "fantasyPoints": 29.8,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 9,
+            "receptions": 8,
+            "yards": 138,
+            "tds": 2
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0039491"
       }
     }

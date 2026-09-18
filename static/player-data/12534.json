@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T19:04:22.317Z",
+  "generatedAt": "2026-09-18T15:20:39.736Z",
   "playerId": "12534",
   "profile": {
     "id": "12534",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Rutgers",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [
@@ -545,23 +545,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 19.4,
+        "fantasyPointsPerGame": 19.4,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
-        "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "rushingYards": 100,
+        "rushingTds": 1,
+        "receptions": 2,
+        "receivingYards": 24,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 1,
+          "seasonType": "REG",
+          "team": "CHI",
+          "opponent": "CAR",
+          "fantasyPoints": 19.4,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
+            "yards": 100,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 2,
+            "receptions": 2,
+            "yards": 24,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "name_position",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0040236"
       }
     }
