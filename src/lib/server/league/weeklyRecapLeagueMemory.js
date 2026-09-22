@@ -22,114 +22,11 @@ import {
  */
 
 const TEAM_EDITORIAL_NOTES = {
-  "Lehigh Crucible": [
-    "Lehigh went all in on the 2025 championship, spending future draft capital to maximize the title window. The post-title resource squeeze is a direct result of that strategy.",
-    "Dave and Kevin have a long-standing rivalry dating back to the early 2000s.",
-    "Lehigh lost the 2025 ICL championship to Dunedin in a close matchup. Around the league, it was viewed as a major upset given how aggressively Lehigh had built for that title run.",
-    "The 2004 Irving championship was a defining early moment for the franchise, followed by a long championship drought."
-  ],
-
-  "Ultimate City Warriors": [
-    "One of Jeff's most famous championship runs came in a season where he was effectively unable to participate normally in the draft because of overconsumption, forcing a remarkable recovery afterward.",
-    "Jeff and Jamie are brothers. Their rivalry is built into the family dynamic and amplified by decades of fantasy football history.",
-    "Jeff's Littlefinger persona fits his league reputation for strategic maneuvering, unexpected trades, and moves that tend to catch the rest of the league off guard.",
-    "Ultimate City went all in on the 2025 playoff run, spending future draft capital to maximize the title window. The resource squeeze that followed is a direct result of that strategy."
-  ],
-
-  "Dagobah Lightsabres": [
-    "Jamie and Jeff are brothers. Their rivalry is built into the family dynamic and amplified by decades of fantasy football history.",
-    "Jamie has a league-wide reputation as one of the strongest negotiators in the trade market and is often able to extract premium value from his trade partners.",
-
-    // Add: Is either the 2008 or 2018 championship remembered for a specific run, upset, or moment?
-    // Add: What makes 'The Kornacki' especially fitting for Jamie beyond the persona label?
-  ],
-
-  "Rebel Radio Lone Rangers": [
-    "Kenny and James are longtime friends who frequently find themselves arguing about just about everything.",
-    "Kenny is often one of the first managers to speak up about league rules or call out a trade he thinks is absurd, frequently turning a simple transaction into a league-wide debate.",
-
-    // Add: Is there a memorable story attached to the 2013 or 2017 Irving championships?
-    // Add: What pushed Rebel Radio into its current rebuild?
-  ],
-
-  "Salem Hipsterjacks": [
-    "Salem famously went into full sell mode only three weeks into the 2025 season.",
-    "Clifton loves to trade. A recurring league joke is that his enthusiasm for making deals sometimes exceeds the quality of the deals themselves.",
-
-    // Add: What made Salem's 2023 DTSP championship run distinctive?
-    // Add: Why are Clifton and Brian James/Kodachromes rivals?
-  ],
-
-  "Nakatomi Plaza CC": [
-    "The 2023 and 2024 championships were back-to-back titles and should be treated as a defining recent Nakatomi era when that history is relevant.",
-    "Kevin and Dave were roommates and have a long-standing friendship that naturally developed into one of the league's oldest rivalries.",
-    "Before the 2026 draft, Kevin made two trades that were widely viewed around the league as especially sharp strategic moves.",
-    "Nakatomi has a league reputation for refusing to disappear from the playoff picture. Even during a rebuild or transition year, the franchise is rarely treated as harmless. The John McClane comparison is part of the team mythology."
-  ],
-
-  "Amherst Union": [
-    "Drew is one of the league's more willing and active trade partners.",
-
-    // Add: What was the story of Drew's 2024 DTSP championship?
-    // Add: Why are Amherst and Jacksonville/Romano rivals?
-    // Add: Was the championship especially quick or remarkable given Drew's relatively recent arrival?
-  ],
-
-  "Milford Jayhawks": [
-    "Jay and Adam are longtime friends going all the way back to high school. Their real-life friendship adds another layer to the Milford-Saskatchewan rivalry.",
-
-    "Jay's 2005 Irving championship is remembered as a defining early moment for the franchise, followed by a long championship drought.",
-    "Jay has a reputation for being a quiet, waiver-wire-focused manager who is willing to let the draft and trade market play out rather than aggressively pursuing a particular strategy.",
-    // Add: Any brutal near-miss or playoff scar that still gets brought up?
-  ],
-
-  "Jacksonville Vincitori": [
-    "Jacksonville won three consecutive DTSP championships from 2016 through 2018. When that history is relevant, treat it as a dynasty-era run rather than three isolated titles.",
-
-    // Add: What made that three-peat happen? Dominant drafts? Trades? Keeper advantage?
-    // Add: Why is Romano's rivalry with Brian Marx/Tallahassee meaningful?
-    // Add: Any famous Romano overconfidence, blowup, trade, or playoff moment the league quotes?
-  ],
-
-  "Dunedin Homers": [
-    "The 2025 championship was an intentional all-in title push. Dunedin aggressively spent future resources to maximize its championship window, won the ICL title, and entered 2026 dealing with the roster and draft-capital squeeze created by that successful push.",
-    "Do not frame Dunedin's post-2025 shortage of draft resources as an unexplained collapse or simple mismanagement. When relevant, it is the bill for a championship strategy that actually worked.",
-    "When Dunedin is competitive despite its post-title resource disadvantage, that is a meaningful part of the story because the franchise entered 2026 with far less flexibility than most of the league.",
-    "Jamie and James have a rivalry that extends well beyond fantasy football. Sports arguments, everyday disagreements, and years of friendship have all fed into a rivalry that feels more personal than an ordinary league matchup.",
-    "During the 2025 championship push, James was willing to pay premium prices for elite players rather than preserve future flexibility."
-  ],
-
-  "Kansas City Kodachromes": [
-    // Add: Why are Brian James and Clifton/Salem rivals?
-    // Add: Is there a famous near-title, playoff collapse, or 'always almost there' narrative?
-    // Add: Any particular player or draft philosophy Brian is known for?
-    // Add: What does the league tease Brian about that the database could never understand?
-  ],
-
-  "Tallahassee Tribe": [
-    // Add: What was distinctive about Brian Marx's 2022 DTSP championship?
-    // Add: What is the actual origin of the Tallahassee/Jacksonville rivalry?
-    // Add: Any famous trade, waiver claim, draft decision, or rules argument?
-    // Add: Is there a particular way Brian approaches roster construction that everyone recognizes?
-  ],
-
-  "Saskatchewan Mounties": [
-    "Jay and Adam are longtime friends going all the way back to high school. Their real-life friendship adds another layer to the Milford-Saskatchewan rivalry.",
-    "The Mounties have a reputation for sticking with their guys. Adam rarely treats the roster as a revolving door and does not explore the trade market as aggressively as many other managers.",
-    "Saskatchewan has a long-running reputation for staying relevant. Even in transition years, the Mounties are rarely dismissed from the playoff picture.",
-
-    // Add: Is the 2006 Irving title remembered for anything specific?
-  ],
-
-  "Clearwater HenryPussycats": [
-    "Brad is one of the league's true mystery managers: quiet, low-profile, and rarely interested in broadcasting what he is thinking or planning.",
-    "Clearwater has long carried a dark-horse quality because the franchise tends to operate quietly compared with the louder personalities around the league.",
-
-    // Add: Why are Brad and James/Dunedin rivals?
-    // Add: Is there a memorable story behind the 2010 or 2014 Irving championships?
-    // Add: Any playoff scar or historic matchup everyone still remembers?
-  ]
+	'Dunedin Homers': [
+		'The 2025 championship was an all-in title push. Dunedin spent aggressively to win the 2025 ICL championship, and the roster/resource squeeze that followed in 2026 was the bill for that successful run, not an unexplained collapse.'
+	]
 };
+
 
 function cleanYears(
 	value
@@ -1639,6 +1536,13 @@ function storyHooks({
 		[];
 
 
+	/*
+	 * Priority hooks are intentionally SHORT.
+	 *
+	 * They should identify the week's useful angles,
+	 * not paste one franchise's entire editorial notebook
+	 * at the top of the writer packet.
+	 */
 	for (
 		const team of
 		teamMemory
@@ -1669,19 +1573,9 @@ function storyHooks({
 						?.teamName
 				) {
 					pieces.push(
-						`That is $${team.draftCapital.gapToLeader} behind capital leader ${capitalSnapshot.leader.teamName}.`
+						`They are $${team.draftCapital.gapToLeader} behind capital leader ${capitalSnapshot.leader.teamName}.`
 					);
 				}
-			}
-
-
-			if (
-				team.editorialNotes
-					?.length
-			) {
-				pieces.push(
-					...team.editorialNotes
-				);
 			}
 
 
@@ -1737,6 +1631,161 @@ function storyHooks({
 			hooks
 		)
 	];
+}
+
+
+function compactTeamLore(
+	team
+) {
+	if (!team) {
+		return null;
+	}
+
+
+	return {
+		managerId:
+			team.managerId,
+
+		managerName:
+			team.managerName,
+
+		teamName:
+			team.teamName,
+
+		persona:
+			team.persona ||
+			null,
+
+		philosophy:
+			team.philosophy ||
+			null,
+
+		championships:
+			team.championships ||
+			[],
+
+		defendingChampion:
+			Boolean(
+				team.defendingChampion
+			),
+
+		rival:
+			team.rival ||
+			null,
+
+		currentSeasonForm:
+			team.currentSeasonForm ||
+			null,
+
+		draftCapital:
+			team.draftCapital ||
+			null,
+
+		editorialNotes:
+			team.editorialNotes ||
+			[]
+	};
+}
+
+
+function buildMatchupLore({
+	matchups,
+	matchupSeries,
+	teamMemory
+}) {
+	const teamByName =
+		new Map(
+			(teamMemory || [])
+				.map(
+					(team) => [
+						String(
+							team.teamName ||
+							''
+						),
+						team
+					]
+				)
+		);
+
+
+	const seriesByMatchup =
+		new Map(
+			(matchupSeries || [])
+				.map(
+					(series) => [
+						Number(
+							series.matchupId
+						),
+						series
+					]
+				)
+		);
+
+
+	return (
+		matchups ||
+		[]
+	)
+		.map(
+			(matchup) => {
+				const leftTeam =
+					teamByName.get(
+						String(
+							matchup
+								?.left
+								?.teamName ||
+								''
+						)
+					) ||
+					null;
+
+				const rightTeam =
+					teamByName.get(
+						String(
+							matchup
+								?.right
+								?.teamName ||
+								''
+						)
+					) ||
+					null;
+
+
+				if (
+					!leftTeam ||
+					!rightTeam
+				) {
+					return null;
+				}
+
+
+				return {
+					matchupId:
+						matchup.matchupId,
+
+					left:
+						compactTeamLore(
+							leftTeam
+						),
+
+					right:
+						compactTeamLore(
+							rightTeam
+						),
+
+					series:
+						seriesByMatchup.get(
+							Number(
+								matchup.matchupId
+							)
+						) ||
+						null
+				};
+			}
+		)
+		.filter(
+			Boolean
+		);
 }
 
 
@@ -2194,15 +2243,25 @@ export async function buildWeeklyRecapLeagueMemory({
 			);
 
 
+	const currentMatchupLore =
+		buildMatchupLore({
+			matchups,
+			matchupSeries,
+			teamMemory
+		});
+
+
 	return {
 		purpose:
 			'Authoritative institutional memory for the Irving Weekly writer. This is the historical beat sheet that explains why a current result matters. Use it selectively and naturally; do not dump it like trivia.',
 
 		writerDirectives: [
-			'Before writing the recap, inspect priorityStoryHooks, currentMatchupSeries, and the relevant team memory. Use historical context when it explains the present week.',
+			'Before writing EACH matchup, inspect currentMatchupLore for BOTH teams. Neither side should receive less consideration merely because the other team has a stronger priority hook.',
+			'priorityStoryHooks are short week-level angles, not a complete list of what matters. Do not let one franchise dominate the article simply because it appears there.',
 			'Treat automatic D1 history as descriptive evidence: prior meetings, scores, streaks, archived finishes, and recorded capital movement. Do not invent causation from those numbers.',
 			'Editorial notes are commissioner-approved factual context and MAY establish cause/effect that raw database history cannot prove.',
 			'Use one or two strong historical callbacks in a matchup when they genuinely improve the story. Do not force lore into every blurb.',
+			'Across a normal article with useful lore, spread contextual callbacks among multiple relevant franchises or matchups instead of repeatedly returning to the same team.',
 			'When describing head-to-head history, remember that the archive record is fantasy matchup wins/losses only. Do not confuse it with the league\'s two-decision weekly standings format.',
 			'If archiveCoverage starts later than a manager\'s fantasy career, phrase records as being in the available archive rather than claiming they are lifetime records.',
 			'Draft-capital balances are auction resources for the listed future capital year. They are not FAAB.',
@@ -2245,6 +2304,13 @@ export async function buildWeeklyRecapLeagueMemory({
 
 		currentMatchupSeries:
 			matchupSeries,
+
+		/*
+		 * Balanced matchup-by-matchup memory.
+		 * Each row always carries BOTH teams' editorial notes
+		 * and automatic context side-by-side.
+		 */
+		currentMatchupLore,
 
 		teams:
 			teamMemory,

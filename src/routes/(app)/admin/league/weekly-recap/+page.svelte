@@ -73,6 +73,20 @@
       ?.beatWriterContext ||
     null;
 
+  $: brainTeamCount =
+    brain?.teams?.length ||
+    0;
+
+  $: brainEditorialTeamCount =
+    (
+      brain?.teams ||
+      []
+    ).filter(
+      (team) =>
+        team.editorialNotes
+          ?.length
+    ).length;
+
   $: isPublished =
     Boolean(
       savedRecap
@@ -692,8 +706,9 @@
           </h2>
 
           <p class="muted">
-            This is now surfaced directly to the writer instead of
-            being buried behind the weekly box score.
+            Priority storylines stay short. The full commissioner lore
+            is now balanced matchup-by-matchup so one franchise cannot
+            drown out the rest of the league.
           </p>
         </div>
 
@@ -707,20 +722,197 @@
         {/if}
       </div>
 
-      {#if brain.priorityStoryHooks?.length}
-        <div class="brain-hooks">
-          {#each brain.priorityStoryHooks as hook}
-            <article>
-              {hook}
-            </article>
-          {/each}
+
+      <div class="brain-section">
+        <div class="brain-subhead">
+          <div>
+            <span>
+              Priority Storylines
+            </span>
+
+            <small>
+              Week-level angles only
+            </small>
+          </div>
         </div>
-      {:else}
-        <p class="muted">
-          No priority historical hook was triggered for this week,
-          but matchup and team memory are still supplied to the writer.
-        </p>
-      {/if}
+
+        {#if brain.priorityStoryHooks?.length}
+          <div class="brain-hooks">
+            {#each brain.priorityStoryHooks as hook}
+              <article>
+                {hook}
+              </article>
+            {/each}
+          </div>
+        {:else}
+          <p class="muted">
+            No priority historical hook was triggered for this week.
+          </p>
+        {/if}
+      </div>
+
+
+      <div class="brain-section">
+        <div class="brain-subhead">
+          <div>
+            <span>
+              Matchup Memory
+            </span>
+
+            <small>
+              Both franchises receive equal editorial weight
+            </small>
+          </div>
+
+          <strong>
+            {brain.currentMatchupLore?.length || 0}
+            matchups loaded
+          </strong>
+        </div>
+
+
+        {#if brain.currentMatchupLore?.length}
+          <div class="matchup-memory-grid">
+            {#each brain.currentMatchupLore as matchup}
+              <article class="matchup-memory-card">
+                <header>
+                  <strong>
+                    {matchup.left?.teamName}
+                  </strong>
+
+                  <span>
+                    vs
+                  </span>
+
+                  <strong>
+                    {matchup.right?.teamName}
+                  </strong>
+                </header>
+
+
+                <div class="memory-sides">
+                  <div>
+                    <div class="team-memory-name">
+                      {matchup.left?.teamName}
+                    </div>
+
+                    <small>
+                      {matchup.left?.editorialNotes?.length || 0}
+                      editorial notes
+                      ·
+                      {matchup.left?.championships?.length || 0}
+                      titles
+                      {#if matchup.left?.defendingChampion}
+                        · defending champion
+                      {/if}
+                    </small>
+
+                    {#if matchup.left?.editorialNotes?.length}
+                      <details>
+                        <summary>
+                          View commissioner lore
+                        </summary>
+
+                        <ul>
+                          {#each matchup.left.editorialNotes as note}
+                            <li>
+                              {note}
+                            </li>
+                          {/each}
+                        </ul>
+                      </details>
+                    {/if}
+                  </div>
+
+
+                  <div>
+                    <div class="team-memory-name">
+                      {matchup.right?.teamName}
+                    </div>
+
+                    <small>
+                      {matchup.right?.editorialNotes?.length || 0}
+                      editorial notes
+                      ·
+                      {matchup.right?.championships?.length || 0}
+                      titles
+                      {#if matchup.right?.defendingChampion}
+                        · defending champion
+                      {/if}
+                    </small>
+
+                    {#if matchup.right?.editorialNotes?.length}
+                      <details>
+                        <summary>
+                          View commissioner lore
+                        </summary>
+
+                        <ul>
+                          {#each matchup.right.editorialNotes as note}
+                            <li>
+                              {note}
+                            </li>
+                          {/each}
+                        </ul>
+                      </details>
+                    {/if}
+                  </div>
+                </div>
+
+
+                {#if matchup.series}
+                  <footer>
+                    {#if matchup.series.declaredRivalry}
+                      <span class="rivalry-chip">
+                        Declared rivalry
+                      </span>
+                    {/if}
+
+                    {#if matchup.series.meetings}
+                      <span>
+                        Available series:
+                        {matchup.series.leftTeam}
+                        {matchup.series.leftWins}
+                        –
+                        {matchup.series.rightWins}
+                        {matchup.series.rightTeam}
+                        {#if matchup.series.ties}
+                          · {matchup.series.ties} ties
+                        {/if}
+                      </span>
+                    {:else}
+                      <span>
+                        No prior meeting in the available archive.
+                      </span>
+                    {/if}
+                  </footer>
+                {/if}
+              </article>
+            {/each}
+          </div>
+        {:else}
+          <p class="muted">
+            No balanced matchup lore was available for this packet.
+          </p>
+        {/if}
+      </div>
+
+
+      <div class="brain-health">
+        <strong>
+          {brainTeamCount}
+          franchise profiles loaded
+        </strong>
+
+        <span>
+          ·
+        </span>
+
+        <span>
+          {brainEditorialTeamCount}
+          franchises currently have commissioner editorial notes
+        </span>
+      </div>
     </section>
   {/if}
 
@@ -1440,6 +1632,162 @@
     line-height: 1.55;
   }
 
+  .brain-section {
+    display: grid;
+    gap: 11px;
+    padding-top: 17px;
+    border-top: 1px solid var(--border);
+  }
+
+  .brain-subhead {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: end;
+  }
+
+  .brain-subhead > div {
+    display: grid;
+    gap: 3px;
+  }
+
+  .brain-subhead span {
+    color: var(--brand-gold);
+    font-size: .6rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .brain-subhead small,
+  .brain-subhead > strong {
+    color: var(--muted);
+    font-size: .66rem;
+  }
+
+  .matchup-memory-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 9px;
+  }
+
+  .matchup-memory-card {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.012);
+  }
+
+  .matchup-memory-card > header {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+    gap: 8px;
+    align-items: center;
+  }
+
+  .matchup-memory-card > header strong {
+    color: var(--brand-ivory);
+    font-size: .78rem;
+    line-height: 1.25;
+  }
+
+  .matchup-memory-card > header strong:last-child {
+    text-align: right;
+  }
+
+  .matchup-memory-card > header span {
+    color: var(--brand-stone);
+    font-size: .54rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .memory-sides {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px;
+  }
+
+  .memory-sides > div {
+    min-width: 0;
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    padding: 10px;
+    border: 1px solid rgba(191,161,106,.1);
+    background: rgba(7,10,9,.28);
+  }
+
+  .team-memory-name {
+    color: var(--brand-sand);
+    font-size: .72rem;
+    font-weight: 800;
+  }
+
+  .memory-sides small {
+    color: var(--muted);
+    font-size: .62rem;
+    line-height: 1.45;
+  }
+
+  .memory-sides details {
+    margin-top: 2px;
+  }
+
+  .memory-sides summary {
+    color: var(--brand-gold);
+    cursor: pointer;
+    font-size: .61rem;
+    font-weight: 800;
+  }
+
+  .memory-sides ul {
+    display: grid;
+    gap: 6px;
+    margin: 9px 0 0;
+    padding-left: 16px;
+  }
+
+  .memory-sides li {
+    color: var(--muted);
+    font-size: .68rem;
+    line-height: 1.45;
+  }
+
+  .matchup-memory-card > footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: center;
+    color: var(--muted);
+    font-size: .62rem;
+  }
+
+  .rivalry-chip {
+    padding: 3px 5px;
+    border: 1px solid rgba(191,161,106,.32);
+    color: var(--brand-gold);
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  .brain-health {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: .68rem;
+  }
+
+  .brain-health strong {
+    color: var(--brand-sand);
+  }
+
   .editor-card {
     scroll-margin-top: 20px;
     border-color: rgba(191,161,106,.48);
@@ -1568,7 +1916,8 @@
 
     .window-grid,
     .two-up,
-    .brain-hooks {
+    .brain-hooks,
+    .matchup-memory-grid {
       grid-template-columns: 1fr;
     }
   }
@@ -1595,8 +1944,13 @@
 
     .brain-heading,
     .editor-header,
-    .preview-header {
+    .preview-header,
+    .brain-subhead {
       display: grid;
+    }
+
+    .memory-sides {
+      grid-template-columns: 1fr;
     }
 
     .stats {

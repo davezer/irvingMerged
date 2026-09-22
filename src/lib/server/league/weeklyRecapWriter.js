@@ -993,6 +993,10 @@ function buildWriterBrief(
       memory.currentMatchupSeries ||
       [],
 
+    currentMatchupLore:
+      memory.currentMatchupLore ||
+      [],
+
     teams:
       (
         memory.teams ||
@@ -1034,6 +1038,22 @@ function matchupMemoryForAI(
     ) ||
     null;
 
+  const balancedLore =
+    (
+      writerBrief
+        .currentMatchupLore ||
+      []
+    ).find(
+      (row) =>
+        Number(
+          row.matchupId
+        ) ===
+        Number(
+          matchup.matchupId
+        )
+    ) ||
+    null;
+
   const teamByName =
     new Map(
       (
@@ -1048,6 +1068,13 @@ function matchupMemoryForAI(
     );
 
   return {
+    /*
+     * balancedLore is the preferred context source.
+     * It is produced side-by-side so BOTH franchises enter
+     * the matchup prompt with equal editorial weight.
+     */
+    balancedLore,
+
     series,
 
     leftTeamMemory:
@@ -1306,13 +1333,16 @@ MOST IMPORTANT WORKFLOW:
 
 THE LEAGUE BRAIN:
 - writerBrief is first-class source material, not optional flavor.
-- priorityStoryHooks are commissioner-approved or automatically derived story angles worth considering.
+- priorityStoryHooks are SHORT week-level angles. They are NOT the complete league memory and must not monopolize the article.
+- currentMatchupLore is the balanced matchup-by-matchup memory desk. It carries BOTH franchises side-by-side, including commissioner editorial notes.
 - currentMatchupSeries contains available head-to-head history.
-- each matchup also includes historicalContext with team memory and relevant series history.
+- each matchup also includes historicalContext. Prefer historicalContext.balancedLore when deciding which lore applies to that matchup.
 - editorialNotes are commissioner-approved league lore and context.
-- When relevant writerBrief context exists, use it.
-- Across a normal article with useful memory available, aim for roughly 2-4 natural historical/contextual callbacks.
+- BEFORE writing each matchup, inspect BOTH teams in balancedLore. Give both sides equal consideration.
+- Do not repeatedly return to one franchise's lore simply because that franchise appears in priorityStoryHooks.
+- Across a normal article with useful memory available, aim for roughly 2-4 natural historical/contextual callbacks spread across multiple relevant teams or matchups.
 - If the featured matchup or opening has a directly relevant rivalry, title-window, championship, rebuild, capital, or series beat, use at least one such beat there.
+- If another matchup has strong supplied lore, use it there rather than recycling the featured team's history again.
 - Do NOT force history where it does not illuminate the current event.
 - Do NOT dump biographies, title lists, or trivia.
 - Make the history feel remembered, not pasted in.
