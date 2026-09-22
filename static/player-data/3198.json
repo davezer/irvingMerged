@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:45.899Z",
+  "generatedAt": "2026-09-22T21:11:23.247Z",
   "playerId": "3198",
   "profile": {
     "id": "3198",
@@ -1431,16 +1431,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 34.8,
-        "fantasyPointsPerGame": 34.8,
+        "games": 2,
+        "fantasyPoints": 51,
+        "fantasyPointsPerGame": 25.5,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 144,
-        "rushingTds": 3,
-        "receptions": 1,
-        "receivingYards": 19,
+        "rushingYards": 212,
+        "rushingTds": 4,
+        "receptions": 4,
+        "receivingYards": 38,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1466,6 +1466,32 @@
           "receiving": {
             "targets": 1,
             "receptions": 1,
+            "yards": 19,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "BAL",
+          "opponent": "NO",
+          "fantasyPoints": 16.2,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 16,
+            "yards": 68,
+            "tds": 1
+          },
+          "receiving": {
+            "targets": 3,
+            "receptions": 3,
             "yards": 19,
             "tds": 0
           },

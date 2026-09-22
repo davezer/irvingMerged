@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:36.227Z",
+  "generatedAt": "2026-09-22T21:11:13.472Z",
   "playerId": "11635",
   "profile": {
     "id": "11635",
@@ -15,7 +15,7 @@
     "yearsExp": 2,
     "college": "Georgia",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -936,16 +936,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 16.7,
-        "fantasyPointsPerGame": 16.7,
+        "games": 2,
+        "fantasyPoints": 21.7,
+        "fantasyPointsPerGame": 10.85,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 5,
-        "receivingYards": 82,
+        "receptions": 8,
+        "receivingYards": 117,
         "receivingTds": 1,
         "fumblesLost": 0
       },
@@ -973,6 +973,32 @@
             "receptions": 5,
             "yards": 82,
             "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "LAC",
+          "opponent": "LV",
+          "fantasyPoints": 5,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 3,
+            "receptions": 3,
+            "yards": 35,
+            "tds": 0
           },
           "fumblesLost": 0
         }

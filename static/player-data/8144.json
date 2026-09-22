@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:34.798Z",
+  "generatedAt": "2026-09-22T21:11:12.097Z",
   "playerId": "8144",
   "profile": {
     "id": "8144",
@@ -15,7 +15,7 @@
     "yearsExp": 4,
     "college": "Ohio State",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1145,17 +1145,17 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 23.2,
-        "fantasyPointsPerGame": 23.2,
+        "games": 2,
+        "fantasyPoints": 41.8,
+        "fantasyPointsPerGame": 20.9,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 10,
-        "receivingYards": 182,
-        "receivingTds": 0,
+        "receptions": 18,
+        "receivingYards": 268,
+        "receivingTds": 1,
         "fumblesLost": 0
       },
       "games": [
@@ -1182,6 +1182,32 @@
             "receptions": 10,
             "yards": 182,
             "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "BAL",
+          "fantasyPoints": 18.6,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 10,
+            "receptions": 8,
+            "yards": 86,
+            "tds": 1
           },
           "fumblesLost": 0
         }

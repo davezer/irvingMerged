@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:47.956Z",
+  "generatedAt": "2026-09-22T21:11:25.377Z",
   "playerId": "12518",
   "profile": {
     "id": "12518",
@@ -545,17 +545,17 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 8.8,
-        "fantasyPointsPerGame": 8.8,
+        "games": 2,
+        "fantasyPoints": 20.2,
+        "fantasyPointsPerGame": 10.1,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 3,
         "rushingTds": 0,
-        "receptions": 3,
-        "receivingYards": 13,
-        "receivingTds": 1,
+        "receptions": 9,
+        "receivingYards": 34,
+        "receivingTds": 2,
         "fumblesLost": 0
       },
       "games": [
@@ -581,6 +581,32 @@
             "targets": 5,
             "receptions": 3,
             "yards": 13,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "IND",
+          "opponent": "KC",
+          "fantasyPoints": 11.4,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 3,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 7,
+            "receptions": 6,
+            "yards": 21,
             "tds": 1
           },
           "fumblesLost": 0

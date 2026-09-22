@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:39.543Z",
+  "generatedAt": "2026-09-22T21:11:16.771Z",
   "playerId": "11560",
   "profile": {
     "id": "11560",
@@ -15,7 +15,7 @@
     "yearsExp": 2,
     "college": "USC",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Out",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -988,13 +988,13 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 37.26,
-        "fantasyPointsPerGame": 37.26,
-        "passingYards": 269,
+        "games": 2,
+        "fantasyPoints": 44.98,
+        "fantasyPointsPerGame": 22.49,
+        "passingYards": 407,
         "passingTds": 2,
         "interceptions": 0,
-        "rushingYards": 65,
+        "rushingYards": 107,
         "rushingTds": 2,
         "receptions": 0,
         "receivingYards": 0,
@@ -1019,6 +1019,32 @@
             "attempts": 10,
             "yards": 65,
             "tds": 2
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "CHI",
+          "opponent": "MIN",
+          "fantasyPoints": 7.72,
+          "passing": {
+            "completions": 15,
+            "attempts": 26,
+            "yards": 138,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 42,
+            "tds": 0
           },
           "receiving": {
             "targets": 0,

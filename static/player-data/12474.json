@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:36.365Z",
+  "generatedAt": "2026-09-22T21:11:13.607Z",
   "playerId": "12474",
   "profile": {
     "id": "12474",
@@ -519,16 +519,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 4.5,
-        "fantasyPointsPerGame": 4.5,
+        "games": 2,
+        "fantasyPoints": 10.5,
+        "fantasyPointsPerGame": 5.25,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 42,
+        "rushingYards": 50,
         "rushingTds": 0,
-        "receptions": 1,
-        "receivingYards": -2,
+        "receptions": 6,
+        "receivingYards": 25,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -555,6 +555,32 @@
             "targets": 1,
             "receptions": 1,
             "yards": -2,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "HOU",
+          "opponent": "CIN",
+          "fantasyPoints": 6,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 8,
+            "yards": 8,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 6,
+            "receptions": 5,
+            "yards": 27,
             "tds": 0
           },
           "fumblesLost": 0

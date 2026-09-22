@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:42.056Z",
+  "generatedAt": "2026-09-22T21:11:19.236Z",
   "playerId": "8154",
   "profile": {
     "id": "8154",
@@ -15,7 +15,7 @@
     "yearsExp": 4,
     "college": "Alabama",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [
@@ -1301,16 +1301,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 3.1,
-        "fantasyPointsPerGame": 3.1,
+        "games": 2,
+        "fantasyPoints": 10.8,
+        "fantasyPointsPerGame": 5.4,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 31,
+        "rushingYards": 82,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 2,
+        "receivingYards": 16,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1337,6 +1337,32 @@
             "targets": 0,
             "receptions": 0,
             "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "ATL",
+          "opponent": "CAR",
+          "fantasyPoints": 7.7,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 11,
+            "yards": 51,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 2,
+            "receptions": 2,
+            "yards": 16,
             "tds": 0
           },
           "fumblesLost": 0

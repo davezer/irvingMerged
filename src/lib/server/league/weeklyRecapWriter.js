@@ -1,865 +1,1328 @@
 const MatchupRecapSchema = {
-	type: 'object',
-	additionalProperties: false,
-	required: [
-		'matchupId',
-		'featured',
-		'headline',
-		'body'
-	],
-	properties: {
-		matchupId: {
-			type: 'integer'
-		},
+  type:
+    'object',
 
-		featured: {
-			type: 'boolean'
-		},
+  additionalProperties:
+    false,
 
-		headline: {
-			type: 'string'
-		},
+  required: [
+    'matchupId',
+    'featured',
+    'headline',
+    'body'
+  ],
 
-		body: {
-			type: 'string'
-		}
-	}
+  properties: {
+    matchupId: {
+      type:
+        'integer'
+    },
+
+    featured: {
+      type:
+        'boolean'
+    },
+
+    headline: {
+      type:
+        'string'
+    },
+
+    body: {
+      type:
+        'string'
+    }
+  }
 };
 
 
 const WaiverClaimSchema = {
-	type: 'object',
-	additionalProperties: false,
-	required: [
-		'teamName',
-		'players',
-		'faab',
-		'commentary'
-	],
-	properties: {
-		teamName: {
-			type: 'string'
-		},
+  type:
+    'object',
 
-		players: {
-			type: 'array',
-			items: {
-				type: 'string'
-			}
-		},
+  additionalProperties:
+    false,
 
-		faab: {
-			type: 'number'
-		},
+  required: [
+    'teamName',
+    'players',
+    'faab',
+    'commentary'
+  ],
 
-		commentary: {
-			type: 'string'
-		}
-	}
+  properties: {
+    teamName: {
+      type:
+        'string'
+    },
+
+    players: {
+      type:
+        'array',
+
+      items: {
+        type:
+          'string'
+      }
+    },
+
+    faab: {
+      type:
+        'number'
+    },
+
+    commentary: {
+      type:
+        'string'
+    }
+  }
 };
 
 
 const TradeItemSchema = {
-	type: 'object',
-	additionalProperties: false,
-	required: [
-		'transactionId',
-		'headline',
-		'body'
-	],
-	properties: {
-		transactionId: {
-			type: 'string'
-		},
+  type:
+    'object',
 
-		headline: {
-			type: 'string'
-		},
+  additionalProperties:
+    false,
 
-		body: {
-			type: 'string'
-		}
-	}
+  required: [
+    'transactionId',
+    'headline',
+    'body'
+  ],
+
+  properties: {
+    transactionId: {
+      type:
+        'string'
+    },
+
+    headline: {
+      type:
+        'string'
+    },
+
+    body: {
+      type:
+        'string'
+    }
+  }
 };
 
 
 const AwardItemSchema = {
-	type: 'object',
-	additionalProperties: false,
-	required: [
-		'title',
-		'teamName',
-		'body'
-	],
-	properties: {
-		title: {
-			type: 'string'
-		},
+  type:
+    'object',
 
-		teamName: {
-			type: 'string'
-		},
+  additionalProperties:
+    false,
 
-		body: {
-			type: 'string'
-		}
-	}
+  required: [
+    'title',
+    'teamName',
+    'body'
+  ],
+
+  properties: {
+    title: {
+      type:
+        'string'
+    },
+
+    teamName: {
+      type:
+        'string'
+    },
+
+    body: {
+      type:
+        'string'
+    }
+  }
 };
 
 
 export const WeeklyRecapSchema = {
-	type: 'object',
-	additionalProperties: false,
+  type:
+    'object',
 
-	required: [
-		'title',
-		'subtitle',
-		'opening',
-		'matchupRecaps',
-		'waiverWire',
-		'tradeDesk',
-		'standings',
-		'awards',
-		'closing'
-	],
+  additionalProperties:
+    false,
 
-	properties: {
-		title: {
-			type: 'string'
-		},
+  required: [
+    'title',
+    'subtitle',
+    'opening',
+    'matchupRecaps',
+    'waiverWire',
+    'tradeDesk',
+    'standings',
+    'awards',
+    'closing'
+  ],
 
-		subtitle: {
-			type: 'string'
-		},
+  properties: {
+    title: {
+      type:
+        'string'
+    },
 
-		opening: {
-			type: 'string'
-		},
+    subtitle: {
+      type:
+        'string'
+    },
 
-		matchupRecaps: {
-			type: 'array',
-			items:
-				MatchupRecapSchema
-		},
+    opening: {
+      type:
+        'string'
+    },
 
-		waiverWire: {
-			type: 'object',
-			additionalProperties: false,
+    matchupRecaps: {
+      type:
+        'array',
 
-			required: [
-				'headline',
-				'body',
-				'notableClaims'
-			],
+      items:
+        MatchupRecapSchema
+    },
 
-			properties: {
-				headline: {
-					type: 'string'
-				},
+    waiverWire: {
+      type:
+        'object',
 
-				body: {
-					type: 'string'
-				},
+      additionalProperties:
+        false,
 
-				notableClaims: {
-					type: 'array',
-					items:
-						WaiverClaimSchema
-				}
-			}
-		},
+      required: [
+        'headline',
+        'body',
+        'notableClaims'
+      ],
 
-		tradeDesk: {
-			type: 'object',
-			additionalProperties: false,
+      properties: {
+        headline: {
+          type:
+            'string'
+        },
 
-			required: [
-				'headline',
-				'body',
-				'items'
-			],
+        body: {
+          type:
+            'string'
+        },
 
-			properties: {
-				headline: {
-					type: 'string'
-				},
+        notableClaims: {
+          type:
+            'array',
 
-				body: {
-					type: 'string'
-				},
+          items:
+            WaiverClaimSchema
+        }
+      }
+    },
 
-				items: {
-					type: 'array',
-					items:
-						TradeItemSchema
-				}
-			}
-		},
+    tradeDesk: {
+      type:
+        'object',
 
-		standings: {
-			type: 'object',
-			additionalProperties: false,
+      additionalProperties:
+        false,
 
-			required: [
-				'headline',
-				'body'
-			],
+      required: [
+        'headline',
+        'body',
+        'items'
+      ],
 
-			properties: {
-				headline: {
-					type: 'string'
-				},
+      properties: {
+        headline: {
+          type:
+            'string'
+        },
 
-				body: {
-					type: 'string'
-				}
-			}
-		},
+        body: {
+          type:
+            'string'
+        },
 
-		awards: {
-			type: 'object',
-			additionalProperties: false,
+        items: {
+          type:
+            'array',
 
-			required: [
-				'headline',
-				'items'
-			],
+          items:
+            TradeItemSchema
+        }
+      }
+    },
 
-			properties: {
-				headline: {
-					type: 'string'
-				},
+    standings: {
+      type:
+        'object',
 
-				items: {
-					type: 'array',
-					items:
-						AwardItemSchema
-				}
-			}
-		},
+      additionalProperties:
+        false,
 
-		closing: {
-			type: 'string'
-		}
-	}
+      required: [
+        'headline',
+        'body'
+      ],
+
+      properties: {
+        headline: {
+          type:
+            'string'
+        },
+
+        body: {
+          type:
+            'string'
+        }
+      }
+    },
+
+    awards: {
+      type:
+        'object',
+
+      additionalProperties:
+        false,
+
+      required: [
+        'headline',
+        'items'
+      ],
+
+      properties: {
+        headline: {
+          type:
+            'string'
+        },
+
+        items: {
+          type:
+            'array',
+
+          items:
+            AwardItemSchema
+        }
+      }
+    },
+
+    closing: {
+      type:
+        'string'
+    }
+  }
 };
 
 
 function numberOrZero(
-	value
+  value
 ) {
-	const number =
-		Number(
-			value
-		);
+  const number =
+    Number(value);
 
-	return Number.isFinite(
-		number
-	)
-		? number
-		: 0;
+  return Number.isFinite(
+    number
+  )
+    ? number
+    : 0;
 }
 
 
 function playerForAI(
-	player
+  player
 ) {
-	if (!player) {
-		return null;
-	}
+  if (!player) {
+    return null;
+  }
 
-	return {
-		name:
-			player.name,
+  return {
+    name:
+      player.name,
 
-		position:
-			player.position ||
-			null,
+    position:
+      player.position ||
+      null,
 
-		fantasyPoints:
-			player.fantasyPoints ??
-			null
-	};
+    fantasyPoints:
+      player.fantasyPoints ??
+      null
+  };
 }
 
 
 function topScorers(
-	players = [],
-	limit = 3
+  players = [],
+  limit = 3
 ) {
-	return [
-		...players
-	]
-		.filter(
-			(player) =>
-				Number.isFinite(
-					Number(
-						player
-							?.fantasyPoints
-					)
-				)
-		)
-		.sort(
-			(a, b) =>
-				numberOrZero(
-					b.fantasyPoints
-				) -
-				numberOrZero(
-					a.fantasyPoints
-				)
-		)
-		.slice(
-			0,
-			limit
-		)
-		.map(
-			playerForAI
-		);
+  return [
+    ...players
+  ]
+    .filter(
+      (player) =>
+        Number.isFinite(
+          Number(
+            player
+              ?.fantasyPoints
+          )
+        )
+    )
+    .sort(
+      (a, b) =>
+        numberOrZero(
+          b.fantasyPoints
+        ) -
+        numberOrZero(
+          a.fantasyPoints
+        )
+    )
+    .slice(
+      0,
+      limit
+    )
+    .map(
+      playerForAI
+    );
 }
 
 
 function lowestStarter(
-	players = []
+  players = []
 ) {
-	const player =
-		[
-			...players
-		]
-			.filter(
-				(entry) =>
-					Number.isFinite(
-						Number(
-							entry
-								?.fantasyPoints
-						)
-					)
-			)
-			.sort(
-				(a, b) =>
-					numberOrZero(
-						a.fantasyPoints
-					) -
-					numberOrZero(
-						b.fantasyPoints
-					)
-			)[0] ||
-		null;
+  const player =
+    [
+      ...players
+    ]
+      .filter(
+        (entry) =>
+          Number.isFinite(
+            Number(
+              entry
+                ?.fantasyPoints
+            )
+          )
+      )
+      .sort(
+        (a, b) =>
+          numberOrZero(
+            a.fantasyPoints
+          ) -
+          numberOrZero(
+            b.fantasyPoints
+          )
+      )[0] ||
+    null;
 
-	return playerForAI(
-		player
-	);
+  return playerForAI(
+    player
+  );
 }
 
 
 function sideForAI(
-	side
+  side
 ) {
-	if (!side) {
-		return null;
-	}
+  if (!side) {
+    return null;
+  }
 
-	return {
-		rosterId:
-			side.rosterId,
+  return {
+    rosterId:
+      side.rosterId,
 
-		teamName:
-			side.teamName,
+    teamName:
+      side.teamName,
 
-		managerName:
-			side.managerName,
+    managerName:
+      side.managerName,
 
-		score:
-			side.score,
+    score:
+      side.score,
 
-		topStarters:
-			topScorers(
-				side.starters,
-				3
-			),
+    topStarters:
+      topScorers(
+        side.starters,
+        3
+      ),
 
-		lowestStarter:
-			lowestStarter(
-				side.starters
-			),
+    lowestStarter:
+      lowestStarter(
+        side.starters
+      ),
 
-		topBench:
-			topScorers(
-				side.bench,
-				2
-			)
-	};
+    topBench:
+      topScorers(
+        side.bench,
+        2
+      )
+  };
 }
 
 
 function groupPlayers(
-	groups = []
+  groups = []
 ) {
-	return groups.map(
-		(group) => ({
-			teamName:
-				group.teamName,
+  return groups.map(
+    (group) => ({
+      rosterId:
+        group.rosterId,
 
-			managerName:
-				group.managerName,
+      teamName:
+        group.teamName,
 
-			players:
-				(
-					group.players ||
-					[]
-				).map(
-					(player) => ({
-						name:
-							player.name,
+      managerName:
+        group.managerName,
 
-						position:
-							player.position ||
-							null
-					})
-				)
-		})
-	);
+      players:
+        (
+          group.players ||
+          []
+        ).map(
+          (player) => ({
+            name:
+              player.name,
+
+            position:
+              player.position ||
+              null
+          })
+        )
+    })
+  );
 }
 
 
 function waiverForAI(
-	transaction
+  transaction
 ) {
-	return {
-		id:
-			String(
-				transaction.id
-			),
+  return {
+    id:
+      String(
+        transaction.id
+      ),
 
-		summary:
-			transaction.summary ||
-			'',
+    summary:
+      transaction.summary ||
+      '',
 
-		adds:
-			groupPlayers(
-				transaction.adds
-			),
+    adds:
+      groupPlayers(
+        transaction.adds
+      ),
 
-		drops:
-			groupPlayers(
-				transaction.drops
-			),
+    drops:
+      groupPlayers(
+        transaction.drops
+      ),
 
-		faab:
-			(
-				transaction.faab ||
-				[]
-			).map(
-				(row) => ({
-					teamName:
-						row.teamName,
+    faab:
+      (
+        transaction.faab ||
+        []
+      ).map(
+        (row) => ({
+          teamName:
+            row.teamName,
 
-					managerName:
-						row.managerName,
+          managerName:
+            row.managerName,
 
-					amount:
-						numberOrZero(
-							row.amount
-						)
-				})
-			)
-	};
+          amount:
+            numberOrZero(
+              row.amount
+            )
+        })
+      )
+  };
 }
 
 
 function freeAgentForAI(
-	transaction
+  transaction
 ) {
-	return {
-		id:
-			String(
-				transaction.id
-			),
+  return {
+    id:
+      String(
+        transaction.id
+      ),
 
-		summary:
-			transaction.summary ||
-			'',
+    summary:
+      transaction.summary ||
+      '',
 
-		adds:
-			groupPlayers(
-				transaction.adds
-			),
+    adds:
+      groupPlayers(
+        transaction.adds
+      ),
 
-		drops:
-			groupPlayers(
-				transaction.drops
-			)
-	};
+    drops:
+      groupPlayers(
+        transaction.drops
+      )
+  };
+}
+
+
+function playersForRoster(
+  groups,
+  rosterId
+) {
+  return (
+    groups ||
+    []
+  )
+    .filter(
+      (group) =>
+        Number(
+          group.rosterId
+        ) ===
+        Number(
+          rosterId
+        )
+    )
+    .flatMap(
+      (group) =>
+        (
+          group.players ||
+          []
+        ).map(
+          (player) => ({
+            name:
+              player.name,
+
+            position:
+              player.position ||
+              null
+          })
+        )
+    );
+}
+
+
+function tradeSidesForAI(
+  transaction,
+  review
+) {
+  const capital =
+    review?.capital ||
+    null;
+
+  return (
+    transaction.teams ||
+    []
+  ).map(
+    (team) => {
+      const managerId =
+        String(
+          team.managerId ||
+          ''
+        );
+
+      const teamName =
+        team.teamName ||
+        null;
+
+      const receivesCapital =
+        capital &&
+        (
+          (
+            managerId &&
+            String(
+              capital.toManagerId ||
+              ''
+            ) ===
+            managerId
+          ) ||
+          (
+            !managerId &&
+            capital.to
+              ?.teamName ===
+            teamName
+          )
+        )
+          ? {
+              year:
+                capital.futuresYear,
+
+              amount:
+                numberOrZero(
+                  capital.amount
+                )
+            }
+          : null;
+
+      const sendsCapital =
+        capital &&
+        (
+          (
+            managerId &&
+            String(
+              capital.fromManagerId ||
+              ''
+            ) ===
+            managerId
+          ) ||
+          (
+            !managerId &&
+            capital.from
+              ?.teamName ===
+            teamName
+          )
+        )
+          ? {
+              year:
+                capital.futuresYear,
+
+              amount:
+                numberOrZero(
+                  capital.amount
+                )
+            }
+          : null;
+
+      const receivesDraftPicks =
+        (
+          transaction.draftPicks ||
+          []
+        )
+          .filter(
+            (pick) =>
+              pick.currentOwner ===
+              teamName
+          )
+          .map(
+            (pick) =>
+              pick.label
+          );
+
+      const sendsDraftPicks =
+        (
+          transaction.draftPicks ||
+          []
+        )
+          .filter(
+            (pick) =>
+              pick.previousOwner ===
+                teamName &&
+              pick.currentOwner !==
+                teamName
+          )
+          .map(
+            (pick) =>
+              pick.label
+          );
+
+      return {
+        rosterId:
+          team.rosterId,
+
+        managerId:
+          managerId ||
+          null,
+
+        teamName,
+
+        managerName:
+          team.managerName,
+
+        receives:
+          playersForRoster(
+            transaction.adds,
+            team.rosterId
+          ),
+
+        sends:
+          playersForRoster(
+            transaction.drops,
+            team.rosterId
+          ),
+
+        receivesDraftPicks,
+        sendsDraftPicks,
+        receivesCapital,
+        sendsCapital
+      };
+    }
+  );
 }
 
 
 function tradeForAI(
-	transaction
+  transaction
 ) {
-	const review =
-		transaction
-			.draftCapitalReview ||
-		null;
+  const review =
+    transaction
+      .draftCapitalReview ||
+    null;
 
-	const capitalStatus =
-		review?.capital
-			? 'capital'
-			: review?.status ===
-					'no_capital'
-				? 'no_capital'
-				: 'unknown';
+  const capitalStatus =
+    review?.capital
+      ? 'capital'
+      : review?.status ===
+          'no_capital'
+        ? 'no_capital'
+        : 'unknown';
 
-	return {
-		id:
-			String(
-				transaction.id
-			),
+  return {
+    id:
+      String(
+        transaction.id
+      ),
 
-		summary:
-			transaction.summary ||
-			'',
+    summary:
+      transaction.summary ||
+      '',
 
-		teams:
-			(
-				transaction.teams ||
-				[]
-			).map(
-				(team) => ({
-					teamName:
-						team.teamName,
+    /*
+     * THIS is the authoritative direction of the trade.
+     *
+     * The writer should narrate from sides[].receives / sends,
+     * not attempt to reverse-engineer direction from raw adds/drops.
+     */
+    sides:
+      tradeSidesForAI(
+        transaction,
+        review
+      ),
 
-					managerName:
-						team.managerName
-				})
-			),
+    capitalStatus,
 
-		adds:
-			groupPlayers(
-				transaction.adds
-			),
+    capitalReviewStatus:
+      review?.status ||
+      'unknown',
 
-		drops:
-			groupPlayers(
-				transaction.drops
-			),
+    capital:
+      review?.capital
+        ? {
+            futuresYear:
+              review
+                .capital
+                .futuresYear,
 
-		draftPicks:
-			transaction.draftPicks ||
-			[],
+            amount:
+              review
+                .capital
+                .amount,
 
-		capitalStatus,
+            fromTeam:
+              review
+                .capital
+                .from
+                ?.teamName ||
+              null,
 
-		capitalReviewStatus:
-			review?.status ||
-			'unknown',
-
-		capital:
-			review?.capital
-				? {
-						futuresYear:
-							review
-								.capital
-								.futuresYear,
-
-						amount:
-							review
-								.capital
-								.amount,
-
-						fromTeam:
-							review
-								.capital
-								.from
-								?.teamName ||
-							null,
-
-						toTeam:
-							review
-								.capital
-								.to
-								?.teamName ||
-							null
-					}
-				: null
-	};
+            toTeam:
+              review
+                .capital
+                .to
+                ?.teamName ||
+              null
+          }
+        : null
+  };
 }
 
 
 function movementForAI(
-	row
+  row
 ) {
-	return {
-		teamName:
-			row.teamName,
+  return {
+    teamName:
+      row.teamName,
 
-		managerName:
-			row.managerName,
+    managerName:
+      row.managerName,
 
-		beforeRank:
-			row.beforeRank,
+    beforeRank:
+      row.beforeRank,
 
-		afterRank:
-			row.afterRank,
+    afterRank:
+      row.afterRank,
 
-		change:
-			row.change,
+    change:
+      row.change,
 
-		beforeRecord:
-			row.beforeRecord,
+    beforeRecord:
+      row.beforeRecord,
 
-		weekRecord:
-			row.weekRecord,
+    weekRecord:
+      row.weekRecord,
 
-		afterRecord:
-			row.afterRecord,
+    afterRecord:
+      row.afterRecord,
 
-		h2hResult:
-			row.h2hResult,
+    h2hResult:
+      row.h2hResult,
 
-		topHalfResult:
-			row.topHalfResult,
+    topHalfResult:
+      row.topHalfResult,
 
-		weekScore:
-			row.weekScore,
+    weekScore:
+      row.weekScore,
 
-		pointsFor:
-			row.pointsFor
-	};
+    pointsFor:
+      row.pointsFor
+  };
 }
 
 
 function badgeForAI(
-	badge
+  badge
 ) {
-	return {
-		title:
-			badge.badgeTitle,
+  return {
+    title:
+      badge.badgeTitle,
 
-		teamName:
-			badge.teamName,
+    teamName:
+      badge.teamName,
 
-		managerName:
-			badge.managerName,
+    managerName:
+      badge.managerName,
 
-		reason:
-			badge.reason,
+    reason:
+      badge.reason,
 
-		metadata:
-			badge.metadata ||
-			{}
-	};
+    metadata:
+      badge.metadata ||
+      {}
+  };
+}
+
+
+function teamMemoryForAI(
+  team
+) {
+  if (!team) {
+    return null;
+  }
+
+  return {
+    managerName:
+      team.managerName,
+
+    teamName:
+      team.teamName,
+
+    fantasyStart:
+      team.fantasyStart ||
+      null,
+
+    yearsOfService:
+      team.yearsOfService ||
+      null,
+
+    persona:
+      team.persona ||
+      null,
+
+    philosophy:
+      team.philosophy ||
+      null,
+
+    championships:
+      team.championships ||
+      [],
+
+    defendingChampion:
+      Boolean(
+        team.defendingChampion
+      ),
+
+    rival:
+      team.rival ||
+      null,
+
+    previousSeasonSnapshot:
+      team.previousSeasonSnapshot ||
+      null,
+
+    currentSeasonForm:
+      team.currentSeasonForm ||
+      null,
+
+    draftCapital:
+      team.draftCapital ||
+      null,
+
+    recordedDraftCapitalTrades:
+      team.recordedDraftCapitalTrades ||
+      null,
+
+    editorialNotes:
+      team.editorialNotes ||
+      []
+  };
+}
+
+
+function buildWriterBrief(
+  packet
+) {
+  const memory =
+    packet
+      ?.league
+      ?.beatWriterContext ||
+    null;
+
+  if (!memory) {
+    return null;
+  }
+
+  return {
+    purpose:
+      memory.purpose ||
+      'Institutional Irving League context.',
+
+    directives:
+      memory.writerDirectives ||
+      [],
+
+    archiveCoverage:
+      memory.archiveCoverage ||
+      null,
+
+    capitalSnapshot:
+      memory.capitalSnapshot ||
+      null,
+
+    priorityStoryHooks:
+      memory.priorityStoryHooks ||
+      [],
+
+    currentMatchupSeries:
+      memory.currentMatchupSeries ||
+      [],
+
+    teams:
+      (
+        memory.teams ||
+        []
+      )
+        .map(
+          teamMemoryForAI
+        )
+        .filter(
+          Boolean
+        )
+  };
+}
+
+
+function matchupMemoryForAI(
+  matchup,
+  writerBrief
+) {
+  if (
+    !writerBrief
+  ) {
+    return null;
+  }
+
+  const series =
+    (
+      writerBrief
+        .currentMatchupSeries ||
+      []
+    ).find(
+      (row) =>
+        Number(
+          row.matchupId
+        ) ===
+        Number(
+          matchup.matchupId
+        )
+    ) ||
+    null;
+
+  const teamByName =
+    new Map(
+      (
+        writerBrief.teams ||
+        []
+      ).map(
+        (team) => [
+          team.teamName,
+          team
+        ]
+      )
+    );
+
+  return {
+    series,
+
+    leftTeamMemory:
+      teamMemoryForAI(
+        teamByName.get(
+          matchup.left
+            ?.teamName
+        )
+      ),
+
+    rightTeamMemory:
+      teamMemoryForAI(
+        teamByName.get(
+          matchup.right
+            ?.teamName
+        )
+      )
+  };
 }
 
 
 export function trimWeeklyRecapPacketForAI(
-	packet
+  packet
 ) {
-	return {
-		season:
-			packet.season,
+  const writerBrief =
+    buildWriterBrief(
+      packet
+    );
 
-		week:
-			packet.week,
+  return {
+    season:
+      packet.season,
 
-		league:
-			packet.league,
+    week:
+      packet.week,
 
-		leagueRules: {
-			weeklyStandings:
-				'Each team earns two standings decisions every week: one head-to-head result and one top-half scoring result. A weekly result is therefore normally 2-0, 1-1, or 0-2.',
+    league: {
+      id:
+        packet.league
+          ?.id ||
+        null,
 
-			terminology:
-				'FAAB amounts are dollar amounts. Team names and manager names are distinct; prefer team names in headlines and use manager names naturally in prose.'
-		},
+      name:
+        packet.league
+          ?.name ||
+        'Irving Championship League'
+    },
 
-		summary:
-			packet.summary,
+    /*
+     * Put the brain NEAR THE TOP instead of burying it inside league.
+     * The writer is explicitly instructed to read this before box scores.
+     */
+    writerBrief,
 
-		matchups:
-			(
-				packet.matchups ||
-				[]
-			).map(
-				(matchup) => ({
-					matchupId:
-						matchup.matchupId,
+    leagueRules: {
+      weeklyStandings:
+        'Each team earns two standings decisions every week: one head-to-head result and one top-half scoring result. A weekly result is therefore normally 2-0, 1-1, or 0-2.',
 
-					winnerName:
-						matchup.winnerName,
+      terminology:
+        'FAAB amounts are dollar amounts. Draft capital is future auction money and is not FAAB. Team names and manager names are distinct; prefer team names in headlines and use manager names naturally in prose.',
 
-					margin:
-						matchup.margin,
+      transactionWindow:
+        packet
+          .transactions
+          ?.editorialWindow ||
+        null
+    },
 
-					totalScore:
-						matchup.totalScore,
+    summary:
+      packet.summary,
 
-					left:
-						sideForAI(
-							matchup.left
-						),
+    matchups:
+      (
+        packet.matchups ||
+        []
+      ).map(
+        (matchup) => ({
+          matchupId:
+            matchup.matchupId,
 
-					right:
-						sideForAI(
-							matchup.right
-						)
-				})
-			),
+          winnerName:
+            matchup.winnerName,
 
-		highlights: {
-			highestScore:
-				packet
-					.storyFacts
-					?.scoring
-					?.highestScore ||
-				null,
+          margin:
+            matchup.margin,
 
-			lowestScore:
-				packet
-					.storyFacts
-					?.scoring
-					?.lowestScore ||
-				null,
+          totalScore:
+            matchup.totalScore,
 
-			highestScoringLoser:
-				packet
-					.storyFacts
-					?.scoring
-					?.highestScoringLoser ||
-				null,
+          left:
+            sideForAI(
+              matchup.left
+            ),
 
-			benchExplosion:
-				packet
-					.storyFacts
-					?.scoring
-					?.benchExplosion ||
-				null,
+          right:
+            sideForAI(
+              matchup.right
+            ),
 
-			biggestClimber:
-				packet
-					.storyFacts
-					?.standings
-					?.biggestClimber ||
-				null,
+          historicalContext:
+            matchupMemoryForAI(
+              matchup,
+              writerBrief
+            )
+        })
+      ),
 
-			biggestFaller:
-				packet
-					.storyFacts
-					?.standings
-					?.biggestFaller ||
-				null,
+    highlights: {
+      highestScore:
+        packet
+          .storyFacts
+          ?.scoring
+          ?.highestScore ||
+        null,
 
-			biggestFaabSpend:
-				packet
-					.storyFacts
-					?.faab
-					?.biggestSpend ||
-				null
-		},
+      lowestScore:
+        packet
+          .storyFacts
+          ?.scoring
+          ?.lowestScore ||
+        null,
 
-		standings: {
-			medianScore:
-				packet
-					.standings
-					?.medianScore ??
-				null,
+      highestScoringLoser:
+        packet
+          .storyFacts
+          ?.scoring
+          ?.highestScoringLoser ||
+        null,
 
-			movement:
-				(
-					packet
-						.standings
-						?.movement ||
-					[]
-				).map(
-					movementForAI
-				)
-		},
+      benchExplosion:
+        packet
+          .storyFacts
+          ?.scoring
+          ?.benchExplosion ||
+        null,
 
-		transactions: {
-			waivers:
-				(
-					packet
-						.transactions
-						?.waivers ||
-					[]
-				).map(
-					waiverForAI
-				),
+      biggestClimber:
+        packet
+          .storyFacts
+          ?.standings
+          ?.biggestClimber ||
+        null,
 
-			freeAgents:
-				(
-					packet
-						.transactions
-						?.freeAgents ||
-					[]
-				).map(
-					freeAgentForAI
-				),
+      biggestFaller:
+        packet
+          .storyFacts
+          ?.standings
+          ?.biggestFaller ||
+        null,
 
-			trades:
-				(
-					packet
-						.transactions
-						?.trades ||
-					[]
-				).map(
-					tradeForAI
-				)
-		},
+      biggestFaabSpend:
+        packet
+          .storyFacts
+          ?.faab
+          ?.biggestSpend ||
+        null
+    },
 
-		awards:
-			(
-				packet
-					.storyFacts
-					?.weeklyAwards
-					?.all ||
-				[]
-			).map(
-				badgeForAI
-			),
+    standings: {
+      medianScore:
+        packet
+          .standings
+          ?.medianScore ??
+        null,
 
-		warnings: [
-			...(
-				packet
-					.storyFacts
-					?.warnings ||
-				[]
-			),
+      movement:
+        (
+          packet
+            .standings
+            ?.movement ||
+          []
+        ).map(
+          movementForAI
+        )
+    },
 
-			...(
-				packet
-					.enrichment
-					?.warnings ||
-				[]
-			)
-		]
-	};
+    transactions: {
+      editorialWindow:
+        packet
+          .transactions
+          ?.editorialWindow ||
+        null,
+
+      waivers:
+        (
+          packet
+            .transactions
+            ?.waivers ||
+          []
+        ).map(
+          waiverForAI
+        ),
+
+      freeAgents:
+        (
+          packet
+            .transactions
+            ?.freeAgents ||
+          []
+        ).map(
+          freeAgentForAI
+        ),
+
+      trades:
+        (
+          packet
+            .transactions
+            ?.trades ||
+          []
+        ).map(
+          tradeForAI
+        )
+    },
+
+    awards:
+      (
+        packet
+          .storyFacts
+          ?.weeklyAwards
+          ?.all ||
+        []
+      ).map(
+        badgeForAI
+      ),
+
+    warnings: [
+      ...(
+        packet
+          .storyFacts
+          ?.warnings ||
+        []
+      ),
+
+      ...(
+        packet
+          .enrichment
+          ?.warnings ||
+        []
+      )
+    ]
+  };
 }
 
 
 const WRITER_INSTRUCTIONS = `
-You are the longtime weekly beat writer for the Irving Championship League, a 14-team fantasy football league.
+You are Eli Lang, the longtime weekly beat writer for the Irving Championship League, a 14-team fantasy football league.
 
-You are not writing a data summary.
-You are writing a weekly sports column.
+You are NOT writing a database summary.
+You are writing a league sports column by somebody who knows these franchises, their baggage, their rivalries, and why this week's results matter.
 
-Before writing, silently identify the 1-2 strongest narratives in the supplied facts:
-- a standings shakeup
-- an absurd matchup
-- a brutal loss
-- a huge scoring week
-- waiver spending
-- trade chaos
-- lineup regret
-- an unusual badge result
-- another genuinely notable supplied event
+MOST IMPORTANT WORKFLOW:
+1. READ writerBrief FIRST.
+2. Then read the current-week matchup, standings, transaction, and award facts.
+3. Ask: "Why does this matter in the larger Irving story?"
+4. Build the article around the answer.
 
-Use those narratives to shape the headline, subtitle, opening, and overall tone.
+THE LEAGUE BRAIN:
+- writerBrief is first-class source material, not optional flavor.
+- priorityStoryHooks are commissioner-approved or automatically derived story angles worth considering.
+- currentMatchupSeries contains available head-to-head history.
+- each matchup also includes historicalContext with team memory and relevant series history.
+- editorialNotes are commissioner-approved league lore and context.
+- When relevant writerBrief context exists, use it.
+- Across a normal article with useful memory available, aim for roughly 2-4 natural historical/contextual callbacks.
+- If the featured matchup or opening has a directly relevant rivalry, title-window, championship, rebuild, capital, or series beat, use at least one such beat there.
+- Do NOT force history where it does not illuminate the current event.
+- Do NOT dump biographies, title lists, or trivia.
+- Make the history feel remembered, not pasted in.
 
 VOICE:
 - Sound like a sharp local sports columnist who has covered this league for years.
 - Funny, conversational, confident, occasionally profane when it genuinely improves the line.
 - Light trash talk is encouraged.
 - Make fun of results, roster decisions, FAAB behavior, and fantasy misfortune more than the actual people.
-- Be specific. Jokes should come from the supplied facts.
+- Be specific. Jokes should come from supplied facts or supplied league lore.
 - Do not force a joke into every paragraph.
 - Vary sentence rhythm and joke structure.
 - Do not sound like an announcer reading a box score.
@@ -885,7 +1348,9 @@ FACT RULES:
 - NEVER invent scores, players, transactions, FAAB amounts, standings, records, rankings, injuries, NFL performances, rivalries, history, quotes, or motivations.
 - Do not use outside NFL knowledge.
 - Do not infer facts from a player's reputation or real-world career.
-- You may use jokes, metaphors, exaggerations, and editorial observations, but factual claims must be supported by the packet.
+- Editorial notes MAY establish context or cause/effect because the commissioner explicitly supplied them.
+- Automatic historical data establishes prior results and trends, not motives.
+- If archive coverage does not include a manager's whole career, say "in the available archive" rather than "all time."
 - If information is not supplied, leave it out.
 - Never turn uncertainty into certainty.
 
@@ -900,15 +1365,12 @@ HEADLINE:
 - Do not put "recap" in the title unless it is part of a joke.
 - The subtitle should add 2-3 secondary storylines rather than repeat the title.
 - Do not cram every statistic into the subtitle.
-- Section headlines should not simply restate the main headline.
-- If the main headline already focuses on a standings story, use the Standings Watch headline to highlight a different movement or consequence.
 
 OPENING:
-- Open on the strongest narrative, not a transaction count or checklist of everything that occurred.
+- Open on the strongest narrative, not a transaction count or checklist.
 - Do not begin with "Week X brought..." or "Week X saw..."
 - Establish the week's personality in the first 1-2 sentences.
-- Fold supporting facts into the opening naturally.
-- Do not explain every section of the article in advance.
+- When a current result connects directly to supplied league history, use that connection early.
 - Target roughly 80-140 words.
 
 MATCHUPS:
@@ -920,19 +1382,18 @@ MATCHUPS:
 FEATURED MATCHUP:
 - Treat it like the game of the week.
 - Target roughly 100-160 words.
-- Explain why it mattered or why it was interesting using supplied facts.
+- Explain why it mattered using both current facts and relevant supplied league memory.
 - Highlight relevant player performances.
-- Use standings consequences, badges, bench mistakes, or weekly-result implications when supplied.
+- Use standings consequences, rivalry context, prior meetings, title/rebuild context, badges, or weekly-result implications when supplied.
 
 NON-FEATURED MATCHUPS:
-- Keep these noticeably tighter than the featured game.
 - Target roughly 45-85 words each.
-- Do not mechanically list three players from both teams.
+- Do not mechanically list players.
 - Find the most interesting angle and get out.
-- If the matchup was boring, it is okay for the recap to be brief and funny.
+- If historical context adds something real, use one clean callback rather than a history dump.
 
 LINEUP REGRET:
-- Do not claim a bench player would have changed a matchup unless the supplied awards data explicitly establishes a legal replacement that flips the result.
+- Do not claim a bench player would have changed a matchup unless supplied awards data explicitly establishes a legal replacement that flips the result.
 - "Bench Explosion" only means somebody scored heavily on the bench.
 - Cap'n Hindsight facts may be described as genuine missed lineup opportunities because those were calculated by league code.
 
@@ -941,475 +1402,471 @@ STANDINGS:
   1. head-to-head result
   2. top-half scoring result
 - Weekly records are therefore normally 2-0, 1-1, or 0-2.
-- Explain this system ONLY when it materially helps explain an unusual result.
-- Do not re-explain the two-result format multiple times in the same article.
-- Focus on movement: who climbed, who fell, who took first, who preserved position, and who wasted an opportunity.
+- Explain this system ONLY when materially useful.
+- Focus on movement and consequence.
 - Target roughly 70-120 words.
 
 WAIVERS:
-- Focus on the biggest FAAB decisions and the most interesting pickups.
+- The supplied waiver/free-agent list has already been assigned to the correct Irving editorial week.
+- Do NOT second-guess or reassign it based on the Sleeper transaction round.
+- Focus on the biggest FAAB decisions and most interesting pickups.
 - Do not enumerate every free-agent move.
 - Prefer 2-4 notable claims unless more are truly important.
 - Never confuse a free-agent pickup with a paid waiver claim.
-- Do not describe equal total spending as one manager "outspending" another.
 - Target the section body to roughly 70-120 words.
 
 NOTABLE WAIVER CLAIM CARDS:
 - Commentary should usually be one short sentence.
 - Avoid repeating the exact same information already stated in the section body.
-- Focus on the price, the player, or why the move stands out from the week's activity.
+- Focus on the price, player, or why the move stands out.
 
-TRADES:
+TRADES — CRITICAL DIRECTION RULE:
 - Include every supplied trade.
-- Trade items should be concise because active weeks may contain many deals.
-- Each trade item should usually be 25-60 words.
+- Each trade contains sides[].
+- sides[].receives means EXACTLY what that team RECEIVED.
+- sides[].sends means EXACTLY what that team SENT AWAY.
+- sides[].receivesCapital means capital that team RECEIVED.
+- sides[].sendsCapital means capital that team SENT AWAY.
+- NEVER reverse a trade.
+- NEVER infer direction from prose, summary text, or player reputation.
+- If there is any ambiguity, write the explicit construction:
+  "Team A received X; Team B received Y."
+- Trade items should usually be 25-60 words.
 - Headlines should usually be 4-10 words.
-- Do NOT write every trade as:
-  "Team A received X. Team B received Y."
-- Vary the construction naturally:
-  "Amherst landed C.J. Stroud..."
-  "Dunedin paid Rico Dowdle and $75..."
-  "Nakatomi and Rebel Radio swapped..."
-- Accuracy still comes first. If a more natural sentence becomes ambiguous, use the explicit version.
 - Do not judge who "won" a trade using future knowledge.
-- Do not call a trade a steal, robbery, fleece, disaster, or victory unless the supplied facts themselves establish something that justifies that description.
-- Target the Trade Desk introduction to roughly 50-100 words.
 
 DRAFT CAPITAL:
 - capitalStatus = "capital" means the trade definitely included draft capital.
-- When capitalStatus = "capital", accurately include the supplied year, amount, sender, and receiver when relevant.
-- capitalStatus = "no_capital" means the trade was explicitly confirmed to contain no draft capital.
+- Accurately preserve the supplied year, amount, sender, and receiver.
+- capitalStatus = "no_capital" means no draft capital.
 - capitalStatus = "unknown" means the capital component has NOT been established.
-- NEVER say "no draft capital was exchanged" when capitalStatus is "unknown".
-- If capitalStatus is unknown, omit capital commentary or explicitly say it was not confirmed.
+- NEVER turn unknown into "no capital."
+- Draft capital is future auction money, NOT FAAB.
 
 AWARDS:
-- Use the supplied awards accurately.
+- Use supplied awards accurately.
 - Rewrite the presentation in your own voice rather than simply copying the supplied reason.
-- Repeated instances of the same badge may be grouped into one award item when that reads better.
-- Zero Hour and Bye Bye Bye especially may be grouped rather than creating a wall of nearly identical cards.
-- Cap'n Hindsight items may remain separate when each tells a distinct matchup story.
+- Repeated instances may be grouped when that reads better.
 - Award commentary should usually be 25-60 words.
-- When many Cap'n Hindsight awards exist, feature the 1-3 most dramatic swings in the article.
-- Do not feel obligated to create a separate article card for every repeated badge candidate.
 
 CLOSING:
-- Do not merely summarize the article again.
-- End with a short punchline, lingering storyline, standings tension, or warning for the next week.
+- Do not merely summarize the article.
+- End with a short punchline, lingering storyline, standings tension, or next-week pressure.
 - Target roughly 35-70 words.
 - Do not use "only time will tell."
 
 STYLE:
 - Prefer short and medium paragraphs.
 - Prefer vivid specifics over generic adjectives.
-- Avoid repeating team names unnecessarily within the same paragraph.
-- Use manager names naturally, but team names should remain the primary fantasy identities.
+- Avoid repeating team names unnecessarily.
+- Use manager names naturally, but team names remain the primary fantasy identities.
 - Avoid explaining obvious arithmetic.
-- Do not describe every notable event as historic, wild, insane, massive, or shocking.
 - Let truly strange facts carry their own weight.
 - The complete article should feel substantial but brisk.
 `;
 
 
 function extractOutputText(
-	response
+  response
 ) {
-	const parts =
-		[];
+  const parts =
+    [];
 
-	for (
-		const item of
-			response?.output ||
-		[]
-	) {
-		if (
-			item?.type !==
-			'message'
-		) {
-			continue;
-		}
+  for (
+    const item of
+      response?.output ||
+    []
+  ) {
+    if (
+      item?.type !==
+      'message'
+    ) {
+      continue;
+    }
 
-		for (
-			const content of
-				item.content ||
-			[]
-		) {
-			if (
-				content?.type ===
-				'refusal'
-			) {
-				throw new Error(
-					content.refusal ||
-					'OpenAI refused to generate the recap.'
-				);
-			}
+    for (
+      const content of
+        item.content ||
+      []
+    ) {
+      if (
+        content?.type ===
+        'refusal'
+      ) {
+        throw new Error(
+          content.refusal ||
+          'OpenAI refused to generate the recap.'
+        );
+      }
 
-			if (
-				content?.type ===
-					'output_text' &&
-				typeof content.text ===
-					'string'
-			) {
-				parts.push(
-					content.text
-				);
-			}
-		}
-	}
+      if (
+        content?.type ===
+          'output_text' &&
+        typeof content.text ===
+          'string'
+      ) {
+        parts.push(
+          content.text
+        );
+      }
+    }
+  }
 
-	return parts
-		.join('')
-		.trim();
+  return parts
+    .join('')
+    .trim();
 }
 
 
 function assertRecapShape(
-	recap
+  recap
 ) {
-	if (
-		!recap ||
-		typeof recap !==
-			'object' ||
-		Array.isArray(
-			recap
-		)
-	) {
-		throw new Error(
-			'OpenAI returned an invalid recap object.'
-		);
-	}
+  if (
+    !recap ||
+    typeof recap !==
+      'object' ||
+    Array.isArray(
+      recap
+    )
+  ) {
+    throw new Error(
+      'OpenAI returned an invalid recap object.'
+    );
+  }
 
-	for (
-		const field of [
-			'title',
-			'subtitle',
-			'opening',
-			'closing'
-		]
-	) {
-		if (
-			typeof recap[field] !==
-			'string'
-		) {
-			throw new Error(
-				`OpenAI recap is missing "${field}".`
-			);
-		}
-	}
+  for (
+    const field of [
+      'title',
+      'subtitle',
+      'opening',
+      'closing'
+    ]
+  ) {
+    if (
+      typeof recap[field] !==
+        'string'
+    ) {
+      throw new Error(
+        `OpenAI recap is missing "${field}".`
+      );
+    }
+  }
 
-	if (
-		!Array.isArray(
-			recap.matchupRecaps
-		)
-	) {
-		throw new Error(
-			'OpenAI recap is missing matchupRecaps.'
-		);
-	}
+  if (
+    !Array.isArray(
+      recap.matchupRecaps
+    )
+  ) {
+    throw new Error(
+      'OpenAI recap is missing matchupRecaps.'
+    );
+  }
 
-	if (
-		!recap.waiverWire ||
-		typeof recap.waiverWire !==
-			'object'
-	) {
-		throw new Error(
-			'OpenAI recap is missing waiverWire.'
-		);
-	}
+  if (
+    !recap.waiverWire ||
+    typeof recap.waiverWire !==
+      'object'
+  ) {
+    throw new Error(
+      'OpenAI recap is missing waiverWire.'
+    );
+  }
 
-	if (
-		!recap.tradeDesk ||
-		typeof recap.tradeDesk !==
-			'object'
-	) {
-		throw new Error(
-			'OpenAI recap is missing tradeDesk.'
-		);
-	}
+  if (
+    !recap.tradeDesk ||
+    typeof recap.tradeDesk !==
+      'object'
+  ) {
+    throw new Error(
+      'OpenAI recap is missing tradeDesk.'
+    );
+  }
 
-	if (
-		!recap.standings ||
-		typeof recap.standings !==
-			'object'
-	) {
-		throw new Error(
-			'OpenAI recap is missing standings.'
-		);
-	}
+  if (
+    !recap.standings ||
+    typeof recap.standings !==
+      'object'
+  ) {
+    throw new Error(
+      'OpenAI recap is missing standings.'
+    );
+  }
 
-	if (
-		!recap.awards ||
-		typeof recap.awards !==
-			'object'
-	) {
-		throw new Error(
-			'OpenAI recap is missing awards.'
-		);
-	}
+  if (
+    !recap.awards ||
+    typeof recap.awards !==
+      'object'
+  ) {
+    throw new Error(
+      'OpenAI recap is missing awards.'
+    );
+  }
 }
 
 
 export async function generateWeeklyRecap({
-	packet,
-	apiKey
+  packet,
+  apiKey
 } = {}) {
-	if (!packet) {
-		throw new Error(
-			'Weekly recap packet is required.'
-		);
-	}
+  if (!packet) {
+    throw new Error(
+      'Weekly recap packet is required.'
+    );
+  }
 
-	const cleanApiKey =
-		String(
-			apiKey ||
-			''
-		).trim();
+  const cleanApiKey =
+    String(
+      apiKey ||
+      ''
+    ).trim();
 
-	if (!cleanApiKey) {
-		throw new Error(
-			'OPENAI_API_KEY is not configured.'
-		);
-	}
+  if (!cleanApiKey) {
+    throw new Error(
+      'OPENAI_API_KEY is not configured.'
+    );
+  }
 
-	const aiPacket =
-		trimWeeklyRecapPacketForAI(
-			packet
-		);
+  const aiPacket =
+    trimWeeklyRecapPacketForAI(
+      packet
+    );
 
-	const userPrompt = [
-		`Write the Irving Championship League column for ${packet.season} Week ${packet.week}.`,
-		'',
-		'Treat this as a sports column, not a database summary.',
-		'Choose the strongest story of the week and build the headline/opening around it.',
-		'Keep secondary matchup and trade blurbs tight.',
-		'',
-		'AUTHORITATIVE WEEKLY PACKET:',
-		JSON.stringify(
-			aiPacket
-		)
-	].join(
-		'\n'
-	);
+  const userPrompt = [
+    `Write the Irving Championship League column for ${packet.season} Week ${packet.week}.`,
+    '',
+    'READ writerBrief FIRST. Treat it as the league beat writer memory that explains why current events matter.',
+    'Then use the current-week facts to write the column.',
+    'This should feel like the writer has covered these managers for years, not like a box-score generator.',
+    '',
+    'AUTHORITATIVE WEEKLY PACKET:',
+    JSON.stringify(
+      aiPacket
+    )
+  ].join(
+    '\n'
+  );
 
-	const response =
-		await fetch(
-			'https://api.openai.com/v1/responses',
-			{
-				method:
-					'POST',
+  const response =
+    await fetch(
+      'https://api.openai.com/v1/responses',
+      {
+        method:
+          'POST',
 
-				headers: {
-					authorization:
-						`Bearer ${cleanApiKey}`,
+        headers: {
+          authorization:
+            `Bearer ${cleanApiKey}`,
 
-					'content-type':
-						'application/json',
+          'content-type':
+            'application/json',
 
-					accept:
-						'application/json'
-				},
+          accept:
+            'application/json'
+        },
 
-				body:
-					JSON.stringify({
-						model:
-							'gpt-5.6-terra',
+        body:
+          JSON.stringify({
+            model:
+              'gpt-5.6-terra',
 
-						reasoning: {
-							effort:
-								'low'
-						},
+            reasoning: {
+              effort:
+                'medium'
+            },
 
-						store:
-							false,
+            store:
+              false,
 
-						input: [
-							{
-								role:
-									'system',
+            input: [
+              {
+                role:
+                  'system',
 
-								content: [
-									{
-										type:
-											'input_text',
+                content: [
+                  {
+                    type:
+                      'input_text',
 
-										text:
-											WRITER_INSTRUCTIONS
-									}
-								]
-							},
+                    text:
+                      WRITER_INSTRUCTIONS
+                  }
+                ]
+              },
 
-							{
-								role:
-									'user',
+              {
+                role:
+                  'user',
 
-								content: [
-									{
-										type:
-											'input_text',
+                content: [
+                  {
+                    type:
+                      'input_text',
 
-										text:
-											userPrompt
-									}
-								]
-							}
-						],
+                    text:
+                      userPrompt
+                  }
+                ]
+              }
+            ],
 
-						text: {
-							format: {
-								type:
-									'json_schema',
+            text: {
+              format: {
+                type:
+                  'json_schema',
 
-								name:
-									'irving_weekly_recap',
+                name:
+                  'irving_weekly_recap',
 
-								strict:
-									true,
+                strict:
+                  true,
 
-								schema:
-									WeeklyRecapSchema
-							}
-						}
-					})
-			}
-		);
+                schema:
+                  WeeklyRecapSchema
+              }
+            }
+          })
+      }
+    );
 
-	const rawBody =
-		await response.text();
+  const rawBody =
+    await response.text();
 
-	if (!response.ok) {
-		const requestId =
-			response.headers.get(
-				'x-request-id'
-			);
+  if (!response.ok) {
+    const requestId =
+      response.headers.get(
+        'x-request-id'
+      );
 
-		let message =
-			rawBody;
+    let message =
+      rawBody;
 
-		try {
-			const parsedError =
-				JSON.parse(
-					rawBody
-				);
+    try {
+      const parsedError =
+        JSON.parse(
+          rawBody
+        );
 
-			message =
-				parsedError
-					?.error
-					?.message ||
-				parsedError
-					?.message ||
-				rawBody;
-		} catch {
-			/*
-			 * Keep the raw response
-			 * body if it wasn't JSON.
-			 */
-		}
+      message =
+        parsedError
+          ?.error
+          ?.message ||
+        parsedError
+          ?.message ||
+        rawBody;
+    } catch {
+      // Keep raw body.
+    }
 
-		throw new Error(
-			[
-				`OpenAI request failed with HTTP ${response.status}.`,
+    throw new Error(
+      [
+        `OpenAI request failed with HTTP ${response.status}.`,
 
-				message ||
-					null,
+        message ||
+          null,
 
-				requestId
-					? `Request ID: ${requestId}`
-					: null
-			]
-				.filter(
-					Boolean
-				)
-				.join(
-					' '
-				)
-		);
-	}
+        requestId
+          ? `Request ID: ${requestId}`
+          : null
+      ]
+        .filter(
+          Boolean
+        )
+        .join(
+          ' '
+        )
+    );
+  }
 
-	let responseJson;
+  let responseJson;
 
-	try {
-		responseJson =
-			JSON.parse(
-				rawBody
-			);
-	} catch {
-		throw new Error(
-			'OpenAI returned a non-JSON Responses API payload.'
-		);
-	}
+  try {
+    responseJson =
+      JSON.parse(
+        rawBody
+      );
+  } catch {
+    throw new Error(
+      'OpenAI returned a non-JSON Responses API payload.'
+    );
+  }
 
-	if (
-		responseJson?.error
-	) {
-		throw new Error(
-			responseJson
-				.error
-				.message ||
-			'OpenAI returned an error.'
-		);
-	}
+  if (
+    responseJson?.error
+  ) {
+    throw new Error(
+      responseJson
+        .error
+        .message ||
+      'OpenAI returned an error.'
+    );
+  }
 
-	if (
-		responseJson?.status ===
-		'incomplete'
-	) {
-		const reason =
-			responseJson
-				?.incomplete_details
-				?.reason;
+  if (
+    responseJson?.status ===
+    'incomplete'
+  ) {
+    const reason =
+      responseJson
+        ?.incomplete_details
+        ?.reason;
 
-		throw new Error(
-			`OpenAI response was incomplete${
-				reason
-					? `: ${reason}`
-					: '.'
-			}`
-		);
-	}
+    throw new Error(
+      `OpenAI response was incomplete${
+        reason
+          ? `: ${reason}`
+          : '.'
+      }`
+    );
+  }
 
-	const outputText =
-		extractOutputText(
-			responseJson
-		);
+  const outputText =
+    extractOutputText(
+      responseJson
+    );
 
-	if (!outputText) {
-		throw new Error(
-			'OpenAI returned no recap text.'
-		);
-	}
+  if (!outputText) {
+    throw new Error(
+      'OpenAI returned no recap text.'
+    );
+  }
 
-	let recap;
+  let recap;
 
-	try {
-		recap =
-			JSON.parse(
-				outputText
-			);
-	} catch {
-		throw new Error(
-			'OpenAI returned recap text that was not valid JSON.'
-		);
-	}
+  try {
+    recap =
+      JSON.parse(
+        outputText
+      );
+  } catch {
+    throw new Error(
+      'OpenAI returned recap text that was not valid JSON.'
+    );
+  }
 
-	assertRecapShape(
-		recap
-	);
+  assertRecapShape(
+    recap
+  );
 
-	return {
-		recap,
+  return {
+    recap,
 
-		meta: {
-			responseId:
-				responseJson.id ||
-				null,
+    meta: {
+      responseId:
+        responseJson.id ||
+        null,
 
-			model:
-				responseJson.model ||
-				'gpt-5.6-terra',
+      model:
+        responseJson.model ||
+        'gpt-5.6-terra',
 
-			generatedAt:
-				new Date()
-					.toISOString()
-		}
-	};
+      generatedAt:
+        new Date()
+          .toISOString(),
+
+      writerBriefUsed:
+        Boolean(
+          aiPacket.writerBrief
+        )
+    }
+  };
 }

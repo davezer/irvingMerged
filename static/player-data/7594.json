@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:42.705Z",
+  "generatedAt": "2026-09-22T21:11:19.900Z",
   "playerId": "7594",
   "profile": {
     "id": "7594",
@@ -1327,17 +1327,17 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 22.2,
-        "fantasyPointsPerGame": 22.2,
+        "games": 2,
+        "fantasyPoints": 35.6,
+        "fantasyPointsPerGame": 17.8,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 49,
+        "rushingYards": 102,
         "rushingTds": 1,
-        "receptions": 3,
-        "receivingYards": 38,
-        "receivingTds": 1,
+        "receptions": 5,
+        "receivingYards": 49,
+        "receivingTds": 2,
         "fumblesLost": 0
       },
       "games": [
@@ -1363,6 +1363,32 @@
             "targets": 3,
             "receptions": 3,
             "yards": 38,
+            "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "CAR",
+          "opponent": "ATL",
+          "fantasyPoints": 13.4,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 12,
+            "yards": 53,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 2,
+            "receptions": 2,
+            "yards": 11,
             "tds": 1
           },
           "fumblesLost": 0

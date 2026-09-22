@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:41.019Z",
+  "generatedAt": "2026-09-22T21:11:18.224Z",
   "playerId": "8110",
   "profile": {
     "id": "8110",
@@ -1353,17 +1353,17 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 1.6,
-        "fantasyPointsPerGame": 1.6,
+        "games": 2,
+        "fantasyPoints": 19.9,
+        "fantasyPointsPerGame": 9.95,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 2,
-        "receivingYards": 6,
-        "receivingTds": 0,
+        "receptions": 6,
+        "receivingYards": 49,
+        "receivingTds": 2,
         "fumblesLost": 0
       },
       "games": [
@@ -1390,6 +1390,32 @@
             "receptions": 2,
             "yards": 6,
             "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "DAL",
+          "opponent": "WAS",
+          "fantasyPoints": 18.3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 4,
+            "receptions": 4,
+            "yards": 43,
+            "tds": 2
           },
           "fumblesLost": 0
         }

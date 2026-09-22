@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:41.679Z",
+  "generatedAt": "2026-09-22T21:11:18.858Z",
   "playerId": "12527",
   "profile": {
     "id": "12527",
@@ -545,16 +545,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 29.7,
-        "fantasyPointsPerGame": 29.7,
+        "games": 2,
+        "fantasyPoints": 38,
+        "fantasyPointsPerGame": 19,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 102,
+        "rushingYards": 150,
         "rushingTds": 0,
-        "receptions": 6,
-        "receivingYards": 45,
+        "receptions": 10,
+        "receivingYards": 60,
         "receivingTds": 2,
         "fumblesLost": 0
       },
@@ -582,6 +582,32 @@
             "receptions": 6,
             "yards": 45,
             "tds": 2
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "LV",
+          "opponent": "LAC",
+          "fantasyPoints": 8.3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 21,
+            "yards": 48,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 7,
+            "receptions": 4,
+            "yards": 15,
+            "tds": 0
           },
           "fumblesLost": 0
         }

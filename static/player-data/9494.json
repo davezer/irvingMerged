@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:48.277Z",
+  "generatedAt": "2026-09-22T21:11:25.708Z",
   "playerId": "9494",
   "profile": {
     "id": "9494",
@@ -15,9 +15,9 @@
     "yearsExp": 3,
     "college": "Oklahoma",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": "Out",
     "practiceParticipation": null,
-    "depthChartOrder": 4,
+    "depthChartOrder": 5,
     "fantasyPositions": [
       "WR"
     ],

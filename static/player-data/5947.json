@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:37.881Z",
+  "generatedAt": "2026-09-22T21:11:15.109Z",
   "playerId": "5947",
   "profile": {
     "id": "5947",
@@ -15,7 +15,7 @@
     "yearsExp": 7,
     "college": "NC State",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 3,
     "fantasyPositions": [
@@ -1327,16 +1327,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 11.2,
-        "fantasyPointsPerGame": 11.2,
+        "games": 2,
+        "fantasyPoints": 14.5,
+        "fantasyPointsPerGame": 7.25,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 2,
         "rushingTds": 0,
-        "receptions": 2,
-        "receivingYards": 40,
+        "receptions": 3,
+        "receivingYards": 68,
         "receivingTds": 1,
         "fumblesLost": 0
       },
@@ -1364,6 +1364,32 @@
             "receptions": 2,
             "yards": 40,
             "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "JAX",
+          "opponent": "DEN",
+          "fantasyPoints": 3.3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 28,
+            "tds": 0
           },
           "fumblesLost": 0
         }

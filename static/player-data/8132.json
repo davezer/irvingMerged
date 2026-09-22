@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:48.117Z",
+  "generatedAt": "2026-09-22T21:11:25.545Z",
   "playerId": "8132",
   "profile": {
     "id": "8132",
@@ -1431,16 +1431,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 8,
-        "fantasyPointsPerGame": 8,
+        "games": 2,
+        "fantasyPoints": 10.9,
+        "fantasyPointsPerGame": 5.45,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 61,
+        "rushingYards": 71,
         "rushingTds": 0,
-        "receptions": 2,
-        "receivingYards": 9,
+        "receptions": 4,
+        "receivingYards": 18,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1461,6 +1461,32 @@
           "rushing": {
             "attempts": 17,
             "yards": 61,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 2,
+            "receptions": 2,
+            "yards": 9,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "ARI",
+          "opponent": "SEA",
+          "fantasyPoints": 2.9,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 5,
+            "yards": 10,
             "tds": 0
           },
           "receiving": {

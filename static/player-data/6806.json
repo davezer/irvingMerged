@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:36.746Z",
+  "generatedAt": "2026-09-22T21:11:13.990Z",
   "playerId": "6806",
   "profile": {
     "id": "6806",
@@ -15,7 +15,7 @@
     "yearsExp": 6,
     "college": "Ohio State",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -729,13 +729,13 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 3.6,
+        "games": 2,
+        "fantasyPoints": 7.2,
         "fantasyPointsPerGame": 3.6,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 36,
+        "rushingYards": 72,
         "rushingTds": 0,
         "receptions": 0,
         "receivingYards": 0,
@@ -758,6 +758,32 @@
           },
           "rushing": {
             "attempts": 8,
+            "yards": 36,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "DEN",
+          "opponent": "JAX",
+          "fantasyPoints": 3.6,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 10,
             "yards": 36,
             "tds": 0
           },

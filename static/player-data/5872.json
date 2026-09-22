@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:46.027Z",
+  "generatedAt": "2026-09-22T21:11:23.401Z",
   "playerId": "5872",
   "profile": {
     "id": "5872",
@@ -1301,16 +1301,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 15,
-        "fantasyPointsPerGame": 15,
+        "games": 2,
+        "fantasyPoints": 20,
+        "fantasyPointsPerGame": 10,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 12,
+        "rushingYards": 16,
         "rushingTds": 0,
-        "receptions": 6,
-        "receivingYards": 48,
+        "receptions": 9,
+        "receivingYards": 79,
         "receivingTds": 1,
         "fumblesLost": 0
       },
@@ -1338,6 +1338,32 @@
             "receptions": 6,
             "yards": 48,
             "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "SF",
+          "opponent": "MIA",
+          "fantasyPoints": 5,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": 4,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 4,
+            "receptions": 3,
+            "yards": 31,
+            "tds": 0
           },
           "fumblesLost": 0
         }

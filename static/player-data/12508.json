@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:43.555Z",
+  "generatedAt": "2026-09-22T21:11:20.731Z",
   "playerId": "12508",
   "profile": {
     "id": "12508",
@@ -15,7 +15,7 @@
     "yearsExp": 1,
     "college": "Ole Miss",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Out",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -467,10 +467,10 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 26.6,
-        "fantasyPointsPerGame": 26.6,
-        "passingYards": 230,
+        "games": 2,
+        "fantasyPoints": 27.4,
+        "fantasyPointsPerGame": 13.7,
+        "passingYards": 250,
         "passingTds": 3,
         "interceptions": 0,
         "rushingYards": 54,
@@ -497,6 +497,32 @@
           "rushing": {
             "attempts": 11,
             "yards": 54,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "NYG",
+          "opponent": "LA",
+          "fantasyPoints": 0.8,
+          "passing": {
+            "completions": 3,
+            "attempts": 5,
+            "yards": 20,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
             "tds": 0
           },
           "receiving": {

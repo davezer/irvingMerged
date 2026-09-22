@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:39.289Z",
+  "generatedAt": "2026-09-22T21:11:16.530Z",
   "playerId": "9757",
   "profile": {
     "id": "9757",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "TCU",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Out",
     "practiceParticipation": null,
     "depthChartOrder": 3,
     "fantasyPositions": [

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:47.133Z",
+  "generatedAt": "2026-09-22T21:11:24.614Z",
   "playerId": "7021",
   "profile": {
     "id": "7021",
@@ -15,7 +15,7 @@
     "yearsExp": 6,
     "college": "South Carolina",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [
@@ -1379,16 +1379,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 3.1,
-        "fantasyPointsPerGame": 3.1,
+        "games": 2,
+        "fantasyPoints": 8.5,
+        "fantasyPointsPerGame": 4.25,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 15,
+        "rushingYards": 37,
         "rushingTds": 0,
-        "receptions": 2,
-        "receivingYards": 6,
+        "receptions": 4,
+        "receivingYards": 28,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1415,6 +1415,32 @@
             "targets": 5,
             "receptions": 2,
             "yards": 6,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "PIT",
+          "opponent": "NE",
+          "fantasyPoints": 5.4,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 7,
+            "yards": 22,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 2,
+            "receptions": 2,
+            "yards": 22,
             "tds": 0
           },
           "fumblesLost": 0

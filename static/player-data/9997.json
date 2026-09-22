@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:47.285Z",
+  "generatedAt": "2026-09-22T21:11:24.798Z",
   "playerId": "9997",
   "profile": {
     "id": "9997",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "Boston College",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": "Out",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [

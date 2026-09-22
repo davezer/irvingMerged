@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:39.897Z",
+  "generatedAt": "2026-09-22T21:11:17.120Z",
   "playerId": "7526",
   "profile": {
     "id": "7526",
@@ -17,7 +17,7 @@
     "status": "Active",
     "injuryStatus": null,
     "practiceParticipation": null,
-    "depthChartOrder": 2,
+    "depthChartOrder": 1,
     "fantasyPositions": [
       "WR"
     ],
@@ -1275,16 +1275,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 0.7,
-        "fantasyPointsPerGame": 0.7,
+        "games": 2,
+        "fantasyPoints": 18.5,
+        "fantasyPointsPerGame": 9.25,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 1,
-        "receivingYards": 2,
+        "receptions": 9,
+        "receivingYards": 140,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1311,6 +1311,32 @@
             "targets": 3,
             "receptions": 1,
             "yards": 2,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "DEN",
+          "opponent": "JAX",
+          "fantasyPoints": 17.8,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 10,
+            "receptions": 8,
+            "yards": 138,
             "tds": 0
           },
           "fumblesLost": 0

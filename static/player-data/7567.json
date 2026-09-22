@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:36.803Z",
+  "generatedAt": "2026-09-22T21:11:14.048Z",
   "playerId": "7567",
   "profile": {
     "id": "7567",
@@ -1405,16 +1405,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 2.3,
-        "fantasyPointsPerGame": 2.3,
+        "games": 2,
+        "fantasyPoints": 5.3,
+        "fantasyPointsPerGame": 2.65,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 15,
+        "rushingYards": 25,
         "rushingTds": 0,
-        "receptions": 1,
-        "receivingYards": 3,
+        "receptions": 4,
+        "receivingYards": 8,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1441,6 +1441,32 @@
             "targets": 1,
             "receptions": 1,
             "yards": 3,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "TB",
+          "opponent": "CLE",
+          "fantasyPoints": 3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 10,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 4,
+            "receptions": 3,
+            "yards": 5,
             "tds": 0
           },
           "fumblesLost": 0

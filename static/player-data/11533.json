@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:40.610Z",
+  "generatedAt": "2026-09-22T21:11:17.811Z",
   "playerId": "11533",
   "profile": {
     "id": "11533",
@@ -1431,7 +1431,7 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
+        "games": 2,
         "fantasyPoints": 0,
         "fantasyPointsPerGame": 0,
         "passingYards": 0,
@@ -1450,6 +1450,32 @@
           "seasonType": "REG",
           "team": "DAL",
           "opponent": "NYG",
+          "fantasyPoints": 0,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "DAL",
+          "opponent": "WAS",
           "fantasyPoints": 0,
           "passing": {
             "completions": 0,

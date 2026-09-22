@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:43.375Z",
+  "generatedAt": "2026-09-22T21:11:20.587Z",
   "playerId": "11435",
   "profile": {
     "id": "11435",
@@ -17,7 +17,7 @@
     "status": "Active",
     "injuryStatus": null,
     "practiceParticipation": null,
-    "depthChartOrder": 3,
+    "depthChartOrder": 2,
     "fantasyPositions": [
       "RB"
     ],
@@ -1119,13 +1119,13 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 0.3,
-        "fantasyPointsPerGame": 0.3,
+        "games": 2,
+        "fantasyPoints": 9.5,
+        "fantasyPointsPerGame": 4.75,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 3,
+        "rushingYards": 95,
         "rushingTds": 0,
         "receptions": 0,
         "receivingYards": 0,
@@ -1153,6 +1153,32 @@
           },
           "receiving": {
             "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "SEA",
+          "opponent": "ARI",
+          "fantasyPoints": 9.2,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 21,
+            "yards": 92,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 1,
             "receptions": 0,
             "yards": 0,
             "tds": 0

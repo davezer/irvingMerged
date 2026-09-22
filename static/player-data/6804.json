@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:42.664Z",
+  "generatedAt": "2026-09-22T21:11:19.859Z",
   "playerId": "6804",
   "profile": {
     "id": "6804",
@@ -1327,11 +1327,11 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 19.48,
-        "fantasyPointsPerGame": 19.48,
-        "passingYards": 387,
-        "passingTds": 2,
+        "games": 2,
+        "fantasyPoints": 33.28,
+        "fantasyPointsPerGame": 16.64,
+        "passingYards": 532,
+        "passingTds": 4,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
@@ -1366,6 +1366,32 @@
             "tds": 0
           },
           "fumblesLost": 1
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "GB",
+          "opponent": "NYJ",
+          "fantasyPoints": 13.8,
+          "passing": {
+            "completions": 16,
+            "attempts": 29,
+            "yards": 145,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
         }
       ],
       "dataMatch": {

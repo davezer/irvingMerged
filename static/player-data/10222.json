@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:40.594Z",
+  "generatedAt": "2026-09-22T21:11:17.795Z",
   "playerId": "10222",
   "profile": {
     "id": "10222",
@@ -15,7 +15,7 @@
     "yearsExp": 3,
     "college": "Michigan State",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Out",
     "practiceParticipation": null,
     "depthChartOrder": 3,
     "fantasyPositions": [
@@ -1093,16 +1093,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 3.5,
-        "fantasyPointsPerGame": 3.5,
+        "games": 2,
+        "fantasyPoints": 4.4,
+        "fantasyPointsPerGame": 2.2,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 3,
-        "receivingYards": 20,
+        "receptions": 4,
+        "receivingYards": 24,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1129,6 +1129,32 @@
             "targets": 7,
             "receptions": 3,
             "yards": 20,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "GB",
+          "opponent": "NYJ",
+          "fantasyPoints": 0.9,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 1,
+            "receptions": 1,
+            "yards": 4,
             "tds": 0
           },
           "fumblesLost": 0

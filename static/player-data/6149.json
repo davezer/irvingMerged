@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:48.056Z",
+  "generatedAt": "2026-09-22T21:11:25.479Z",
   "playerId": "6149",
   "profile": {
     "id": "6149",
@@ -7,7 +7,7 @@
     "firstName": "Darius",
     "lastName": "Slayton",
     "position": "WR",
-    "team": "NYG",
+    "team": "IND",
     "number": 18,
     "age": 29,
     "height": "73",
@@ -17,7 +17,7 @@
     "status": "Active",
     "injuryStatus": null,
     "practiceParticipation": null,
-    "depthChartOrder": null,
+    "depthChartOrder": 7,
     "fantasyPositions": [
       "WR"
     ],

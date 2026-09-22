@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:44.969Z",
+  "generatedAt": "2026-09-22T21:11:22.203Z",
   "playerId": "4199",
   "profile": {
     "id": "4199",
@@ -15,7 +15,7 @@
     "yearsExp": 9,
     "college": "UTEP",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1145,13 +1145,13 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 10,
-        "fantasyPointsPerGame": 10,
+        "games": 2,
+        "fantasyPoints": 20.5,
+        "fantasyPointsPerGame": 10.25,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 40,
+        "rushingYards": 145,
         "rushingTds": 1,
         "receptions": 0,
         "receivingYards": 0,
@@ -1179,6 +1179,32 @@
           },
           "receiving": {
             "targets": 1,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "MIN",
+          "opponent": "CHI",
+          "fantasyPoints": 10.5,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 23,
+            "yards": 105,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
             "receptions": 0,
             "yards": 0,
             "tds": 0

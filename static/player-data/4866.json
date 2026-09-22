@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:47.032Z",
+  "generatedAt": "2026-09-22T21:11:24.508Z",
   "playerId": "4866",
   "profile": {
     "id": "4866",
@@ -15,7 +15,7 @@
     "yearsExp": 8,
     "college": "Penn State",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1301,16 +1301,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 8.5,
-        "fantasyPointsPerGame": 8.5,
+        "games": 2,
+        "fantasyPoints": 11,
+        "fantasyPointsPerGame": 5.5,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 83,
+        "rushingYards": 92,
         "rushingTds": 0,
-        "receptions": 1,
-        "receivingYards": -3,
+        "receptions": 2,
+        "receivingYards": 8,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1337,6 +1337,32 @@
             "targets": 2,
             "receptions": 1,
             "yards": -3,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "PHI",
+          "opponent": "TEN",
+          "fantasyPoints": 2.5,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 4,
+            "yards": 9,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 2,
+            "receptions": 1,
+            "yards": 11,
             "tds": 0
           },
           "fumblesLost": 0

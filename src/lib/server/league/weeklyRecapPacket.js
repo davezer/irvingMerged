@@ -43,52 +43,29 @@ import {
   buildWeeklyRecapLeagueMemory
 } from '$lib/server/league/weeklyRecapLeagueMemory.js';
 
+
 function compactPlayer(player) {
-  if (!player) {
-    return null;
-  }
+  if (!player) return null;
 
   return {
-    id:
-      String(player.id),
-
-    name:
-      player.name,
-
-    position:
-      player.position ||
-      null,
-
-    nflTeam:
-      player.team ||
-      null,
-
-    fantasyPoints:
-      player.fantasyPoints ??
-      null
+    id: String(player.id),
+    name: player.name,
+    position: player.position || null,
+    nflTeam: player.team || null,
+    fantasyPoints: player.fantasyPoints ?? null
   };
 }
 
+
 function compactSide(side) {
-  if (!side) {
-    return null;
-  }
+  if (!side) return null;
 
   return {
-    rosterId:
-      side.rosterId,
-
-    teamName:
-      side.teamName,
-
-    managerName:
-      side.managerName,
-
-    managerSlug:
-      side.managerSlug,
-
-    score:
-      side.score,
+    rosterId: side.rosterId,
+    teamName: side.teamName,
+    managerName: side.managerName,
+    managerSlug: side.managerSlug,
+    score: side.score,
 
     starters:
       (side.starters || [])
@@ -102,196 +79,109 @@ function compactSide(side) {
   };
 }
 
+
 function compactMatchup(matchup) {
   return {
-    matchupId:
-      matchup.matchupId,
-
-    left:
-      compactSide(
-        matchup.left
-      ),
-
-    right:
-      compactSide(
-        matchup.right
-      ),
-
-    winnerRosterId:
-      matchup.winner,
-
-    winnerName:
-      matchup.winnerName,
-
-    margin:
-      matchup.margin,
-
-    totalScore:
-      matchup.totalScore
+    matchupId: matchup.matchupId,
+    left: compactSide(matchup.left),
+    right: compactSide(matchup.right),
+    winnerRosterId: matchup.winner,
+    winnerName: matchup.winnerName,
+    margin: matchup.margin,
+    totalScore: matchup.totalScore
   };
 }
 
-function compactTransactionPlayer(
-  player
-) {
+
+function compactTransactionPlayer(player) {
   return {
-    id:
-      String(player.id),
-
-    name:
-      player.name,
-
-    position:
-      player.position ||
-      null,
-
-    nflTeam:
-      player.team ||
-      null
+    id: String(player.id),
+    name: player.name,
+    position: player.position || null,
+    nflTeam: player.team || null
   };
 }
 
-function compactTransactionGroup(
-  group
-) {
+
+function compactTransactionGroup(group) {
   return {
-    rosterId:
-      group.rosterId,
-
-    teamName:
-      group.teamName,
-
-    managerName:
-      group.managerName,
-
-    managerSlug:
-      group.managerSlug,
+    rosterId: group.rosterId,
+    teamName: group.teamName,
+    managerName: group.managerName,
+    managerSlug: group.managerSlug,
 
     players:
       (group.players || [])
-        .map(
-          compactTransactionPlayer
-        )
+        .map(compactTransactionPlayer)
   };
 }
-function compactDraftCapitalReview(
-  review
-) {
-  if (!review) {
-    return null;
-  }
+
+
+function compactDraftCapitalReview(review) {
+  if (!review) return null;
 
   return {
-    status:
-      review.status ||
-      'unreviewed',
-
-    reviewStatus:
-      review.reviewStatus ||
-      null,
-
-    source:
-      review.source ||
-      null,
-
-    matchMethod:
-      review.matchMethod ||
-      null,
-
-    transferId:
-      review.transferId ||
-      null,
-
-    reviewedAt:
-      review.reviewedAt ??
-      null,
-
-    note:
-      review.note ||
-      null,
+    status: review.status || 'unreviewed',
+    reviewStatus: review.reviewStatus || null,
+    source: review.source || null,
+    matchMethod: review.matchMethod || null,
+    transferId: review.transferId || null,
+    reviewedAt: review.reviewedAt ?? null,
+    note: review.note || null,
 
     capital:
       review.capital
         ? {
             futuresYear:
-              review
-                .capital
-                .futuresYear,
+              review.capital.futuresYear,
 
             amount:
               Number(
-                review
-                  .capital
-                  .amount ||
+                review.capital.amount ||
                 0
               ),
 
             amountCents:
               Number(
-                review
-                  .capital
-                  .amountCents ||
+                review.capital.amountCents ||
                 0
               ),
 
             fromManagerId:
-              review
-                .capital
-                .fromManagerId,
+              review.capital.fromManagerId,
 
             toManagerId:
-              review
-                .capital
-                .toManagerId,
+              review.capital.toManagerId,
 
             from:
-              review
-                .capital
-                .from ||
+              review.capital.from ||
               null,
 
             to:
-              review
-                .capital
-                .to ||
+              review.capital.to ||
               null,
 
             transactionDate:
-              review
-                .capital
-                .transactionDate ||
+              review.capital.transactionDate ||
               null,
 
             note:
-              review
-                .capital
-                .note ||
+              review.capital.note ||
               null
           }
         : null
   };
 }
-function compactTransaction(
-  transaction
-) {
+
+
+function compactTransaction(transaction) {
   return {
-    id:
-      transaction.id,
-
-    week:
-      transaction.week,
-
-    type:
-      transaction.type,
-
-    status:
-      transaction.status,
-
-    createdAt:
-      transaction.createdAt,
-
-    summary:
-      transaction.summaryLine,
+    id: transaction.id,
+    week: transaction.week,
+    type: transaction.type,
+    status: transaction.status,
+    createdAt: transaction.createdAt,
+    summary: transaction.summaryLine,
 
     teams:
       (
@@ -300,6 +190,11 @@ function compactTransaction(
       ).map((team) => ({
         rosterId:
           team.rosterId,
+
+        managerId:
+          team.managerId ||
+          team.ownerId ||
+          null,
 
         teamName:
           team.teamName,
@@ -332,20 +227,11 @@ function compactTransaction(
         transaction.draftPicks ||
         []
       ).map((pick) => ({
-        id:
-          pick.id,
-
-        label:
-          pick.label,
-
-        currentOwner:
-          pick.currentOwner,
-
-        previousOwner:
-          pick.previousOwner,
-
-        lineage:
-          pick.lineage
+        id: pick.id,
+        label: pick.label,
+        currentOwner: pick.currentOwner,
+        previousOwner: pick.previousOwner,
+        lineage: pick.lineage
       })),
 
     faab:
@@ -353,26 +239,19 @@ function compactTransaction(
         transaction.faabRows ||
         []
       ).map((row) => ({
-        rosterId:
-          row.rosterId,
-
-        teamName:
-          row.teamName,
-
-        managerName:
-          row.managerName,
-
-        amount:
-          Number(
-            row.amount || 0
-          )
+        rosterId: row.rosterId,
+        teamName: row.teamName,
+        managerName: row.managerName,
+        amount: Number(row.amount || 0)
       })),
-      draftCapitalReview:
-        compactDraftCapitalReview(
+
+    draftCapitalReview:
+      compactDraftCapitalReview(
         transaction.draftCapitalReview
-  ),
+      )
   };
 }
+
 
 function countPlayersInGroups(
   transactions,
@@ -397,9 +276,8 @@ function countPlayersInGroups(
   );
 }
 
-function sumFaab(
-  transactions
-) {
+
+function sumFaab(transactions) {
   return transactions.reduce(
     (total, transaction) =>
       total +
@@ -410,7 +288,8 @@ function sumFaab(
         (rowTotal, row) =>
           rowTotal +
           Number(
-            row.amount || 0
+            row.amount ||
+            0
           ),
         0
       ),
@@ -418,16 +297,102 @@ function sumFaab(
   );
 }
 
+
+function transactionUrlForWeek(
+  url,
+  week
+) {
+  const next =
+    new URL(url);
+
+  next.searchParams.set(
+    'week',
+    String(week)
+  );
+
+  next.searchParams.delete(
+    'weeks'
+  );
+
+  next.searchParams.delete(
+    'team'
+  );
+
+  next.searchParams.delete(
+    'rosterId'
+  );
+
+  return next;
+}
+
+
+function completedTransactions(
+  bundle
+) {
+  return (
+    bundle?.transactions ||
+    []
+  )
+    .filter(
+      (transaction) =>
+        String(
+          transaction.status ||
+          'complete'
+        ).toLowerCase() ===
+        'complete'
+    )
+    .map(
+      compactTransaction
+    );
+}
+
+
+function uniqueTransactions(
+  transactions
+) {
+  const byId =
+    new Map();
+
+  for (
+    const transaction of
+    transactions ||
+    []
+  ) {
+    byId.set(
+      String(
+        transaction.id
+      ),
+      transaction
+    );
+  }
+
+  return [
+    ...byId.values()
+  ].sort(
+    (a, b) =>
+      Number(
+        b.createdAt ||
+        0
+      ) -
+      Number(
+        a.createdAt ||
+        0
+      )
+  );
+}
+
+
 export async function buildWeeklyRecapPacket({
   url,
   env
 } = {}) {
-      const db =
+  const db =
     env?.DB ||
     null;
 
   const enrichmentWarnings =
     [];
+
   const context =
     await resolveLeagueContext({
       url,
@@ -440,30 +405,78 @@ export async function buildWeeklyRecapPacket({
       context.selectedWeek
     );
 
+  /*
+   * Irving Weekly uses the league's actual editorial news cycle:
+   *
+   *   Wednesday waiver/free-agency open
+   *       through
+   *   the following week's games
+   *
+   * Sleeper attributes those Wednesday wire moves to the PREVIOUS
+   * transaction round in this league. That is why they used to show
+   * up one recap early.
+   *
+   * Only waiver/free-agent activity is shifted. Trades and other
+   * transaction types keep the selected Sleeper week so the normal
+   * Transactions page remains completely untouched.
+   */
+  const wireSleeperWeek =
+    week > 1
+      ? week - 1
+      : week;
+
+  const currentTransactionUrl =
+    transactionUrlForWeek(
+      url,
+      week
+    );
+
+  const wireTransactionUrl =
+    transactionUrlForWeek(
+      url,
+      wireSleeperWeek
+    );
+
   const [
     users,
     rosters,
     rawMatchups,
-    transactionBundle
-  ] = await Promise.all([
-    getSleeperUsers(
-      context.leagueId
-    ),
+    currentTransactionBundle,
+    wireTransactionBundle
+  ] =
+    await Promise.all([
+      getSleeperUsers(
+        context.leagueId
+      ),
 
-    getSleeperRosters(
-      context.leagueId
-    ),
+      getSleeperRosters(
+        context.leagueId
+      ),
 
-    getSleeperMatchupsForWeek(
-      context.leagueId,
+      getSleeperMatchupsForWeek(
+        context.leagueId,
+        week
+      ),
+
+      getLiveTransactionsBundle({
+        url:
+          currentTransactionUrl,
+
+        env
+      }),
+
+      wireSleeperWeek ===
       week
-    ),
+        ? Promise.resolve(
+            null
+          )
+        : getLiveTransactionsBundle({
+            url:
+              wireTransactionUrl,
 
-    getLiveTransactionsBundle({
-      url,
-      env
-    })
-  ]);
+            env
+          })
+    ]);
 
   const rosterIdentityMap =
     buildRosterIdentityMap({
@@ -488,21 +501,22 @@ export async function buildWeeklyRecapPacket({
     await resolvePlayersByIds(
       playerIds
     );
-    const historicalStandings =
-  await buildHistoricalStandings({
-    leagueId:
-      context.leagueId,
 
-    rosters,
+  const historicalStandings =
+    await buildHistoricalStandings({
+      leagueId:
+        context.leagueId,
 
-    users,
+      rosters,
 
-    throughWeek:
-      week,
+      users,
 
-    selectedWeekMatchups:
-      rawMatchups
-  });
+      throughWeek:
+        week,
+
+      selectedWeekMatchups:
+        rawMatchups
+    });
 
   const normalizedMatchups =
     chunkPairs(
@@ -537,109 +551,54 @@ export async function buildWeeklyRecapPacket({
       matchups
     );
 
-  const completedTransactions =
-    (
-      transactionBundle
-        .transactions ||
-      []
-    )
-      .filter(
-        (transaction) =>
-          String(
-            transaction.status ||
-            'complete'
-          ).toLowerCase() ===
-          'complete'
-      )
-      .map(
-        compactTransaction
-      );
+  const currentCompleted =
+    completedTransactions(
+      currentTransactionBundle
+    );
 
+  const wireCompleted =
+    wireTransactionBundle
+      ? completedTransactions(
+          wireTransactionBundle
+        )
+      : currentCompleted;
+
+  /*
+   * WAIVERS / FREE AGENTS:
+   * Pull from the prior Sleeper transaction round for recap Weeks 2+.
+   *
+   * TRADES / COMMISH / OTHER:
+   * Preserve the existing selected-week behavior.
+   */
   const waivers =
-    completedTransactions.filter(
+    wireCompleted.filter(
       (transaction) =>
         transaction.type ===
         'waiver'
     );
 
   const freeAgents =
-    completedTransactions.filter(
+    wireCompleted.filter(
       (transaction) =>
         transaction.type ===
         'free_agent'
     );
 
   const trades =
-    completedTransactions.filter(
+    currentCompleted.filter(
       (transaction) =>
         transaction.type ===
         'trade'
     );
 
   const commissionerMoves =
-    completedTransactions.filter(
+    currentCompleted.filter(
       (transaction) =>
         transaction.type ===
         'commish'
     );
 
-    let badgePreview =
-  null;
-
-if (db) {
-  try {
-    badgePreview =
-      await buildWeeklyBadgePreview({
-        db,
-
-        leagueId:
-          context.leagueId,
-
-        season:
-          Number(
-            context.season
-          ),
-
-        week
-      });
-  } catch (error) {
-    console.warn(
-      '[weekly-recap] Badge enrichment failed:',
-      error
-    );
-
-    enrichmentWarnings.push(
-      `Weekly badge enrichment failed: ${
-        error instanceof Error
-          ? error.message
-          : String(error)
-      }`
-    );
-  }
-} else {
-  enrichmentWarnings.push(
-    'D1 binding unavailable; weekly badge enrichment was skipped.'
-  );
-}
-
-/*
- * Draft-capital warnings now come
- * from transactionsLive.js.
- */
-enrichmentWarnings.push(
-  ...(
-    transactionBundle
-      .capitalWarnings ||
-    []
-  )
-);
-
-
-
-
-
-
-  const knownTypes =
+  const knownCurrentTypes =
     new Set([
       'waiver',
       'free_agent',
@@ -648,100 +607,178 @@ enrichmentWarnings.push(
     ]);
 
   const otherTransactions =
-    completedTransactions.filter(
+    currentCompleted.filter(
       (transaction) =>
-        !knownTypes.has(
+        !knownCurrentTypes.has(
           transaction.type
         )
     );
 
+  const selectedTransactions =
+    uniqueTransactions([
+      ...waivers,
+      ...freeAgents,
+      ...trades,
+      ...commissionerMoves,
+      ...otherTransactions
+    ]);
+
+  let badgePreview =
+    null;
+
+  if (db) {
+    try {
+      badgePreview =
+        await buildWeeklyBadgePreview({
+          db,
+
+          leagueId:
+            context.leagueId,
+
+          season:
+            Number(
+              context.season
+            ),
+
+          week
+        });
+    } catch (error) {
+      console.warn(
+        '[weekly-recap] Badge enrichment failed:',
+        error
+      );
+
+      enrichmentWarnings.push(
+        `Weekly badge enrichment failed: ${
+          error instanceof Error
+            ? error.message
+            : String(error)
+        }`
+      );
+    }
+  } else {
+    enrichmentWarnings.push(
+      'D1 binding unavailable; weekly badge enrichment was skipped.'
+    );
+  }
+
+  for (
+    const bundle of [
+      currentTransactionBundle,
+      wireTransactionBundle
+    ]
+  ) {
+    enrichmentWarnings.push(
+      ...(
+        bundle
+          ?.capitalWarnings ||
+        []
+      )
+    );
+  }
+
   const transactionPacket = {
-  waivers,
-  freeAgents,
-  trades,
-  commissionerMoves,
-  other:
-    otherTransactions
-};
+    waivers,
+    freeAgents,
+    trades,
+    commissionerMoves,
+    other:
+      otherTransactions,
 
-const standingsPacket = {
-  beforeWeek:
-    historicalStandings.beforeWeek,
+    editorialWindow: {
+      recapWeek:
+        week,
 
-  afterWeek:
-    historicalStandings.afterWeek,
+      waiverAndFreeAgentSleeperWeek:
+        wireSleeperWeek,
 
-  movement:
-    historicalStandings.movement,
+      tradeSleeperWeek:
+        week,
 
-  weeklyResults:
-    historicalStandings.selectedWeekResults,
+      note:
+        week > 1
+          ? 'Waiver/free-agent activity is intentionally read from the previous Sleeper transaction round so Wednesday wire activity belongs to the upcoming matchup recap.'
+          : 'Week 1 uses Sleeper Week 1 for all transaction types.'
+    }
+  };
 
-  medianScore:
-    historicalStandings.selectedWeekMedian,
+  const standingsPacket = {
+    beforeWeek:
+      historicalStandings.beforeWeek,
 
-  weeksProcessed:
-    historicalStandings.weeksProcessed
-};
+    afterWeek:
+      historicalStandings.afterWeek,
 
-const storyFacts =
-  buildWeeklyStoryFacts({
-    matchups,
+    movement:
+      historicalStandings.movement,
 
-    highlights,
+    weeklyResults:
+      historicalStandings.selectedWeekResults,
 
-    standings:
-      standingsPacket,
+    medianScore:
+      historicalStandings.selectedWeekMedian,
 
-    transactions:
-      transactionPacket,
+    weeksProcessed:
+      historicalStandings.weeksProcessed
+  };
 
-    badgePreview
-  });
+  const storyFacts =
+    buildWeeklyStoryFacts({
+      matchups,
+      highlights,
 
-let beatWriterContext =
-  null;
+      standings:
+        standingsPacket,
 
-try {
-  beatWriterContext =
-    await buildWeeklyRecapLeagueMemory({
-      db,
+      transactions:
+        transactionPacket,
 
-      season:
-        Number(
-          context.season
-        ),
-
-      week,
-
-      matchups
+      badgePreview
     });
 
-  enrichmentWarnings.push(
-    ...(
-      beatWriterContext
-        ?.warnings ||
-      []
-    )
-  );
-} catch (error) {
-  console.warn(
-    '[weekly-recap] League memory enrichment failed:',
-    error
-  );
+  let beatWriterContext =
+    null;
 
-  enrichmentWarnings.push(
-    `League memory enrichment failed: ${
-      error instanceof Error
-        ? error.message
-        : String(error)
-    }`
-  );
-}
+  try {
+    beatWriterContext =
+      await buildWeeklyRecapLeagueMemory({
+        db,
+
+        season:
+          Number(
+            context.season
+          ),
+
+        week,
+
+        matchups
+      });
+
+    enrichmentWarnings.push(
+      ...(
+        beatWriterContext
+          ?.warnings ||
+        []
+      )
+    );
+  } catch (error) {
+    console.warn(
+      '[weekly-recap] League memory enrichment failed:',
+      error
+    );
+
+    enrichmentWarnings.push(
+      `League memory enrichment failed: ${
+        error instanceof Error
+          ? error.message
+          : String(error)
+      }`
+    );
+  }
 
   return {
     schemaVersion:
-      1,
+      2,
 
     generatedAt:
       new Date()
@@ -773,7 +810,7 @@ try {
         matchups.length * 2,
 
       transactionCount:
-        completedTransactions.length,
+        selectedTransactions.length,
 
       waiverCount:
         waivers.length,
@@ -789,13 +826,13 @@ try {
 
       totalAdds:
         countPlayersInGroups(
-          completedTransactions,
+          selectedTransactions,
           'adds'
         ),
 
       totalDrops:
         countPlayersInGroups(
-          completedTransactions,
+          selectedTransactions,
           'drops'
         ),
 
@@ -805,7 +842,7 @@ try {
         )
     },
 
-      highlights,
+    highlights,
 
     standings:
       standingsPacket,
@@ -824,7 +861,11 @@ try {
         ),
 
       warnings:
-        enrichmentWarnings
+        [
+          ...new Set(
+            enrichmentWarnings
+          )
+        ]
     },
 
     source:

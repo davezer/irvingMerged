@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:42.554Z",
+  "generatedAt": "2026-09-22T21:11:19.747Z",
   "playerId": "3214",
   "profile": {
     "id": "3214",
@@ -1301,16 +1301,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 4.1,
-        "fantasyPointsPerGame": 4.1,
+        "games": 2,
+        "fantasyPoints": 9.6,
+        "fantasyPointsPerGame": 4.8,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 3,
-        "receivingYards": 26,
+        "receptions": 6,
+        "receivingYards": 66,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -1337,6 +1337,32 @@
             "targets": 3,
             "receptions": 3,
             "yards": 26,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "NE",
+          "opponent": "PIT",
+          "fantasyPoints": 5.5,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 5,
+            "receptions": 3,
+            "yards": 40,
             "tds": 0
           },
           "fumblesLost": 0

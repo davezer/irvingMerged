@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:39.048Z",
+  "generatedAt": "2026-09-22T21:11:16.289Z",
   "playerId": "5189",
   "profile": {
     "id": "5189",
@@ -15,7 +15,7 @@
     "yearsExp": 8,
     "college": "Florida",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1301,7 +1301,7 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
+        "games": 2,
         "fantasyPoints": 0,
         "fantasyPointsPerGame": 0,
         "passingYards": 0,
@@ -1320,6 +1320,32 @@
           "seasonType": "REG",
           "team": "SF",
           "opponent": "LA",
+          "fantasyPoints": 0,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "SF",
+          "opponent": "MIA",
           "fantasyPoints": 0,
           "passing": {
             "completions": 0,

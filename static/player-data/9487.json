@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:41.097Z",
+  "generatedAt": "2026-09-22T21:11:18.299Z",
   "playerId": "9487",
   "profile": {
     "id": "9487",
@@ -1093,16 +1093,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 16.8,
-        "fantasyPointsPerGame": 16.8,
+        "games": 2,
+        "fantasyPoints": 30.1,
+        "fantasyPointsPerGame": 15.05,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 5,
-        "receivingYards": 83,
+        "receptions": 12,
+        "receivingYards": 181,
         "receivingTds": 1,
         "fumblesLost": 0
       },
@@ -1130,6 +1130,32 @@
             "receptions": 5,
             "yards": 83,
             "tds": 1
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "JAX",
+          "opponent": "DEN",
+          "fantasyPoints": 13.3,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 12,
+            "receptions": 7,
+            "yards": 98,
+            "tds": 0
           },
           "fumblesLost": 0
         }

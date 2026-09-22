@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:40.986Z",
+  "generatedAt": "2026-09-22T21:11:18.185Z",
   "playerId": "4035",
   "profile": {
     "id": "4035",
@@ -1093,23 +1093,50 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 0,
-        "fantasyPoints": 0,
-        "fantasyPointsPerGame": 0,
+        "games": 1,
+        "fantasyPoints": 4.7,
+        "fantasyPointsPerGame": 4.7,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": 0,
+        "rushingYards": 15,
         "rushingTds": 0,
-        "receptions": 0,
-        "receivingYards": 0,
+        "receptions": 5,
+        "receivingYards": 7,
         "receivingTds": 0,
         "fumblesLost": 0
       },
-      "games": [],
+      "games": [
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "NO",
+          "opponent": "BAL",
+          "fantasyPoints": 4.7,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 9,
+            "yards": 15,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 6,
+            "receptions": 5,
+            "yards": 7,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        }
+      ],
       "dataMatch": {
         "playerCrosswalk": "espn_id",
-        "statMatch": null,
+        "statMatch": "gsis_id",
         "gsisId": "00-0033906"
       }
     }

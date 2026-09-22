@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:34.588Z",
+  "generatedAt": "2026-09-22T21:11:11.882Z",
   "playerId": "6770",
   "profile": {
     "id": "6770",
@@ -15,7 +15,7 @@
     "yearsExp": 6,
     "college": "LSU",
     "status": "Active",
-    "injuryStatus": "Questionable",
+    "injuryStatus": null,
     "practiceParticipation": null,
     "depthChartOrder": 1,
     "fantasyPositions": [
@@ -1015,13 +1015,13 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 14.16,
-        "fantasyPointsPerGame": 14.16,
-        "passingYards": 254,
-        "passingTds": 1,
+        "games": 2,
+        "fantasyPoints": 30.34,
+        "fantasyPointsPerGame": 15.17,
+        "passingYards": 461,
+        "passingTds": 3,
         "interceptions": 0,
-        "rushingYards": 20,
+        "rushingYards": 19,
         "rushingTds": 0,
         "receptions": 0,
         "receivingYards": 0,
@@ -1045,6 +1045,32 @@
           "rushing": {
             "attempts": 5,
             "yards": 20,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "CIN",
+          "opponent": "HOU",
+          "fantasyPoints": 16.18,
+          "passing": {
+            "completions": 20,
+            "attempts": 31,
+            "yards": 207,
+            "tds": 2,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 1,
+            "yards": -1,
             "tds": 0
           },
           "receiving": {

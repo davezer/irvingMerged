@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:40.962Z",
+  "generatedAt": "2026-09-22T21:11:18.158Z",
   "playerId": "11643",
   "profile": {
     "id": "11643",
@@ -15,7 +15,7 @@
     "yearsExp": 2,
     "college": "Tennessee",
     "status": "Active",
-    "injuryStatus": null,
+    "injuryStatus": "Questionable",
     "practiceParticipation": null,
     "depthChartOrder": 2,
     "fantasyPositions": [
@@ -676,13 +676,13 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": -0.1,
-        "fantasyPointsPerGame": -0.1,
+        "games": 2,
+        "fantasyPoints": 1,
+        "fantasyPointsPerGame": 0.5,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
-        "rushingYards": -1,
+        "rushingYards": 10,
         "rushingTds": 0,
         "receptions": 0,
         "receivingYards": 0,
@@ -706,6 +706,32 @@
           "rushing": {
             "attempts": 1,
             "yards": -1,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 0,
+            "receptions": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "MIA",
+          "opponent": "SF",
+          "fantasyPoints": 1.1,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 2,
+            "yards": 11,
             "tds": 0
           },
           "receiving": {

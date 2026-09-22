@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T15:20:38.638Z",
+  "generatedAt": "2026-09-22T21:11:15.874Z",
   "playerId": "11620",
   "profile": {
     "id": "11620",
@@ -858,16 +858,16 @@
     "2026": {
       "season": 2026,
       "summary": {
-        "games": 1,
-        "fantasyPoints": 6.2,
-        "fantasyPointsPerGame": 6.2,
+        "games": 2,
+        "fantasyPoints": 12,
+        "fantasyPointsPerGame": 6,
         "passingYards": 0,
         "passingTds": 0,
         "interceptions": 0,
         "rushingYards": 0,
         "rushingTds": 0,
-        "receptions": 2,
-        "receivingYards": 52,
+        "receptions": 5,
+        "receivingYards": 95,
         "receivingTds": 0,
         "fumblesLost": 0
       },
@@ -894,6 +894,32 @@
             "targets": 3,
             "receptions": 2,
             "yards": 52,
+            "tds": 0
+          },
+          "fumblesLost": 0
+        },
+        {
+          "week": 2,
+          "seasonType": "REG",
+          "team": "CHI",
+          "opponent": "MIN",
+          "fantasyPoints": 5.8,
+          "passing": {
+            "completions": 0,
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0,
+            "interceptions": 0
+          },
+          "rushing": {
+            "attempts": 0,
+            "yards": 0,
+            "tds": 0
+          },
+          "receiving": {
+            "targets": 4,
+            "receptions": 3,
+            "yards": 43,
             "tds": 0
           },
           "fumblesLost": 0

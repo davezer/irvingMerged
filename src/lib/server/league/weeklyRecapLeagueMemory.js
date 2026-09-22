@@ -78,8 +78,8 @@ const TEAM_EDITORIAL_NOTES = {
   "Milford Jayhawks": [
     "Jay and Adam are longtime friends going all the way back to high school. Their real-life friendship adds another layer to the Milford-Saskatchewan rivalry.",
 
-    // Add: Is the 2005 Irving championship remembered for anything specific?
-    // Add: Any long-running Jason roster-building habit or league joke?
+    "Jay's 2005 Irving championship is remembered as a defining early moment for the franchise, followed by a long championship drought.",
+    "Jay has a reputation for being a quiet, waiver-wire-focused manager who is willing to let the draft and trade market play out rather than aggressively pursuing a particular strategy.",
     // Add: Any brutal near-miss or playoff scar that still gets brought up?
   ],
 
