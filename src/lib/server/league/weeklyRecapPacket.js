@@ -44,6 +44,11 @@ import {
 } from '$lib/server/league/weeklyRecapLeagueMemory.js';
 
 
+import {
+  repairWeeklyRecapBeatWriterContext
+} from '$lib/server/league/weeklyRecapBrainRepair.js';
+
+
 function compactPlayer(player) {
   if (!player) return null;
 
@@ -743,6 +748,30 @@ export async function buildWeeklyRecapPacket({
     beatWriterContext =
       await buildWeeklyRecapLeagueMemory({
         db,
+
+        season:
+          Number(
+            context.season
+          ),
+
+        week,
+
+        matchups
+      });
+
+    /*
+     * Restore the full commissioner lore and repair merged-era
+     * head-to-head history from linked Sleeper leagues.
+     *
+     * This deliberately does NOT assume the D1 matchups archive
+     * has already been backfilled for 2025.
+     */
+    beatWriterContext =
+      await repairWeeklyRecapBeatWriterContext({
+        beatWriterContext,
+
+        rootLeagueId:
+          context.leagueId,
 
         season:
           Number(
