@@ -726,6 +726,7 @@ export async function POST({ request, platform }) {
   const discordUserId = clean(body.discordUserId, 32);
   const discordUsername = clean(body.discordUsername, 80);
   const discordDisplayName = clean(body.discordDisplayName, 100);
+  const managerIdOverride = clean(body.managerIdOverride, 64);
   const sport = clean(body.sport, 20).toLowerCase();
   const betType = clean(body.betType, 30).toLowerCase();
   const directionRaw = clean(body.direction, 10).toLowerCase();
@@ -777,20 +778,44 @@ export async function POST({ request, platform }) {
     );
   }
 
-  const link = await getDiscordManagerLink(db, discordUserId);
+  let managerRecord;
 
-  if (!link) {
-    return errorResponse(
-      'Your Discord account is not linked to an Irving manager yet. Ask an admin to link it in the Parlay Control Room.',
-      'DISCORD_NOT_LINKED',
-      403
+  if (managerIdOverride) {
+    const manager = getManagers().find(
+      (candidate) => String(candidate.managerID) === managerIdOverride
     );
+
+    if (!manager) {
+      return errorResponse(
+        'The selected Irving manager could not be found.',
+        'MANAGER_NOT_FOUND',
+        404
+      );
+    }
+
+    managerRecord = {
+      manager_id: String(manager.managerID),
+      manager_name: String(manager.name || ''),
+      team_name: String(manager.teamName || '')
+    };
+  } else {
+    const link = await getDiscordManagerLink(db, discordUserId);
+
+    if (!link) {
+      return errorResponse(
+        'Your Discord account is not linked to an Irving manager yet. Ask an admin to link it in the Parlay Control Room.',
+        'DISCORD_NOT_LINKED',
+        403
+      );
+    }
+
+    managerRecord = link;
   }
 
   const existingPick = await getActiveManagerPick(db, {
     season: openWeek.season,
     week: openWeek.week,
-    managerId: link.manager_id
+    managerId: managerRecord.manager_id
   });
 
   const replaceExisting = body.replaceExisting === true;
@@ -817,9 +842,9 @@ export async function POST({ request, platform }) {
     season: Number(openWeek.season),
     week: Number(openWeek.week),
     parlayWeekId: Number(openWeek.id),
-    managerId: String(link.manager_id),
-    managerName: String(link.manager_name),
-    teamName: link.team_name ? String(link.team_name) : null,
+    managerId: String(managerRecord.manager_id),
+    managerName: String(managerRecord.manager_name),
+    teamName: managerRecord.team_name ? String(managerRecord.team_name) : null,
     discordUserId,
     discordUsername,
     discordDisplayName,
